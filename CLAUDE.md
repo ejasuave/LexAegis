@@ -18,6 +18,22 @@ TypeScript stays below 6.1.
 
 "Proceed to Chapter [N]": ingest only that chapter in `build_instructions/prompt_library/`, run its `📦 BUILD TASK #n` blocks in order as repository edits, no plans. Verify with strict TypeScript and closed `z.strictObject` schemas at every boundary (no `any`, no coercion, bigint-safe decimal strings). Run the chapter gate, record observed results in `docs/build-state.json`, mark complete only when required checks passed, then stop.
 
+## Session resume protocol
+
+- On session start, read `docs/build-state.json` only. Do not read other chapters' files.
+- If told "proceed to chapter N" or "next chapter": confirm chapter N-1 is `complete` in build-state.json (if not, stop and say so). Then read ONLY that chapter's file at its `chapterPromptPath` and run all its tasks in order without stopping between tasks.
+- If told "continue": resume `currentChapter` at its first incomplete task.
+- After each task, update build-state.json (status, files changed, interfaces later chapters need).
+- At chapter end, mark it complete, set `currentChapter` and `nextChapter`, and give a short summary.
+
+## Git
+
+- After each task: update build-state.json, then `git add -A`, commit as `ch<N> task <X>: <short summary>`, and push.
+- At chapter end: commit `ch<N> complete` and push.
+- Write commit messages from the task just completed. Do not run `git diff` or `git log` to write them.
+- Never force-push, never commit `.env` or secrets, never rewrite history.
+- If a push fails, report it and keep going. Do not retry in a loop.
+
 ## What is being built
 
 **Proof of Review**: a person approves an exact package of AI-assisted work; anyone holding it can check that without trusting the app. **LexAegis** is the reference app (employment settlement review, England and Wales), Monad testnet 10143. Deadline `2026-10-14T04:59:00+01:00`. Authority: `project_brief/LexAegis Refined Project Brief v3.md`; visuals: `UI_UX_Instructions/`; requirements: `docs/assistant-ui-contract.md`. Run order: 1–3, 14, 4, 5, 6, 8, 9, 7, 10, 11, 15–18, 12, 19, 13.

@@ -1,5 +1,7 @@
 {
   "schemaVersion": 1,
+  "currentChapter": "14",
+  "nextChapter": "09",
   "project": {
     "name": "LexAegis",
     "primitive": "Proof of Review",
@@ -17,133 +19,152 @@
       "title": "Runnable Monorepo, Shared Types and Build Checks",
       "additive": false,
       "state": "complete",
-      "evidence": ["chapter01.checks"]
+      "evidence": ["chapter01.checks"],
+      "chapterPromptPath": "build_instructions/prompt_library/LexAegis_Prompt_Library_Chapter_01_Targeted_Build_Tasks_v2_2.md"
     },
     {
       "id": "02",
       "title": "Receipt Format, Canonical Hashing and Private Commitments",
       "additive": false,
       "state": "complete",
-      "evidence": ["chapter02.checks"]
+      "evidence": ["chapter02.checks"],
+      "chapterPromptPath": "build_instructions/prompt_library/LexAegis_Prompt_Library_Chapter_02_Targeted_Build_Tasks_v1_0.md"
     },
     {
       "id": "03",
       "title": "Monad Registry, Approval Signatures and Receipt Lifecycle",
       "additive": false,
       "state": "complete",
-      "evidence": ["chapter03.checks"]
+      "evidence": ["chapter03.checks"],
+      "chapterPromptPath": "build_instructions/prompt_library/LexAegis_Prompt_Library_Chapter_03_Targeted_Build_Tasks_v1_0.md"
     },
     {
       "id": "04",
       "title": "Mera Passkeys, Signing Sessions and Account Recovery",
       "additive": false,
       "state": "in-progress",
-      "evidence": ["chapter04.checks"]
+      "evidence": ["chapter04.checks"],
+      "chapterPromptPath": "build_instructions/prompt_library/LexAegis_Prompt_Library_Chapter_04_Targeted_Build_Tasks_v1_0.md"
     },
     {
       "id": "05",
       "title": "Encrypted Evidence Vault, Stateless Recovery and Portable Export",
       "additive": false,
       "state": "in-progress",
-      "evidence": ["chapter05.checks"]
+      "evidence": ["chapter05.checks"],
+      "chapterPromptPath": "build_instructions/prompt_library/LexAegis_Prompt_Library_Chapter_05_Targeted_Build_Tasks_v1_0.md"
     },
     {
       "id": "06",
       "title": "Alchemy Transactions, Testnet Funding and Live Verification",
       "additive": false,
       "state": "in-progress",
-      "evidence": ["chapter06.checks"]
+      "evidence": ["chapter06.checks"],
+      "chapterPromptPath": "build_instructions/prompt_library/LexAegis_Prompt_Library_Chapter_06_Targeted_Build_Tasks_v1_0.md"
     },
     {
       "id": "07",
       "title": "Envio Indexer, Review History and Derived Status",
       "additive": false,
       "state": "pending",
-      "evidence": []
+      "evidence": [],
+      "chapterPromptPath": "build_instructions/prompt_library/LexAegis_Prompt_Library_Chapter_07_Targeted_Build_Tasks_v1_0.md"
     },
     {
       "id": "08",
       "title": "Document Intake, Source References and Deterministic Checks",
       "additive": false,
       "state": "complete",
-      "evidence": ["chapter08.checks"]
+      "evidence": ["chapter08.checks"],
+      "chapterPromptPath": "build_instructions/prompt_library/LexAegis_Prompt_Library_Chapter_08_Targeted_Build_Tasks_v1_0.md"
     },
     {
       "id": "09",
       "title": "Qwen 3.8 Max, Aegis Assistant Runtime and Review Tools",
       "additive": false,
       "state": "pending",
-      "evidence": []
+      "evidence": [],
+      "chapterPromptPath": "build_instructions/prompt_library/LexAegis_Prompt_Library_Chapter_09_Targeted_Build_Tasks_v1_0.md"
     },
     {
       "id": "10",
       "title": "Aegis HUD, Legal Workspace and Human Approval",
       "additive": false,
       "state": "pending",
-      "evidence": []
+      "evidence": [],
+      "chapterPromptPath": "build_instructions/prompt_library/LexAegis_Prompt_Library_Chapter_10_Targeted_Build_Tasks_v1_0.md"
     },
     {
       "id": "11",
       "title": "Protocol SDK, Independent Verifier and Developer Integration",
       "additive": false,
       "state": "pending",
-      "evidence": []
+      "evidence": [],
+      "chapterPromptPath": "build_instructions/prompt_library/LexAegis_Prompt_Library_Chapter_11_Targeted_Build_Tasks_v1_0.md"
     },
     {
       "id": "12",
       "title": "End-to-End Recovery, Privacy and Security Validation",
       "additive": false,
       "state": "pending",
-      "evidence": []
+      "evidence": [],
+      "chapterPromptPath": "build_instructions/prompt_library/LexAegis_Prompt_Library_Chapter_12_Targeted_Build_Tasks_v1_0.md"
     },
     {
       "id": "13",
       "title": "Production Deployment and Hackathon Submission Assets",
       "additive": false,
       "state": "pending",
-      "evidence": []
+      "evidence": [],
+      "chapterPromptPath": "build_instructions/prompt_library/LexAegis_Prompt_Library_Chapter_13_Targeted_Build_Tasks_v1_0.md"
     },
     {
       "id": "14",
       "title": "Scope Gates, Feature Flags and Golden-Path Smoke Test",
       "additive": true,
       "state": "in-progress",
-      "evidence": ["chapter14.checks"]
+      "evidence": ["chapter14.checks"],
+      "chapterPromptPath": "build_instructions/prompt_library/LexAegis_Prompt_Library_Chapter_14_Targeted_Build_Tasks_v1_0.md"
     },
     {
       "id": "15",
       "title": "Developer Experience: Specification, Test Vectors, Quickstart and CLI",
       "additive": true,
       "state": "pending",
-      "evidence": []
+      "evidence": [],
+      "chapterPromptPath": "build_instructions/prompt_library/LexAegis_Prompt_Library_Chapter_15_Targeted_Build_Tasks_v1_0.md"
     },
     {
       "id": "16",
       "title": "Agent Identity: ERC-8004 Link, Availability-Gated",
       "additive": true,
       "state": "pending",
-      "evidence": []
+      "evidence": [],
+      "chapterPromptPath": "build_instructions/prompt_library/LexAegis_Prompt_Library_Chapter_16_Targeted_Build_Tasks_v1_0.md"
     },
     {
       "id": "17",
       "title": "Security Hardening and Verified Deployment",
       "additive": true,
       "state": "pending",
-      "evidence": []
+      "evidence": [],
+      "chapterPromptPath": "build_instructions/prompt_library/LexAegis_Prompt_Library_Chapter_17_Targeted_Build_Tasks_v1_0.md"
     },
     {
       "id": "18",
       "title": "Adoption Kit and Traction Evidence",
       "additive": true,
       "state": "pending",
-      "evidence": []
+      "evidence": [],
+      "chapterPromptPath": "build_instructions/prompt_library/LexAegis_Prompt_Library_Chapter_18_Targeted_Build_Tasks_v1_0.md"
     },
     {
       "id": "19",
       "title": "Judge Experience and Demo Reliability",
       "additive": true,
       "state": "pending",
-      "evidence": []
+      "evidence": [],
+      "chapterPromptPath": "build_instructions/prompt_library/LexAegis_Prompt_Library_Chapter_19_Targeted_Build_Tasks_v1_0.md"
     }
   ],
   "chapter01": {
@@ -2425,6 +2446,36 @@
         "authenticatorMode": "virtual",
         "realDeviceEvidence": false
       }
+    },
+    {
+      "id": "account-browser-20261009235845",
+      "subject": "account-browser-check",
+      "sourceRevision": {
+        "commit": "496c65504b828d0383dc46e670601f806e2b3c65",
+        "dirtyWorktree": true,
+        "contentFingerprint": "ed49ca7ed7147fd162cb831fe6582d4c5f63268d352ada90383686d403c88e08"
+      },
+      "checkedAt": "2026-10-09T23:58:45.829Z",
+      "command": "pnpm test:account:browser",
+      "environment": {
+        "node": "v24.21.0",
+        "os": "linux-x64",
+        "pnpm": "11.11.0"
+      },
+      "evidenceClass": "virtual_authenticator",
+      "outcome": "pass",
+      "reasonCodes": ["AUTHENTICATOR_MODE_VIRTUAL", "PASSKEY_STEP_REQUIRES_REAL_DEVICE_EVIDENCE"],
+      "evidenceRefs": [],
+      "facts": {
+        "browser": "chromium 153.0.8010.12",
+        "checksPassed": "31",
+        "checksTotal": "31",
+        "addressReproducedAfterClearingStorage": true,
+        "credentialsCreatedDuringCreate": "1",
+        "assertionsDuringCreate": "0",
+        "authenticatorMode": "virtual",
+        "realDeviceEvidence": false
+      }
     }
   ],
   "appliedCuts": [],
@@ -2981,6 +3032,12 @@
       "ci": {
         "outcome": "unverified",
         "notes": "ci.yml runs test:auth:db and test:account:browser; it has never executed on GitHub."
+      },
+      "automatedGateRerun": {
+        "observedOn": "2026-10-10",
+        "outcome": "pass",
+        "sourceRevision": "496c655 plus uncommitted CLAUDE.md, .claude/settings.json and build-state.json edits",
+        "notes": "Re-run before the real-device session: pnpm lint, typecheck, test (52 files, 854 tests), test:auth:db (3 files, 39 tests), test:contracts:integration (4 files, 33 tests), build, exclusion:check, baselines:check (43 files), fixtures:check, protocol:check, state:validate and test:account:browser (31 of 31, virtual authenticator) all passed. pnpm secrets:check exits 1 on the git-ignored .env only (KEY_ASSIGNMENT, PROVIDER_KEY_URL); no tracked file is flagged. This changes nothing about realDevicePasskey, which stays unverified."
       }
     },
     "decisions": [
