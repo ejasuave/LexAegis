@@ -1,0 +1,102 @@
+@import 'tailwindcss';
+
+:root {
+  color-scheme: dark;
+
+  --lj-bg: #000000;
+  --lj-bg-soft: #0d1117;
+  --lj-text: #e6edf3;
+  --lj-text-secondary: #aab6c4;
+  --lj-text-muted: #8b98a9;
+
+  --lj-cobalt: #3b82f6;
+  --lj-cyan: #67e8f9;
+  --lj-violet-field: #6d28d9;
+  --lj-violet-text: #c4b5fd;
+  --lj-amber: #fbbf24;
+  --lj-error: #fb7185;
+  --lj-positive: #6ee7b7;
+
+  --lj-divider: rgb(170 182 196 / 18%);
+  --lj-control-edge: #64748b;
+  --lj-focus: #67e8f9;
+}
+
+@theme inline {
+  --color-lj-bg: var(--lj-bg);
+  --color-lj-soft: var(--lj-bg-soft);
+  --color-lj-text: var(--lj-text);
+  --color-lj-secondary: var(--lj-text-secondary);
+  --color-lj-muted: var(--lj-text-muted);
+  --color-lj-cobalt: var(--lj-cobalt);
+  --color-lj-cyan: var(--lj-cyan);
+  --color-lj-violet: var(--lj-violet-text);
+  --color-lj-amber: var(--lj-amber);
+  --color-lj-error: var(--lj-error);
+  --color-lj-positive: var(--lj-positive);
+  --color-lj-divider: var(--lj-divider);
+  --color-lj-edge: var(--lj-control-edge);
+  --font-mono: 'IBM Plex Mono', 'SFMono-Regular', Consolas, 'Liberation Mono', monospace;
+}
+
+html,
+body {
+  min-height: 100%;
+  background-color: var(--lj-bg);
+  color: var(--lj-text);
+}
+
+body {
+  font-family:
+    system-ui,
+    -apple-system,
+    'Segoe UI',
+    Roboto,
+    'Helvetica Neue',
+    Arial,
+    sans-serif;
+  font-size: 1rem;
+  line-height: 1.5;
+  /* Faint decorative grid; readable content always sits on a dark surface. */
+  background-image:
+    linear-gradient(rgb(103 232 249 / 3%) 1px, transparent 1px),
+    linear-gradient(90deg, rgb(103 232 249 / 3%) 1px, transparent 1px);
+  background-size: 48px 48px;
+  font-variant-numeric: tabular-nums;
+}
+
+:focus-visible {
+  outline: 2px solid var(--lj-focus);
+  outline-offset: 2px;
+}
+
+code,
+.font-mono {
+  font-variant-ligatures: none;
+}
+
+/* Orb animation only where the user allows motion and only while a run is active. */
+@keyframes lj-pulse {
+  0%,
+  100% {
+    opacity: 0.55;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.9;
+    transform: scale(1.04);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .lj-orb[data-active='true'] .lj-orb-ring {
+    animation: lj-pulse 2.4s ease-in-out infinite;
+    transform-origin: center;
+  }
+}
+
+@media (forced-colors: active) {
+  .lj-orb svg {
+    forced-color-adjust: none;
+  }
+}

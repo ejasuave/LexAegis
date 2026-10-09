@@ -1,0 +1,75 @@
+{
+  "schema": "lexaegis.registry-build.v1",
+  "contract": "ProofOfReviewRegistry",
+  "source": "src/ProofOfReviewRegistry.sol",
+  "protocolVersion": "1",
+  "eip712": {
+    "domain": { "name": "LexAegisProofOfReview", "version": "1" },
+    "domainTypeString": "EIP712Domain(string name,string version,uint256 chainId,address verifyingContract)",
+    "primaryType": "ReviewAction",
+    "typeString": "ReviewAction(address reviewer,uint8 action,bytes32 commitment,bytes32 replacementCommitment,uint256 nonce,uint256 deadline)",
+    "typeHash": "0x5b20b329d8da43817e3f621738bc7b1fd5fd495f2c79254b820be983b26e63fb",
+    "fields": [
+      { "name": "reviewer", "type": "address" },
+      { "name": "action", "type": "uint8" },
+      { "name": "commitment", "type": "bytes32" },
+      { "name": "replacementCommitment", "type": "bytes32" },
+      { "name": "nonce", "type": "uint256" },
+      { "name": "deadline", "type": "uint256" }
+    ]
+  },
+  "actionCodes": { "ISSUE": 0, "REVOKE": 1, "SUPERSEDE": 2 },
+  "receiptStatus": ["NotFound", "Active", "Revoked", "Superseded"],
+  "supersessionEventOrder": ["ReceiptIssued", "ReceiptSuperseded"],
+  "selectors": {
+    "functions": {
+      "REVIEW_ACTION_TYPEHASH()": "0xe253945a",
+      "eip712Domain()": "0x84b0196e",
+      "execute((address,uint8,bytes32,bytes32,uint256,uint256),bytes)": "0xb598097e",
+      "getReceipt(address,bytes32)": "0xd953eb9c",
+      "hashAction((address,uint8,bytes32,bytes32,uint256,uint256))": "0x8317d9bd",
+      "invalidateNonce(uint256)": "0xb70e36f0",
+      "nonceOf(address)": "0xed2a2d64",
+      "protocolVersion()": "0x2ae9c600"
+    },
+    "events": {
+      "EIP712DomainChanged()": "0x0a6387c9ea3628b88a633bb4f3b151770f70085117a15f9bf3787cda53f13d31",
+      "NonceInvalidated(address,uint256,uint256,uint256)": "0x985a3c4c446321883f3a821cac5419a56a632929bdb8782f85f31742005fcbde",
+      "ReceiptIssued(address,bytes32,bytes32,uint256,uint256)": "0xe801f6cc1fb4fa943f0a2d26357a386a0a7c273bef452ab49c304e77a9548e8e",
+      "ReceiptRevoked(address,bytes32,uint256,uint256)": "0xb5f2d4cc49645a1f1caad2bcb57cb89477312b4bdcb9c2118d4519c291048e66",
+      "ReceiptSuperseded(address,bytes32,bytes32,uint256,uint256)": "0x83aa6ff841dcfda0658c9479fe5e737d4fccaa7be982aea0e8cb37159707753e"
+    },
+    "errors": {
+      "AuthorizationExpired()": "0x0f05f5bf",
+      "InvalidActionShape()": "0xcb5e96f7",
+      "InvalidLifecycleTransition(uint8)": "0xf56e1b11",
+      "InvalidNonce(uint256)": "0xb1373a6c",
+      "InvalidShortString()": "0xb3512b0c",
+      "InvalidSignature()": "0x8baa579f",
+      "NonceExhausted()": "0xe4b4cce4",
+      "ReceiptAlreadyIssued()": "0x0b60421f",
+      "StringTooLong(string)": "0x305a27a9",
+      "ZeroCommitment()": "0x51bda03d",
+      "ZeroReviewer()": "0xaa52788a"
+    }
+  },
+  "compiler": {
+    "solc": "0.8.37+commit.f401782d",
+    "evmVersion": "osaka",
+    "optimizer": { "enabled": true, "runs": 200 },
+    "viaIR": false,
+    "bytecodeHash": "none"
+  },
+  "dependencies": {
+    "foundry": "1.8.5",
+    "foundryCommit": "51a52c59cffd940f76eddd0b4bb1791aa4b5ac7f",
+    "openzeppelinContracts": "5.6.1",
+    "forgeStd": "1.17.0",
+    "forgeStdCommit": "f3dae6e6ee381f25eb6a246f7da9b85c91a68219"
+  },
+  "bytecode": {
+    "creationCodeKeccak256": "0x38a7a70bfb716f8d6d10c20ae206ac49add2be6a5c34a367dd5a51d5edf875f2",
+    "creationCodeBytes": 5033,
+    "runtimeCodeBytes": 4118
+  }
+}

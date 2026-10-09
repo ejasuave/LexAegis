@@ -1,0 +1,20 @@
+{
+  "name": "@lexaegis/sdk",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Framework-neutral receipt client and verification interfaces.",
+  "exports": {
+    ".": "./src/index.ts",
+    "./registry": "./src/registry/index.ts",
+    "./transactions": "./src/transactions/index.ts"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit -p tsconfig.json"
+  },
+  "dependencies": {
+    "@lexaegis/protocol": "workspace:*",
+    "viem": "2.57.3",
+    "zod": "4.6.5"
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "foundry": {
+    "version": "1.8.5",
+    "commit": "51a52c59cffd940f76eddd0b4bb1791aa4b5ac7f",
+    "archiveSha256": {
+      "linux_amd64": "6c66ffcc55fa4249197721baa3098bc208014ea1d8aa04b2ed50ac6bccffb226",
+      "linux_arm64": "5bdce3dade8b6f0a65d4fccf6908426aee4905a988b08dce79d0a72fe7498310",
+      "darwin_amd64": "b919f69bb4231ad68beaaba9dc8f7d36d9d552cef1a76a8bf69c2bdfd974339a",
+      "darwin_arm64": "56049728e25e44a61c7f2e49438023b0890cb45850ffcb7c882f90cd998baf83"
+    }
+  },
+  "solc": "0.8.37",
+  "evmVersion": "osaka",
+  "openzeppelinContracts": "5.6.1",
+  "forgeStd": {
+    "version": "1.17.0",
+    "commit": "f3dae6e6ee381f25eb6a246f7da9b85c91a68219"
+  }
+}

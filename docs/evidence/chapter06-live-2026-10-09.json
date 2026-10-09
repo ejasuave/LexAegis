@@ -1,0 +1,135 @@
+{
+  "startedAt": "2026-10-09T12:03:26.737Z",
+  "steps": {
+    "0-capabilities": {
+      "capabilities": {
+        "chainId": true,
+        "blockReads": true,
+        "finalizedTag": true,
+        "historicalState": true,
+        "getCode": true,
+        "feeEstimation": true,
+        "transactionCount": true
+      },
+      "notFoundRead": {
+        "lifecycle": "not_found",
+        "checkpoint": {
+          "chainId": "10143",
+          "finalizedHeight": "69534617",
+          "blockNumber": "69534614",
+          "blockHash": "0x35b0ace2de677f4506c89035fd6ee6063b3cc510b60be59bbf63db060561ed70",
+          "blockTimestamp": "1791547405",
+          "executionDelayBlocks": 3,
+          "executionDelayRevision": "docs.monad.xyz/monad-arch/consensus/block-states@2026-10; testnet MONAD_TEN v0.16.2",
+          "pinning": "block_number_with_hash_recheck",
+          "observedAt": "2026-10-09T12:03:27.789Z"
+        }
+      }
+    },
+    "1-account": {
+      "address": "0x076815e4c5fa1048db77d533c2e05f18a5ca89d5",
+      "authenticator": "scripted (not a real device)"
+    },
+    "2-funding": {
+      "result": {
+        "status": "confirmed",
+        "transactionHash": "0xe4d09cdfccd5500bf9b4b8f27d762093cf56653fb172653b79d394605b649386",
+        "amountWei": "200000000000000000",
+        "balanceWei": "200000000000000000",
+        "chargedFeeWei": "2562000000000000"
+      },
+      "balanceMon": "0.2"
+    },
+    "3-package": {
+      "commitment": "0xa98a4088de298d89160b975e907325554e2560f9a36a899188da29bb4cd58216",
+      "savedAndChecked": true,
+      "vault": "in-memory server (scripted)"
+    },
+    "exec-ISSUE": {
+      "label": "ISSUE",
+      "operationId": "c9b28b8d-07b5-470f-a044-0f4ff00be844",
+      "transactionHash": "0x50c397613df3bc080d214f5a3cdae86b3e9558d9a86ca0bdcb6721b57ca638c5",
+      "phase": "confirmed",
+      "signatureMs": 846,
+      "broadcastMs": 494,
+      "inclusionMs": 2646,
+      "confirmedMs": 2646,
+      "block": "69534635",
+      "chargedFeeMon": "0.014356194",
+      "events": ["issued"],
+      "quote": {
+        "gasLimit": "140747",
+        "maxFeeMon": "0.017171134"
+      }
+    },
+    "4-live-status": {
+      "lifecycle": "active",
+      "binding": "match",
+      "checkpoint": {
+        "chainId": "10143",
+        "finalizedHeight": "69534639",
+        "blockNumber": "69534636",
+        "blockHash": "0xe3ab455d0b3002ef2b799486ab3d9affb7861701cec7b607a1c5ab113f2a8692",
+        "blockTimestamp": "1791547412",
+        "executionDelayBlocks": 3,
+        "executionDelayRevision": "docs.monad.xyz/monad-arch/consensus/block-states@2026-10; testnet MONAD_TEN v0.16.2",
+        "pinning": "block_number_with_hash_recheck",
+        "observedAt": "2026-10-09T12:03:34.308Z"
+      }
+    },
+    "5-replay": {
+      "ok": false,
+      "code": "NONCE_MISMATCH"
+    },
+    "exec-SUPERSEDE": {
+      "label": "SUPERSEDE",
+      "operationId": "dc75bf4d-a69f-4718-b07e-13380f19312f",
+      "transactionHash": "0x7384b82ccff948a651349fd7f05a471aa545a89511d60e8cdc8c34c68e6c597f",
+      "phase": "confirmed",
+      "signatureMs": 1049,
+      "broadcastMs": 671,
+      "inclusionMs": 2834,
+      "confirmedMs": 2834,
+      "block": "69534650",
+      "chargedFeeMon": "0.017925888",
+      "events": ["issued", "superseded"],
+      "quote": {
+        "gasLimit": "175744",
+        "maxFeeMon": "0.021440768"
+      }
+    },
+    "5-after-supersede": {
+      "old": "superseded",
+      "fresh": "active"
+    },
+    "exec-REVOKE": {
+      "label": "REVOKE",
+      "operationId": "b5098deb-b3be-40ce-bf93-69de17693c88",
+      "transactionHash": "0xdf29c1cc28113b5c506bf72524bf93e3b527de5747df1b5fb9e7ac9d2d502fdf",
+      "phase": "confirmed",
+      "signatureMs": 775,
+      "broadcastMs": 403,
+      "inclusionMs": 2559,
+      "confirmedMs": 2559,
+      "block": "69534662",
+      "chargedFeeMon": "0.006638364",
+      "events": ["revoked"],
+      "quote": {
+        "gasLimit": "65082",
+        "maxFeeMon": "0.007940004"
+      }
+    },
+    "5-after-revoke": "revoked",
+    "6-recovery": {
+      "sameAddress": true,
+      "decryptedSamePackage": true,
+      "unresolvedOperations": 0,
+      "supersededStatus": "superseded"
+    }
+  },
+  "timingsMs": {
+    "accountReady": 55,
+    "fundsUsable": 2585
+  },
+  "finishedAt": "2026-10-09T12:03:42.948Z"
+}

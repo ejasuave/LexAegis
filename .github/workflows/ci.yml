@@ -1,0 +1,58 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4 # pnpm version comes from the packageManager field
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm lint # includes the package-boundary restrictions
+      - run: pnpm format:check
+      - run: pnpm typecheck
+      - run: pnpm test
+      # Protocol v1: committed vectors and generated schemas must be reproducible, and the same
+      # vectors must pass in a real browser using its own Web Crypto.
+      - run: pnpm fixtures:check
+      - run: pnpm protocol:check
+      - run: pnpm exec playwright install --with-deps chromium
+      - run: pnpm test:protocol:browser
+      # Accounts: real PostgreSQL repository (embedded server) and the account flow in real
+      # Chromium with a virtual authenticator, including the vault. None is real-device passkey evidence.
+      - run: pnpm tools:s3 # pinned, checksum-verified S3-compatible server (vault storage tests)
+      - run: pnpm test:auth:db # includes the vault repository and object store on real PostgreSQL and S3
+      - run: pnpm test:account:browser
+      - run: pnpm test:vault:browser
+      # Registry: the Foundry release pinned in contracts/toolchain.json is downloaded and
+      # accepted only if its SHA-256 matches. Everything runs on a local chain; nothing here
+      # deploys to, or reads from, a public network.
+      - run: pnpm contracts:toolchain
+      - run: pnpm contracts:fmt:check
+      - run: pnpm contracts:build
+      - run: pnpm contracts:test # authorization, lifecycle, vectors, fuzz and invariants
+      - run: pnpm contracts:artifacts:check # generated ABI and metadata match a fresh compile
+      - run: pnpm test:contracts:integration # SDK against the registry on local Anvil
+      - run: pnpm build
+      # Chapter 14: scope register, evidence state, protected baselines and production exclusion.
+      - run: pnpm state:validate
+      - run: pnpm scope:docs:check
+      - run: pnpm baselines:check
+      - run: pnpm secrets:check
+      - run: pnpm exclusion:check

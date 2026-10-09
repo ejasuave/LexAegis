@@ -1,0 +1,18 @@
+{
+  "schema": "lexaegis.registry-deployment.v1",
+  "environment": "testnet",
+  "network": "monad-testnet",
+  "contract": "ProofOfReviewRegistry",
+  "build": {
+    "solc": "0.8.37+commit.f401782d",
+    "evmVersion": "osaka",
+    "creationCodeKeccak256": "0x38a7a70bfb716f8d6d10c20ae206ac49add2be6a5c34a367dd5a51d5edf875f2"
+  },
+  "status": "deployed",
+  "chainId": "10143",
+  "registryAddress": "0x453bfd1602d8a8666f55bf9a8d87b127cb94048f",
+  "transactionHash": "0xe6d0be40e8410df1d7dd87b18463a4dfc53fb839cf0036784c018a886ebea04a",
+  "blockNumber": "69534196",
+  "runtimeCodeKeccak256": "0x2389a742aa78c6aad56162f42e300cf0fb8cee571c1e822cd3d8a7cffd00ed71",
+  "genesisHash": "0x298034669ee44327d2da9744b9b2782848e2f2a6959756b7b0471b09a404f5c9"
+}

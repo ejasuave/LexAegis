@@ -1,0 +1,21 @@
+{
+  "name": "@lexaegis/agent",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Server-only review-agent runtime interfaces; ./contracts is the browser-safe data-types export.",
+  "exports": {
+    ".": "./src/index.ts",
+    "./contracts": "./src/contracts/index.ts",
+    "./review": "./src/review/index.ts"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit -p tsconfig.json"
+  },
+  "dependencies": {
+    "@lexaegis/protocol": "workspace:*",
+    "diff": "9.0.0",
+    "server-only": "0.0.1",
+    "zod": "4.6.5"
+  }
+}

@@ -1,0 +1,30 @@
+{
+  "name": "@lexaegis/contracts",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "ProofOfReviewRegistry: Foundry project, generated artifacts and the local Anvil compatibility harness.",
+  "scripts": {
+    "typecheck": "tsc --noEmit -p tsconfig.json",
+    "toolchain": "tsx scripts/install-foundry.ts",
+    "fmt:check": "tsx scripts/foundry.ts forge fmt --check",
+    "compile": "tsx scripts/foundry.ts forge build",
+    "test:forge": "tsx scripts/foundry.ts forge test",
+    "test:integration": "tsx scripts/foundry.ts forge build && vitest run --config vitest.config.ts",
+    "artifacts": "tsx scripts/generate-artifacts.ts",
+    "artifacts:check": "tsx scripts/generate-artifacts.ts --check",
+    "deploy:local": "tsx scripts/deploy-local.ts",
+    "deploy:testnet": "tsx scripts/deploy-testnet.ts",
+    "test:live": "vitest run --config vitest.live.config.ts"
+  },
+  "devDependencies": {
+    "@lexaegis/protocol": "workspace:*",
+    "@lexaegis/sdk": "workspace:*",
+    "@openzeppelin/contracts": "5.6.1",
+    "@types/pg": "8.23.1",
+    "forge-std": "github:foundry-rs/forge-std#f3dae6e6ee381f25eb6a246f7da9b85c91a68219",
+    "pg": "8.23.1",
+    "viem": "2.57.3",
+    "zod": "4.6.5"
+  }
+}

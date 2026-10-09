@@ -1,0 +1,155 @@
+{
+  "schema": "lexaegis.rule-pack.v1",
+  "packId": "lexaegis.employment-settlement.ew",
+  "version": "1",
+  "profile": { "id": "lexaegis.employment-settlement.ew", "version": "1" },
+  "jurisdiction": "England and Wales",
+  "sources": [
+    {
+      "sourceId": "acas-settlement",
+      "title": "Acas: Settlement agreements",
+      "url": "https://www.acas.org.uk/settlement-agreements",
+      "identifier": "Acas guidance page, last updated 25 March 2026 per the page",
+      "retrievedOn": "2026-10-09",
+      "status": "read",
+      "note": "Read for the written, advice, adviser, insurance and conditions-statement points. Guidance, not law."
+    },
+    {
+      "sourceId": "era-1996-s203",
+      "title": "Employment Rights Act 1996, section 203",
+      "url": "https://www.legislation.gov.uk/ukpga/1996/18/section/203",
+      "identifier": "ERA 1996 s.203(3)(a) to (f), (3A), (3B)",
+      "retrievedOn": "2026-10-09",
+      "status": "read",
+      "note": "Latest available (Revised) version, current to changes in force on or before 5 October 2026 per the page. Subsection (3C) was not displayed on the page and has not been checked. Pending amendments elsewhere in the section are not reflected."
+    },
+    {
+      "sourceId": "eqa-2010-s147",
+      "title": "Equality Act 2010, section 147",
+      "url": "https://www.legislation.gov.uk/ukpga/2010/15/section/147",
+      "identifier": "EqA 2010 s.147(3)(a) to (f), (4) to (7)",
+      "retrievedOn": "2026-10-09",
+      "status": "read",
+      "note": "Latest available (Revised) version, current to changes in force on or before 9 October 2026 per the page."
+    }
+  ],
+  "limitations": [
+    "A scoped review aid for the England and Wales employment-settlement profile, not an exhaustive enforceability test.",
+    "Checklist prompts record whether material was supplied and linked by the reviewer. They do not establish that advice was given, that an adviser was independent or qualified, or that insurance was in force.",
+    "No other statute, regulation, tax rule, immigration rule or case law is covered.",
+    "Product checks are not statutory requirements.",
+    "ERA 1996 s.203(3C) was not shown on the retrieved page and is unverified."
+  ],
+  "rules": [
+    {
+      "ruleId": "source-coverage",
+      "title": "Source text coverage",
+      "category": "product_check",
+      "sourceIds": [],
+      "evaluator": "source_coverage",
+      "requiredInputs": ["extraction"],
+      "evidenceRequirement": null,
+      "allowedNotApplicable": false,
+      "prompt": "Every selected PDF must have complete extracted text before a complete review is claimed."
+    },
+    {
+      "ruleId": "payment-reconciliation",
+      "title": "Payment schedule adds up to the stated total",
+      "category": "product_check",
+      "sourceIds": [],
+      "evaluator": "payment_reconciliation",
+      "requiredInputs": ["payment_total", "payment_instalment", "payment_basis"],
+      "evidenceRequirement": null,
+      "allowedNotApplicable": false,
+      "prompt": "Compare the stated total with the sum of the confirmed instalments, in pence, on one gross or net basis."
+    },
+    {
+      "ruleId": "conflicting-facts",
+      "title": "Conflicting confirmed values",
+      "category": "product_check",
+      "sourceIds": [],
+      "evaluator": "conflicting_facts",
+      "requiredInputs": [],
+      "evidenceRequirement": null,
+      "allowedNotApplicable": false,
+      "prompt": "Report two confirmed values for the same field and slot without choosing between them."
+    },
+    {
+      "ruleId": "required-inputs",
+      "title": "Required inputs confirmed",
+      "category": "product_check",
+      "sourceIds": [],
+      "evaluator": "missing_inputs",
+      "requiredInputs": ["employer", "employee", "agreement_date"],
+      "evidenceRequirement": null,
+      "allowedNotApplicable": false,
+      "prompt": "The parties and the agreement date should be confirmed from the source before review."
+    },
+    {
+      "ruleId": "written-agreement",
+      "title": "Written agreement supplied",
+      "category": "statutory_checklist",
+      "sourceIds": ["acas-settlement", "era-1996-s203", "eqa-2010-s147"],
+      "evaluator": "evidence_presence",
+      "requiredInputs": [],
+      "evidenceRequirement": "written-agreement",
+      "allowedNotApplicable": false,
+      "prompt": "The agreement must be in writing. Link the written agreement you are reviewing."
+    },
+    {
+      "ruleId": "complaints-identified",
+      "title": "Particular complaints or proceedings identified",
+      "category": "statutory_checklist",
+      "sourceIds": ["acas-settlement", "era-1996-s203", "eqa-2010-s147"],
+      "evaluator": "evidence_presence",
+      "requiredInputs": [],
+      "evidenceRequirement": "complaints-identified",
+      "allowedNotApplicable": false,
+      "prompt": "The agreement must relate to the particular complaint or proceedings. Link the passage that names them."
+    },
+    {
+      "ruleId": "independent-advice",
+      "title": "Independent advice evidence",
+      "category": "statutory_checklist",
+      "sourceIds": ["acas-settlement", "era-1996-s203", "eqa-2010-s147"],
+      "evaluator": "evidence_presence",
+      "requiredInputs": [],
+      "evidenceRequirement": "independent-advice",
+      "allowedNotApplicable": false,
+      "prompt": "Link material showing that advice from a relevant independent adviser was received. Linking it does not show the adviser qualified or was independent."
+    },
+    {
+      "ruleId": "adviser-identified",
+      "title": "Adviser identified in the agreement",
+      "category": "statutory_checklist",
+      "sourceIds": ["acas-settlement", "era-1996-s203", "eqa-2010-s147"],
+      "evaluator": "evidence_presence",
+      "requiredInputs": ["adviser_name"],
+      "evidenceRequirement": "adviser-identified",
+      "allowedNotApplicable": false,
+      "prompt": "The agreement must identify the adviser. Link the passage that names them."
+    },
+    {
+      "ruleId": "adviser-insurance",
+      "title": "Adviser insurance or indemnity evidence",
+      "category": "statutory_checklist",
+      "sourceIds": ["acas-settlement", "era-1996-s203", "eqa-2010-s147"],
+      "evaluator": "evidence_presence",
+      "requiredInputs": [],
+      "evidenceRequirement": "adviser-insurance",
+      "allowedNotApplicable": false,
+      "prompt": "Link evidence of a contract of insurance or professional indemnity cover in force when the advice was given. Linking it does not show the cover was valid."
+    },
+    {
+      "ruleId": "conditions-statement",
+      "title": "Statement that the conditions are satisfied",
+      "category": "statutory_checklist",
+      "sourceIds": ["acas-settlement", "era-1996-s203", "eqa-2010-s147"],
+      "evaluator": "evidence_presence",
+      "requiredInputs": [],
+      "evidenceRequirement": "conditions-statement",
+      "allowedNotApplicable": false,
+      "prompt": "The agreement must state that the conditions regulating settlement agreements are satisfied. Link the passage that says so. A statement is not proof the conditions were met."
+    }
+  ]
+}

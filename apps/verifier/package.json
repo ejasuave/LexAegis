@@ -1,0 +1,27 @@
+{
+  "name": "@lexaegis/verifier",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite --port ${VERIFIER_PORT:-5173} --strictPort",
+    "build": "vite build",
+    "preview": "vite preview --port ${VERIFIER_PORT:-5173} --strictPort",
+    "typecheck": "tsc --noEmit -p tsconfig.json"
+  },
+  "dependencies": {
+    "@lexaegis/protocol": "workspace:*",
+    "@lexaegis/sdk": "workspace:*",
+    "react": "19.3.0",
+    "react-dom": "19.3.0"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "4.3.3",
+    "@types/react": "19.3.0",
+    "@types/react-dom": "19.3.0",
+    "@vitejs/plugin-react": "6.1.2",
+    "postcss": "8.5.29",
+    "tailwindcss": "4.3.3",
+    "vite": "8.3.4"
+  }
+}

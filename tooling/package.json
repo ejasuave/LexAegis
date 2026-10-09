@@ -1,0 +1,17 @@
+{
+  "name": "@lexaegis/tooling",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Repository tooling: scope register, evidence and gate evaluation, readiness, smoke harnesses and production-exclusion scans. Never imported by a package or application.",
+  "scripts": {
+    "typecheck": "tsc --noEmit -p tsconfig.json"
+  },
+  "dependencies": {
+    "zod": "4.6.5",
+    "pg": "8.23.1"
+  },
+  "devDependencies": {
+    "@types/pg": "8.23.1"
+  }
+}

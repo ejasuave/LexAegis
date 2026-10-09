@@ -1,0 +1,12 @@
+{
+  "versitygw": {
+    "version": "1.8.0",
+    "purpose": "Local S3-compatible object store for vault storage tests (POSIX backend, conditional writes). Development and CI only; never deployed.",
+    "archiveSha256": {
+      "linux_x86_64": "2ba2c734d10d2c4e651d03182cb4b246656bc735a2f282db7b0b73fba6073467",
+      "linux_arm64": "b34051d33f5a9c457f790896acb7bd7d7e15ad8d92efb70616b924f37e401910",
+      "darwin_x86_64": "104bd978e80ef0173554cfd8630ccc5bac24b00da440510b60365a3b6b6ab134",
+      "darwin_arm64": "4953096f65a9c0d62ab184fb6b2ba7c2435229205cf00a56cb62cd4bf6b216ca"
+    }
+  }
+}

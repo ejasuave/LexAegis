@@ -1,0 +1,38 @@
+# dependencies and build output
+node_modules/
+.next/
+.next-check/
+.next-vault-check/
+.next-review-check/
+dist/
+out/
+build/
+coverage/
+*.tsbuildinfo
+next-env.d.ts
+.turbo/
+.vite/
+
+# local environment and secrets (keep .env.example tracked)
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.keystore
+keystore/
+.private/
+
+# downloaded case documents and runtime evidence
+case-documents/
+runtime-evidence/
+evidence-output/
+*.local.pdf
+
+# contracts / tooling output (Chapter 3 onwards)
+contracts/out/
+contracts/cache/
+contracts/broadcast/
+contracts/deployments/local/
+.tools/
+apps/web/public/pdfjs/

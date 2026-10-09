@@ -1,0 +1,44 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:lexaegis:protocol:v1:receipt-reference",
+  "title": "ReceiptReferenceV1",
+  "$comment": "PUBLIC projection. It identifies an intended receipt and does not establish that one exists. Runtime rule not expressible here: chainId <= 2^256-1.",
+  "type": "object",
+  "properties": {
+    "schema": {
+      "type": "string",
+      "const": "lexaegis.receipt-ref.v1"
+    },
+    "chainId": {
+      "type": "string",
+      "maxLength": 78,
+      "pattern": "^[1-9][0-9]*$"
+    },
+    "registryAddress": {
+      "type": "string",
+      "pattern": "^0x[0-9a-f]{40}$",
+      "not": {
+        "const": "0x0000000000000000000000000000000000000000"
+      }
+    },
+    "reviewerAddress": {
+      "type": "string",
+      "pattern": "^0x[0-9a-f]{40}$",
+      "not": {
+        "const": "0x0000000000000000000000000000000000000000"
+      }
+    },
+    "commitment": {
+      "type": "string",
+      "pattern": "^0x[0-9a-f]{64}$"
+    }
+  },
+  "required": [
+    "schema",
+    "chainId",
+    "registryAddress",
+    "reviewerAddress",
+    "commitment"
+  ],
+  "additionalProperties": false
+}

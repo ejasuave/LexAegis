@@ -1,0 +1,9 @@
+{
+  "extends": "../tsconfig.base.json",
+  "compilerOptions": {
+    "lib": ["ES2023", "DOM"],
+    "types": ["node"],
+    "paths": { "@/*": ["../apps/web/src/*"] }
+  },
+  "include": ["scripts", "integration", "live", "vitest.config.ts", "vitest.live.config.ts"]
+}

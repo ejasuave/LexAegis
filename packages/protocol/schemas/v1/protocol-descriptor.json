@@ -1,0 +1,127 @@
+{
+  "descriptor": "lexaegis.protocol-descriptor.v1",
+  "protocolVersion": "1",
+  "schemas": {
+    "reviewPackage": "lexaegis.review-package.v1",
+    "receiptReference": "lexaegis.receipt-ref.v1",
+    "commitmentOpening": "lexaegis.opening.v1"
+  },
+  "domains": {
+    "package": "lexaegis:review-package:v1",
+    "commitment": "lexaegis:review-commitment:v1",
+    "separatorByte": "0x00"
+  },
+  "algorithms": {
+    "artifactDigest": "SHA-256",
+    "packageDigest": "SHA-256",
+    "commitment": "SHA-256",
+    "canonicalization": "RFC 8785 JSON Canonicalization Scheme (JCS)",
+    "blindingNonce": "cryptographically secure random, 32 bytes"
+  },
+  "formulas": {
+    "artifactDigest": "SHA256(originalArtifactBytes)",
+    "canonicalBytes": "UTF8(JCS(validatedManifest))",
+    "packageDigest": "SHA256(UTF8(domains.package) || BYTE(0x00) || canonicalBytes)",
+    "commitment": "SHA256(UTF8(domains.commitment) || BYTE(0x00) || blindingNonceBytes32 || packageDigestBytes32)"
+  },
+  "encodings": {
+    "concatenation": "raw bytes; hexadecimal text is never hashed",
+    "text": "UTF-8 without byte-order mark; no Unicode normalization",
+    "propertyOrder": "recursive, by UTF-16 code unit; array order preserved",
+    "digest": "lowercase 0x-prefixed hexadecimal, 32 bytes",
+    "blindingNonce": "lowercase 0x-prefixed hexadecimal, 32 bytes",
+    "address": "lowercase 0x-prefixed hexadecimal, 20 bytes; zero address rejected",
+    "integer": "canonical unsigned decimal string; JSON numbers are not used",
+    "timestamp": "YYYY-MM-DDTHH:mm:ss.sssZ, valid UTC, millisecond precision",
+    "identifier": "lowercase UUIDv4",
+    "mediaType": "lowercase type/subtype without parameters",
+    "labelLength": "Unicode code points"
+  },
+  "limits": {
+    "maxJsonBytes": 1048576,
+    "maxDepth": 32,
+    "maxArtifacts": 128,
+    "maxArtifactBytes": 10485760,
+    "maxTotalArtifactBytes": 33554432,
+    "maxLabelCodePoints": 256,
+    "maxMediaTypeLength": 127,
+    "maxProfileIdLength": 80,
+    "digestBytes": 32,
+    "blindingNonceBytes": 32
+  },
+  "artifactRoles": [
+    "source",
+    "extracted-text",
+    "evidence",
+    "analysis",
+    "calculation",
+    "rule-pack",
+    "checklist",
+    "agent-config",
+    "decision-log"
+  ],
+  "approvalIntent": "approve-review-package",
+  "disclosure": {
+    "public": [
+      "ReceiptReferenceV1"
+    ],
+    "private": [
+      "ReviewPackageV1",
+      "CommitmentOpeningV1",
+      "ArtifactRefV1",
+      "packageDigest"
+    ]
+  },
+  "errorCodes": [
+    "INPUT_TOO_LARGE",
+    "INVALID_UTF8",
+    "BYTE_ORDER_MARK",
+    "INVALID_JSON",
+    "DUPLICATE_KEY",
+    "NESTING_TOO_DEEP",
+    "UNSAFE_NUMBER",
+    "LONE_SURROGATE",
+    "FORBIDDEN_KEY",
+    "UNSUPPORTED_VALUE",
+    "UNSUPPORTED_VERSION",
+    "UNKNOWN_FIELD",
+    "SCHEMA_INVALID",
+    "TOO_MANY_ARTIFACTS",
+    "DUPLICATE_ARTIFACT_ID",
+    "SOURCE_ARTIFACT_REQUIRED",
+    "DECISION_LOG_ARTIFACT_INVALID",
+    "DUPLICATE_SCOPE_ID",
+    "UNRESOLVED_ARTIFACT_REFERENCE",
+    "SCOPE_INCOMPLETE",
+    "DECISION_LOG_REFERENCE_INVALID",
+    "SUPERSEDES_CONTEXT_MISMATCH",
+    "ARTIFACT_TOO_LARGE",
+    "ARTIFACTS_TOO_LARGE",
+    "ARTIFACT_INPUT_INVALID",
+    "ARTIFACT_MISSING",
+    "ARTIFACT_DUPLICATE",
+    "ARTIFACT_EXTRA",
+    "ARTIFACT_LENGTH_MISMATCH",
+    "ARTIFACT_DIGEST_MISMATCH",
+    "INVALID_HEX",
+    "INVALID_BYTE_LENGTH",
+    "CRYPTO_UNAVAILABLE"
+  ],
+  "verificationIssueCodes": [
+    "CONTEXT_MISMATCH",
+    "COMMITMENT_MISMATCH",
+    "ARTIFACTS_NOT_EVALUATED",
+    "ARTIFACT_MISSING",
+    "ARTIFACT_LENGTH_MISMATCH",
+    "ARTIFACT_DIGEST_MISMATCH",
+    "ARTIFACT_NOT_IN_MANIFEST"
+  ],
+  "compatibility": [
+    "Storage location and ciphertext changes do not alter a commitment when the recovered plaintext bytes and the opening are identical.",
+    "Any alteration of committed metadata or artifact bytes changes the committed package.",
+    "A change to hashing or the wire format requires a new protocol version.",
+    "Unknown versions and unknown fields are rejected, never stripped or reinterpreted.",
+    "Chain authorization and replay protection are outside this hash construction.",
+    "V1 verification discloses the full package; redacted bytes are a different package."
+  ]
+}

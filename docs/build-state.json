@@ -1,0 +1,3316 @@
+{
+  "schemaVersion": 1,
+  "project": {
+    "name": "LexAegis",
+    "primitive": "Proof of Review",
+    "network": "Monad Testnet",
+    "chainId": "10143",
+    "briefVersion": "3.0",
+    "internalSubmissionTarget": "2026-10-12",
+    "latestPlannedSubmission": "2026-10-13T22:00:00+01:00",
+    "hardDeadline": "2026-10-14T04:59:00+01:00"
+  },
+  "note": "Prompt authorship is not implementation. A chapter is complete only when its recorded checks passed. Values below are observed results, never intentions.",
+  "chapters": [
+    {
+      "id": "01",
+      "title": "Runnable Monorepo, Shared Types and Build Checks",
+      "additive": false,
+      "state": "complete",
+      "evidence": ["chapter01.checks"]
+    },
+    {
+      "id": "02",
+      "title": "Receipt Format, Canonical Hashing and Private Commitments",
+      "additive": false,
+      "state": "complete",
+      "evidence": ["chapter02.checks"]
+    },
+    {
+      "id": "03",
+      "title": "Monad Registry, Approval Signatures and Receipt Lifecycle",
+      "additive": false,
+      "state": "complete",
+      "evidence": ["chapter03.checks"]
+    },
+    {
+      "id": "04",
+      "title": "Mera Passkeys, Signing Sessions and Account Recovery",
+      "additive": false,
+      "state": "in-progress",
+      "evidence": ["chapter04.checks"]
+    },
+    {
+      "id": "05",
+      "title": "Encrypted Evidence Vault, Stateless Recovery and Portable Export",
+      "additive": false,
+      "state": "in-progress",
+      "evidence": ["chapter05.checks"]
+    },
+    {
+      "id": "06",
+      "title": "Alchemy Transactions, Testnet Funding and Live Verification",
+      "additive": false,
+      "state": "in-progress",
+      "evidence": ["chapter06.checks"]
+    },
+    {
+      "id": "07",
+      "title": "Envio Indexer, Review History and Derived Status",
+      "additive": false,
+      "state": "pending",
+      "evidence": []
+    },
+    {
+      "id": "08",
+      "title": "Document Intake, Source References and Deterministic Checks",
+      "additive": false,
+      "state": "complete",
+      "evidence": ["chapter08.checks"]
+    },
+    {
+      "id": "09",
+      "title": "Qwen 3.8 Max, Aegis Assistant Runtime and Review Tools",
+      "additive": false,
+      "state": "pending",
+      "evidence": []
+    },
+    {
+      "id": "10",
+      "title": "Aegis HUD, Legal Workspace and Human Approval",
+      "additive": false,
+      "state": "pending",
+      "evidence": []
+    },
+    {
+      "id": "11",
+      "title": "Protocol SDK, Independent Verifier and Developer Integration",
+      "additive": false,
+      "state": "pending",
+      "evidence": []
+    },
+    {
+      "id": "12",
+      "title": "End-to-End Recovery, Privacy and Security Validation",
+      "additive": false,
+      "state": "pending",
+      "evidence": []
+    },
+    {
+      "id": "13",
+      "title": "Production Deployment and Hackathon Submission Assets",
+      "additive": false,
+      "state": "pending",
+      "evidence": []
+    },
+    {
+      "id": "14",
+      "title": "Scope Gates, Feature Flags and Golden-Path Smoke Test",
+      "additive": true,
+      "state": "in-progress",
+      "evidence": ["chapter14.checks"]
+    },
+    {
+      "id": "15",
+      "title": "Developer Experience: Specification, Test Vectors, Quickstart and CLI",
+      "additive": true,
+      "state": "pending",
+      "evidence": []
+    },
+    {
+      "id": "16",
+      "title": "Agent Identity: ERC-8004 Link, Availability-Gated",
+      "additive": true,
+      "state": "pending",
+      "evidence": []
+    },
+    {
+      "id": "17",
+      "title": "Security Hardening and Verified Deployment",
+      "additive": true,
+      "state": "pending",
+      "evidence": []
+    },
+    {
+      "id": "18",
+      "title": "Adoption Kit and Traction Evidence",
+      "additive": true,
+      "state": "pending",
+      "evidence": []
+    },
+    {
+      "id": "19",
+      "title": "Judge Experience and Demo Reliability",
+      "additive": true,
+      "state": "pending",
+      "evidence": []
+    }
+  ],
+  "chapter01": {
+    "completedOn": "2026-10-08",
+    "sourceRevision": {
+      "commit": null,
+      "dirtyWorktree": true,
+      "note": "The repository has no commits yet; results describe the working tree."
+    },
+    "environment": {
+      "node": "v24.21.0",
+      "pnpm": "11.11.0",
+      "os": "linux"
+    },
+    "resolvedDependencies": {
+      "typescript": "6.0.3",
+      "next": "16.4.0",
+      "react": "19.3.0",
+      "tailwindcss": "4.3.3",
+      "vite": "8.3.4",
+      "zod": "4.6.5",
+      "vitest": "5.0.3",
+      "eslint": "10.12.0",
+      "typescript-eslint": "8.71.1",
+      "prettier": "3.9.9"
+    },
+    "modules": {
+      "packages/protocol": "closed Zod primitives, GBP minor units, errors, Result, five separate state enums",
+      "packages/agent": "browser-safe ./contracts (assistant request/plan/tool result/response/events/cancel) and server-only ReviewAgent port with unavailable adapter",
+      "packages/sdk": "ReceiptClient and ReceiptIndexer ports, ChainTransport, SignerPolicy, unavailable adapters",
+      "packages/vault": "EvidenceVault port, public-metadata schemas, unavailable adapter",
+      "apps/web": "Next.js shell, server/browser config, /api/health, /api/readiness, logger, error mapper, AccountProvider port",
+      "apps/verifier": "standalone Vite verifier shell; verification disabled"
+    },
+    "checks": {
+      "lint": {
+        "command": "pnpm lint",
+        "outcome": "pass",
+        "notes": "eslint --max-warnings 0 with strict type-checked rules and package-boundary restrictions"
+      },
+      "boundaryNegativeControls": {
+        "outcome": "pass",
+        "notes": "7 deliberate violations (next in protocol, agent in sdk, process.env in vault, server import and agent runtime in web components, vault in verifier, private src path) were all rejected; @lexaegis/agent/contracts was allowed. Temporary files removed."
+      },
+      "formatCheck": {
+        "command": "pnpm format:check",
+        "outcome": "pass"
+      },
+      "typecheck": {
+        "command": "pnpm typecheck",
+        "outcome": "pass",
+        "notes": "strict and noUncheckedIndexedAccess on all 7 projects"
+      },
+      "unitTests": {
+        "command": "pnpm test",
+        "outcome": "pass",
+        "notes": "12 files, 80 tests"
+      },
+      "build": {
+        "command": "pnpm build",
+        "outcome": "pass",
+        "notes": "next build (Turbopack) and vite build"
+      },
+      "frozenLockfileInstall": {
+        "command": "pnpm install --frozen-lockfile",
+        "outcome": "pass"
+      },
+      "startWithoutCredentials": {
+        "outcome": "pass",
+        "notes": "Web on a custom port and verifier preview started independently. /api/health 200; /api/readiness 503 with every capability unimplemented; /review /vault /history /verify 200; / redirects to /review."
+      },
+      "secretExposure": {
+        "outcome": "pass",
+        "notes": "Canary values placed in the server environment were absent from every page and API response and from client bundles."
+      },
+      "browserInteraction": {
+        "outcome": "pass",
+        "evidenceClass": "manual_scripted_chrome",
+        "notes": "29 of 29 assertions via a throwaway Playwright-core script in the git-ignored .private folder (not committed, not a project dependency): mode switching keeps selection and draft, navigation, activity drawer, mobile tabs, no horizontal scroll at 390 and 320 px, reduced motion leaves zero running animations, skip link, verifier panels. Real keyboard/screen-reader audit not done."
+      },
+      "ci": {
+        "outcome": "unverified",
+        "notes": ".github/workflows/ci.yml was written but has never run on GitHub. pnpm/action-setup@v4 with pnpm 11 is untested."
+      }
+    },
+    "decisions": [
+      "TypeScript is pinned to 6.0.3, not 7.0.2: typescript-eslint 8.71.1 supports only TypeScript below 6.1.",
+      "Internal packages export TypeScript source (no build step); Next uses transpilePackages, Vite and Vitest consume it directly.",
+      "Chapter 1 uses the CSS/SVG orb. The UI/UX blueprint replaces it with a Canvas nucleus in its Stage 5; that is not built yet. Blueprint colour tokens (--lj-*) and three-zone layout are already used.",
+      "pnpm 11 added minimumReleaseAgeExclude for vite@8.3.4 to pnpm-workspace.yaml during install.",
+      "Readiness state is derived from an implemented flag per capability, so environment variables alone can at most yield configured, never verified.",
+      "documentVersionId is nullable in assistant requests and events to allow matter-level requests."
+    ],
+    "limitations": [
+      "No integration is real: Mera, Qwen, Alchemy, Envio, PostgreSQL and S3 are unimplemented.",
+      "AccountProvider is declared in apps/web/src/features/account/port.ts; it has only the unavailable adapter.",
+      "indexer, contracts and fixtures are reserved empty folders.",
+      "Protocol schemas here are provisional primitives; Chapter 2 defines the final lowercase wire validators."
+    ]
+  },
+  "tiers": {
+    "schemaVersion": 1,
+    "features": [
+      {
+        "id": "document-import",
+        "tier": "T0",
+        "chapter": "08",
+        "status": "not-started",
+        "evidence": []
+      },
+      {
+        "id": "consent",
+        "tier": "T0",
+        "chapter": "10",
+        "status": "not-started",
+        "evidence": []
+      },
+      {
+        "id": "qwen-source-linked-findings",
+        "tier": "T0",
+        "chapter": "09",
+        "status": "not-started",
+        "evidence": []
+      },
+      {
+        "id": "human-decision",
+        "tier": "T0",
+        "chapter": "10",
+        "status": "not-started",
+        "evidence": []
+      },
+      {
+        "id": "freeze-and-verified-save",
+        "tier": "T0",
+        "chapter": "05",
+        "status": "in-progress",
+        "evidence": []
+      },
+      {
+        "id": "real-signature-approval",
+        "tier": "T0",
+        "chapter": "04",
+        "status": "in-progress",
+        "evidence": []
+      },
+      {
+        "id": "confirmed-monad-receipt",
+        "tier": "T0",
+        "chapter": "06",
+        "status": "not-started",
+        "evidence": []
+      },
+      {
+        "id": "independent-verification",
+        "tier": "T0",
+        "chapter": "11",
+        "status": "not-started",
+        "evidence": []
+      },
+      {
+        "id": "tamper-detection",
+        "tier": "T0",
+        "chapter": "11",
+        "status": "not-started",
+        "evidence": []
+      },
+      {
+        "id": "supersession-revocation",
+        "tier": "T0",
+        "chapter": "03",
+        "status": "in-progress",
+        "evidence": []
+      },
+      {
+        "id": "deployed-registry",
+        "tier": "T0",
+        "chapter": "06",
+        "status": "in-progress",
+        "evidence": []
+      },
+      {
+        "id": "sdk-verification",
+        "tier": "T0",
+        "chapter": "11",
+        "status": "in-progress",
+        "evidence": []
+      },
+      {
+        "id": "mera-recovery",
+        "tier": "T1",
+        "chapter": "04",
+        "status": "in-progress",
+        "evidence": []
+      },
+      {
+        "id": "encrypted-vault",
+        "tier": "T1",
+        "chapter": "05",
+        "status": "in-progress",
+        "evidence": []
+      },
+      {
+        "id": "payment-what-if",
+        "tier": "T1",
+        "chapter": "08",
+        "status": "not-started",
+        "evidence": []
+      },
+      {
+        "id": "compact-labelled-orb",
+        "tier": "T1",
+        "chapter": "10",
+        "status": "not-started",
+        "evidence": []
+      },
+      {
+        "id": "pinned-runtime-prompts",
+        "tier": "T1",
+        "chapter": "09",
+        "status": "not-started",
+        "evidence": []
+      },
+      {
+        "id": "cli",
+        "tier": "T1",
+        "chapter": "15",
+        "status": "not-started",
+        "evidence": []
+      },
+      {
+        "id": "embeddable-widget",
+        "tier": "T1",
+        "chapter": "18",
+        "status": "not-started",
+        "evidence": []
+      },
+      {
+        "id": "second-domain-example",
+        "tier": "T1",
+        "chapter": "18",
+        "status": "not-started",
+        "evidence": []
+      },
+      {
+        "id": "specification-test-vectors",
+        "tier": "T1",
+        "chapter": "15",
+        "status": "in-progress",
+        "evidence": []
+      },
+      {
+        "id": "quickstart",
+        "tier": "T1",
+        "chapter": "15",
+        "status": "not-started",
+        "evidence": []
+      },
+      {
+        "id": "judge-path",
+        "tier": "T1",
+        "chapter": "19",
+        "status": "not-started",
+        "evidence": []
+      },
+      {
+        "id": "envio-history",
+        "tier": "T2",
+        "chapter": "07",
+        "status": "not-started",
+        "evidence": []
+      },
+      {
+        "id": "matter-notes",
+        "tier": "T2",
+        "chapter": "10",
+        "status": "not-started",
+        "evidence": []
+      },
+      {
+        "id": "agent-identity",
+        "tier": "T2",
+        "chapter": "16",
+        "status": "not-started",
+        "evidence": []
+      },
+      {
+        "id": "invariant-tests",
+        "tier": "T2",
+        "chapter": "17",
+        "status": "in-progress",
+        "evidence": []
+      },
+      {
+        "id": "threat-model",
+        "tier": "T2",
+        "chapter": "17",
+        "status": "not-started",
+        "evidence": []
+      },
+      {
+        "id": "verified-deployment",
+        "tier": "T2",
+        "chapter": "17",
+        "status": "not-started",
+        "evidence": []
+      },
+      {
+        "id": "evaluation-fixtures-8",
+        "tier": "T2",
+        "chapter": "12",
+        "status": "not-started",
+        "evidence": []
+      },
+      {
+        "id": "voice",
+        "tier": "T3",
+        "chapter": "10",
+        "status": "not-started",
+        "evidence": []
+      },
+      {
+        "id": "document-comparison",
+        "tier": "T3",
+        "chapter": "10",
+        "status": "not-started",
+        "evidence": []
+      },
+      {
+        "id": "matter-briefing",
+        "tier": "T3",
+        "chapter": "10",
+        "status": "not-started",
+        "evidence": []
+      },
+      {
+        "id": "reputation-feedback",
+        "tier": "T3",
+        "chapter": "16",
+        "status": "not-started",
+        "evidence": []
+      },
+      {
+        "id": "evaluation-fixtures-12",
+        "tier": "T3",
+        "chapter": "12",
+        "status": "not-started",
+        "evidence": []
+      },
+      {
+        "id": "visual-polish",
+        "tier": "T3",
+        "chapter": "19",
+        "status": "not-started",
+        "evidence": []
+      }
+    ]
+  },
+  "requirements": {
+    "ch4_6_12": "Mera-only accounts, one-prompt onboarding where supported, measured time/taps, memory-only signing sessions, expiry handling, fresh-storage recovery",
+    "ch5_12": "Separate PRF encryption namespace, discoverable encrypted manifests, same synced credential decrypts on a second device, versioned export/import",
+    "ch6_12": "Alchemy-backed Monad reads, user-signed submission, confirmation and status checks, bounded service funding",
+    "ch7_10_12": "Deployed Envio pipeline with public config.yaml, schema.graphql and handlers; lag visibility; replay and reorg handling",
+    "ch9_12_13": "Verified qwen3.8-max access, bounded tool execution, deterministic calculations, source-linked findings, audit records, published article",
+    "ch2_3_11_12": "Canonical private commitments, signature authorization, replay protection, revocation/supersession, SDK and independent verification",
+    "ch8_10": "Evidence checklist, versioned source references, explicit human approval of an immutable package",
+    "ch13": "Public repository, live deployment, logo <= 3 MB, demo <= 3 minutes, pitch <= 2 minutes, published Qwen article"
+  },
+  "exclusions": [
+    "OCR",
+    "additional jurisdictions",
+    "immigration eligibility",
+    "CRE, Kimi, extra wallet stacks",
+    "payments or trading",
+    "speculative features"
+  ],
+  "privacyFacts": [
+    "Encrypted storage does not hide deliberately submitted analysis text from the backend or model provider.",
+    "Approval requires an explicit human action; prompt-free signing does not grant autonomous approval.",
+    "Internal example applications are not independent developer adoption. No bounty, recovery demonstration or deployment is claimed complete.",
+    "Stored evidence is encrypted in the browser before upload; the service still observes account addresses, vault and object counts, object sizes and request timing.",
+    "Selected plaintext analysis later reaches the backend and Qwen only through the explicit consent flow (Chapters 9 and 10). There is no zero-knowledge AI claim.",
+    "Compromised same-origin code can read unlocked data; the CSP and in-memory keys reduce exposure but do not isolate it.",
+    "Recovery needs the original usable credential and rpId and the surviving ciphertext. A replayed older snapshot cannot be detected once all local state is lost, and erasure from storage or backups is not guaranteed. No security audit is claimed."
+  ],
+  "persistence": {
+    "operationalMetadata": "PostgreSQL (vaults, vault_objects, vault_heads, auth tables)",
+    "ciphertext": "S3-compatible object storage with conditional create (private bucket)"
+  },
+  "chapter02": {
+    "completedOn": "2026-10-08",
+    "sourceRevision": {
+      "commit": null,
+      "dirtyWorktree": true,
+      "note": "The repository still has no commits; results describe the working tree."
+    },
+    "environment": {
+      "node": "v24.21.0",
+      "pnpm": "11.11.0",
+      "os": "linux",
+      "browser": "Chrome for Testing 153.0.8010.12 (Playwright chromium build 1243, headless)"
+    },
+    "resolvedDependencies": {
+      "canonicalize": "5.1.0",
+      "jsonc-parser": "3.3.1",
+      "json-canonicalize": "3.0.1 (fixture generator only)",
+      "tsx": "4.23.15",
+      "@vitest/browser-playwright": "5.0.3",
+      "playwright": "1.63.0"
+    },
+    "entryPoint": "@lexaegis/protocol/v1 (packages/protocol/src/v1); re-exported by @lexaegis/sdk",
+    "schemas": {
+      "reviewPackage": "lexaegis.review-package.v1",
+      "receiptReference": "lexaegis.receipt-ref.v1",
+      "commitmentOpening": "lexaegis.opening.v1",
+      "generated": "packages/protocol/schemas/v1/*.schema.json (JSON Schema draft 2020-12, closed objects)",
+      "descriptor": "packages/protocol/schemas/v1/protocol-descriptor.json"
+    },
+    "commitmentFormula": {
+      "artifactDigest": "SHA256(originalArtifactBytes)",
+      "canonicalBytes": "UTF8(JCS(validatedManifest))",
+      "packageDigest": "SHA256(UTF8(\"lexaegis:review-package:v1\") || 0x00 || canonicalBytes)",
+      "commitment": "SHA256(UTF8(\"lexaegis:review-commitment:v1\") || 0x00 || blindingNonce32 || packageDigest32)",
+      "notes": "Raw-byte concatenation; hexadecimal text is never hashed. Web Crypto SHA-256 only. The blinding nonce is 32 bytes from crypto.getRandomValues with no fallback."
+    },
+    "publicPrivateBoundary": {
+      "public": "ReceiptReferenceV1 only: schema, chainId, registryAddress, reviewerAddress, commitment",
+      "private": "manifest, artifact labels and sha256 digests, package digest, blinding nonce, artifact bytes",
+      "enforcement": "The reference is built from an explicit five-field allowlist. PreparedReviewPackage keeps state in private fields and serializes to the reference only."
+    },
+    "limits": {
+      "maxJsonBytes": 1048576,
+      "maxDepth": 32,
+      "maxArtifacts": 128,
+      "maxArtifactBytes": 10485760,
+      "maxTotalArtifactBytes": 33554432
+    },
+    "fixtures": {
+      "vectors": "fixtures/protocol-v1/vectors.json",
+      "generator": "fixtures/protocol-v1/generate.mjs",
+      "cases": ["generic", "legal", "legal-revised"]
+    },
+    "modules": {
+      "packages/protocol/src/v1": "constants, errors, bytes, primitives, parse-json (strict import), schemas, parse (version dispatch), canonicalize (RFC 8785), hashes, commitment, artifacts, prepared, prepare, verify, descriptor, json-schema",
+      "packages/protocol/scripts/generate-artifacts.ts": "writes or checks the JSON Schemas and descriptor",
+      "packages/sdk": "re-exports the protocol functions unchanged; ReceiptClient.prepare is real, submit and readStatus stay NOT_IMPLEMENTED",
+      "apps/web/src/domain/legal/profile.ts": "structural role-presence check for lexaegis.employment-settlement.ew v1 (outside the protocol core)"
+    },
+    "commands": [
+      "pnpm test:protocol",
+      "pnpm test:protocol:browser",
+      "pnpm fixtures:check",
+      "pnpm protocol:check",
+      "pnpm fixtures:generate",
+      "pnpm protocol:generate"
+    ],
+    "checks": {
+      "lint": {
+        "command": "pnpm lint",
+        "outcome": "pass"
+      },
+      "formatCheck": {
+        "command": "pnpm format:check",
+        "outcome": "pass"
+      },
+      "typecheck": {
+        "command": "pnpm typecheck",
+        "outcome": "pass"
+      },
+      "unitTests": {
+        "command": "pnpm test",
+        "outcome": "pass",
+        "notes": "20 files, 265 tests (protocol: 10 files, 219 tests)"
+      },
+      "nodeVectors": {
+        "command": "pnpm test:protocol",
+        "outcome": "pass",
+        "notes": "All three literal vectors reproduce: canonical bytes, artifact digests, package digest, commitment, public reference."
+      },
+      "browserInterop": {
+        "command": "pnpm test:protocol:browser",
+        "outcome": "pass",
+        "evidenceClass": "real_chromium_headless",
+        "notes": "7 files, 177 tests in headless Chromium through Vitest browser mode with the Playwright provider. A runtime assertion confirms a Chrome user agent and a native crypto.subtle.digest. Firefox and WebKit were not run."
+      },
+      "fixtureReproducibility": {
+        "command": "pnpm fixtures:check",
+        "outcome": "pass",
+        "notes": "The generator uses node:crypto plus two independent JCS serializers that must agree. A third recomputation with Python hashlib and json agreed on all three cases (run once, not scripted)."
+      },
+      "generatedArtifacts": {
+        "command": "pnpm protocol:check",
+        "outcome": "pass"
+      },
+      "negativeControls": {
+        "outcome": "pass",
+        "notes": "Nine deliberate implementation breaks were each caught, then reverted: wrong package domain (27 failures), missing 0x00 separator (25), swapped nonce/digest order (20), duplicate keys allowed (4), context check skipped (3), snapshot returning internal buffers (1), caller bytes not copied (2), JSON.stringify instead of JCS (32), unknown fields stripped (3). Run by hand; not a committed script."
+      },
+      "generatorIndependence": {
+        "outcome": "pass",
+        "notes": "ESLint rejected a temporary generator file importing @lexaegis/protocol and packages/."
+      },
+      "build": {
+        "command": "pnpm build",
+        "outcome": "pass",
+        "notes": "Both applications build. Client bundles contain no v1 protocol code that they do not use and no Node-only crypto imports."
+      },
+      "ci": {
+        "outcome": "unverified",
+        "notes": "ci.yml now also runs fixtures:check, protocol:check, installs Chromium and runs the browser interop. It has never executed on GitHub."
+      }
+    },
+    "decisions": [
+      "Label length is measured in Unicode code points (max 256), matching JSON Schema maxLength.",
+      "mediaType is lowercase type/subtype without parameters, at most 127 characters.",
+      "Inputs may be raw UTF-8 JSON bytes, JSON text, or plain data. Bytes and text go through the strict parser; plain data is deep-copied and checked.",
+      "Strict JSON uses the jsonc-parser tokenizer (to see member names, raw number tokens and depth), then requires native JSON.parse to accept the text and agree on the value.",
+      "JSON numbers are accepted by the parser only as safe plain integers; no v1 schema field is a number.",
+      "When the manifest does not open the expected commitment, supplied files are not evaluated: artifactIntegrity is unknown with ARTIFACTS_NOT_EVALUATED.",
+      "Uncommitted extra files make artifactIntegrity mismatch (verify) or a typed ARTIFACT_EXTRA failure (prepare). Only well-formed UUIDs are echoed in results.",
+      "Zero-byte artifacts are allowed. A zero commitment is not rejected by ReceiptReferenceV1; Chapter 3 builders and the registry reject it.",
+      "v1 is exported only from the @lexaegis/protocol/v1 subpath so Chapter 1 primitives do not pull it into bundles.",
+      "Pure protocol functions return ProtocolResult with a ProtocolFailure (code, optional field path, optional artifact UUID). They do not create request IDs, so they stay deterministic.",
+      "Playwright is pinned to 1.63.0 rather than 1.64.0, which was one day old, to avoid another release-age exclusion.",
+      "pnpm allowBuilds sets esbuild to false: its install script is not run; the platform binary package is sufficient (tsx verified working)."
+    ],
+    "limitations": [
+      "Not encryption and not zero-knowledge. V1 verification discloses the full package; redaction creates a different package.",
+      "Hashes bind bytes, not the truth, completeness or legal correctness of content. preparedAt is a supplied value, not proof of time.",
+      "Nothing here establishes signature authorization, receipt existence, lifecycle state or professional identity: chainStatus and signerAcceptance are always unknown.",
+      "Interoperability is shown for one implementation in two runtimes. A second-language implementation is Chapter 15.",
+      "Buffer zeroing of the nonce is best effort; JavaScript cannot guarantee erasure."
+    ],
+    "laterDependencies": [
+      "Chapter 5: the exact opening and artifact bytes must be preserved in encrypted storage, and read back, before any receipt is published.",
+      "Chapter 3: authorize the reviewer, bind chain, registry and action, prevent replay and implement lifecycle rules. Matching hashes alone do none of these.",
+      "Chapter 3 signing code must consume PreparedReviewPackage (checked with PreparedReviewPackage.isPrepared) and never rebuild a package from mutable UI state or regenerate its nonce.",
+      "Chapter 11 owns the independent verifier UI; it stays disabled."
+    ]
+  },
+  "chapter03": {
+    "completedOn": "2026-10-08",
+    "evidenceClass": "local_only",
+    "note": "Every result below was observed on this machine against a throwaway local chain. Nothing was deployed to Monad testnet or mainnet, no registry address exists, and none of this is deployment, sponsor-integration or account-provider evidence.",
+    "sourceRevision": {
+      "commit": null,
+      "dirtyWorktree": true,
+      "note": "The repository still has no commits; results describe the working tree."
+    },
+    "environment": {
+      "node": "v24.21.0",
+      "pnpm": "11.11.0",
+      "os": "linux x86_64",
+      "foundry": "1.8.5 (commit 51a52c59), installed by pnpm contracts:toolchain into the git-ignored .tools directory after a SHA-256 check",
+      "localChain": "Anvil 1.8.5 with --network monad, chain ID 31337, loopback only",
+      "browser": "Chrome for Testing (Playwright chromium, headless) for the unchanged Chapter 2 vectors"
+    },
+    "resolvedDependencies": {
+      "solc": "0.8.37+commit.f401782d",
+      "evmVersion": "osaka",
+      "optimizer": "enabled, 200 runs, viaIR off, bytecodeHash none",
+      "@openzeppelin/contracts": "5.6.1 (npm, exact)",
+      "forge-std": "1.17.0 (git commit f3dae6e6, integrity recorded in pnpm-lock.yaml)",
+      "viem": "2.57.3 (SDK registry subpath and contracts tooling)",
+      "@noble/hashes": "1.8.0 (registry fixture generator only)",
+      "@noble/curves": "1.9.1 (registry fixture generator only)"
+    },
+    "contracts": {
+      "interface": "contracts/src/interfaces/IProofOfReviewRegistry.sol",
+      "authorization": "contracts/src/ReviewAuthorization.sol",
+      "registry": "contracts/src/ProofOfReviewRegistry.sol",
+      "deployScript": "contracts/script/DeployRegistry.s.sol",
+      "tests": "contracts/test (Authorization, Lifecycle, Invariants, Vectors, fixtures/ERC1271Fixtures)",
+      "config": "contracts/foundry.toml, contracts/toolchain.json",
+      "runtimeCodeBytes": 4118,
+      "creationCodeKeccak256": "0x38a7a70bfb716f8d6d10c20ae206ac49add2be6a5c34a367dd5a51d5edf875f2",
+      "storage": "slots 0-1 OpenZeppelin EIP712 fallback strings (unused), slot 2 nonces by reviewer, slot 3 receipts by reviewer then commitment",
+      "surface": "No owner, administrator, allowlist, proxy, upgrade hook, token, payment, custody, fallback or receive function. No delegatecall, selfdestruct, tx.origin, value transfer or inline assembly in contracts/src."
+    },
+    "abi": {
+      "generatedFrom": "contracts/out/ProofOfReviewRegistry.sol/ProofOfReviewRegistry.json (fresh forced compile)",
+      "sdkExport": "proofOfReviewRegistryAbi from @lexaegis/sdk/registry (packages/sdk/src/registry/generated/registry-abi.ts)",
+      "metadata": "contracts/artifacts/registry-v1.json (EIP-712 metadata, selectors, compiler and dependency versions, creation-code hash)",
+      "functions": [
+        "REVIEW_ACTION_TYPEHASH()",
+        "eip712Domain()",
+        "execute((address,uint8,bytes32,bytes32,uint256,uint256),bytes)",
+        "getReceipt(address,bytes32)",
+        "hashAction((address,uint8,bytes32,bytes32,uint256,uint256))",
+        "invalidateNonce(uint256)",
+        "nonceOf(address)",
+        "protocolVersion()"
+      ],
+      "stateChanging": ["execute", "invalidateNonce"]
+    },
+    "actionCodes": {
+      "ISSUE": 0,
+      "REVOKE": 1,
+      "SUPERSEDE": 2
+    },
+    "receiptStatus": {
+      "NotFound": 0,
+      "Active": 1,
+      "Revoked": 2,
+      "Superseded": 3
+    },
+    "eip712": {
+      "domain": {
+        "name": "LexAegisProofOfReview",
+        "version": "1",
+        "chainId": "block.chainid at execution",
+        "verifyingContract": "the deployed registry address"
+      },
+      "primaryType": "ReviewAction",
+      "typeString": "ReviewAction(address reviewer,uint8 action,bytes32 commitment,bytes32 replacementCommitment,uint256 nonce,uint256 deadline)",
+      "typeHash": "0x5b20b329d8da43817e3f621738bc7b1fd5fd495f2c79254b820be983b26e63fb",
+      "notes": "Fields are hashed with abi.encode in declaration order and the digest comes from OpenZeppelin EIP712._hashTypedDataV4. It is never the Chapter 2 package digest, a bare struct hash or a personal_sign hash."
+    },
+    "events": {
+      "ReceiptIssued": "reviewer (indexed), commitment (indexed), predecessor (indexed), nonce, timestamp",
+      "ReceiptRevoked": "reviewer (indexed), commitment (indexed), nonce, timestamp",
+      "ReceiptSuperseded": "reviewer (indexed), previousCommitment (indexed), replacementCommitment (indexed), nonce, timestamp",
+      "NonceInvalidated": "reviewer (indexed), previousNonce, newNonce, timestamp",
+      "supersessionOrder": ["ReceiptIssued", "ReceiptSuperseded"],
+      "supersessionNote": "One SUPERSEDE emits ReceiptIssued for the replacement (predecessor set) and then ReceiptSuperseded, in one transaction and with the same nonce. They are one atomic action: the replacement is counted once."
+    },
+    "customErrors": [
+      "InvalidActionShape()",
+      "ZeroReviewer()",
+      "ZeroCommitment()",
+      "InvalidNonce(uint256 currentNonce)",
+      "NonceExhausted()",
+      "AuthorizationExpired()",
+      "InvalidSignature()",
+      "ReceiptAlreadyIssued()",
+      "InvalidLifecycleTransition(ReceiptStatus currentStatus)"
+    ],
+    "lifecycleRules": [
+      "Receipts are stored per reviewer and commitment. Identical commitment bytes under another reviewer are a separate record.",
+      "ISSUE: nonzero commitment, zero replacement, never issued before by that reviewer. Creates Active with no links and issuedAt = updatedAt = block time.",
+      "REVOKE: zero replacement, target Active. Sets Revoked and updatedAt only.",
+      "SUPERSEDE: target Active; replacement nonzero, different and never issued by that reviewer. Old becomes Superseded with successor set; new becomes Active with predecessor set.",
+      "Revoked and Superseded are terminal. Nothing reactivates, overwrites or deletes an issued commitment; revoking a replacement does not restore its predecessor.",
+      "bytes32(0) is reserved for an absent link and an unused replacement field and is never issued.",
+      "Check order: action shape, zero reviewer, nonce, deadline, signature, then lifecycle. Any failure reverts everything, including the nonce.",
+      "A deadline limits when an action may execute. It does not expire an issued receipt."
+    ],
+    "nonces": {
+      "model": "One uint256 per reviewer, starting at zero, shared by ISSUE, REVOKE and SUPERSEDE. An action must carry exactly the current nonce and consumes exactly one.",
+      "cancellation": "invalidateNonce(expectedNonce) advances only msg.sender's own nonce, requires an exact match and emits NonceInvalidated. A relayer cannot cancel for someone else.",
+      "exhaustion": "At 2^256 - 1 both execute and invalidateNonce revert with NonceExhausted; the counter cannot wrap.",
+      "consequence": "At most one outstanding signature per reviewer can ever execute; actions execute strictly in nonce order."
+    },
+    "signatures": {
+      "checker": "OpenZeppelin SignatureChecker.isValidSignatureNowCalldata (address-based)",
+      "eoa": "An address without code is checked with ECDSA recovery: 65-byte signatures only, low s, v of 27 or 28. ERC-2098 compact signatures are rejected.",
+      "contractAccount": "An address with code is asked through an ERC-1271 STATICCALL. The reply must be at least 32 bytes and equal the magic value padded with zeros.",
+      "executor": "Anyone may submit a signed action; msg.sender is never treated as the reviewer and there is no signature-free path."
+    },
+    "sdk": {
+      "entryPoint": "@lexaegis/sdk/registry (packages/sdk/src/registry). The root @lexaegis/sdk entry is unchanged and imports no chain library.",
+      "builders": "buildIssueAction, buildRevokeAction, buildSupersedeAction return a BoundReviewAction (chainId, registryAddress, six-field action). buildTypedData requires the stated chain ID and registry to equal that binding. hashReviewAction, toAbiReviewAction, toEip712ReviewAction, defaultActionDeadline.",
+      "decoding": "decodeReceipt, decodeRegistryEvent, decodeRegistryError, receiptLifecycleOf. Layouts come from the generated ABI and lengths are exact.",
+      "statusMapping": "NotFound -> not_found, Active -> active, Revoked -> revoked, Superseded -> superseded. An empty response, RPC failure, malformed data or unknown enum value is a typed failure and displays as unknown.",
+      "binding": "validateReceiptBinding returns binding (match, mismatch, absent), receiptLifecycle and issues. It never recomputes a hash and has no combined validity flag.",
+      "deploymentRecords": "registryDeploymentSchema (lexaegis.registry-deployment.v1): observed values exist only on a deployed record; local, testnet and mainnet cannot be mislabelled.",
+      "defaultDeadline": "Reference-application default: current Unix seconds plus 600 (DEFAULT_ACTION_VALIDITY_SECONDS). The contract enforces whatever deadline was signed."
+    },
+    "fixtures": {
+      "vectors": "fixtures/registry-v1/vectors.json (seven EIP-712 vectors: digests and signatures)",
+      "generator": "fixtures/registry-v1/generate.mjs: hand-written EIP-712 encoding on bare Keccak-256 and secp256k1; imports neither the SDK, viem nor the contract",
+      "agreement": "The generator, the Solidity registry and the TypeScript SDK reproduce every digest and signature."
+    },
+    "generatedArtifacts": {
+      "abi": "packages/sdk/src/registry/generated/registry-abi.ts",
+      "buildMetadata": "contracts/artifacts/registry-v1.json",
+      "deploymentTemplate": "contracts/deployments/template.json (status not_deployed, environment testnet, intended chain 10143; no address, transaction, block or runtime hash)",
+      "localRecords": "contracts/deployments/local/ is git-ignored; records there are labelled environment local."
+    },
+    "commands": [
+      "pnpm contracts:toolchain",
+      "pnpm contracts:fmt:check",
+      "pnpm contracts:build",
+      "pnpm contracts:test",
+      "pnpm contracts:artifacts",
+      "pnpm contracts:artifacts:check",
+      "pnpm test:contracts:integration",
+      "pnpm contracts:deploy:local",
+      "pnpm fixtures:check"
+    ],
+    "checks": {
+      "chapter2Baseline": {
+        "outcome": "pass",
+        "notes": "Before any edit: pnpm test:protocol (10 files, 219 tests), pnpm fixtures:check and pnpm protocol:check passed. The Chapter 2 commitment formula, opening format and vectors are unchanged."
+      },
+      "contractFormat": {
+        "command": "pnpm contracts:fmt:check",
+        "outcome": "pass"
+      },
+      "contractBuild": {
+        "command": "pnpm contracts:build",
+        "outcome": "pass",
+        "notes": "solc 0.8.37, osaka. Our sources compile with warnings denied and Foundry's linter clean; two lint suppressions carry written reasons (deadline timestamp comparison; events after the ERC-1271 STATICCALL)."
+      },
+      "contractTests": {
+        "command": "pnpm contracts:test",
+        "outcome": "pass",
+        "notes": "63 tests in 4 suites under Foundry's Monad execution rules: Authorization 35, Lifecycle 24, Vectors 3, invariants 1 suite. Six fuzz tests at 256 runs each with a fixed seed."
+      },
+      "invariants": {
+        "command": "pnpm contracts:test",
+        "outcome": "pass",
+        "notes": "Six invariants over 64 runs of depth 64 (4096 handler calls, 0 reverts, fail_on_revert on). The handler really executes issue, revoke, supersede and invalidate, and exercises replays, forged signatures and invalid transitions that must fail. Each run fails unless it issued a receipt, reached a terminal status and rejected at least one invalid operation."
+      },
+      "erc1271": {
+        "outcome": "pass",
+        "notes": "Synthetic fixtures: owner-keyed account (valid), wrong magic value, three malformed returns, reverting account, and a reentrant account that tries invalidateNonce during validation. Invalid or adversarial validation changes nothing; a policy change leaves issued receipts intact and governs later actions."
+      },
+      "sdkUnitTests": {
+        "command": "pnpm test",
+        "outcome": "pass",
+        "notes": "25 files, 389 tests (sdk: 6 files, 131 tests, of which 124 are new registry tests)."
+      },
+      "crossLanguageVectors": {
+        "command": "pnpm fixtures:check, pnpm contracts:test, pnpm test",
+        "outcome": "pass",
+        "notes": "All seven literal digests and signatures reproduce in Solidity (hashAction, vm.sign) and TypeScript (viem hashTypedData, signTypedData), including a nonce of 2^256 - 2 and a deadline of 2^256 - 1."
+      },
+      "anvilIntegration": {
+        "command": "pnpm test:contracts:integration",
+        "outcome": "pass",
+        "evidenceClass": "local_anvil",
+        "notes": "1 file, 11 tests. Deployed the committed build; hashAction equals the TypeScript digest for every vector; issue relayed by an unrelated executor, with the second submission rejected; opening verified and an altered artifact detected; supersede with ordered events and predecessor binding; revoke of the replacement leaving neither version Active; replays rejected; eight of the nine custom errors decoded identically in both runtimes (NonceExhausted is covered in Foundry only); nonce invalidation; missing code distinguished from a missing receipt; ERC-1271 account authorized by viem-signed typed data."
+      },
+      "generatedArtifacts": {
+        "command": "pnpm contracts:artifacts:check",
+        "outcome": "pass",
+        "notes": "ABI, build metadata and deployment template match a forced fresh compile."
+      },
+      "localDeploySmoke": {
+        "command": "pnpm contracts:deploy:local",
+        "outcome": "pass",
+        "evidenceClass": "local_anvil",
+        "notes": "forge script broadcast to a throwaway Anvil from an unlocked local account; creation code matched the committed hash; protocolVersion, EIP-712 domain and an empty lookup checked. Refused https://testnet-rpc.monad.xyz, a LAN address and a URL with credentials before any request, and refused a loopback node reporting chain 10143 without sending a transaction."
+      },
+      "negativeControls": {
+        "outcome": "pass",
+        "notes": "26 deliberate contract breaks, each reverted afterwards. 24 were caught at once. Two survived and exposed test gaps (a zero deadline at block time zero; an unknown action code with a zero replacement against an Active receipt); tests were added and all 26 are now caught. Removing the handler's successful operations makes the invariant suite fail. Run by hand; not a committed script."
+      },
+      "boundaryNegativeControls": {
+        "outcome": "pass",
+        "notes": "ESLint rejected 8 temporary violations: SDK and web importing the contracts harness, the fixture generator importing viem, the SDK and contracts tooling, and protocol importing viem. Temporary files removed."
+      },
+      "lint": {
+        "command": "pnpm lint",
+        "outcome": "pass"
+      },
+      "formatCheck": {
+        "command": "pnpm format:check",
+        "outcome": "pass"
+      },
+      "typecheck": {
+        "command": "pnpm typecheck",
+        "outcome": "pass",
+        "notes": "8 projects, including contracts tooling"
+      },
+      "protocolVectors": {
+        "command": "pnpm test:protocol, pnpm protocol:check, pnpm test:protocol:browser",
+        "outcome": "pass",
+        "notes": "Unchanged Chapter 2 results: 219 tests in Node.js and 177 in headless Chromium."
+      },
+      "build": {
+        "command": "pnpm build",
+        "outcome": "pass",
+        "notes": "Both applications build. No registry code or chain library appears in either client bundle."
+      },
+      "frozenLockfileInstall": {
+        "command": "pnpm install --frozen-lockfile",
+        "outcome": "pass"
+      },
+      "ci": {
+        "outcome": "unverified",
+        "notes": "ci.yml now installs the pinned Foundry and runs the contract format, build, test, artifact and Anvil checks. It has still never executed on GitHub."
+      }
+    },
+    "decisions": [
+      "Solidity 0.8.37: at the time of checking it was the only recent 0.8 release with no entry in the compiler's published known-bug list. EVM target osaka, because the Monad documentation states support for all opcodes and precompiles as of the Fusaka (Osaka) fork.",
+      "foundry.toml sets network = \"monad\" and Anvil runs with --network monad: the Monad documentation requires Foundry 1.8.0 or later with Monad execution enabled so local behaviour matches the chain.",
+      "Foundry is pinned by version, commit and per-platform archive SHA-256 in contracts/toolchain.json. Every invocation goes through contracts/scripts/foundry.ts, which refuses any other build.",
+      "Solidity libraries are installed by pnpm, not git submodules: OpenZeppelin from npm, forge-std from a git commit (the forge-std name on npm is an unrelated old package).",
+      "bytecode_hash is none so runtime code does not depend on local source paths. Runtime code still embeds chain- and address-specific immutables, so only the creation-code hash is predictable.",
+      "A fixed fuzz seed makes contract test runs reproducible.",
+      "The registry code lives at the @lexaegis/sdk/registry subpath so the root SDK entry stays free of viem.",
+      "Builders return the action with the chain and registry it was built for, and buildTypedData also takes the intended chain and registry and requires them to match.",
+      "JSON typed data includes the EIP712Domain type and uses decimal strings for chain ID, nonce and deadline; the action code is the number 0, 1 or 2.",
+      "Tests compute digests by hand, independently of hashAction, and read block time and chain ID through cheatcodes as Foundry's linter requires."
+    ],
+    "limitations": [
+      "Local evidence only. The registry is not deployed anywhere; there is no address, and application configuration and readiness are unchanged.",
+      "Not audited. Negative controls were run by hand.",
+      "Foundry's Monad rules are an emulation, not the network.",
+      "An account with code is authorized only through ERC-1271. That includes an EOA carrying an EIP-7702 delegation: its plain ECDSA signature will not be accepted unless the delegate implements ERC-1271.",
+      "A contract account can make validation consume most of the gas an executor supplies. Only that executor is affected.",
+      "Because the nonce is sequential, two signed actions with the same nonce are alternatives: whichever executes first invalidates the other.",
+      "Monad block time is in whole seconds and several blocks share one timestamp, so issuedAt and updatedAt do not order events within a second.",
+      "The registry stores opaque commitments. It cannot show that an opening is truthful, complete or legally correct, or that a reviewer is a professional.",
+      "forge downloads solc 0.8.37 on first build. The toolchain installer supports Linux and macOS only."
+    ],
+    "laterDependencies": [
+      "Chapter 5: preserve the encrypted opening and read it back before any receipt is published. A lost opening cannot be recovered from the chain.",
+      "Chapters 4 and 10: bind the explicit human approval to the PreparedReviewPackage and to the exact typed action shown to the reviewer. Signing consumes that snapshot; nothing rebuilds it.",
+      "Chapter 4: confirm how Mera accounts sign. If they are contract accounts or EIP-7702 delegated EOAs, the registry will call ERC-1271 isValidSignature with the plain EIP-712 digest; an account that wraps or re-hashes the digest needs matching support before it can authorize an action.",
+      "Chapters 4 and 6: read the current nonce and chain state immediately before signing. After a race or an InvalidNonce revert, re-read state and obtain a new signature; never blindly resubmit or auto-increment.",
+      "Chapter 6: deploy with contracts/script/DeployRegistry.s.sol, check the transaction input against creationCodeKeccak256, and write a deployed record that passes registryDeploymentSchema. Verify registry state at an identified block.",
+      "Chapters 6 and 11: a mined receipt means authorization was accepted when it executed. A later change to an ERC-1271 account's policy does not rewrite it and must not be read as invalidating it.",
+      "Chapter 7: Envio must reduce the four events without double counting (one SUPERSEDE is two logs, one new receipt) and reconcile indexed status with live registry reads; the live read wins.",
+      "Chapter 11: the verifier reports package integrity, receipt binding and lifecycle, and signer acceptance separately, and shows unknown for any failed read."
+    ]
+  },
+  "results": [
+    {
+      "id": "prf-probe-2026-10-08-sdbio",
+      "subject": "prf-virtual-authenticator-probe",
+      "sourceRevision": {
+        "commit": null,
+        "dirtyWorktree": true,
+        "contentFingerprint": "91179f8d8d875ba8185a264d1ce4758383c44471ef295f2a6928da06507633f6"
+      },
+      "checkedAt": "2026-10-08T18:46:58.604Z",
+      "command": "pnpm exec tsx tooling/scripts/prf-probe.ts",
+      "environment": {
+        "node": "v24.21.0",
+        "os": "linux-x64",
+        "pnpm": "11.11.0"
+      },
+      "evidenceClass": "virtual_authenticator",
+      "outcome": "fail",
+      "reasonCodes": [
+        "PRF_UNAVAILABLE",
+        "AUTHENTICATOR_MODE_VIRTUAL",
+        "PASSKEY_STEP_REQUIRES_REAL_DEVICE_EVIDENCE",
+        "APPLICATION_PATH_PENDING"
+      ],
+      "evidenceRefs": [],
+      "facts": {
+        "browser": "chromium 153.0.8010.12",
+        "cdpPrfOption": "hasPrf",
+        "credentialCreated": false,
+        "prfEvaluated": false,
+        "sameInputStable": false,
+        "purposeSeparated": false,
+        "outputBytes": "0",
+        "authenticatorMode": "virtual",
+        "realDeviceEvidence": false
+      }
+    },
+    {
+      "id": "prf-probe-2026-10-08-sfel8",
+      "subject": "prf-virtual-authenticator-probe",
+      "sourceRevision": {
+        "commit": null,
+        "dirtyWorktree": true,
+        "contentFingerprint": "0db6d8e2d684f86cd2fa510d95c51c449832212c5b43d8684038d88638082d14"
+      },
+      "checkedAt": "2026-10-08T18:47:07.942Z",
+      "command": "pnpm exec tsx tooling/scripts/prf-probe.ts",
+      "environment": {
+        "node": "v24.21.0",
+        "os": "linux-x64",
+        "pnpm": "11.11.0"
+      },
+      "evidenceClass": "virtual_authenticator",
+      "outcome": "pass",
+      "reasonCodes": [
+        "AUTHENTICATOR_MODE_VIRTUAL",
+        "PASSKEY_STEP_REQUIRES_REAL_DEVICE_EVIDENCE",
+        "APPLICATION_PATH_PENDING"
+      ],
+      "evidenceRefs": [],
+      "facts": {
+        "browser": "chromium 153.0.8010.12",
+        "cdpPrfOption": "hasPrf",
+        "credentialCreated": true,
+        "prfEvaluated": true,
+        "sameInputStable": true,
+        "purposeSeparated": true,
+        "outputBytes": "32",
+        "authenticatorMode": "virtual",
+        "realDeviceEvidence": false
+      }
+    },
+    {
+      "id": "rd-20261008184959-cffe8f-check-typecheck",
+      "subject": "check-typecheck",
+      "sourceRevision": {
+        "commit": null,
+        "dirtyWorktree": true,
+        "contentFingerprint": "fef30ba2453d5c4953543aa45cc549e80d0a2a9028b0591858dbf945b12cabb2"
+      },
+      "checkedAt": "2026-10-08T18:49:59.446Z",
+      "command": "pnpm readiness",
+      "environment": {
+        "node": "v24.21.0",
+        "os": "linux-x64",
+        "pnpm": "11.11.0"
+      },
+      "evidenceClass": "local_scripted",
+      "outcome": "pass",
+      "reasonCodes": [],
+      "evidenceRefs": []
+    },
+    {
+      "id": "rd-20261008184959-cffe8f-check-unit-tests",
+      "subject": "check-unit-tests",
+      "sourceRevision": {
+        "commit": null,
+        "dirtyWorktree": true,
+        "contentFingerprint": "fef30ba2453d5c4953543aa45cc549e80d0a2a9028b0591858dbf945b12cabb2"
+      },
+      "checkedAt": "2026-10-08T18:49:59.446Z",
+      "command": "pnpm readiness",
+      "environment": {
+        "node": "v24.21.0",
+        "os": "linux-x64",
+        "pnpm": "11.11.0"
+      },
+      "evidenceClass": "local_scripted",
+      "outcome": "pass",
+      "reasonCodes": [],
+      "evidenceRefs": []
+    },
+    {
+      "id": "rd-20261008184959-cffe8f-check-forge-test",
+      "subject": "check-forge-test",
+      "sourceRevision": {
+        "commit": null,
+        "dirtyWorktree": true,
+        "contentFingerprint": "fef30ba2453d5c4953543aa45cc549e80d0a2a9028b0591858dbf945b12cabb2"
+      },
+      "checkedAt": "2026-10-08T18:49:59.446Z",
+      "command": "pnpm readiness",
+      "environment": {
+        "node": "v24.21.0",
+        "os": "linux-x64",
+        "pnpm": "11.11.0"
+      },
+      "evidenceClass": "local_scripted",
+      "outcome": "pass",
+      "reasonCodes": [],
+      "evidenceRefs": []
+    },
+    {
+      "id": "rd-20261008184959-cffe8f-check-secret-scan",
+      "subject": "check-secret-scan",
+      "sourceRevision": {
+        "commit": null,
+        "dirtyWorktree": true,
+        "contentFingerprint": "fef30ba2453d5c4953543aa45cc549e80d0a2a9028b0591858dbf945b12cabb2"
+      },
+      "checkedAt": "2026-10-08T18:49:59.446Z",
+      "command": "pnpm readiness",
+      "environment": {
+        "node": "v24.21.0",
+        "os": "linux-x64",
+        "pnpm": "11.11.0"
+      },
+      "evidenceClass": "local_scripted",
+      "outcome": "pass",
+      "reasonCodes": [],
+      "evidenceRefs": []
+    },
+    {
+      "id": "rd-20261008184959-cffe8f-check-protected-baselines",
+      "subject": "check-protected-baselines",
+      "sourceRevision": {
+        "commit": null,
+        "dirtyWorktree": true,
+        "contentFingerprint": "fef30ba2453d5c4953543aa45cc549e80d0a2a9028b0591858dbf945b12cabb2"
+      },
+      "checkedAt": "2026-10-08T18:49:59.446Z",
+      "command": "pnpm readiness",
+      "environment": {
+        "node": "v24.21.0",
+        "os": "linux-x64",
+        "pnpm": "11.11.0"
+      },
+      "evidenceClass": "local_scripted",
+      "outcome": "pass",
+      "reasonCodes": [],
+      "evidenceRefs": []
+    },
+    {
+      "id": "rd-20261008184959-cffe8f-check-build",
+      "subject": "check-build",
+      "sourceRevision": {
+        "commit": null,
+        "dirtyWorktree": true,
+        "contentFingerprint": "fef30ba2453d5c4953543aa45cc549e80d0a2a9028b0591858dbf945b12cabb2"
+      },
+      "checkedAt": "2026-10-08T18:49:59.446Z",
+      "command": "pnpm readiness",
+      "environment": {
+        "node": "v24.21.0",
+        "os": "linux-x64",
+        "pnpm": "11.11.0"
+      },
+      "evidenceClass": "local_scripted",
+      "outcome": "pass",
+      "reasonCodes": [],
+      "evidenceRefs": []
+    },
+    {
+      "id": "rd-20261008184959-cffe8f-check-exclusion",
+      "subject": "check-exclusion",
+      "sourceRevision": {
+        "commit": null,
+        "dirtyWorktree": true,
+        "contentFingerprint": "fef30ba2453d5c4953543aa45cc549e80d0a2a9028b0591858dbf945b12cabb2"
+      },
+      "checkedAt": "2026-10-08T18:49:59.446Z",
+      "command": "pnpm readiness",
+      "environment": {
+        "node": "v24.21.0",
+        "os": "linux-x64",
+        "pnpm": "11.11.0"
+      },
+      "evidenceClass": "local_scripted",
+      "outcome": "pass",
+      "reasonCodes": [],
+      "evidenceRefs": []
+    },
+    {
+      "id": "rd-20261008184959-cffe8f-chapters-1-3-checks",
+      "subject": "chapters-1-3-checks",
+      "sourceRevision": {
+        "commit": null,
+        "dirtyWorktree": true,
+        "contentFingerprint": "fef30ba2453d5c4953543aa45cc549e80d0a2a9028b0591858dbf945b12cabb2"
+      },
+      "checkedAt": "2026-10-08T18:49:59.446Z",
+      "command": "pnpm readiness",
+      "environment": {
+        "node": "v24.21.0",
+        "os": "linux-x64",
+        "pnpm": "11.11.0"
+      },
+      "evidenceClass": "local_scripted",
+      "outcome": "pass",
+      "reasonCodes": [],
+      "evidenceRefs": []
+    },
+    {
+      "id": "smoke-local-20261008185026",
+      "subject": "smoke-local",
+      "sourceRevision": {
+        "commit": null,
+        "dirtyWorktree": true,
+        "contentFingerprint": "fef30ba2453d5c4953543aa45cc549e80d0a2a9028b0591858dbf945b12cabb2"
+      },
+      "checkedAt": "2026-10-08T18:50:26.988Z",
+      "command": "pnpm smoke:local",
+      "environment": {
+        "node": "v24.21.0",
+        "os": "linux-x64",
+        "pnpm": "11.11.0"
+      },
+      "evidenceClass": "local_scripted",
+      "outcome": "pending",
+      "reasonCodes": ["PENDING_STEPS"],
+      "evidenceRefs": [
+        {
+          "type": "path",
+          "value": "docs/smoke-local-result.json"
+        }
+      ],
+      "facts": {
+        "stepsPassed": "0",
+        "stepsTotal": "10"
+      }
+    },
+    {
+      "id": "cutladder-20261008185030",
+      "subject": "cut-ladder-matrix",
+      "sourceRevision": {
+        "commit": null,
+        "dirtyWorktree": true,
+        "contentFingerprint": "fef30ba2453d5c4953543aa45cc549e80d0a2a9028b0591858dbf945b12cabb2"
+      },
+      "checkedAt": "2026-10-08T18:50:30.606Z",
+      "command": "pnpm cutladder:check",
+      "environment": {
+        "node": "v24.21.0",
+        "os": "linux-x64",
+        "pnpm": "11.11.0"
+      },
+      "evidenceClass": "local_scripted",
+      "outcome": "blocked",
+      "reasonCodes": ["T0_JOURNEY_PENDING", "OPTIONAL_FEATURES_UNIMPLEMENTED"],
+      "evidenceRefs": [],
+      "facts": {
+        "configurations": "13",
+        "distinctEffective": "4",
+        "appliedProjectCuts": "0",
+        "fingerprint": "fef30ba2453d5c49"
+      }
+    },
+    {
+      "id": "rd-20261008185159-97bfe2-check-typecheck",
+      "subject": "check-typecheck",
+      "sourceRevision": {
+        "commit": null,
+        "dirtyWorktree": true,
+        "contentFingerprint": "fef30ba2453d5c4953543aa45cc549e80d0a2a9028b0591858dbf945b12cabb2"
+      },
+      "checkedAt": "2026-10-08T18:51:59.683Z",
+      "command": "pnpm readiness",
+      "environment": {
+        "node": "v24.21.0",
+        "os": "linux-x64",
+        "pnpm": "11.11.0"
+      },
+      "evidenceClass": "local_scripted",
+      "outcome": "pass",
+      "reasonCodes": [],
+      "evidenceRefs": []
+    },
+    {
+      "id": "rd-20261008185159-97bfe2-check-unit-tests",
+      "subject": "check-unit-tests",
+      "sourceRevision": {
+        "commit": null,
+        "dirtyWorktree": true,
+        "contentFingerprint": "fef30ba2453d5c4953543aa45cc549e80d0a2a9028b0591858dbf945b12cabb2"
+      },
+      "checkedAt": "2026-10-08T18:51:59.683Z",
+      "command": "pnpm readiness",
+      "environment": {
+        "node": "v24.21.0",
+        "os": "linux-x64",
+        "pnpm": "11.11.0"
+      },
+      "evidenceClass": "local_scripted",
+      "outcome": "pass",
+      "reasonCodes": [],
+      "evidenceRefs": []
+    },
+    {
+      "id": "rd-20261008185159-97bfe2-check-forge-test",
+      "subject": "check-forge-test",
+      "sourceRevision": {
+        "commit": null,
+        "dirtyWorktree": true,
+        "contentFingerprint": "fef30ba2453d5c4953543aa45cc549e80d0a2a9028b0591858dbf945b12cabb2"
+      },
+      "checkedAt": "2026-10-08T18:51:59.683Z",
+      "command": "pnpm readiness",
+      "environment": {
+        "node": "v24.21.0",
+        "os": "linux-x64",
+        "pnpm": "11.11.0"
+      },
+      "evidenceClass": "local_scripted",
+      "outcome": "pass",
+      "reasonCodes": [],
+      "evidenceRefs": []
+    },
+    {
+      "id": "rd-20261008185159-97bfe2-check-secret-scan",
+      "subject": "check-secret-scan",
+      "sourceRevision": {
+        "commit": null,
+        "dirtyWorktree": true,
+        "contentFingerprint": "fef30ba2453d5c4953543aa45cc549e80d0a2a9028b0591858dbf945b12cabb2"
+      },
+      "checkedAt": "2026-10-08T18:51:59.683Z",
+      "command": "pnpm readiness",
+      "environment": {
+        "node": "v24.21.0",
+        "os": "linux-x64",
+        "pnpm": "11.11.0"
+      },
+      "evidenceClass": "local_scripted",
+      "outcome": "pass",
+      "reasonCodes": [],
+      "evidenceRefs": []
+    },
+    {
+      "id": "rd-20261008185159-97bfe2-check-protected-baselines",
+      "subject": "check-protected-baselines",
+      "sourceRevision": {
+        "commit": null,
+        "dirtyWorktree": true,
+        "contentFingerprint": "fef30ba2453d5c4953543aa45cc549e80d0a2a9028b0591858dbf945b12cabb2"
+      },
+      "checkedAt": "2026-10-08T18:51:59.683Z",
+      "command": "pnpm readiness",
+      "environment": {
+        "node": "v24.21.0",
+        "os": "linux-x64",
+        "pnpm": "11.11.0"
+      },
+      "evidenceClass": "local_scripted",
+      "outcome": "pass",
+      "reasonCodes": [],
+      "evidenceRefs": []
+    },
+    {
+      "id": "rd-20261008185159-97bfe2-check-build",
+      "subject": "check-build",
+      "sourceRevision": {
+        "commit": null,
+        "dirtyWorktree": true,
+        "contentFingerprint": "fef30ba2453d5c4953543aa45cc549e80d0a2a9028b0591858dbf945b12cabb2"
+      },
+      "checkedAt": "2026-10-08T18:51:59.683Z",
+      "command": "pnpm readiness",
+      "environment": {
+        "node": "v24.21.0",
+        "os": "linux-x64",
+        "pnpm": "11.11.0"
+      },
+      "evidenceClass": "local_scripted",
+      "outcome": "pass",
+      "reasonCodes": [],
+      "evidenceRefs": []
+    },
+    {
+      "id": "rd-20261008185159-97bfe2-check-exclusion",
+      "subject": "check-exclusion",
+      "sourceRevision": {
+        "commit": null,
+        "dirtyWorktree": true,
+        "contentFingerprint": "fef30ba2453d5c4953543aa45cc549e80d0a2a9028b0591858dbf945b12cabb2"
+      },
+      "checkedAt": "2026-10-08T18:51:59.683Z",
+      "command": "pnpm readiness",
+      "environment": {
+        "node": "v24.21.0",
+        "os": "linux-x64",
+        "pnpm": "11.11.0"
+      },
+      "evidenceClass": "local_scripted",
+      "outcome": "pass",
+      "reasonCodes": [],
+      "evidenceRefs": []
+    },
+    {
+      "id": "rd-20261008185159-97bfe2-chapters-1-3-checks",
+      "subject": "chapters-1-3-checks",
+      "sourceRevision": {
+        "commit": null,
+        "dirtyWorktree": true,
+        "contentFingerprint": "fef30ba2453d5c4953543aa45cc549e80d0a2a9028b0591858dbf945b12cabb2"
+      },
+      "checkedAt": "2026-10-08T18:51:59.683Z",
+      "command": "pnpm readiness",
+      "environment": {
+        "node": "v24.21.0",
+        "os": "linux-x64",
+        "pnpm": "11.11.0"
+      },
+      "evidenceClass": "local_scripted",
+      "outcome": "pass",
+      "reasonCodes": [],
+      "evidenceRefs": []
+    },
+    {
+      "id": "account-browser-20261008223308",
+      "subject": "account-browser-check",
+      "sourceRevision": {
+        "commit": null,
+        "dirtyWorktree": true,
+        "contentFingerprint": "f1e4b2c041379dd11e6abacb82995593ba07ee763046a53b0b1b56309099f345"
+      },
+      "checkedAt": "2026-10-08T22:33:08.918Z",
+      "command": "pnpm test:account:browser",
+      "environment": {
+        "node": "v24.21.0",
+        "os": "linux-x64",
+        "pnpm": "11.11.0"
+      },
+      "evidenceClass": "virtual_authenticator",
+      "outcome": "pass",
+      "reasonCodes": ["AUTHENTICATOR_MODE_VIRTUAL", "PASSKEY_STEP_REQUIRES_REAL_DEVICE_EVIDENCE"],
+      "evidenceRefs": [],
+      "facts": {
+        "browser": "chromium 153.0.8010.12",
+        "checksPassed": "31",
+        "checksTotal": "31",
+        "addressReproducedAfterClearingStorage": true,
+        "credentialsCreatedDuringCreate": "1",
+        "assertionsDuringCreate": "0",
+        "authenticatorMode": "virtual",
+        "realDeviceEvidence": false
+      }
+    },
+    {
+      "id": "account-browser-20261008224051",
+      "subject": "account-browser-check",
+      "sourceRevision": {
+        "commit": null,
+        "dirtyWorktree": true,
+        "contentFingerprint": "b3ccabcef4679e7062aae8532bc37a9972746743884199a1f2659e1d5a9d7dcf"
+      },
+      "checkedAt": "2026-10-08T22:40:51.235Z",
+      "command": "pnpm test:account:browser",
+      "environment": {
+        "node": "v24.21.0",
+        "os": "linux-x64",
+        "pnpm": "11.11.0"
+      },
+      "evidenceClass": "virtual_authenticator",
+      "outcome": "pass",
+      "reasonCodes": ["AUTHENTICATOR_MODE_VIRTUAL", "PASSKEY_STEP_REQUIRES_REAL_DEVICE_EVIDENCE"],
+      "evidenceRefs": [],
+      "facts": {
+        "browser": "chromium 153.0.8010.12",
+        "checksPassed": "31",
+        "checksTotal": "31",
+        "addressReproducedAfterClearingStorage": true,
+        "credentialsCreatedDuringCreate": "1",
+        "assertionsDuringCreate": "0",
+        "authenticatorMode": "virtual",
+        "realDeviceEvidence": false
+      }
+    },
+    {
+      "id": "rd-20261008224122-1ab01b-check-typecheck",
+      "subject": "check-typecheck",
+      "sourceRevision": {
+        "commit": null,
+        "dirtyWorktree": true,
+        "contentFingerprint": "602d7ef923c38cc5250dcb4209211fb713d3d144db577ebca9f698daca50cc14"
+      },
+      "checkedAt": "2026-10-08T22:41:22.968Z",
+      "command": "pnpm readiness",
+      "environment": {
+        "node": "v24.21.0",
+        "os": "linux-x64",
+        "pnpm": "11.11.0"
+      },
+      "evidenceClass": "local_scripted",
+      "outcome": "pass",
+      "reasonCodes": [],
+      "evidenceRefs": []
+    },
+    {
+      "id": "rd-20261008224122-1ab01b-check-unit-tests",
+      "subject": "check-unit-tests",
+      "sourceRevision": {
+        "commit": null,
+        "dirtyWorktree": true,
+        "contentFingerprint": "602d7ef923c38cc5250dcb4209211fb713d3d144db577ebca9f698daca50cc14"
+      },
+      "checkedAt": "2026-10-08T22:41:22.968Z",
+      "command": "pnpm readiness",
+      "environment": {
+        "node": "v24.21.0",
+        "os": "linux-x64",
+        "pnpm": "11.11.0"
+      },
+      "evidenceClass": "local_scripted",
+      "outcome": "pass",
+      "reasonCodes": [],
+      "evidenceRefs": []
+    },
+    {
+      "id": "rd-20261008224122-1ab01b-check-forge-test",
+      "subject": "check-forge-test",
+      "sourceRevision": {
+        "commit": null,
+        "dirtyWorktree": true,
+        "contentFingerprint": "602d7ef923c38cc5250dcb4209211fb713d3d144db577ebca9f698daca50cc14"
+      },
+      "checkedAt": "2026-10-08T22:41:22.968Z",
+      "command": "pnpm readiness",
+      "environment": {
+        "node": "v24.21.0",
+        "os": "linux-x64",
+        "pnpm": "11.11.0"
+      },
+      "evidenceClass": "local_scripted",
+      "outcome": "pass",
+      "reasonCodes": [],
+      "evidenceRefs": []
+    },
+    {
+      "id": "rd-20261008224122-1ab01b-check-secret-scan",
+      "subject": "check-secret-scan",
+      "sourceRevision": {
+        "commit": null,
+        "dirtyWorktree": true,
+        "contentFingerprint": "602d7ef923c38cc5250dcb4209211fb713d3d144db577ebca9f698daca50cc14"
+      },
+      "checkedAt": "2026-10-08T22:41:22.968Z",
+      "command": "pnpm readiness",
+      "environment": {
+        "node": "v24.21.0",
+        "os": "linux-x64",
+        "pnpm": "11.11.0"
+      },
+      "evidenceClass": "local_scripted",
+      "outcome": "pass",
+      "reasonCodes": [],
+      "evidenceRefs": []
+    },
+    {
+      "id": "rd-20261008224122-1ab01b-check-protected-baselines",
+      "subject": "check-protected-baselines",
+      "sourceRevision": {
+        "commit": null,
+        "dirtyWorktree": true,
+        "contentFingerprint": "602d7ef923c38cc5250dcb4209211fb713d3d144db577ebca9f698daca50cc14"
+      },
+      "checkedAt": "2026-10-08T22:41:22.968Z",
+      "command": "pnpm readiness",
+      "environment": {
+        "node": "v24.21.0",
+        "os": "linux-x64",
+        "pnpm": "11.11.0"
+      },
+      "evidenceClass": "local_scripted",
+      "outcome": "pass",
+      "reasonCodes": [],
+      "evidenceRefs": []
+    },
+    {
+      "id": "rd-20261008224122-1ab01b-check-build",
+      "subject": "check-build",
+      "sourceRevision": {
+        "commit": null,
+        "dirtyWorktree": true,
+        "contentFingerprint": "602d7ef923c38cc5250dcb4209211fb713d3d144db577ebca9f698daca50cc14"
+      },
+      "checkedAt": "2026-10-08T22:41:22.968Z",
+      "command": "pnpm readiness",
+      "environment": {
+        "node": "v24.21.0",
+        "os": "linux-x64",
+        "pnpm": "11.11.0"
+      },
+      "evidenceClass": "local_scripted",
+      "outcome": "pass",
+      "reasonCodes": [],
+      "evidenceRefs": []
+    },
+    {
+      "id": "rd-20261008224122-1ab01b-check-exclusion",
+      "subject": "check-exclusion",
+      "sourceRevision": {
+        "commit": null,
+        "dirtyWorktree": true,
+        "contentFingerprint": "602d7ef923c38cc5250dcb4209211fb713d3d144db577ebca9f698daca50cc14"
+      },
+      "checkedAt": "2026-10-08T22:41:22.968Z",
+      "command": "pnpm readiness",
+      "environment": {
+        "node": "v24.21.0",
+        "os": "linux-x64",
+        "pnpm": "11.11.0"
+      },
+      "evidenceClass": "local_scripted",
+      "outcome": "pass",
+      "reasonCodes": [],
+      "evidenceRefs": []
+    },
+    {
+      "id": "rd-20261008224122-1ab01b-chapters-1-3-checks",
+      "subject": "chapters-1-3-checks",
+      "sourceRevision": {
+        "commit": null,
+        "dirtyWorktree": true,
+        "contentFingerprint": "602d7ef923c38cc5250dcb4209211fb713d3d144db577ebca9f698daca50cc14"
+      },
+      "checkedAt": "2026-10-08T22:41:22.968Z",
+      "command": "pnpm readiness",
+      "environment": {
+        "node": "v24.21.0",
+        "os": "linux-x64",
+        "pnpm": "11.11.0"
+      },
+      "evidenceClass": "local_scripted",
+      "outcome": "pass",
+      "reasonCodes": [],
+      "evidenceRefs": []
+    },
+    {
+      "id": "vault-browser-20261008232549",
+      "subject": "vault-browser-check",
+      "sourceRevision": {
+        "commit": null,
+        "dirtyWorktree": true,
+        "contentFingerprint": "970d83ebb5451ad7d97cc94484d4d27d5609806553ac1b0f93c416d44d0bd347"
+      },
+      "checkedAt": "2026-10-08T23:25:49.507Z",
+      "command": "pnpm test:vault:browser",
+      "environment": {
+        "node": "v24.21.0",
+        "os": "linux-x64",
+        "pnpm": "11.11.0"
+      },
+      "evidenceClass": "virtual_authenticator",
+      "outcome": "fail",
+      "reasonCodes": [
+        "AUTHENTICATOR_MODE_VIRTUAL",
+        "PASSKEY_STEP_REQUIRES_REAL_DEVICE_EVIDENCE",
+        "CHECKS_FAILED"
+      ],
+      "evidenceRefs": [],
+      "facts": {
+        "browser": "chromium 153.0.8010.12",
+        "checksPassed": "21",
+        "checksTotal": "23",
+        "recoveredAfterClearingStorage": false,
+        "storage": "postgresql + versitygw 1.8.0",
+        "authenticatorMode": "virtual",
+        "realDeviceEvidence": false
+      }
+    },
+    {
+      "id": "vault-browser-20261008232601",
+      "subject": "vault-browser-check",
+      "sourceRevision": {
+        "commit": null,
+        "dirtyWorktree": true,
+        "contentFingerprint": "29572d7562e8ef42cd3e01df109a5d42ba3d92b5187a744a5db4c915c79473a4"
+      },
+      "checkedAt": "2026-10-08T23:26:01.988Z",
+      "command": "pnpm test:vault:browser",
+      "environment": {
+        "node": "v24.21.0",
+        "os": "linux-x64",
+        "pnpm": "11.11.0"
+      },
+      "evidenceClass": "virtual_authenticator",
+      "outcome": "pass",
+      "reasonCodes": ["AUTHENTICATOR_MODE_VIRTUAL", "PASSKEY_STEP_REQUIRES_REAL_DEVICE_EVIDENCE"],
+      "evidenceRefs": [],
+      "facts": {
+        "browser": "chromium 153.0.8010.12",
+        "checksPassed": "23",
+        "checksTotal": "23",
+        "recoveredAfterClearingStorage": true,
+        "storage": "postgresql + versitygw 1.8.0",
+        "authenticatorMode": "virtual",
+        "realDeviceEvidence": false
+      }
+    },
+    {
+      "id": "vault-browser-20261008233405",
+      "subject": "vault-browser-check",
+      "sourceRevision": {
+        "commit": null,
+        "dirtyWorktree": true,
+        "contentFingerprint": "a6da5eda746ce1d68718bf6c19ea64a60ae93d2c533f3f560899210df6da8b38"
+      },
+      "checkedAt": "2026-10-08T23:34:06.246Z",
+      "command": "pnpm test:vault:browser",
+      "environment": {
+        "node": "v24.21.0",
+        "os": "linux-x64",
+        "pnpm": "11.11.0"
+      },
+      "evidenceClass": "virtual_authenticator",
+      "outcome": "fail",
+      "reasonCodes": [
+        "AUTHENTICATOR_MODE_VIRTUAL",
+        "PASSKEY_STEP_REQUIRES_REAL_DEVICE_EVIDENCE",
+        "CHECKS_FAILED"
+      ],
+      "evidenceRefs": [],
+      "facts": {
+        "browser": "chromium 153.0.8010.12",
+        "checksPassed": "24",
+        "checksTotal": "26",
+        "recoveredAfterClearingStorage": true,
+        "storage": "postgresql + versitygw 1.8.0",
+        "authenticatorMode": "virtual",
+        "realDeviceEvidence": false
+      }
+    },
+    {
+      "id": "vault-browser-20261008233501",
+      "subject": "vault-browser-check",
+      "sourceRevision": {
+        "commit": null,
+        "dirtyWorktree": true,
+        "contentFingerprint": "33fd7efb14401acbbf4cbd0d2955f9891f961d1692d3201c2bfb38df4917cec5"
+      },
+      "checkedAt": "2026-10-08T23:35:01.949Z",
+      "command": "pnpm test:vault:browser",
+      "environment": {
+        "node": "v24.21.0",
+        "os": "linux-x64",
+        "pnpm": "11.11.0"
+      },
+      "evidenceClass": "virtual_authenticator",
+      "outcome": "fail",
+      "reasonCodes": [
+        "AUTHENTICATOR_MODE_VIRTUAL",
+        "PASSKEY_STEP_REQUIRES_REAL_DEVICE_EVIDENCE",
+        "CHECKS_FAILED"
+      ],
+      "evidenceRefs": [],
+      "facts": {
+        "browser": "chromium 153.0.8010.12",
+        "checksPassed": "25",
+        "checksTotal": "26",
+        "recoveredAfterClearingStorage": true,
+        "storage": "postgresql + versitygw 1.8.0",
+        "authenticatorMode": "virtual",
+        "realDeviceEvidence": false
+      }
+    },
+    {
+      "id": "vault-browser-20261008233527",
+      "subject": "vault-browser-check",
+      "sourceRevision": {
+        "commit": null,
+        "dirtyWorktree": true,
+        "contentFingerprint": "34a636f0e3c752e484a83071e89d827fb3f11ba1668c2f9d93d2121f0bb14068"
+      },
+      "checkedAt": "2026-10-08T23:35:27.652Z",
+      "command": "pnpm test:vault:browser",
+      "environment": {
+        "node": "v24.21.0",
+        "os": "linux-x64",
+        "pnpm": "11.11.0"
+      },
+      "evidenceClass": "virtual_authenticator",
+      "outcome": "pass",
+      "reasonCodes": ["AUTHENTICATOR_MODE_VIRTUAL", "PASSKEY_STEP_REQUIRES_REAL_DEVICE_EVIDENCE"],
+      "evidenceRefs": [],
+      "facts": {
+        "browser": "chromium 153.0.8010.12",
+        "checksPassed": "26",
+        "checksTotal": "26",
+        "recoveredAfterClearingStorage": true,
+        "storage": "postgresql + versitygw 1.8.0",
+        "authenticatorMode": "virtual",
+        "realDeviceEvidence": false
+      }
+    },
+    {
+      "id": "account-browser-20261008233745",
+      "subject": "account-browser-check",
+      "sourceRevision": {
+        "commit": null,
+        "dirtyWorktree": true,
+        "contentFingerprint": "8e886e273ae7a8241109ece078c323e7a6ab623d518c33b68c56987f8d5e84d8"
+      },
+      "checkedAt": "2026-10-08T23:37:45.392Z",
+      "command": "pnpm test:account:browser",
+      "environment": {
+        "node": "v24.21.0",
+        "os": "linux-x64",
+        "pnpm": "11.11.0"
+      },
+      "evidenceClass": "virtual_authenticator",
+      "outcome": "pass",
+      "reasonCodes": ["AUTHENTICATOR_MODE_VIRTUAL", "PASSKEY_STEP_REQUIRES_REAL_DEVICE_EVIDENCE"],
+      "evidenceRefs": [],
+      "facts": {
+        "browser": "chromium 153.0.8010.12",
+        "checksPassed": "31",
+        "checksTotal": "31",
+        "addressReproducedAfterClearingStorage": true,
+        "credentialsCreatedDuringCreate": "1",
+        "assertionsDuringCreate": "0",
+        "authenticatorMode": "virtual",
+        "realDeviceEvidence": false
+      }
+    },
+    {
+      "id": "vault-browser-20261008233757",
+      "subject": "vault-browser-check",
+      "sourceRevision": {
+        "commit": null,
+        "dirtyWorktree": true,
+        "contentFingerprint": "d3b8fec529616617af11fcbb6875dae95984d8026ae94459f3807d7b715b5a3a"
+      },
+      "checkedAt": "2026-10-08T23:37:58.102Z",
+      "command": "pnpm test:vault:browser",
+      "environment": {
+        "node": "v24.21.0",
+        "os": "linux-x64",
+        "pnpm": "11.11.0"
+      },
+      "evidenceClass": "virtual_authenticator",
+      "outcome": "pass",
+      "reasonCodes": ["AUTHENTICATOR_MODE_VIRTUAL", "PASSKEY_STEP_REQUIRES_REAL_DEVICE_EVIDENCE"],
+      "evidenceRefs": [],
+      "facts": {
+        "browser": "chromium 153.0.8010.12",
+        "checksPassed": "26",
+        "checksTotal": "26",
+        "recoveredAfterClearingStorage": true,
+        "storage": "postgresql + versitygw 1.8.0",
+        "authenticatorMode": "virtual",
+        "realDeviceEvidence": false
+      }
+    },
+    {
+      "id": "rd-20261008233801-ff7dbc-check-typecheck",
+      "subject": "check-typecheck",
+      "sourceRevision": {
+        "commit": null,
+        "dirtyWorktree": true,
+        "contentFingerprint": "d3b8fec529616617af11fcbb6875dae95984d8026ae94459f3807d7b715b5a3a"
+      },
+      "checkedAt": "2026-10-08T23:38:01.937Z",
+      "command": "pnpm readiness",
+      "environment": {
+        "node": "v24.21.0",
+        "os": "linux-x64",
+        "pnpm": "11.11.0"
+      },
+      "evidenceClass": "local_scripted",
+      "outcome": "pass",
+      "reasonCodes": [],
+      "evidenceRefs": []
+    },
+    {
+      "id": "rd-20261008233801-ff7dbc-check-unit-tests",
+      "subject": "check-unit-tests",
+      "sourceRevision": {
+        "commit": null,
+        "dirtyWorktree": true,
+        "contentFingerprint": "d3b8fec529616617af11fcbb6875dae95984d8026ae94459f3807d7b715b5a3a"
+      },
+      "checkedAt": "2026-10-08T23:38:01.937Z",
+      "command": "pnpm readiness",
+      "environment": {
+        "node": "v24.21.0",
+        "os": "linux-x64",
+        "pnpm": "11.11.0"
+      },
+      "evidenceClass": "local_scripted",
+      "outcome": "pass",
+      "reasonCodes": [],
+      "evidenceRefs": []
+    },
+    {
+      "id": "rd-20261008233801-ff7dbc-check-forge-test",
+      "subject": "check-forge-test",
+      "sourceRevision": {
+        "commit": null,
+        "dirtyWorktree": true,
+        "contentFingerprint": "d3b8fec529616617af11fcbb6875dae95984d8026ae94459f3807d7b715b5a3a"
+      },
+      "checkedAt": "2026-10-08T23:38:01.937Z",
+      "command": "pnpm readiness",
+      "environment": {
+        "node": "v24.21.0",
+        "os": "linux-x64",
+        "pnpm": "11.11.0"
+      },
+      "evidenceClass": "local_scripted",
+      "outcome": "pass",
+      "reasonCodes": [],
+      "evidenceRefs": []
+    },
+    {
+      "id": "rd-20261008233801-ff7dbc-check-secret-scan",
+      "subject": "check-secret-scan",
+      "sourceRevision": {
+        "commit": null,
+        "dirtyWorktree": true,
+        "contentFingerprint": "d3b8fec529616617af11fcbb6875dae95984d8026ae94459f3807d7b715b5a3a"
+      },
+      "checkedAt": "2026-10-08T23:38:01.937Z",
+      "command": "pnpm readiness",
+      "environment": {
+        "node": "v24.21.0",
+        "os": "linux-x64",
+        "pnpm": "11.11.0"
+      },
+      "evidenceClass": "local_scripted",
+      "outcome": "pass",
+      "reasonCodes": [],
+      "evidenceRefs": []
+    },
+    {
+      "id": "rd-20261008233801-ff7dbc-check-protected-baselines",
+      "subject": "check-protected-baselines",
+      "sourceRevision": {
+        "commit": null,
+        "dirtyWorktree": true,
+        "contentFingerprint": "d3b8fec529616617af11fcbb6875dae95984d8026ae94459f3807d7b715b5a3a"
+      },
+      "checkedAt": "2026-10-08T23:38:01.937Z",
+      "command": "pnpm readiness",
+      "environment": {
+        "node": "v24.21.0",
+        "os": "linux-x64",
+        "pnpm": "11.11.0"
+      },
+      "evidenceClass": "local_scripted",
+      "outcome": "pass",
+      "reasonCodes": [],
+      "evidenceRefs": []
+    },
+    {
+      "id": "rd-20261008233801-ff7dbc-check-build",
+      "subject": "check-build",
+      "sourceRevision": {
+        "commit": null,
+        "dirtyWorktree": true,
+        "contentFingerprint": "d3b8fec529616617af11fcbb6875dae95984d8026ae94459f3807d7b715b5a3a"
+      },
+      "checkedAt": "2026-10-08T23:38:01.937Z",
+      "command": "pnpm readiness",
+      "environment": {
+        "node": "v24.21.0",
+        "os": "linux-x64",
+        "pnpm": "11.11.0"
+      },
+      "evidenceClass": "local_scripted",
+      "outcome": "pass",
+      "reasonCodes": [],
+      "evidenceRefs": []
+    },
+    {
+      "id": "rd-20261008233801-ff7dbc-check-exclusion",
+      "subject": "check-exclusion",
+      "sourceRevision": {
+        "commit": null,
+        "dirtyWorktree": true,
+        "contentFingerprint": "d3b8fec529616617af11fcbb6875dae95984d8026ae94459f3807d7b715b5a3a"
+      },
+      "checkedAt": "2026-10-08T23:38:01.937Z",
+      "command": "pnpm readiness",
+      "environment": {
+        "node": "v24.21.0",
+        "os": "linux-x64",
+        "pnpm": "11.11.0"
+      },
+      "evidenceClass": "local_scripted",
+      "outcome": "pass",
+      "reasonCodes": [],
+      "evidenceRefs": []
+    },
+    {
+      "id": "rd-20261008233801-ff7dbc-chapters-1-3-checks",
+      "subject": "chapters-1-3-checks",
+      "sourceRevision": {
+        "commit": null,
+        "dirtyWorktree": true,
+        "contentFingerprint": "d3b8fec529616617af11fcbb6875dae95984d8026ae94459f3807d7b715b5a3a"
+      },
+      "checkedAt": "2026-10-08T23:38:01.937Z",
+      "command": "pnpm readiness",
+      "environment": {
+        "node": "v24.21.0",
+        "os": "linux-x64",
+        "pnpm": "11.11.0"
+      },
+      "evidenceClass": "local_scripted",
+      "outcome": "pass",
+      "reasonCodes": [],
+      "evidenceRefs": []
+    },
+    {
+      "id": "vault-browser-20261009093640",
+      "subject": "vault-browser-check",
+      "sourceRevision": {
+        "commit": null,
+        "dirtyWorktree": true,
+        "contentFingerprint": "4d58cc80e554aaa73b25303da192d2cf807d0ff1e4d71d6490bf2d6e374c8b66"
+      },
+      "checkedAt": "2026-10-09T09:36:41.012Z",
+      "command": "pnpm test:vault:browser",
+      "environment": {
+        "node": "v24.21.0",
+        "os": "linux-x64",
+        "pnpm": "11.11.0"
+      },
+      "evidenceClass": "virtual_authenticator",
+      "outcome": "pass",
+      "reasonCodes": ["AUTHENTICATOR_MODE_VIRTUAL", "PASSKEY_STEP_REQUIRES_REAL_DEVICE_EVIDENCE"],
+      "evidenceRefs": [],
+      "facts": {
+        "browser": "chromium 153.0.8010.12",
+        "checksPassed": "26",
+        "checksTotal": "26",
+        "recoveredAfterClearingStorage": true,
+        "storage": "postgresql + versitygw 1.8.0",
+        "authenticatorMode": "virtual",
+        "realDeviceEvidence": false
+      }
+    },
+    {
+      "id": "account-browser-20261009093653",
+      "subject": "account-browser-check",
+      "sourceRevision": {
+        "commit": null,
+        "dirtyWorktree": true,
+        "contentFingerprint": "c2a0483a2346441383faa7a6c01e5932f79a17c148712949249e26b82ec0f0a2"
+      },
+      "checkedAt": "2026-10-09T09:36:54.078Z",
+      "command": "pnpm test:account:browser",
+      "environment": {
+        "node": "v24.21.0",
+        "os": "linux-x64",
+        "pnpm": "11.11.0"
+      },
+      "evidenceClass": "virtual_authenticator",
+      "outcome": "pass",
+      "reasonCodes": ["AUTHENTICATOR_MODE_VIRTUAL", "PASSKEY_STEP_REQUIRES_REAL_DEVICE_EVIDENCE"],
+      "evidenceRefs": [],
+      "facts": {
+        "browser": "chromium 153.0.8010.12",
+        "checksPassed": "31",
+        "checksTotal": "31",
+        "addressReproducedAfterClearingStorage": true,
+        "credentialsCreatedDuringCreate": "1",
+        "assertionsDuringCreate": "0",
+        "authenticatorMode": "virtual",
+        "realDeviceEvidence": false
+      }
+    },
+    {
+      "id": "rd-20261009093839-55e75b-check-typecheck",
+      "subject": "check-typecheck",
+      "sourceRevision": {
+        "commit": null,
+        "dirtyWorktree": true,
+        "contentFingerprint": "c2a0483a2346441383faa7a6c01e5932f79a17c148712949249e26b82ec0f0a2"
+      },
+      "checkedAt": "2026-10-09T09:38:39.057Z",
+      "command": "pnpm readiness",
+      "environment": {
+        "node": "v24.21.0",
+        "os": "linux-x64",
+        "pnpm": "11.11.0"
+      },
+      "evidenceClass": "local_scripted",
+      "outcome": "pass",
+      "reasonCodes": [],
+      "evidenceRefs": []
+    },
+    {
+      "id": "rd-20261009093839-55e75b-check-unit-tests",
+      "subject": "check-unit-tests",
+      "sourceRevision": {
+        "commit": null,
+        "dirtyWorktree": true,
+        "contentFingerprint": "c2a0483a2346441383faa7a6c01e5932f79a17c148712949249e26b82ec0f0a2"
+      },
+      "checkedAt": "2026-10-09T09:38:39.057Z",
+      "command": "pnpm readiness",
+      "environment": {
+        "node": "v24.21.0",
+        "os": "linux-x64",
+        "pnpm": "11.11.0"
+      },
+      "evidenceClass": "local_scripted",
+      "outcome": "fail",
+      "reasonCodes": ["EXIT_1"],
+      "evidenceRefs": []
+    },
+    {
+      "id": "rd-20261009093839-55e75b-check-forge-test",
+      "subject": "check-forge-test",
+      "sourceRevision": {
+        "commit": null,
+        "dirtyWorktree": true,
+        "contentFingerprint": "c2a0483a2346441383faa7a6c01e5932f79a17c148712949249e26b82ec0f0a2"
+      },
+      "checkedAt": "2026-10-09T09:38:39.057Z",
+      "command": "pnpm readiness",
+      "environment": {
+        "node": "v24.21.0",
+        "os": "linux-x64",
+        "pnpm": "11.11.0"
+      },
+      "evidenceClass": "local_scripted",
+      "outcome": "pass",
+      "reasonCodes": [],
+      "evidenceRefs": []
+    },
+    {
+      "id": "rd-20261009093839-55e75b-check-secret-scan",
+      "subject": "check-secret-scan",
+      "sourceRevision": {
+        "commit": null,
+        "dirtyWorktree": true,
+        "contentFingerprint": "c2a0483a2346441383faa7a6c01e5932f79a17c148712949249e26b82ec0f0a2"
+      },
+      "checkedAt": "2026-10-09T09:38:39.057Z",
+      "command": "pnpm readiness",
+      "environment": {
+        "node": "v24.21.0",
+        "os": "linux-x64",
+        "pnpm": "11.11.0"
+      },
+      "evidenceClass": "local_scripted",
+      "outcome": "fail",
+      "reasonCodes": ["EXIT_1"],
+      "evidenceRefs": []
+    },
+    {
+      "id": "rd-20261009093839-55e75b-check-protected-baselines",
+      "subject": "check-protected-baselines",
+      "sourceRevision": {
+        "commit": null,
+        "dirtyWorktree": true,
+        "contentFingerprint": "c2a0483a2346441383faa7a6c01e5932f79a17c148712949249e26b82ec0f0a2"
+      },
+      "checkedAt": "2026-10-09T09:38:39.057Z",
+      "command": "pnpm readiness",
+      "environment": {
+        "node": "v24.21.0",
+        "os": "linux-x64",
+        "pnpm": "11.11.0"
+      },
+      "evidenceClass": "local_scripted",
+      "outcome": "fail",
+      "reasonCodes": ["EXIT_1"],
+      "evidenceRefs": []
+    },
+    {
+      "id": "rd-20261009093839-55e75b-check-build",
+      "subject": "check-build",
+      "sourceRevision": {
+        "commit": null,
+        "dirtyWorktree": true,
+        "contentFingerprint": "c2a0483a2346441383faa7a6c01e5932f79a17c148712949249e26b82ec0f0a2"
+      },
+      "checkedAt": "2026-10-09T09:38:39.057Z",
+      "command": "pnpm readiness",
+      "environment": {
+        "node": "v24.21.0",
+        "os": "linux-x64",
+        "pnpm": "11.11.0"
+      },
+      "evidenceClass": "local_scripted",
+      "outcome": "pass",
+      "reasonCodes": [],
+      "evidenceRefs": []
+    },
+    {
+      "id": "rd-20261009093839-55e75b-check-exclusion",
+      "subject": "check-exclusion",
+      "sourceRevision": {
+        "commit": null,
+        "dirtyWorktree": true,
+        "contentFingerprint": "c2a0483a2346441383faa7a6c01e5932f79a17c148712949249e26b82ec0f0a2"
+      },
+      "checkedAt": "2026-10-09T09:38:39.057Z",
+      "command": "pnpm readiness",
+      "environment": {
+        "node": "v24.21.0",
+        "os": "linux-x64",
+        "pnpm": "11.11.0"
+      },
+      "evidenceClass": "local_scripted",
+      "outcome": "pass",
+      "reasonCodes": [],
+      "evidenceRefs": []
+    },
+    {
+      "id": "rd-20261009093839-55e75b-chapters-1-3-checks",
+      "subject": "chapters-1-3-checks",
+      "sourceRevision": {
+        "commit": null,
+        "dirtyWorktree": true,
+        "contentFingerprint": "c2a0483a2346441383faa7a6c01e5932f79a17c148712949249e26b82ec0f0a2"
+      },
+      "checkedAt": "2026-10-09T09:38:39.057Z",
+      "command": "pnpm readiness",
+      "environment": {
+        "node": "v24.21.0",
+        "os": "linux-x64",
+        "pnpm": "11.11.0"
+      },
+      "evidenceClass": "local_scripted",
+      "outcome": "fail",
+      "reasonCodes": ["CHECKS_NOT_ALL_PASSED"],
+      "evidenceRefs": []
+    },
+    {
+      "id": "account-browser-20261009110633",
+      "subject": "account-browser-check",
+      "sourceRevision": {
+        "commit": null,
+        "dirtyWorktree": true,
+        "contentFingerprint": "c2db95c58c411362ca2075ffca46ab393fd0f59053dba87b688ea10d5cc0c44c"
+      },
+      "checkedAt": "2026-10-09T11:06:33.829Z",
+      "command": "pnpm test:account:browser",
+      "environment": {
+        "node": "v24.21.0",
+        "os": "linux-x64",
+        "pnpm": "11.11.0"
+      },
+      "evidenceClass": "virtual_authenticator",
+      "outcome": "pass",
+      "reasonCodes": ["AUTHENTICATOR_MODE_VIRTUAL", "PASSKEY_STEP_REQUIRES_REAL_DEVICE_EVIDENCE"],
+      "evidenceRefs": [],
+      "facts": {
+        "browser": "chromium 153.0.8010.12",
+        "checksPassed": "31",
+        "checksTotal": "31",
+        "addressReproducedAfterClearingStorage": true,
+        "credentialsCreatedDuringCreate": "1",
+        "assertionsDuringCreate": "0",
+        "authenticatorMode": "virtual",
+        "realDeviceEvidence": false
+      }
+    },
+    {
+      "id": "vault-browser-20261009110648",
+      "subject": "vault-browser-check",
+      "sourceRevision": {
+        "commit": null,
+        "dirtyWorktree": true,
+        "contentFingerprint": "2881965c6ab87beaadc41cfc672f43e68ca77cadd3971cdb6a9decb25ccff58c"
+      },
+      "checkedAt": "2026-10-09T11:06:48.434Z",
+      "command": "pnpm test:vault:browser",
+      "environment": {
+        "node": "v24.21.0",
+        "os": "linux-x64",
+        "pnpm": "11.11.0"
+      },
+      "evidenceClass": "virtual_authenticator",
+      "outcome": "pass",
+      "reasonCodes": ["AUTHENTICATOR_MODE_VIRTUAL", "PASSKEY_STEP_REQUIRES_REAL_DEVICE_EVIDENCE"],
+      "evidenceRefs": [],
+      "facts": {
+        "browser": "chromium 153.0.8010.12",
+        "checksPassed": "26",
+        "checksTotal": "26",
+        "recoveredAfterClearingStorage": true,
+        "storage": "postgresql + versitygw 1.8.0",
+        "authenticatorMode": "virtual",
+        "realDeviceEvidence": false
+      }
+    },
+    {
+      "id": "review-browser-20261009130240",
+      "subject": "review-browser-check",
+      "sourceRevision": {
+        "commit": null,
+        "dirtyWorktree": true,
+        "contentFingerprint": "36af3a0d0c32e5d8f7a8522ae5dda8d49b779d457c891d9846e8a303ff54fe57"
+      },
+      "checkedAt": "2026-10-09T13:02:40.296Z",
+      "command": "pnpm test:review:browser",
+      "environment": {
+        "node": "v24.21.0",
+        "os": "linux-x64",
+        "pnpm": "11.11.0"
+      },
+      "evidenceClass": "virtual_authenticator",
+      "outcome": "pass",
+      "reasonCodes": ["AUTHENTICATOR_MODE_VIRTUAL", "SYNTHETIC_DOCUMENTS_ONLY"],
+      "evidenceRefs": [],
+      "facts": {
+        "browser": "chromium 153.0.8010.12",
+        "checksPassed": "33",
+        "checksTotal": "33",
+        "storage": "postgresql + versitygw 1.8.0",
+        "authenticatorMode": "virtual",
+        "realDeviceEvidence": false
+      }
+    },
+    {
+      "id": "review-browser-20261009130631",
+      "subject": "review-browser-check",
+      "sourceRevision": {
+        "commit": null,
+        "dirtyWorktree": true,
+        "contentFingerprint": "e73697557545f66dd227a26b0788c1730ff0266e8d44ac0322b54e7a1b714d99"
+      },
+      "checkedAt": "2026-10-09T13:06:31.885Z",
+      "command": "pnpm test:review:browser",
+      "environment": {
+        "node": "v24.21.0",
+        "os": "linux-x64",
+        "pnpm": "11.11.0"
+      },
+      "evidenceClass": "virtual_authenticator",
+      "outcome": "pass",
+      "reasonCodes": ["AUTHENTICATOR_MODE_VIRTUAL", "SYNTHETIC_DOCUMENTS_ONLY"],
+      "evidenceRefs": [],
+      "facts": {
+        "browser": "chromium 153.0.8010.12",
+        "checksPassed": "33",
+        "checksTotal": "33",
+        "storage": "postgresql + versitygw 1.8.0",
+        "authenticatorMode": "virtual",
+        "realDeviceEvidence": false
+      }
+    },
+    {
+      "id": "review-browser-20261009131324",
+      "subject": "review-browser-check",
+      "sourceRevision": {
+        "commit": null,
+        "dirtyWorktree": true,
+        "contentFingerprint": "29ccdb59eded720e2a160f78e7740e6c48a25723fe63f21dd4eb8b2b79e53590"
+      },
+      "checkedAt": "2026-10-09T13:13:24.289Z",
+      "command": "pnpm test:review:browser",
+      "environment": {
+        "node": "v24.21.0",
+        "os": "linux-x64",
+        "pnpm": "11.11.0"
+      },
+      "evidenceClass": "virtual_authenticator",
+      "outcome": "pass",
+      "reasonCodes": ["AUTHENTICATOR_MODE_VIRTUAL", "SYNTHETIC_DOCUMENTS_ONLY"],
+      "evidenceRefs": [],
+      "facts": {
+        "browser": "chromium 153.0.8010.12",
+        "checksPassed": "33",
+        "checksTotal": "33",
+        "storage": "postgresql + versitygw 1.8.0",
+        "authenticatorMode": "virtual",
+        "realDeviceEvidence": false
+      }
+    },
+    {
+      "id": "vault-browser-20261009131346",
+      "subject": "vault-browser-check",
+      "sourceRevision": {
+        "commit": null,
+        "dirtyWorktree": true,
+        "contentFingerprint": "c8f12c62db1720387363bdf44e589ad9698e5771d363bb30f626c1e9f47acc4d"
+      },
+      "checkedAt": "2026-10-09T13:13:46.954Z",
+      "command": "pnpm test:vault:browser",
+      "environment": {
+        "node": "v24.21.0",
+        "os": "linux-x64",
+        "pnpm": "11.11.0"
+      },
+      "evidenceClass": "virtual_authenticator",
+      "outcome": "pass",
+      "reasonCodes": ["AUTHENTICATOR_MODE_VIRTUAL", "PASSKEY_STEP_REQUIRES_REAL_DEVICE_EVIDENCE"],
+      "evidenceRefs": [],
+      "facts": {
+        "browser": "chromium 153.0.8010.12",
+        "checksPassed": "26",
+        "checksTotal": "26",
+        "recoveredAfterClearingStorage": true,
+        "storage": "postgresql + versitygw 1.8.0",
+        "authenticatorMode": "virtual",
+        "realDeviceEvidence": false
+      }
+    },
+    {
+      "id": "account-browser-20261009131403",
+      "subject": "account-browser-check",
+      "sourceRevision": {
+        "commit": null,
+        "dirtyWorktree": true,
+        "contentFingerprint": "3768f750d982afbbadd3036d7ebddd6de4518f569eb0615a6a459bff5770e438"
+      },
+      "checkedAt": "2026-10-09T13:14:03.550Z",
+      "command": "pnpm test:account:browser",
+      "environment": {
+        "node": "v24.21.0",
+        "os": "linux-x64",
+        "pnpm": "11.11.0"
+      },
+      "evidenceClass": "virtual_authenticator",
+      "outcome": "pass",
+      "reasonCodes": ["AUTHENTICATOR_MODE_VIRTUAL", "PASSKEY_STEP_REQUIRES_REAL_DEVICE_EVIDENCE"],
+      "evidenceRefs": [],
+      "facts": {
+        "browser": "chromium 153.0.8010.12",
+        "checksPassed": "31",
+        "checksTotal": "31",
+        "addressReproducedAfterClearingStorage": true,
+        "credentialsCreatedDuringCreate": "1",
+        "assertionsDuringCreate": "0",
+        "authenticatorMode": "virtual",
+        "realDeviceEvidence": false
+      }
+    }
+  ],
+  "appliedCuts": [],
+  "gates": {
+    "schemaVersion": 1,
+    "note": "Computed from recorded results by pnpm readiness. Evidence lives in results; these are never edited by hand.",
+    "targets": {
+      "A": "2026-10-06T23:59:59+01:00",
+      "B": "2026-10-08T23:59:59+01:00",
+      "C": "2026-10-10T23:59:59+01:00",
+      "D": "2026-10-11T23:59:59+01:00"
+    },
+    "submission": {
+      "internalTarget": "2026-10-12",
+      "latestPlanned": "2026-10-13T22:00:00+01:00",
+      "hardDeadline": "2026-10-14T04:59:00+01:00"
+    },
+    "evaluations": [
+      {
+        "gate": "A",
+        "target": "2026-10-06T23:59:59+01:00",
+        "outcome": "fail",
+        "requirements": [
+          {
+            "id": "A1",
+            "label": "Chapters 1–3 build and tests pass",
+            "state": "failed",
+            "resultId": "rd-20261009093839-55e75b-chapters-1-3-checks"
+          },
+          {
+            "id": "A2",
+            "label": "Registry deployed on Monad testnet (observed receipt, matching identity)",
+            "state": "missing",
+            "resultId": null
+          }
+        ],
+        "reasons": ["FAILED:A1", "MISSING:A2"],
+        "observedAt": "2026-10-09T09:38:39.057Z"
+      },
+      {
+        "gate": "B",
+        "target": "2026-10-08T23:59:59+01:00",
+        "outcome": "fail",
+        "requirements": [
+          {
+            "id": "B1",
+            "label": "A real Mera account signed the exact action",
+            "state": "missing",
+            "resultId": null
+          },
+          {
+            "id": "B2",
+            "label": "Registry transaction confirmed through Alchemy",
+            "state": "missing",
+            "resultId": null
+          },
+          {
+            "id": "B3",
+            "label": "Verifier read the resulting state",
+            "state": "missing",
+            "resultId": null
+          }
+        ],
+        "reasons": ["MISSING:B1", "MISSING:B2", "MISSING:B3", "UNPROVEN_AT_CUTOFF"],
+        "observedAt": null
+      },
+      {
+        "gate": "C",
+        "target": "2026-10-10T23:59:59+01:00",
+        "outcome": "unknown",
+        "requirements": [
+          {
+            "id": "C1",
+            "label": "Genuine Qwen run with bounded tools and valid source-linked findings",
+            "state": "missing",
+            "resultId": null
+          },
+          {
+            "id": "C2",
+            "label": "Complete T0 browser journey",
+            "state": "missing",
+            "resultId": null
+          }
+        ],
+        "reasons": ["MISSING:C1", "MISSING:C2"],
+        "observedAt": null
+      },
+      {
+        "gate": "D",
+        "target": "2026-10-11T23:59:59+01:00",
+        "outcome": "unknown",
+        "requirements": [
+          {
+            "id": "D1",
+            "label": "Feature freeze recorded",
+            "state": "missing",
+            "resultId": null
+          },
+          {
+            "id": "D2",
+            "label": "Verifier passes",
+            "state": "missing",
+            "resultId": null
+          },
+          {
+            "id": "D3",
+            "label": "SDK passes",
+            "state": "missing",
+            "resultId": null
+          },
+          {
+            "id": "D4",
+            "label": "CLI passes",
+            "state": "missing",
+            "resultId": null
+          },
+          {
+            "id": "D5",
+            "label": "Judge path passes",
+            "state": "missing",
+            "resultId": null
+          },
+          {
+            "id": "D6",
+            "label": "Anonymously accessible public repository",
+            "state": "missing",
+            "resultId": null
+          }
+        ],
+        "reasons": [
+          "MISSING:D1",
+          "MISSING:D2",
+          "MISSING:D3",
+          "MISSING:D4",
+          "MISSING:D5",
+          "MISSING:D6"
+        ],
+        "observedAt": null
+      }
+    ],
+    "consequences": {
+      "meraBountyClaimsWithdrawn": true,
+      "releaseBlockers": [
+        "NO_DEPLOYABLE_SIGNER: development-only signers cannot pass Gate B or enter production",
+        "HOSTED_T0_INCOMPLETE: dropping the bounties does not complete the hosted golden path"
+      ]
+    },
+    "evaluatedAt": "2026-10-09T09:38:39.057Z"
+  },
+  "cutLadder": {
+    "order": [
+      "voice",
+      "documentComparison",
+      "matterBriefing",
+      "reputationFeedback",
+      "nonessential-orb-animation",
+      "history-ui-polish",
+      "fixture-target-twelve-to-eight",
+      "agentIdentity",
+      "matterNotes"
+    ],
+    "neverCut": [
+      "real-signature",
+      "real-monad-transaction",
+      "independent-verifier-with-tamper-failure",
+      "honest-status-labels",
+      "stop",
+      "explicit-approval",
+      "consent",
+      "encryption",
+      "save-and-read-back",
+      "limits",
+      "authorisation-checks",
+      "envio-pipeline"
+    ],
+    "fixtureTargets": {
+      "required": 8,
+      "stretch": 12
+    }
+  },
+  "readiness": {
+    "runId": "rd-20261009093839-55e75b",
+    "generatedAt": "2026-10-09T09:38:39.057Z",
+    "live": false,
+    "fingerprint": "c2a0483a2346441383faa7a6c01e5932f79a17c148712949249e26b82ec0f0a2",
+    "totalMs": 22134,
+    "versions": {
+      "node": "v24.21.0",
+      "pnpm": "11.11.0",
+      "forge": "1.8.5"
+    },
+    "checks": [
+      {
+        "id": "typecheck",
+        "outcome": "pass",
+        "reason": "OK",
+        "durationMs": 12569
+      },
+      {
+        "id": "unit-tests",
+        "outcome": "fail",
+        "reason": "EXIT_1",
+        "durationMs": 6201
+      },
+      {
+        "id": "forge-test",
+        "outcome": "pass",
+        "reason": "OK",
+        "durationMs": 18479
+      },
+      {
+        "id": "secret-scan",
+        "outcome": "fail",
+        "reason": "EXIT_1",
+        "durationMs": 1216
+      },
+      {
+        "id": "protected-baselines",
+        "outcome": "fail",
+        "reason": "EXIT_1",
+        "durationMs": 563
+      },
+      {
+        "id": "build",
+        "outcome": "pass",
+        "reason": "OK",
+        "durationMs": 4476
+      },
+      {
+        "id": "exclusion",
+        "outcome": "pass",
+        "reason": "OK",
+        "durationMs": 640
+      }
+    ]
+  },
+  "cutLadderChecks": {
+    "schemaVersion": 1,
+    "kind": "candidate-configuration-validation",
+    "note": "Validates candidate configurations. It is not an applied project scope cut; appliedCuts stays empty.",
+    "configurations": [
+      {
+        "name": "baseline",
+        "effective": "43b38dcfdf66",
+        "enabled": [],
+        "presentation": [],
+        "outcome": "blocked",
+        "reason": "T0_JOURNEY_PENDING"
+      },
+      {
+        "name": "all-t3-off",
+        "effective": "43b38dcfdf66",
+        "enabled": [],
+        "presentation": [],
+        "outcome": "blocked",
+        "reason": "T0_JOURNEY_PENDING"
+      },
+      {
+        "name": "all-six-off",
+        "effective": "43b38dcfdf66",
+        "enabled": [],
+        "presentation": [],
+        "outcome": "blocked",
+        "reason": "T0_JOURNEY_PENDING"
+      },
+      {
+        "name": "ladder-1-voice",
+        "effective": "43b38dcfdf66",
+        "enabled": [],
+        "presentation": [],
+        "outcome": "blocked",
+        "reason": "T0_JOURNEY_PENDING"
+      },
+      {
+        "name": "ladder-2-documentComparison",
+        "effective": "43b38dcfdf66",
+        "enabled": [],
+        "presentation": [],
+        "outcome": "blocked",
+        "reason": "T0_JOURNEY_PENDING"
+      },
+      {
+        "name": "ladder-3-matterBriefing",
+        "effective": "43b38dcfdf66",
+        "enabled": [],
+        "presentation": [],
+        "outcome": "blocked",
+        "reason": "T0_JOURNEY_PENDING"
+      },
+      {
+        "name": "ladder-4-reputationFeedback",
+        "effective": "43b38dcfdf66",
+        "enabled": [],
+        "presentation": [],
+        "outcome": "blocked",
+        "reason": "T0_JOURNEY_PENDING"
+      },
+      {
+        "name": "ladder-5-nonessential-orb-animation",
+        "effective": "7059ede017cc",
+        "enabled": [],
+        "presentation": ["nonessential-orb-animation"],
+        "outcome": "blocked",
+        "reason": "T0_JOURNEY_PENDING"
+      },
+      {
+        "name": "ladder-6-history-ui-polish",
+        "effective": "046d77a117a6",
+        "enabled": [],
+        "presentation": ["nonessential-orb-animation", "history-ui-polish"],
+        "outcome": "blocked",
+        "reason": "T0_JOURNEY_PENDING"
+      },
+      {
+        "name": "ladder-7-fixture-target-twelve-to-eight",
+        "effective": "c6aeeffc04a6",
+        "enabled": [],
+        "presentation": [
+          "nonessential-orb-animation",
+          "history-ui-polish",
+          "fixture-target-twelve-to-eight"
+        ],
+        "outcome": "blocked",
+        "reason": "T0_JOURNEY_PENDING"
+      },
+      {
+        "name": "ladder-8-agentIdentity",
+        "effective": "c6aeeffc04a6",
+        "enabled": [],
+        "presentation": [
+          "nonessential-orb-animation",
+          "history-ui-polish",
+          "fixture-target-twelve-to-eight"
+        ],
+        "outcome": "blocked",
+        "reason": "T0_JOURNEY_PENDING"
+      },
+      {
+        "name": "ladder-9-matterNotes",
+        "effective": "c6aeeffc04a6",
+        "enabled": [],
+        "presentation": [
+          "nonessential-orb-animation",
+          "history-ui-polish",
+          "fixture-target-twelve-to-eight"
+        ],
+        "outcome": "blocked",
+        "reason": "T0_JOURNEY_PENDING"
+      },
+      {
+        "name": "identity-and-notes-off",
+        "effective": "43b38dcfdf66",
+        "enabled": [],
+        "presentation": [],
+        "outcome": "blocked",
+        "reason": "T0_JOURNEY_PENDING"
+      }
+    ],
+    "distinctEffectiveConfigurations": 4
+  },
+  "chapter14": {
+    "phase": "early",
+    "note": "Early implementation: scope register, evidence model, gate predicates, flags, smoke step registry, readiness and exclusion guards. The T0 journey, cut-ladder runs and manual testnet journey are pending their owning chapters, so Chapter 14 is not verified.",
+    "startedOn": "2026-10-08",
+    "taskMapping": {
+      "14.1": "tasks 2-3 (tiers, evidence model, gates)",
+      "14.2": "tasks 4-5 (flags, projections)",
+      "14.3": "tasks 6-8 (exclusion, smoke:local, smoke:testnet)",
+      "14.4": "task 9 (readiness)",
+      "14.5": "task 10 (cut-ladder matrix)"
+    },
+    "modules": {
+      "tooling/src/register.ts": "authoritative tier and feature register",
+      "tooling/src/state.ts": "closed result schema, build-state validator, append-only writer, staleness",
+      "tooling/src/gates.ts": "Gate A-D predicates, consequences, Gate C entry",
+      "tooling/src/cut-ladder.ts": "ordered ladder, never-cut controls, fixture target",
+      "tooling/src/exclusion.ts, secrets.ts": "artifact, import-graph and secret scans",
+      "tooling/src/smoke-steps.ts, guards.ts": "shared step registry, testnet preflight, resume ledger",
+      "tooling/src/readiness.ts, report.ts": "bounded runner, live probes, report and exit logic",
+      "apps/web/src/config/flags.ts, server/flags.ts": "flag resolution, server load, client projection, server gate",
+      "docs/scope-tiers.md, docs/readiness-report.md, docs/smoke-local-result.json, docs/protected-baselines.json": "generated or recorded artifacts"
+    },
+    "commands": [
+      "pnpm readiness",
+      "pnpm state:validate",
+      "pnpm scope:docs:check",
+      "pnpm baselines:check",
+      "pnpm secrets:check",
+      "pnpm exclusion:check",
+      "pnpm smoke:local",
+      "pnpm smoke:testnet",
+      "pnpm cutladder:check",
+      "pnpm prf:probe"
+    ],
+    "prfProbe": {
+      "outcome": "pass",
+      "evidenceClass": "virtual_authenticator",
+      "notes": "Chromium 153 virtual authenticator accepted hasPrf, created a credential with prf enabled, and returned stable 32-byte output for repeated salts and different output for another salt. This shows browser and authenticator capability only; no application signer or vault path exists yet, and it is not real-device or synced-credential evidence. A first run failed from a harness defect (a missing helper in the page); it is kept in results and the fixed rerun supersedes it."
+    },
+    "testAdapters": "No test signer adapter was written: the PRF probe passed and the signer interface does not exist yet (Chapter 4). The adapter classification stays pending its interface.",
+    "currentGates": "A: fail (due 2026-10-06, no deployment evidence). B: unknown (due 2026-10-08T23:59:59+01:00). C, D: unknown. See gates in this file and docs/readiness-report.md.",
+    "checks": {
+      "readinessOffline": {
+        "command": "pnpm readiness",
+        "outcome": "fail",
+        "notes": "All seven local checks passed in about 20 s of a 110 s budget; exit is nonzero because Gate A is overdue with no recorded Monad testnet deployment."
+      },
+      "unitTests": {
+        "command": "pnpm test",
+        "outcome": "pass"
+      },
+      "productionExclusion": {
+        "command": "pnpm exclusion:check",
+        "outcome": "pass",
+        "notes": "Clean on web client/server output, verifier output and package/app import graphs. Negative controls (test marker, replay provider, test signer import, known and fixture keys, injected test artifact) run on isolated temporary trees in tooling/src/exclusion.test.ts."
+      },
+      "protectedBaselines": {
+        "command": "pnpm baselines:check",
+        "outcome": "pass",
+        "notes": "43 protected files and the compiled registry ABI and runtime bytecode unchanged."
+      },
+      "smokeLocal": {
+        "command": "pnpm smoke:local",
+        "outcome": "pending",
+        "notes": "All ten steps pending their chapters; exits nonzero."
+      },
+      "smokeTestnet": {
+        "command": "pnpm smoke:testnet",
+        "outcome": "not-run",
+        "notes": "Preflight only. The operator-started live journey was not run and cannot start until its prerequisites exist."
+      },
+      "cutLadder": {
+        "command": "pnpm cutladder:check",
+        "outcome": "blocked",
+        "notes": "13 candidate configurations resolve to 4 distinct effective ones; none can run the T0 journey. No project scope cut has been applied."
+      },
+      "boundaryNegativeControls": {
+        "outcome": "pass",
+        "notes": "ESLint rejected a package and an app importing tooling."
+      },
+      "ci": {
+        "outcome": "unverified",
+        "notes": "ci.yml now runs the Chapter 14 static checks; it has never executed on GitHub."
+      }
+    },
+    "pendingDependencies": {
+      "Chapter 4": "real signer interface; PRF through application code; Gate B",
+      "Chapter 5": "vault and encrypted save for the freeze step",
+      "Chapters 8-11": "document intake, Qwen runtime, HUD (flag wiring beyond the command dock), verifier UI",
+      "Chapter 6": "funded deployment, Alchemy transport, Gate A deployment evidence",
+      "Chapter 19": "health route fields and indexer lag for the live readiness probes",
+      "Chapters 15-18": "Gate D deliverables"
+    },
+    "decisions": [
+      "Unproven at a gate cutoff is recorded as a failure, not an open question; before the cutoff it is unknown.",
+      "Gate C is entered when Gate B closes (2026-10-08T23:59:59+01:00); from then a pending T0 smoke step fails the run.",
+      "Feature flags are server-side values read once per process; FEATURE_READINESS is a code constant that must be flipped together with a current passing result.",
+      "The owning-chapter assignment for features without an explicit owner in the brief is a planning assumption recorded in the register."
+    ]
+  },
+  "chapter04": {
+    "startedOn": "2026-10-08",
+    "state": "in-progress",
+    "note": "Built and verified locally, with a virtual authenticator and real PostgreSQL. Real-device passkey checks have not been performed, so the chapter is not complete and nothing here is Gate B evidence.",
+    "resolvedDependencies": {
+      "@category-labs/mera": "0.2.0 (preview; not independently audited; engines node >=24; exact pin)",
+      "@scure/bip32": "2.4.0",
+      "viem": "2.57.3 (viem/siwe for EIP-4361; no siwe or ethers dependency)",
+      "pg": "8.23.1",
+      "embedded-postgres": "18.4.0-beta.17 (dev only: real PostgreSQL binaries for tests and pnpm db:dev; beta-tagged releases only)"
+    },
+    "apiEvidence": "Read from the installed declarations (node_modules/@category-labs/mera/dist/*.d.ts): createPasskeyWithPrfOutput({rp,user,prfSalt,timeout,webAuthnClient}) and getPasskeyPrfOutput({rpId,credential,prfSalt,timeout,webAuthnClient}); createSecp256k1SigningSession({privateKey}); getEvmAddress(publicKey); toViemAccount(session) from @category-labs/mera/viem; MeraError/isMeraError with seven codes. There is no AbortSignal option, cancellation has no code of its own, and the create result does not say whether a fallback assertion ran.",
+    "derivationProfile": {
+      "profileId": "lexaegis.evm.bip32-prf.v1",
+      "accountPrfSalt": "SHA256(UTF8(\"lexaegis:account:evm:v1\")) = 0x21a6805c5ca9301d9b57c493b1a7705b1eb16fa2c83a9d6b1972f3d449e960bf",
+      "vaultPrfSalt": "SHA256(UTF8(\"lexaegis:vault:root:v1\")) = 0xde6e035a511d2e546d46d0110ccb8f057ba77248c641a73c0c795d34c1622980 (reserved for Chapter 5; not evaluated during account onboarding)",
+      "path": "m/44'/60'/0'/0/0",
+      "derivation": "account PRF output (32 bytes) used directly as the BIP-32 master seed, then the path, then secp256k1. No BIP-39 step. Nothing about chain, registry, label or database ID enters it.",
+      "vectors": "fixtures/account-v1/vectors.json from an independent generator (library BIP-32 and hand-written BIP-32 must agree)"
+    },
+    "modules": {
+      "apps/web/src/features/account": "config, capabilities, derivation-profile, mera-passkeys, derive-account, session-controller, review-signing, auth-client, public (the only surface UI may import), port (Chapter 1 port, unchanged)",
+      "apps/web/src/lib/login-message.ts, auth-schema.ts": "the one EIP-4361 login message and response schemas, shared by server and browser",
+      "apps/web/src/server/db": "pg pool, migration runner, migrations/0001_auth.sql",
+      "apps/web/src/server/auth": "store (PostgreSQL), service (challenge, verify, me, logout), cookies, request-guard, session (requireAccountSession)",
+      "apps/web/src/app/api/auth": "challenge, verify, me, logout route handlers",
+      "apps/web/src/components/account": "AccountProvider, AccountPanel; SystemStrip shows real account and sign-in readings",
+      "apps/web/src/proxy.ts": "per-request nonce Content Security Policy",
+      "apps/web/src/test-support, test-support/embedded-pg.ts": "scripted WebAuthn client, in-memory store, harness, embedded PostgreSQL launcher (tests only)",
+      "tooling/scripts": "db-dev, db-migrate, account-browser-check, record-device-check"
+    },
+    "sessionLimits": {
+      "signingAbsolute": "10 minutes, never extended",
+      "signingIdle": "5 minutes without deliberate interaction",
+      "challenge": "5 minutes",
+      "backendSession": "15 minutes, no silent renewal"
+    },
+    "commands": [
+      "pnpm db:dev",
+      "pnpm db:migrate",
+      "pnpm test:auth:db",
+      "pnpm test:account:browser",
+      "pnpm account:record-device-check"
+    ],
+    "checks": {
+      "chapterBaseline": {
+        "outcome": "pass",
+        "notes": "Chapter 2 and 3 checks and the 43 protected baselines passed before and after; protocol, ABI and EIP-712 are unchanged."
+      },
+      "unitAndIntegration": {
+        "command": "pnpm test",
+        "outcome": "pass",
+        "notes": "Web project: 15 files, 213 tests. Real Mera SDK functions run on a scripted WebAuthn client; the real request guard and SIWE service are exercised end to end with the controller."
+      },
+      "realPostgres": {
+        "command": "pnpm test:auth:db",
+        "outcome": "pass",
+        "evidenceClass": "local_scripted",
+        "notes": "9 tests on a real PostgreSQL 18 server: fifty racing verifications of one challenge create exactly one session; expiry, binding, rotation, revocation, shared rate limiting and bounded cleanup hold; no plaintext token column exists."
+      },
+      "registrySigning": {
+        "command": "pnpm test:contracts:integration",
+        "outcome": "pass",
+        "evidenceClass": "local_anvil",
+        "notes": "2 files, 16 tests. A passkey-derived account (real Mera signing session and viem adapter, scripted authenticator) signed ISSUE, SUPERSEDE and REVOKE that the Chapter 3 registry accepted on Anvil, relayed by an unfunded-reviewer executor. Changed fields, a reused ticket, lock, another account and another registry domain all failed."
+      },
+      "browser": {
+        "command": "pnpm test:account:browser",
+        "outcome": "pass",
+        "evidenceClass": "virtual_authenticator",
+        "notes": "31 of 31 checks in headless Chromium 153 against the production build and real PostgreSQL: create and sign in with one credential and no extra assertion; lock; unlock with a new assertion; sign out; clear storage and cookies; recover the same address from the existing passkey without creating one; HttpOnly SameSite=Strict cookie; only the public profile in storage; nonce CSP with no violation; keyboard and reduced motion; route guards."
+      },
+      "negativeControls": {
+        "outcome": "pass",
+        "notes": "39 deliberate breaks of account and auth code. 32 were caught at once. Three exposed real test gaps (the Mera key not being zeroed on lock, the login-scope check before signing, the in-controller review-scope check); tests were added and they are caught. Four remain uncaught as single changes because a second independent check enforces the same property (late-signature release, ticket generation versus ticket invalidation, service-level versus store-level pre-auth binding); each property is itself tested. Run by hand."
+      },
+      "boundaryNegativeControls": {
+        "outcome": "pass",
+        "notes": "ESLint rejected nine temporary violations: server, verifier and agent importing account or key modules or @scure/bip32, a component importing controller internals and Mera, and production code importing test support."
+      },
+      "productionExclusion": {
+        "command": "pnpm exclusion:check, pnpm secrets:check",
+        "outcome": "pass",
+        "notes": "No test support, scripted authenticator or test key in web or verifier output or import graphs."
+      },
+      "productionReviewSigning": {
+        "outcome": "pass",
+        "notes": "The production gate refuses every preview and confirmation (UNAVAILABLE). No flag, request or environment variable opens it; tests open an explicit injected test gate."
+      },
+      "realDevicePasskey": {
+        "outcome": "unverified",
+        "notes": "Not performed: needs a person with a real authenticator. Steps: create; sign in without a second unlock; lock then fresh ceremony; clear storage and recover the same address; second device where available. Record with pnpm account:record-device-check."
+      },
+      "ci": {
+        "outcome": "unverified",
+        "notes": "ci.yml runs test:auth:db and test:account:browser; it has never executed on GitHub."
+      }
+    },
+    "decisions": [
+      "Mera has no abort signal, so Cancel discards the in-flight result by generation and never claims to have closed the browser prompt or removed a created passkey.",
+      "A dismissed prompt is reported as NOT_COMPLETED (dismissed, timed out or not allowed); only an AbortError cause or the application's own Cancel is CANCELLED.",
+      "Whether creation needed a fallback assertion is known only when the WebAuthn client is observable (tests); in the browser it is recorded as unknown, not as one prompt.",
+      "Backend session tokens are 256-bit random values stored as SHA-256 hashes; AUTH_SESSION_SECRET is unused.",
+      "Rate limiting is keyed by address, challenge and a global bucket in PostgreSQL; client IP is not used because forwarding headers are untrusted.",
+      "Feature flags and account configuration are passed from the server layout; the browser check builds into .next-check so it never replaces the normal build.",
+      "The Postgres launcher lives in root test-support so application tests do not import repository tooling.",
+      "Root engines.node is now >=24 because Mera requires it."
+    ],
+    "limitations": [
+      "The derived key is a software key in page memory. Private fields, the CSP and buffer zeroing reduce exposure; they do not isolate it from a compromised same-origin script or dependency, and this is not a hardware-isolated wallet key.",
+      "Scope checks on signing are application code around an ordinary EOA key, not on-chain session-key restrictions.",
+      "Buffer zeroing is best effort; JavaScript and libraries may keep copies.",
+      "A passkey made for one rpId does not recover on another: localhost credentials are separate from any deployed domain, and a preview domain's credentials will not recover on the final domain.",
+      "No account rotation, administrator recovery or private-key export exists. Losing the passkey loses the account; a future evidence export does not restore a signing identity.",
+      "SIWE proves control of the address. It does not attest a biometric, a passkey provider or a professional identity.",
+      "Mera 0.2.0 is a preview dependency and has not been independently audited by this project."
+    ],
+    "handoffToChapter5": [
+      "Public identity: AccountSnapshot.account (address, verifiedThisSession) via @/features/account/public.",
+      "Trusted credential selection: the controller pins the credential verified in this tab; unlockVault() evaluates VAULT_PRF_SALT on it only.",
+      "Vault PRF: supply ControllerDependencies.vaultConsumer; bytes are zeroed after it returns or throws. It needs its own explicit gesture and may need its own ceremony.",
+      "Ownership: requireAccountSession(request) in apps/web/src/server/auth/session.ts; never trust an address in a request.",
+      "Cleanup: SessionController.onLock(listener) fires on Lock, Sign out, expiry, account switch, page hide and other-tab invalidation.",
+      "Recovery: same passkey and rpId reproduce the address with empty storage (shown with a virtual authenticator; real-device evidence pending)."
+    ]
+  },
+  "chapter05": {
+    "startedOn": "2026-10-08",
+    "state": "in-progress",
+    "note": "Built and verified locally with real PostgreSQL, a real S3-compatible server and a virtual authenticator. Real-device recovery checks (clearing only this application's storage and recovering on the same and on a second device) have not been performed, so the chapter is not complete and nothing here is real-device evidence.",
+    "resolvedDependencies": {
+      "@aws-sdk/client-s3": "3.1148.0 (S3 client for the object-store adapter)",
+      "versitygw": "1.8.0 (S3-compatible server, pinned and checksum-verified by pnpm tools:s3; tests only; MinIO was not available)",
+      "pg": "8.23.1",
+      "embedded-postgres": "18.4.0-beta.17 (dev only)"
+    },
+    "profiles": {
+      "cryptoProfile": "lexaegis.vault.hkdf-sha256.aes-256-gcm.v1",
+      "vaultPrfSalt": "SHA256(UTF8(\"lexaegis:vault:root:v1\")) = 0xde6e035a511d2e546d46d0110ccb8f057ba77248c641a73c0c795d34c1622980",
+      "objectKey": "HKDF-SHA256 from the vault PRF output with a per-object random salt; info = \"lexaegis:vault-object-key:v1\" || 0x00 || JCS(binding); non-extractable AES-GCM 256, tag 128, random 96-bit IV per object",
+      "aad": "\"lexaegis:vault-object-aad:v1\" || 0x00 || JCS(header)",
+      "wire": "UTF8(JCS(envelope)); the reference digest is SHA-256 over the whole wire bytes",
+      "vectors": "fixtures/vault-v1/vectors.json from an independent generator (node:crypto and json-canonicalize); pnpm fixtures:check"
+    },
+    "limits": {
+      "envelope": "16 MiB",
+      "structuredPlaintext": "1 MiB",
+      "artifact": "10 MiB",
+      "contextNote": "4 KiB",
+      "contextSelection": "32 KiB, never truncated",
+      "mattersPerVault": 16,
+      "objectsPerVault": 2048,
+      "bytesPerVault": "256 MiB (counts unreferenced objects too)",
+      "importFile": "64 MiB"
+    },
+    "sessionLimits": {
+      "absolute": "10 minutes, never extended",
+      "idle": "5 minutes without deliberate interaction",
+      "lockOn": "Lock, Sign out, account lock, pagehide, bfcache restore, clock rollback, expiry"
+    },
+    "modules": {
+      "packages/vault/src/v1": "constants, errors, base64url, strict schemas, JCS encoding and envelope decode (the frozen v1 surface)",
+      "packages/vault/src/crypto/browser-crypto.ts": "VaultKeys: non-extractable HKDF import, encrypt, decrypt with one uniform INTEGRITY error",
+      "packages/vault/src": "catalog (copy-on-write chain, regression check), matter (context provenance, selectContext), frozen-review (VerifiedReview, RecoverableCapture, verifyFrozenReview), export, import",
+      "apps/web/src/server/vault": "object-store (S3, conditional-create probe), repository (PostgreSQL, per-vault composite key), service, session",
+      "apps/web/src/server/db/migrations/0002_vault.sql": "vaults, vault_objects, vault_heads",
+      "apps/web/src/app/api/vault": "discover/create, head read and compare-and-swap, object read and write",
+      "apps/web/src/features/vault": "transport, key-sink, vault-controller, recovery, public (the only surface UI may import)",
+      "apps/web/src/features/matters": "edits, context-selector",
+      "apps/web/src/components/vault": "VaultPanel, vault-context, status labels",
+      "apps/web/src/test-support": "memory-vault, vault-harness, local-s3 (tests only)",
+      "tooling/scripts": "install-versitygw, vault-browser-check"
+    },
+    "commands": [
+      "pnpm tools:s3",
+      "pnpm test:auth:db",
+      "pnpm test:vault:browser",
+      "pnpm fixtures:check"
+    ],
+    "checks": {
+      "unitAndIntegration": {
+        "command": "pnpm test",
+        "outcome": "pass",
+        "notes": "Vault package: 3 files, 51 tests (round trip, tamper, wrong binding, every size limit, catalog chain, provenance, frozen-review gate, export and import hostile cases). Web: 16 files, 256 tests including 43 controller flows on the real account controller, real Web Crypto and the real vault service with in-memory doubles."
+      },
+      "realStorage": {
+        "command": "pnpm test:auth:db",
+        "outcome": "pass",
+        "evidenceClass": "local_scripted",
+        "notes": "Real PostgreSQL 18 and the real VersityGW S3 server: quota races, head compare-and-swap, creation races, conditional-create and cross-account isolation hold."
+      },
+      "browser": {
+        "command": "pnpm test:vault:browser",
+        "outcome": "pass",
+        "evidenceClass": "virtual_authenticator",
+        "notes": "26 of 26 checks in headless Chromium 153 on the production build with real PostgreSQL and VersityGW: create vault with one assertion, matter and context saved, only ciphertext on the wire, lock removes decrypted text, unlock needs a new assertion, clear storage and recover the same address and vault without a new passkey, a 9 MiB original stored through the route, an 11 MiB original and a body over 16 MiB refused."
+      },
+      "negativeControls": {
+        "outcome": "pass",
+        "notes": "21 deliberate single-line breaks of vault code, run by hand. 6 survived at first: one was a real gap (the capture upload loop did not compare the storage acknowledgement digest; fixed), three exposed missing tests (unsaved drafts reappearing after lock and unlock, create over an existing vault before any passkey prompt, read-back before the catalog moves; the first read-back test was ineffective and was rewritten) and two are equivalent by design (clearing the capture map on lock is redundant with the generation check; zeroing a held export buffer is not externally observable). After the fixes every non-equivalent break is caught."
+      },
+      "productionExclusion": {
+        "command": "pnpm exclusion:check && pnpm secrets:check",
+        "outcome": "pass",
+        "notes": "No test double, memory store or scripted authenticator reaches production output."
+      },
+      "realDeviceRecovery": {
+        "outcome": "unverified",
+        "notes": "Not performed. Needed from the user: sign in, create the vault, save a matter, lock; clear only this application's storage and cookies, recover the same account and decrypt the matter; repeat on a second device or profile with the same synced credential where available; record browser, OS, authenticator, ceremony counts, taps and elapsed times. A fresh virtual profile is not a synced-device test."
+      }
+    },
+    "decisions": [
+      "Embedded PostgreSQL plus VersityGW for tests, because Docker and MinIO were unavailable; production has no in-process fallback and missing configuration returns NOT_CONFIGURED.",
+      "Objects are immutable and written with If-None-Match: * (probed once per process). The catalog is a copy-on-write chain and the head moves only by compare-and-swap, so a lost acknowledgement is reconciled from the authoritative head instead of resent blindly.",
+      "A missing owned object is MISSING and a damaged one CORRUPT; an unreachable store is an outage and never 'not found'.",
+      "RecoverableCapture is unforgeable and non-serialisable, bound to account, vault and controller generation; it exists only after retrieval, authentication, decryption and Chapter 2 verification in the current unlock.",
+      "Imports are previewed first, re-encrypted under fresh IDs, salts and IVs for this vault, and never make the importer the reviewer.",
+      "Vault ID uniqueness is per-vault (composite primary key) so object IDs cannot be probed across accounts.",
+      "CLAUDE.md was cut to 426 words as the Chapter 5 prompt requires; the longer workflow detail is kept in the chapter prompts."
+    ],
+    "limitations": [
+      "The service sees that an account has a vault, plus object counts, sizes and timing.",
+      "If all local state is lost, a replayed older snapshot cannot be detected; within a session or while an observed revision survives, regressions are reported.",
+      "A compromised same-origin script or dependency can reach unlocked data and the in-memory key.",
+      "Deleting a matter or context entry does not erase retained ciphertext, earlier exports or backups; there is no guaranteed erasure.",
+      "Recovery needs the original usable credential and rpId; a different passkey, a new passkey or another domain does not recover.",
+      "Quotas count unreferenced objects, so an interrupted save can consume space until cleanup tooling exists.",
+      "Hosting must allow 16 MiB request bodies on /api/vault/*/objects/* (Chapter 13).",
+      "Real-device and second-device recovery are unverified; no security audit is claimed."
+    ],
+    "handoff": {
+      "chapters6and10": "recoverableCapture(commitment) is the gate that combines with live-chain and human-review gates; it must be rebuilt by verifyStoredCapture after every unlock.",
+      "chapters8and9": "addSourceFile stores original bytes as immutable encrypted objects; selectContext returns confirmed entries only for the Aegis runtime after a separate disclosure step.",
+      "chapter11": "The readable and encrypted export contracts (lexaegis.vault-* schemas) are the portable bundle inputs.",
+      "chapter12": "Real-device recovery evidence, including a second device, is still owed."
+    }
+  },
+  "chapter06": {
+    "startedOn": "2026-10-09",
+    "state": "in-progress",
+    "note": "Deployed to Monad Testnet and run end to end on the real network on 2026-10-09 through the configured Alchemy endpoint. The chain, registry, funding and transactions are real (live_testnet). The passkey is not: the authenticator was a scripted WebAuthn double driving the real Mera functions, and the vault server was in memory, so no step is user-controlled-credential or real-device evidence and none of it is Gate B passkey evidence. Packages are synthetic; this is not a legal review. The chapter stays in-progress until a real-device passkey run exists.",
+    "resolvedDependencies": {
+      "viem": "2.57.3 (unchanged; explicit HTTP transport, retryCount 0 for broadcasts)",
+      "pg": "8.23.1 (also a contracts devDependency now, for the Anvil workflow test)",
+      "chainFacts": "Rechecked 2026-10-09 against docs.monad.xyz: testnet chain 10143, MON, execution delay k = 3 blocks and 10 MON reserve (reserve-balance page), gas charged on gas limit (gas-pricing page), faucet https://faucet.monad.xyz, explorers testnet.monadvision.com and testnet.monadscan.com, network revision MONAD_TEN (testnet v0.16.2). block-states page gives latest_verified = latest_finalized - execution_delay without a number; the number comes from the reserve-balance page."
+    },
+    "modules": {
+      "sdk": "packages/sdk/src/registry/live-reader.ts (ChainCheckpoint, readLiveReceipt, readProvisionalState); packages/sdk/src/transactions/{fees,monitor,registry-transaction}.ts (subpath @lexaegis/sdk/transactions)",
+      "server": "apps/web/src/server/chain/{config,alchemy-client,operation-store,preflight,fee-quotes,operations,testnet-funding,runtime,route-support}.ts; migration 0003_chain.sql",
+      "routes": "GET /api/chain/status, GET /api/chain/receipts/[reviewer]/[commitment], POST+GET /api/chain/operations, GET+POST /api/chain/operations/[id], POST .../quote, POST .../submit, GET /api/chain/account, POST /api/chain/funding",
+      "browser": "apps/web/src/features/account/registry-transaction-signing.ts (second-stage signer, tickets), apps/web/src/features/transactions/{api-client,controller,public}.ts, components/chain/ChainPanel.tsx",
+      "contracts": "contracts/scripts/deploy-testnet.ts and scripts/lib/testnet-deploy.ts (pnpm contracts:deploy:testnet); contracts/deployments/monad-testnet.json (status not_deployed)",
+      "live": "contracts/live/chapter6.live.ts via pnpm test:chain:live (opt-in, spends test MON)"
+    },
+    "policy": {
+      "execution": "Checkpoint block = finalized height - 3, never before the deployment block; block number pinned with a hash recheck after the read group; any change returns unknown. Revision recorded: docs.monad.xyz reserve-balance page, 2026-10-09.",
+      "fees": "gasLimit = ceil(estimate * 110 / 100), rejected above 1,000,000; default maximum registry fee 0.2 MON; funding transfer 21,000 gas with a 0.01 MON ceiling; fee text uses integer arithmetic; Monad charges the gas limit so no refund is assumed.",
+      "funding": "0.2 MON per grant, one per address per rolling 24 hours, 10 MON per UTC day for value plus fees, one unresolved funding transaction at a time, signed outbox bytes stored before the first broadcast; off unless TESTNET_FUNDING_ENABLED is exactly true.",
+      "quote": "30-second closed TransactionQuote; the client resubmits it and the server compares its field commitment with the stored hash.",
+      "monitor": "Poll every 2 s with backoff to 10 s, unresolved after 120 s; confirmed only for a matching, canonical block covered by the checkpoint and the exact registry events."
+    },
+    "checks": {
+      "lint": {
+        "command": "pnpm lint && pnpm format:check && pnpm typecheck",
+        "outcome": "pass"
+      },
+      "unit": {
+        "command": "pnpm test",
+        "outcome": "pass",
+        "evidenceClass": "local_scripted",
+        "notes": "795 of 795. The earlier 2 failures were a stale pair of PRF salt constants in derivation-profile.ts (old lexjarvis-label hashes); on the owner's instruction they now equal SHA256 of lexaegis:account:evm:v1 (0x21a6805c…) and lexaegis:vault:root:v1 (0xde6e035a…), matching fixtures/account-v1/vectors.json, which was not edited. Accounts created with the old constants would derive differently; none was real-device verified."
+      },
+      "workflow": {
+        "command": "pnpm test:contracts:integration",
+        "outcome": "pass",
+        "evidenceClass": "local_scripted",
+        "notes": "33 tests on throwaway Anvil (chain labelled 31337 through a test-only allowance; mainnet and public chains stay refused) with real PostgreSQL: funding, crash retry of identical outbox bytes, ISSUE, replay rejection, SUPERSEDE event order, REVOKE, invalidateNonce, browser and server restriction cases, guarded deployment core. Anvil's finalized tag never leaves genesis, so these tests report latest as finalized: a labelled simulation of Monad finality."
+      },
+      "database": {
+        "command": "pnpm test:auth:db",
+        "outcome": "pass",
+        "evidenceClass": "local_scripted",
+        "notes": "39 tests including 9 new: concurrent reservations (1 of 12 wins), idempotency scoping, lease release only for unsigned operations, hash recorded once, funding cooldown, global budget and funder-nonce lease."
+      },
+      "contracts": {
+        "command": "pnpm contracts:test && pnpm contracts:fmt:check && pnpm contracts:artifacts:check",
+        "outcome": "pass",
+        "notes": "63 Foundry tests; no contract or ABI change."
+      },
+      "browser": {
+        "command": "pnpm test:account:browser && pnpm test:vault:browser",
+        "outcome": "pass",
+        "evidenceClass": "virtual_authenticator",
+        "notes": "31 of 31 and 26 of 26 on the production build; not real-device evidence."
+      },
+      "exclusion": {
+        "command": "pnpm exclusion:check && pnpm secrets:check && pnpm build",
+        "outcome": "pass",
+        "notes": "No RPC key, funder or deployer key in client output."
+      },
+      "baselines": {
+        "command": "pnpm baselines:check",
+        "outcome": "pass",
+        "notes": "Rewritten on the owner's instruction after the earlier bulk rename edit (43 files plus the compiled registry); the old file was removed first because --write refuses to overwrite."
+      }
+    },
+    "blocked": {
+      "realDevice": "A user-controlled passkey run (create or recover, sign in, authorise, recover on a second device) with measured taps and prompts has not been done.",
+      "productionApproval": "ISSUE and SUPERSEDE stay gated until Chapters 8 to 10; productionReviewGate is unchanged."
+    },
+    "decisions": [
+      "Only invalidateNonce can reach the second signing stage without a stage-one signature released by this session's review controller, and it needs its own preview and confirmation.",
+      "A user-signed transaction is never stored; only its locally computed hash, nonces and quote commitment. An exact retry reconciles that hash and never needs a new quote or signature.",
+      "A definitive node refusal (nonce too low, insufficient funds, fee cap too low) cancels the operation; a timeout or other ambiguity leaves it unknown and blocking, and is never failed or confirmed.",
+      "Funding recipients come only from the session; the request body must be an empty object."
+    ],
+    "handoff": {
+      "chapter7": "Registry 0x453bfd1602d8a8666f55bf9a8d87b127cb94048f on chain 10143, start block 69534196, generated event ABI (packages/sdk/src/registry/generated/registry-abi.ts). SUPERSEDE emits ReceiptIssued then ReceiptSuperseded with one nonce; count the replacement once.",
+      "chapters10and11": "Restricted submission controller: apps/web/src/features/transactions and AccountHandle.transactions; caller-supplied live reader: @lexaegis/sdk/registry readLiveReceipt.",
+      "chapters12and13": "Hosting needs ALCHEMY_MONAD_RPC_URL, TESTNET_FUNDER_PRIVATE_KEY, TESTNET_FUNDING_ENABLED=true, DATABASE_URL and the web app's API routes. The deployer key is only for contracts:deploy:testnet. Still needed: a real-device passkey run."
+    },
+    "deployment": {
+      "evidenceClass": "live_testnet",
+      "chainId": "10143",
+      "registryAddress": "0x453bfd1602d8a8666f55bf9a8d87b127cb94048f",
+      "transactionHash": "0xe6d0be40e8410df1d7dd87b18463a4dfc53fb839cf0036784c018a886ebea04a",
+      "blockNumber": "69534196",
+      "genesisHash": "0x298034669ee44327d2da9744b9b2782848e2f2a6959756b7b0471b09a404f5c9",
+      "runtimeCodeKeccak256": "0x2389a742aa78c6aad56162f42e300cf0fb8cee571c1e822cd3d8a7cffd00ed71",
+      "creationCodeKeccak256": "0x38a7a70bfb716f8d6d10c20ae206ac49add2be6a5c34a367dd5a51d5edf875f2",
+      "verified": "canonical inclusion, runtime code equal to the compiled artifact with immutable slots masked, protocolVersion 1, SDK digest equal to deployed hashAction under the real domain",
+      "artifact": "contracts/deployments/monad-testnet.json"
+    },
+    "liveRun": {
+      "evidenceClass": "live_testnet",
+      "command": "LEXAEGIS_LIVE=1 pnpm test:chain:live (env exported from .env)",
+      "record": "docs/evidence/chapter06-live-2026-10-09.json",
+      "outcome": "pass",
+      "capabilities": "Observed on the actual endpoint: eth_chainId, block reads, the finalized tag, historical state, eth_getCode, fee estimation and transaction counts all worked.",
+      "results": "Funding of 0.2 MON confirmed and usable; ISSUE, SUPERSEDE (events issued then superseded) and REVOKE each confirmed at the execution checkpoint; replay rejected with NONCE_MISMATCH; statuses active, superseded and revoked read live with an as-of block; account lock and recovery gave the same address and the same decrypted package with no unresolved operations.",
+      "timingsMs": "account ready 55 (scripted, no human tap); funds usable 2585; per action: signature 775 to 1049 after the action confirmation, broadcast 403 to 671, inclusion and confirmed execution 2559 to 2834 after broadcast. Scripted authenticator, so no real prompts or taps were measured.",
+      "fees": "Funding transfer charged 0.002562 MON; ISSUE 0.014356, SUPERSEDE 0.017926, REVOKE 0.006638 MON (gas limit times effective price).",
+      "notRun": "invalidateNonce was not exercised live (covered on Anvil). The funder started empty and received 1.5 MON from the deployer by a plain transfer so the funding path could run."
+    },
+    "userReportedDeviceRun": {
+      "reportedOn": "2026-10-09",
+      "reportedBy": "operator",
+      "claim": "Signed in with a hardware passkey (laptop fingerprint scanner via Mera) in the browser against the local dev server and ran the funding flow.",
+      "corroboration": "Dev database showed 4 backend sessions for one address 0x7e03648ff57557d9c0eddb786c6f840d29452cc1 and one funding grant to it, confirmed on Monad Testnet (tx 0xd06efe0c01b75436074752604a266da74ccec68529f4fc48c4aecb96cb803873). The database held no chain_operations row, so no registry transaction was signed or sent from the UI.",
+      "notRecorded": "Browser, OS, authenticator, prompt counts and timings were not supplied, so no real_device result was written with pnpm account:record-device-check.",
+      "stillMissing": "A real-device signature on an exact registry action (Gate B B1) needs the Chapter 10 review UI; B3 needs the Chapter 11 verifier. Gates are computed by pnpm readiness and were not edited."
+    }
+  },
+  "chapter08": {
+    "completedOn": "2026-10-09",
+    "state": "complete",
+    "note": "Built and verified locally on synthetic documents only, with real pdf.js, real Web Crypto, real PostgreSQL and S3-compatible storage and a virtual authenticator. No Qwen call, transaction or receipt approval is part of this chapter, and no check here enables signing. Not real-device evidence and not a legal review.",
+    "resolvedDependencies": {
+      "pdfjs-dist": "6.3.289 (exact; apps/web). Advisories read 2026-10-09: GHSA-hq66-cqwq-w95j / CVE-2026-16633 affects >= 5.6.83 and is patched in 6.2.108, so 6.3.289 is outside it; GHSA-wgrm-67xf-hhpq is from 2024. Scripting is never loaded, XFA is disabled, there is no viewer, links, actions or embedded files, and the parser runs in a terminable worker. The current release (6.4.299) is six days old and was not used.",
+      "diff": "9.0.0 (exact; packages/agent; pure, browser-safe, own types)",
+      "node/pnpm": "unchanged"
+    },
+    "modules": {
+      "agentContracts": "packages/agent/src/contracts/review.ts (ExtractedDocumentV1, SourceReferenceV1, FactCandidateV1, ConfirmedFactV1, PaymentReconciliationV1, RulePackV1 and its review record, CheckFindingV1, EvidenceChecklistV1, EvidenceSelectionV1, DocumentComparisonV1); exported through @lexaegis/agent/contracts",
+      "agentReview": "packages/agent/src/review/* (source-references, payments, rule-pack, checks, checklist, compare, facts, snapshot, limits, context, artifacts, tools); exported through @lexaegis/agent/review",
+      "rulePack": "packages/agent/rules/employment-settlement-ew.v1.json",
+      "web": "apps/web/src/features/documents/* (extract, extract.worker, compare.worker, pdf-intake, diff-runner, page-renderer), features/review/* (controller, persistence, public), components/review/*, ActivityDrawer local-processing section",
+      "vault": "VaultController.readSource added; addSourceFile accepts optional documentVersionId and artifactId. No vault v1 schema, format or profile changed.",
+      "fixtures": "fixtures/documents-v1 (generator, 16 synthetic PDFs plus malformed and 81-page files, cases.json with hand-worked expected pence); pnpm fixtures:check covers it"
+    },
+    "profile": "lexaegis.employment-settlement.ew version 1",
+    "rulePackReview": {
+      "contentDigest": "computed at load: SHA-256 of the RFC 8785 canonical pack bytes, stored externally",
+      "state": "demo_draft",
+      "meaning": "Nobody has reviewed this content. No qualification or approval is claimed.",
+      "sourcesRead": "On 2026-10-09: Acas settlement-agreements page (page says last updated 25 March 2026), ERA 1996 s.203 (Latest available, current to 5 October 2026) and EqA 2010 s.147 (Latest available, current to 9 October 2026). ERA s.203(3C) was not displayed on the retrieved page and is recorded as unverified."
+    },
+    "limits": "8 PDFs, 80 pages per PDF, 160 pages, 200 facts, 50 line items, 100 findings, originals 20 MiB total, extraction 2 MiB each and 4 MiB total, quote 4 KiB, comparison 200,000 UTF-16 code units, edit distance 5,000, 2 seconds; typed errors, never truncation",
+    "checks": {
+      "static": {
+        "command": "pnpm lint && pnpm format:check && pnpm typecheck && pnpm build",
+        "outcome": "pass"
+      },
+      "unit": {
+        "command": "pnpm test",
+        "outcome": "pass",
+        "evidenceClass": "local_scripted",
+        "notes": "854 of 854. New: 30 fixture-driven pipeline tests on real PDFs, 8 extraction tests, 10 worker-lifecycle tests (deadline termination, Cancel, stale generation, one job at a time, crash), 9 controller tests on the real vault and account controllers, 3 flag-gating tests. Exact pence: 24,000 minus 22,000 is 200,000 pence; one penny is not hidden; values above 2^53 stay exact."
+      },
+      "fixtures": {
+        "command": "pnpm fixtures:check",
+        "outcome": "pass"
+      },
+      "browser": {
+        "command": "pnpm test:review:browser",
+        "outcome": "pass",
+        "evidenceClass": "virtual_authenticator",
+        "notes": "33 of 33 in headless Chromium on the production build with real PostgreSQL and VersityGW: import, cited facts, checks, citation highlight, save, lock empties the page, unlock needs a new assertion and restores everything, simulation isolated, two-version comparison, broken-file refusal, 64 vault requests with no plaintext, only this origin contacted, no plaintext in storage, caches or service workers, no CSP violation. The original-page canvas (page-renderer.ts) is not exercised by this check."
+      },
+      "regression": {
+        "command": "pnpm test:auth:db && pnpm test:contracts:integration && pnpm test:account:browser && pnpm test:vault:browser",
+        "outcome": "pass",
+        "notes": "39, 33, 31 of 31 and 26 of 26"
+      },
+      "exclusion": {
+        "command": "pnpm exclusion:check && pnpm secrets:check && pnpm baselines:check",
+        "outcome": "pass",
+        "notes": "Fixture PDFs, test doubles and the pdf.js worker test shims do not reach production output. secrets:check needs the operator's .env moved aside; it flags the real testnet keys in it."
+      }
+    },
+    "extractionLimitations": [
+      "Text order follows the parser's item order and can differ from the visual layout; the original page stays available.",
+      "Any page with an image sets images_not_extracted and makes coverage partial; a logo alone therefore marks a file partial. Annotations, form fields, signatures and XFA are surfaced as warnings, never verified.",
+      "Scans, image-only files, password-protected files and XFA forms are refused. No OCR, DOCX or remote parsing exists.",
+      "Display geometry is stored as integer milli-points; the viewer shows the exact text passage and does not draw a highlight on the original page, so no precision is implied."
+    ],
+    "knownGaps": [
+      "Evidence can be linked to imported PDFs only. Other opaque files already in the vault cannot yet be linked or included in a draft.",
+      "Facts and evidence selections ride on Chapter 5 context entries with typed prefixes, so Chapter 9's selectContext must skip them or treat them as such.",
+      "The comparison UI is behind the documentComparison flag, off unless FEATURE_DOCUMENT_COMPARISON is exactly true; the flag's readiness is now implemented and verified in server/flags.ts.",
+      "Money fields are entered in whole pence (the viewer suggests a value from the selected text).",
+      "Only Chromium was driven."
+    ],
+    "handoff": {
+      "chapter9": "Wrap the read-only entry points in @lexaegis/agent/review (toolResolveSources, toolGetRules, toolReconcilePayments, checks/checklist, buildSelectedContext, assembleDraft). FactCandidateV1 is the model's only way to propose a fact; confirmFact is reviewer-only. Nothing in the repository sends plaintext to a provider; consent must name provider, matter, version and disclosed content.",
+      "chapter10": "ReviewController exposes draftArtifacts() with outstanding requirements (agent configuration, decision log, human review gate). No decision log or agent configuration is invented."
+    }
+  }
+}

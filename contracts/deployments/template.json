@@ -1,0 +1,13 @@
+{
+  "schema": "lexaegis.registry-deployment.v1",
+  "status": "not_deployed",
+  "environment": "testnet",
+  "network": "monad-testnet",
+  "intendedChainId": "10143",
+  "contract": "ProofOfReviewRegistry",
+  "build": {
+    "solc": "0.8.37+commit.f401782d",
+    "evmVersion": "osaka",
+    "creationCodeKeccak256": "0x38a7a70bfb716f8d6d10c20ae206ac49add2be6a5c34a367dd5a51d5edf875f2"
+  }
+}

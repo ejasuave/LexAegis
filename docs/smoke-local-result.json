@@ -1,0 +1,67 @@
+{
+  "schema": "lexaegis.smoke-local.v1",
+  "generatedAt": "2026-10-08T18:50:26.942Z",
+  "status": "incomplete",
+  "steps": [
+    {
+      "id": "access-and-import",
+      "title": "Access the synthetic account, unlock the vault, import the original agreement",
+      "status": "pending",
+      "dependencies": ["chapter-04", "chapter-05", "chapter-08"]
+    },
+    {
+      "id": "consent-before-send",
+      "title": "Inspect the disclosure and explicitly send the selected text",
+      "status": "pending",
+      "dependencies": ["chapter-10"]
+    },
+    {
+      "id": "assistant-and-citation",
+      "title": "Run the assistant; open the citation; verify 2400000 - (1000000 + 1200000) = 200000",
+      "status": "pending",
+      "dependencies": ["chapter-08", "chapter-09", "chapter-10"]
+    },
+    {
+      "id": "human-dispositions",
+      "title": "Confirm facts and record human dispositions (discrepancy accepted with reason, never \"corrected\")",
+      "status": "pending",
+      "dependencies": ["chapter-10"]
+    },
+    {
+      "id": "freeze-save-readback",
+      "title": "Freeze, encrypt, save and read back",
+      "status": "pending",
+      "dependencies": ["chapter-05", "chapter-10"]
+    },
+    {
+      "id": "approve-send-confirm",
+      "title": "Review the exact action, approve, confirm fee and Send, observe local confirmation, check with the SDK",
+      "status": "pending",
+      "dependencies": ["chapter-04", "chapter-06", "chapter-10"]
+    },
+    {
+      "id": "export-and-verify",
+      "title": "Export; import in a separate verifier origin without a session",
+      "status": "pending",
+      "dependencies": ["chapter-05", "chapter-10", "chapter-11"]
+    },
+    {
+      "id": "tamper-detection",
+      "title": "Change one artifact byte in a well-formed container",
+      "status": "pending",
+      "dependencies": ["chapter-11"]
+    },
+    {
+      "id": "supersede-and-revoke",
+      "title": "Import the corrected source, re-review, freeze, approve supersession; cover revocation",
+      "status": "pending",
+      "dependencies": ["chapter-08", "chapter-09", "chapter-10", "chapter-11"]
+    },
+    {
+      "id": "stop-cancellation",
+      "title": "Stop during a run",
+      "status": "pending",
+      "dependencies": ["chapter-09", "chapter-10"]
+    }
+  ]
+}

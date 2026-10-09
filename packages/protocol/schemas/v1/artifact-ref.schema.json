@@ -1,0 +1,60 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:lexaegis:protocol:v1:artifact-ref",
+  "title": "ArtifactRefV1",
+  "$comment": "PRIVATE. Runtime rules not expressible here: byteLength <= 10485760; label <= 256 Unicode code points without lone surrogates.",
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+    },
+    "role": {
+      "type": "string",
+      "enum": [
+        "source",
+        "extracted-text",
+        "evidence",
+        "analysis",
+        "calculation",
+        "rule-pack",
+        "checklist",
+        "agent-config",
+        "decision-log"
+      ]
+    },
+    "mediaType": {
+      "type": "string",
+      "maxLength": 127,
+      "pattern": "^[a-z0-9][a-z0-9!#$&^_.+-]*\\/[a-z0-9][a-z0-9!#$&^_.+-]*$"
+    },
+    "label": {
+      "anyOf": [
+        {
+          "type": "string",
+          "maxLength": 256
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "byteLength": {
+      "type": "string",
+      "pattern": "^(?:0|[1-9][0-9]*)$"
+    },
+    "sha256": {
+      "type": "string",
+      "pattern": "^0x[0-9a-f]{64}$"
+    }
+  },
+  "required": [
+    "id",
+    "role",
+    "mediaType",
+    "label",
+    "byteLength",
+    "sha256"
+  ],
+  "additionalProperties": false
+}

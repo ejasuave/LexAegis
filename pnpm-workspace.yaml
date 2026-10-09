@@ -1,0 +1,15 @@
+packages:
+  - apps/*
+  - packages/*
+  - contracts
+  - tooling
+allowBuilds:
+  # Postinstall only recreates symlinks inside the package's own native/ directory (reviewed).
+  '@embedded-postgres/darwin-arm64': true
+  '@embedded-postgres/darwin-x64': true
+  '@embedded-postgres/linux-arm64': true
+  '@embedded-postgres/linux-x64': true
+  esbuild: false
+minimumReleaseAgeExclude:
+  - vite@8.3.4
+  - '@aws-sdk/client-s3@3.1148.0'

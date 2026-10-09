@@ -1,0 +1,233 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:lexaegis:protocol:v1:commitment-opening",
+  "title": "CommitmentOpeningV1",
+  "$comment": "PRIVATE opening material. Runtime rules not expressible here: valid UTC calendar date; chainId <= 2^256-1; label <= 256 Unicode code points without lone surrogates; artifact byteLength <= 10485760 and combined <= 33554432; unique artifact ids; at least one source and exactly one decision-log artifact; scopeArtifactIds unique and covering every artifact exactly once; decisionLogArtifactId resolving to the decision-log artifact; supersedes chain/registry/reviewer equal to context.",
+  "type": "object",
+  "properties": {
+    "schema": {
+      "type": "string",
+      "const": "lexaegis.opening.v1"
+    },
+    "manifest": {
+      "type": "object",
+      "properties": {
+        "schema": {
+          "type": "string",
+          "const": "lexaegis.review-package.v1"
+        },
+        "packageId": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+        },
+        "preparedAt": {
+          "type": "string",
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$"
+        },
+        "profile": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "pattern": "^[a-z0-9.-]{1,80}$"
+            },
+            "version": {
+              "type": "string",
+              "pattern": "^[1-9][0-9]*$"
+            }
+          },
+          "required": [
+            "id",
+            "version"
+          ],
+          "additionalProperties": false
+        },
+        "context": {
+          "type": "object",
+          "properties": {
+            "chainId": {
+              "type": "string",
+              "maxLength": 78,
+              "pattern": "^[1-9][0-9]*$"
+            },
+            "registryAddress": {
+              "type": "string",
+              "pattern": "^0x[0-9a-f]{40}$",
+              "not": {
+                "const": "0x0000000000000000000000000000000000000000"
+              }
+            },
+            "reviewerAddress": {
+              "type": "string",
+              "pattern": "^0x[0-9a-f]{40}$",
+              "not": {
+                "const": "0x0000000000000000000000000000000000000000"
+              }
+            }
+          },
+          "required": [
+            "chainId",
+            "registryAddress",
+            "reviewerAddress"
+          ],
+          "additionalProperties": false
+        },
+        "supersedes": {
+          "anyOf": [
+            {
+              "type": "object",
+              "properties": {
+                "schema": {
+                  "type": "string",
+                  "const": "lexaegis.receipt-ref.v1"
+                },
+                "chainId": {
+                  "type": "string",
+                  "maxLength": 78,
+                  "pattern": "^[1-9][0-9]*$"
+                },
+                "registryAddress": {
+                  "type": "string",
+                  "pattern": "^0x[0-9a-f]{40}$",
+                  "not": {
+                    "const": "0x0000000000000000000000000000000000000000"
+                  }
+                },
+                "reviewerAddress": {
+                  "type": "string",
+                  "pattern": "^0x[0-9a-f]{40}$",
+                  "not": {
+                    "const": "0x0000000000000000000000000000000000000000"
+                  }
+                },
+                "commitment": {
+                  "type": "string",
+                  "pattern": "^0x[0-9a-f]{64}$"
+                }
+              },
+              "required": [
+                "schema",
+                "chainId",
+                "registryAddress",
+                "reviewerAddress",
+                "commitment"
+              ],
+              "additionalProperties": false
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "artifacts": {
+          "maxItems": 128,
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+              },
+              "role": {
+                "type": "string",
+                "enum": [
+                  "source",
+                  "extracted-text",
+                  "evidence",
+                  "analysis",
+                  "calculation",
+                  "rule-pack",
+                  "checklist",
+                  "agent-config",
+                  "decision-log"
+                ]
+              },
+              "mediaType": {
+                "type": "string",
+                "maxLength": 127,
+                "pattern": "^[a-z0-9][a-z0-9!#$&^_.+-]*\\/[a-z0-9][a-z0-9!#$&^_.+-]*$"
+              },
+              "label": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "maxLength": 256
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "byteLength": {
+                "type": "string",
+                "pattern": "^(?:0|[1-9][0-9]*)$"
+              },
+              "sha256": {
+                "type": "string",
+                "pattern": "^0x[0-9a-f]{64}$"
+              }
+            },
+            "required": [
+              "id",
+              "role",
+              "mediaType",
+              "label",
+              "byteLength",
+              "sha256"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "approval": {
+          "type": "object",
+          "properties": {
+            "intent": {
+              "type": "string",
+              "const": "approve-review-package"
+            },
+            "scopeArtifactIds": {
+              "maxItems": 128,
+              "type": "array",
+              "items": {
+                "type": "string",
+                "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+              }
+            },
+            "decisionLogArtifactId": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+            }
+          },
+          "required": [
+            "intent",
+            "scopeArtifactIds",
+            "decisionLogArtifactId"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "schema",
+        "packageId",
+        "preparedAt",
+        "profile",
+        "context",
+        "supersedes",
+        "artifacts",
+        "approval"
+      ],
+      "additionalProperties": false
+    },
+    "blindingNonce": {
+      "type": "string",
+      "pattern": "^0x[0-9a-f]{64}$"
+    }
+  },
+  "required": [
+    "schema",
+    "manifest",
+    "blindingNonce"
+  ],
+  "additionalProperties": false
+}
