@@ -11,7 +11,6 @@ import {
   ZERO,
   actionId,
   fresh,
-  hex32,
   invalidated,
   issued,
   receiptId,
@@ -335,7 +334,7 @@ describe('deterministic replay', () => {
         receipts: strip(await f.indexer.IndexedReceipt.getAll()),
         summaries: strip(await f.indexer.ReviewerSummary.getAll()),
       },
-      (_k, v) => (typeof v === 'bigint' ? `${v}n` : v),
+      (_k, v: unknown): unknown => (typeof v === 'bigint' ? `${v}n` : v),
     );
   };
 
@@ -357,5 +356,3 @@ describe('deterministic replay', () => {
     expect(await dump(split)).toBe(await dump(whole));
   });
 });
-
-void hex32;

@@ -26,7 +26,7 @@ function memory(): Tables & { readonly dump: () => string } {
     dump: () =>
       JSON.stringify(
         [...maps].map(([k, v]) => [k, [...v.values()]]),
-        (_k, x) => (typeof x === 'bigint' ? `${x}n` : x),
+        (_k, x: unknown): unknown => (typeof x === 'bigint' ? `${x}n` : x),
       ),
   };
 }
