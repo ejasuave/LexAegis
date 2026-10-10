@@ -3864,6 +3864,14 @@
           "apps/web/src/server/{env,readiness}.ts",
           ".env.example"
         ]
+      },
+      "06": {
+        "status": "complete",
+        "summary": "Closed registry of six read-only tools with intent allowlists, argument authorisation, run-local handles, an in-run cache and size limits.",
+        "files": [
+          "packages/agent/src/runtime/{tools,tool-schemas}.ts",
+          "packages/agent/src/review/requirements.ts"
+        ]
       }
     },
     "contracts": {
@@ -3915,6 +3923,12 @@
       "capability": "lexaegis.assistant-capability.v1: native tool call, structured output in the configured mode, usage reported, cancellation; verified needs the first, second and fourth; keyed by a SHA-256 fingerprint of provider, host, path, model and output mode",
       "testMode": "LEXAEGIS_TEST_MODE=scripted-assistant with ASSISTANT_TEST_PROVIDER_URL on http://127.0.0.1:<port>/compatible-mode/v1; refused when QWEN_API_KEY is set; reported everywhere as provider scripted-test, region test-loopback",
       "newEnvironment": "QWEN_OUTPUT_MODE, ASSISTANT_RUN_SECONDS, ASSISTANT_MAX_PROVIDER_ATTEMPTS, ASSISTANT_MAX_TOOL_CALLS, ASSISTANT_DAILY_RUNS_PER_ACCOUNT, ASSISTANT_DAILY_RUNS_GLOBAL, ASSISTANT_ACTIVE_RUNS_GLOBAL (all optional; ceilings can only be lowered)"
+    },
+    "tools": {
+      "where": "Tools run on the server over the consented SelectedContextV1 and the repository rule pack. The server has no vault and no full extraction, so read_sources returns catalog excerpts only and nothing can read further.",
+      "adapters": "read_sources: consented catalog; get_rules: toolGetRules with the pack's real review state (demo_draft); check_payments: toolReconcilePayments over confirmed facts in review mode; check_evidence: buildChecklist over the reviewer's links, scope stated; get_status: server readings plus client_observed readings, chain through a StatusPort, indexer not_connected, receipt not_selected; prepare_review: requirementsPreview, saved false and frozen false",
+      "limits": "arguments 4 KiB, result 16 KiB (needs_narrowing when larger, nothing partial), handles T1..T8, identical calls reuse the result within the run only",
+      "notChanged": "runChecks is not called by a tool because it needs the full verified extraction; the browser keeps running it locally"
     }
   }
 }

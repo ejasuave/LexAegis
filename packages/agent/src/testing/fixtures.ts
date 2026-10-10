@@ -96,7 +96,9 @@ function extraction(sourceSha256: string): ExtractedDocumentV1 {
 export interface SyntheticMatter {
   readonly set: SourceSet;
   readonly rulePack: LoadedRulePack;
-  readonly refs: Readonly<Record<keyof typeof SYNTHETIC_LINES, SourceReferenceV1>>;
+  readonly refs: Readonly<
+    Record<keyof typeof SYNTHETIC_LINES | 'instalment1' | 'instalment2', SourceReferenceV1>
+  >;
   /** Confirmed facts of the payment vector: total, both instalments and the basis. */
   readonly facts: readonly ConfirmedFactV1[];
   readonly evidence: readonly EvidenceSelectionV1[];
@@ -153,6 +155,9 @@ export async function syntheticMatter(): Promise<SyntheticMatter> {
     schedule: refOf(SYNTHETIC_LINES.schedule),
     advice: refOf(SYNTHETIC_LINES.advice),
     injection: refOf(SYNTHETIC_LINES.injection),
+    // Each instalment cites its own occurrence, as a reviewer selecting the amount would.
+    instalment1: refOf('£10,000.00'),
+    instalment2: refOf('£12,000.00'),
   };
 
   let counter = 0;
@@ -182,8 +187,8 @@ export async function syntheticMatter(): Promise<SyntheticMatter> {
   };
   const facts = [
     await fact('payment_total', 'total', '2400000', refs.total),
-    await fact('payment_instalment', 'instalment-1', '1000000', refs.schedule),
-    await fact('payment_instalment', 'instalment-2', '1200000', refs.schedule),
+    await fact('payment_instalment', 'instalment-1', '1000000', refs.instalment1),
+    await fact('payment_instalment', 'instalment-2', '1200000', refs.instalment2),
     await fact('payment_basis', 'basis', 'gross', refs.total),
   ];
   const evidence: EvidenceSelectionV1[] = [
