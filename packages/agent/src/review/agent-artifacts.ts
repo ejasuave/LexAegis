@@ -8,7 +8,21 @@ import type {
   SourceCatalogEntry,
   ToolResult,
 } from '../contracts';
-import { REVIEW_ENGINE_VERSION, agentConfigSchema } from '../contracts';
+import { z } from 'zod';
+import { digestSchema, timestampSchema, uuidSchema } from '@lexaegis/protocol/v1';
+import {
+  REVIEW_ENGINE_VERSION,
+  agentConfigSchema,
+  answerBlockSchema,
+  assistantIntentSchema,
+  modelExecutionSchema,
+  ruleIdSchema,
+  runOutcomeSchema,
+  sourceHandleSchema,
+  sourceReferenceSchema,
+  toolResultSchema,
+  unresolvedItemSchema,
+} from '../contracts';
 import { canonicalBytes, sha256Bytes } from './hash';
 
 /*
@@ -100,7 +114,37 @@ export function buildAnalysisArtifact(input: AnalysisInput) {
     limitations: ANALYSIS_LIMITATIONS,
   };
 }
-export type AnalysisArtifact = ReturnType<typeof buildAnalysisArtifact>;
+
+/** The stored form, validated before a saved analysis is used for anything. */
+export const analysisArtifactSchema = z.strictObject({
+  schema: z.literal(ANALYSIS_SCHEMA),
+  engineVersion: z.literal(REVIEW_ENGINE_VERSION),
+  matterId: uuidSchema,
+  documentVersionId: uuidSchema.nullable(),
+  inputSnapshotDigest: z.union([digestSchema, z.literal('')]),
+  run: z.strictObject({
+    runId: z.string().max(128).nullable(),
+    intent: assistantIntentSchema.nullable(),
+    outcome: runOutcomeSchema.nullable(),
+    startedAt: timestampSchema,
+    modelExecution: modelExecutionSchema,
+  }),
+  provenance: z.strictObject({ aiAnalysis: z.boolean(), modelExecution: modelExecutionSchema }),
+  response: z.strictObject({
+    blocks: z.array(answerBlockSchema).max(8),
+    unresolved: z.array(unresolvedItemSchema).max(10),
+    questions: z.array(z.string().max(300)).max(3),
+    scopeLimitations: z.array(z.string().max(300)).max(8),
+    factProposalsNotIncluded: z.int().min(0).max(10),
+  }),
+  sources: z
+    .array(z.strictObject({ handle: sourceHandleSchema, reference: sourceReferenceSchema }))
+    .max(64),
+  rules: z.array(ruleIdSchema).max(40),
+  toolResults: z.array(toolResultSchema).max(8),
+  limitations: z.array(z.string().max(400)).max(8),
+});
+export type AnalysisArtifact = z.infer<typeof analysisArtifactSchema>;
 
 export interface ArtifactBytes {
   readonly bytes: Uint8Array;

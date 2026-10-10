@@ -11,14 +11,17 @@ import {
   type RulePackReviewRecordV1,
   type SourceReferenceV1,
 } from '../contracts/review';
+import { agentConfigSchema } from '../contracts/agent-config';
+import { analysisArtifactSchema } from './agent-artifacts';
 import { canonicalBytes, fail, ok, type Result } from './hash';
 import type { LoadedRulePack } from './rule-pack';
 
 /*
  * Draft artifact assembly on Chapter 2's existing roles and byte hashing. No new receipt format,
  * no change to the commitment algorithm. The result is a typed draft with outstanding
- * requirements, not a production-ready signed capture: there is no model or prompt configuration
- * (Chapter 9) and no decision log (Chapter 10), and none is invented.
+ * requirements, not a production-ready signed capture. A saved assistant analysis and its agent
+ * configuration may be included once they pass their own checks; there is no decision log
+ * (Chapter 10), and none is invented.
  */
 
 export interface DraftSource {
@@ -39,7 +42,8 @@ export interface DraftArtifact {
     | 'analysis'
     | 'calculation'
     | 'rule-pack'
-    | 'checklist';
+    | 'checklist'
+    | 'agent-config';
   readonly mediaType: string;
   readonly label: string;
   readonly bytes: Uint8Array;
@@ -76,6 +80,16 @@ export interface DraftInput {
   readonly rulePack: LoadedRulePack;
   readonly reviewRecord: RulePackReviewRecordV1;
   readonly newId: () => string;
+  /**
+   * A saved assistant analysis and the agent configuration that produced it, as the exact
+   * stored bytes. Optional: a draft without them keeps AGENT_CONFIG_MISSING outstanding.
+   */
+  readonly agent?: DraftAgentArtifacts;
+}
+
+export interface DraftAgentArtifacts {
+  readonly analysis: { readonly artifactId: string; readonly bytes: Uint8Array };
+  readonly config: { readonly artifactId: string; readonly bytes: Uint8Array };
 }
 
 export type DraftFailure =
@@ -87,9 +101,69 @@ export type DraftFailure =
   | 'EXTRACTION_TOO_LARGE'
   | 'EXTRACTIONS_TOO_LARGE'
   | 'PACKAGE_TOO_LARGE'
-  | 'TOO_MANY_ARTIFACTS';
+  | 'TOO_MANY_ARTIFACTS'
+  /** Not canonical JSON of the expected schema. */
+  | 'AGENT_ARTIFACT_INVALID'
+  /** Produced from other inputs than the current snapshot, or citing a superseded calculation. */
+  | 'AGENT_ARTIFACT_STALE'
+  /** The analysis and the configuration do not belong to the same run or matter. */
+  | 'AGENT_ARTIFACT_MISMATCH';
 
 const JSON_TYPE = 'application/json';
+
+function parseCanonical(bytes: Uint8Array): unknown {
+  try {
+    const value: unknown = JSON.parse(new TextDecoder('utf-8', { fatal: true }).decode(bytes));
+    const again = canonicalBytes(value);
+    // The stored bytes must be exactly the canonical form: nothing is re-serialized to fit.
+    return again.length === bytes.length && again.every((byte, i) => byte === bytes[i])
+      ? value
+      : undefined;
+  } catch {
+    return undefined;
+  }
+}
+
+/**
+ * Independent checks on saved agent artifacts before they join a draft: canonical bytes of the
+ * expected schemas, the same run and matter, the current input snapshot, every cited source,
+ * rule and calculation present in this draft. This is integrity, not legal correctness.
+ */
+function checkAgentArtifacts(
+  input: DraftInput,
+  agent: DraftAgentArtifacts,
+  sourceIds: ReadonlySet<string>,
+  extractionIds: ReadonlySet<string>,
+): DraftFailure | null {
+  const config = agentConfigSchema.safeParse(parseCanonical(agent.config.bytes));
+  const analysis = analysisArtifactSchema.safeParse(parseCanonical(agent.analysis.bytes));
+  if (!config.success || !analysis.success) return 'AGENT_ARTIFACT_INVALID';
+  const a = analysis.data;
+  const c = config.data;
+  if (
+    a.matterId !== input.matterId ||
+    a.run.modelExecution !== c.modelExecution ||
+    (a.run.runId !== null && a.run.runId !== c.run.runId)
+  )
+    return 'AGENT_ARTIFACT_MISMATCH';
+  if (a.inputSnapshotDigest !== input.snapshotDigest) return 'AGENT_ARTIFACT_STALE';
+  for (const { reference } of a.sources) {
+    if (
+      !sourceIds.has(reference.sourceArtifactId) ||
+      !extractionIds.has(reference.extractionArtifactId)
+    )
+      return 'MISSING_DEPENDENCY';
+  }
+  const rules = new Set(input.rulePack.pack.rules.map((rule) => rule.ruleId));
+  if (a.rules.some((rule) => !rules.has(rule))) return 'MISSING_DEPENDENCY';
+  // A calculation the analysis cites must be one of this draft's own code results.
+  const current = new Set(input.payments.map((payment) => JSON.stringify(payment)));
+  for (const tool of a.toolResults) {
+    if (tool.output?.tool === 'check_payments' && !current.has(JSON.stringify(tool.output.result)))
+      return 'AGENT_ARTIFACT_STALE';
+  }
+  return null;
+}
 const json = (value: unknown) => canonicalBytes(value);
 
 async function describe(
@@ -225,6 +299,27 @@ export async function assembleDraft(
     ),
   );
 
+  if (input.agent !== undefined) {
+    const checked = checkAgentArtifacts(input, input.agent, sourceIds, extractionIds);
+    if (checked !== null) return fail(checked);
+    out.push(
+      await describe(
+        input.agent.config.artifactId,
+        'agent-config',
+        JSON_TYPE,
+        'agent configuration',
+        input.agent.config.bytes,
+      ),
+      await describe(
+        input.agent.analysis.artifactId,
+        'analysis',
+        JSON_TYPE,
+        'assistant analysis',
+        input.agent.analysis.bytes,
+      ),
+    );
+  }
+
   if (out.length > LIMITS.maxArtifacts) return fail('TOO_MANY_ARTIFACTS');
   if (out.reduce((s, a) => s + a.bytes.byteLength, 0) > LIMITS.maxTotalArtifactBytes)
     return fail('PACKAGE_TOO_LARGE');
@@ -232,7 +327,14 @@ export async function assembleDraft(
     return fail('PACKAGE_TOO_LARGE');
 
   const outstanding: DraftRequirement[] = [
-    { code: 'AGENT_CONFIG_MISSING', detail: 'No agent configuration exists until Chapter 9 runs.' },
+    ...(input.agent === undefined
+      ? [
+          {
+            code: 'AGENT_CONFIG_MISSING' as const,
+            detail: 'No saved assistant outcome with its agent configuration was selected.',
+          },
+        ]
+      : []),
     {
       code: 'DECISION_LOG_MISSING',
       detail: 'No decision log exists until Chapter 10 records human decisions.',

@@ -27,6 +27,7 @@ import {
   verifySourceSet,
   type ContextSelection,
   type DiffOutcome,
+  type DraftAgentArtifacts,
   type DraftArtifact,
   type DraftRequirement,
   type LoadedRulePack,
@@ -818,7 +819,11 @@ export class ReviewController {
   // ---- Draft artifacts ----------------------------------------------------------------------------
 
   /** A typed draft with outstanding requirements. It is not a signed capture and enables no signing. */
-  async draftArtifacts(): Promise<
+  async draftArtifacts(agent?: {
+    /** Vault versions of a saved assistant analysis and its agent configuration. */
+    readonly analysisVersionId: string;
+    readonly agentConfigVersionId: string;
+  }): Promise<
     | { ok: true; artifacts: DraftArtifact[]; outstanding: DraftRequirement[] }
     | { ok: false; code: string }
   > {
@@ -836,6 +841,25 @@ export class ReviewController {
       return { ok: false, code: 'STALE_RESULT' };
     }
     const sources = [...set.sources.values()].filter((s) => set.selected.has(s.documentVersionId));
+    // Saved agent artifacts are read back through the vault (decrypted and hash-checked) and then
+    // checked again by the assembler against the current snapshot.
+    let agentArtifacts: DraftAgentArtifacts | undefined;
+    if (agent !== undefined) {
+      const records = this.#deps.vault.getSnapshot().selectedMatter?.sources ?? [];
+      const epoch = this.#epoch;
+      const load = async (versionId: string) => {
+        const record = records.find((source) => source.documentVersionId === versionId);
+        if (record === undefined) return null;
+        const bytes = await this.#deps.vault.commands.readSource(matterId, versionId);
+        return bytes.ok ? { artifactId: record.artifactId, bytes: bytes.data } : null;
+      };
+      const analysis = await load(agent.analysisVersionId);
+      const config = await load(agent.agentConfigVersionId);
+      if (epoch !== this.#epoch) return { ok: false, code: 'STALE_RESULT' };
+      if (analysis === null || config === null)
+        return { ok: false, code: 'AGENT_ARTIFACT_INVALID' };
+      agentArtifacts = { analysis, config };
+    }
     const assembled = await assembleDraft({
       matterId,
       snapshotDigest: checks.snapshotDigest,
@@ -858,6 +882,7 @@ export class ReviewController {
       rulePack: pack,
       reviewRecord: checks.reviewRecord,
       newId: this.#deps.newId,
+      ...(agentArtifacts !== undefined && { agent: agentArtifacts }),
     });
     return assembled.ok ? { ok: true, ...assembled.data } : { ok: false, code: assembled.code };
   }

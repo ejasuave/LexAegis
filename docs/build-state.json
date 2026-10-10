@@ -3933,6 +3933,16 @@
           "packages/agent/src/review/agent-artifacts.ts",
           "apps/web/src/features/vault/{vault-controller,public}.ts and features/matters/edits.ts (optional entry origin model_proposed; no vault v1 format or profile change)"
         ]
+      },
+      "13": {
+        "status": "complete",
+        "summary": "AgentConfigV1 is written by the runtime from the execution and delivered on run_completed; the analysis artifact and the configuration are canonical JSON with digests held outside; the draft assembler accepts them only after its own checks.",
+        "files": [
+          "packages/agent/src/review/{agent-artifacts,artifacts}.ts",
+          "packages/agent/src/contracts/agent-config.ts",
+          "apps/web/src/features/review/controller.ts (draftArtifacts accepts saved agent artifact versions)",
+          "vitest.config.mts"
+        ]
       }
     },
     "contracts": {
@@ -4044,6 +4054,16 @@
       "saveOutcome": "Explicit action only. The analysis artifact (lexaegis.assistant-analysis.v1) and the agent configuration are stored as immutable encrypted artifacts under version IDs fixed per result, read back through the vault and hash-checked, then an outcome entry (origin model_proposed, unconfirmed, typed prefix lexaegis.assistant-outcome.v1:) is committed with saveMatter. Saved is shown only after the entry is present in the committed record. A failed write leaves the result on screen as unsaved; a retry completes the vault's pending commit instead of storing twice.",
       "kept": "Raw chat is never stored. Unconfirmed proposals are not written into the analysis artifact. A saved outcome can become request context only after the reviewer confirms the entry with the existing vault controls.",
       "observedVaultBehaviour": "A failed addSourceFile leaves the source in the working draft with its sealed object held in the vault's pending commit; reconcile completes it. Calling saveMatter instead would start a new commit without that object, so the assistant never does that for an unfinished artifact."
-    }
+    },
+    "provenance": {
+      "agentConfig": "lexaegis.agent-config.v1: profile, runtime version, modelExecution (qwen, scripted-test or none), provider region, requested and returned model, model snapshot known or explicitly unknown, output mode, capability state and check time, provider request IDs, prompt manifest version with common-policy, intent-asset, output-schema and tool-schema SHA-256 digests, fixed generation parameters, the run budget, usage with provenance, run ID, intent, start and finish time, outcome. A code-only or device-local run records modelExecution none with no provider, prompts or parameters and usage none.",
+      "analysis": "lexaegis.assistant-analysis.v1: validated blocks, unresolved items, questions, scope limitations, only the sources, rules and tool results the answer cites, the input snapshot digest, the run facts and three fixed limitations. No hidden reasoning, credential, endpoint, transcript or provider request or response; unconfirmed proposals are counted, not stored.",
+      "bytes": "RFC 8785 canonical JSON hashed with SHA-256 through Chapter 2's functions. The same run gives the same bytes; recorded timestamps and IDs are never regenerated. Model output is not deterministic even with fixed parameters; only hashing, validation and code calculations are.",
+      "draft": "ReviewController.draftArtifacts({ analysisVersionId, agentConfigVersionId }) reads both back through the vault and passes the exact bytes to assembleDraft, which requires canonical bytes of the expected schemas, the same run and matter, the current snapshot digest, every cited source and rule in the draft, and cited payment results equal to the draft's own. Failures: AGENT_ARTIFACT_INVALID, AGENT_ARTIFACT_STALE, AGENT_ARTIFACT_MISMATCH, MISSING_DEPENDENCY. Roles used: agent-config and analysis (existing v1 roles). AGENT_CONFIG_MISSING is cleared only then; DECISION_LOG_MISSING and HUMAN_REVIEW_GATE_PENDING always remain.",
+      "notDone": "No freeze, opening nonce, decision log, approval instruction or transaction. prepare_review returns requirements only."
+    },
+    "decisions": [
+      "Unit tests run with maxWorkers 50%: the Chapter 8 comparison test in pipeline.test.ts measures a real 2-second diff limit and reported timeout instead of edit distance in 3 of 4 fully parallel runs once this chapter's integration tests were added. Its assertion is unchanged. Three consecutive full runs passed with the cap (1,041 tests at the time)."
+    ]
   }
 }

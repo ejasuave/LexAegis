@@ -335,3 +335,128 @@ describe('saved outcomes', () => {
     dispose(a);
   });
 });
+
+describe('agent artifacts in the review draft', () => {
+  const saved = async () => {
+    const a = await assistantRig([
+      toolCall('check_payments', { groupId: 'settlement' }),
+      done(),
+      answer({
+        blocks: [
+          {
+            kind: 'calculation',
+            text: 'The schedule is lower.',
+            basis: 'supported',
+            sources: [],
+            rules: [],
+            tools: ['T1'],
+          },
+          {
+            kind: 'quotation',
+            text: '',
+            basis: 'supported',
+            sources: ['S1'],
+            rules: [],
+            tools: [],
+          },
+        ],
+      }),
+      done(),
+      answer(),
+    ]);
+    await a.assistant.action('check_payments');
+    await a.assistant.send();
+    const run = lastRun(a);
+    expect(await a.assistant.saveOutcome(run?.id ?? '')).toBe(true);
+    const entry = (a.r.h.vault.getSnapshot().selectedMatter?.context.entries ?? []).find((e) =>
+      e.text.startsWith(OUTCOME_PREFIX),
+    );
+    const stored = decodeOutcome(entry?.text ?? '');
+    if (stored === null || stored.agentConfigVersionId === null) throw new Error('not stored');
+    return {
+      a,
+      agent: {
+        analysisVersionId: stored.analysisVersionId,
+        agentConfigVersionId: stored.agentConfigVersionId,
+      },
+    };
+  };
+
+  it('joins a draft only when bound to the current snapshot, and still leaves the human gates open', async () => {
+    const { a, agent } = await saved();
+    await a.r.controller.runChecks();
+    const without = await a.r.controller.draftArtifacts();
+    expect(without.ok && without.outstanding.map((o) => o.code)).toContain('AGENT_CONFIG_MISSING');
+
+    const draft = await a.r.controller.draftArtifacts(agent);
+    if (!draft.ok) throw new Error(draft.code);
+    const roles = draft.artifacts.map((artifact) => artifact.role);
+    expect(roles.filter((role) => role === 'agent-config')).toHaveLength(1);
+    expect(roles.filter((role) => role === 'analysis')).toHaveLength(2);
+    const codes = draft.outstanding.map((o) => o.code);
+    expect(codes).not.toContain('AGENT_CONFIG_MISSING');
+    // Assistant work never satisfies the human requirements.
+    expect(codes).toEqual(
+      expect.arrayContaining(['DECISION_LOG_MISSING', 'HUMAN_REVIEW_GATE_PENDING']),
+    );
+    const config = draft.artifacts.find((artifact) => artifact.role === 'agent-config');
+    expect(JSON.parse(new TextDecoder().decode(config?.bytes))).toMatchObject({
+      schema: 'lexaegis.agent-config.v1',
+      modelExecution: 'scripted-test',
+      provider: { id: 'scripted-test', outputMode: 'json_schema' },
+    });
+    // Nothing was frozen, signed or sent by any of this.
+    expect(a.r.h.vault.getSnapshot().checkedCaptures).toEqual([]);
+    dispose(a);
+  });
+
+  it('is rejected as stale once a fact changes, while the stored artifact stays as it was', async () => {
+    const { a, agent } = await saved();
+    const before = must(await a.r.h.vault.readSource(a.r.matterId, agent.analysisVersionId));
+    const fact = a.r.controller.getSnapshot().facts.find((f) => f.slot === 'i2');
+    a.r.controller.removeFact(fact?.factId ?? '');
+    await a.r.controller.runChecks();
+    expect(await a.r.controller.draftArtifacts(agent)).toEqual({
+      ok: false,
+      code: 'AGENT_ARTIFACT_STALE',
+    });
+    const after = must(await a.r.h.vault.readSource(a.r.matterId, agent.analysisVersionId));
+    expect(Buffer.from(after).equals(Buffer.from(before))).toBe(true);
+    // Without the stale artifact the draft still assembles, with the requirement outstanding again.
+    const plain = await a.r.controller.draftArtifacts();
+    expect(plain.ok && plain.outstanding.map((o) => o.code)).toContain('AGENT_CONFIG_MISSING');
+    dispose(a);
+  });
+
+  it('rejects a configuration from another run and an unknown artifact', async () => {
+    const { a, agent } = await saved();
+    await a.assistant.action('explain', { references: [a.clause] });
+    await a.assistant.send();
+    expect(await a.assistant.saveOutcome(lastRun(a)?.id ?? '')).toBe(true);
+    const entries = (a.r.h.vault.getSnapshot().selectedMatter?.context.entries ?? [])
+      .map((e) => decodeOutcome(e.text))
+      .filter((stored) => stored !== null);
+    const other = entries.find((stored) => stored.analysisVersionId !== agent.analysisVersionId);
+    await a.r.controller.runChecks();
+    expect(
+      await a.r.controller.draftArtifacts({
+        analysisVersionId: agent.analysisVersionId,
+        agentConfigVersionId: other?.agentConfigVersionId ?? '',
+      }),
+    ).toEqual({ ok: false, code: 'AGENT_ARTIFACT_MISMATCH' });
+    expect(
+      await a.r.controller.draftArtifacts({
+        analysisVersionId: '00000000-0000-4000-8000-00000000dead',
+        agentConfigVersionId: agent.agentConfigVersionId,
+      }),
+    ).toEqual({ ok: false, code: 'AGENT_ARTIFACT_INVALID' });
+    // The two artifacts swapped: neither parses as the other.
+    expect(
+      await a.r.controller.draftArtifacts({
+        analysisVersionId: agent.agentConfigVersionId,
+        agentConfigVersionId: agent.analysisVersionId,
+      }),
+    ).toEqual({ ok: false, code: 'AGENT_ARTIFACT_INVALID' });
+    dispose(a);
+  });
+});
