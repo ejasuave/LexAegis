@@ -1,0 +1,122 @@
+# Public projection of ProofOfReviewRegistry events. No private matter data is stored here.
+# Zero predecessor/successor use the registry's bytes32 zero value, exactly.
+
+enum EventKind {
+  RECEIPT_ISSUED
+  RECEIPT_REVOKED
+  RECEIPT_SUPERSEDED
+  NONCE_INVALIDATED
+}
+
+enum ActionKind {
+  ISSUE
+  REVOKE
+  SUPERSEDE
+  INVALIDATE_NONCE
+}
+
+enum ReceiptLifecycle {
+  ACTIVE
+  REVOKED
+  SUPERSEDED
+}
+
+type RegistryState {
+  id: ID!
+  chainId: String!
+  genesisHash: String!
+  registryAddress: String!
+  configFingerprint: String!
+  generation: String!
+  projectionVersion: String!
+  startBlock: BigInt!
+  rawEventCount: Int!
+  actionCount: Int!
+  pendingSupersessions: Int!
+  lastEventId: String
+  lastEventBlockNumber: BigInt
+  lastEventBlockHash: String
+  lastEventLogIndex: Int
+}
+
+type ChainEvent {
+  id: ID!
+  registryKey: String! @index
+  kind: EventKind!
+  reviewer: String! @index
+  commitment: String!
+  relatedCommitment: String!
+  nonce: BigInt! @config(precision: 78)
+  newNonce: BigInt @config(precision: 78)
+  eventTimestamp: BigInt!
+  blockNumber: BigInt!
+  blockHash: String!
+  blockTimestamp: BigInt!
+  transactionHash: String!
+  executor: String!
+  logIndex: Int!
+  actionId: String
+}
+
+type IndexedAction {
+  id: ID!
+  registryKey: String!
+  reviewer: String! @index
+  kind: ActionKind!
+  consumedNonce: BigInt! @config(precision: 78) @index
+  nextNonce: BigInt! @config(precision: 78)
+  commitment: String
+  relatedCommitment: String
+  transactionHash: String!
+  executor: String!
+  blockNumber: BigInt!
+  blockHash: String!
+  timestamp: BigInt!
+  firstEventId: String!
+  lastEventId: String!
+  firstLogIndex: Int!
+  lastLogIndex: Int!
+  eventCount: Int!
+}
+
+type IndexedReceipt {
+  id: ID!
+  registryKey: String!
+  reviewer: String! @index
+  commitment: String!
+  status: ReceiptLifecycle!
+  predecessor: String! @index
+  successor: String! @index
+  issuedAt: BigInt!
+  updatedAt: BigInt!
+  issuingActionId: String!
+  latestActionId: String!
+}
+
+type ReviewerSummary {
+  id: ID!
+  registryKey: String!
+  reviewer: String! @index
+  nextNonce: BigInt! @config(precision: 78)
+  totalReceipts: Int!
+  activeReceipts: Int!
+  revokedReceipts: Int!
+  supersededReceipts: Int!
+  actionCount: Int!
+}
+
+# Staging for the registry's two-log replacement. Never exposed through GraphQL.
+type PendingSupersession @internal {
+  id: ID!
+  reviewer: String!
+  nonce: BigInt! @config(precision: 78)
+  predecessor: String!
+  replacement: String!
+  issuedEventId: String!
+  issuedLogIndex: Int!
+  blockNumber: BigInt!
+  blockHash: String!
+  transactionHash: String!
+  timestamp: BigInt!
+  complete: Boolean!
+}

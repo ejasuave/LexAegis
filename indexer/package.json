@@ -1,0 +1,25 @@
+{
+  "name": "@lexaegis/indexer",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Envio HyperIndex projection of ProofOfReviewRegistry events (read-only).",
+  "scripts": {
+    "config:generate": "tsx scripts/generate-config.ts",
+    "config:check": "tsx scripts/generate-config.ts --check",
+    "codegen": "pnpm config:generate && envio codegen",
+    "typecheck": "tsc --noEmit -p tsconfig.json",
+    "test": "vitest run --config vitest.config.ts",
+    "dev": "pnpm config:generate && envio dev",
+    "start": "pnpm config:check && envio start",
+    "rebuild": "tsx scripts/rebuild.ts"
+  },
+  "dependencies": {
+    "envio": "3.13.0"
+  },
+  "devDependencies": {
+    "@lexaegis/sdk": "workspace:*",
+    "viem": "2.57.3",
+    "zod": "4.6.5"
+  }
+}

@@ -1,0 +1,5 @@
+{
+  "extends": "../tsconfig.base.json",
+  "compilerOptions": { "types": ["node"] },
+  "include": ["envio-env.d.ts", "scripts", "src", "test", "generated", "vitest.config.ts"]
+}

@@ -3,6 +3,7 @@ packages:
   - packages/*
   - contracts
   - tooling
+  - indexer
 allowBuilds:
   # Postinstall only recreates symlinks inside the package's own native/ directory (reviewed).
   '@embedded-postgres/darwin-arm64': true

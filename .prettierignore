@@ -21,3 +21,7 @@ fixtures/documents-v1/cases.json
 packages/agent/prompts/manifest.v1.json
 packages/agent/src/runtime/generated
 docs/evidence/chapter09-qwen-smoke-*.json
+
+# Chapter 7 indexer: generated, compact public JSON
+indexer/deployment-binding.json
+indexer/.envio/types.d.ts

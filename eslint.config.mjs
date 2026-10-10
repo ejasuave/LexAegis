@@ -72,6 +72,8 @@ export default tseslint.config(
       'contracts/out/**',
       'contracts/cache/**',
       'contracts/broadcast/**',
+      'indexer/.envio/**',
+      'indexer/envio-env.d.ts',
       '**/node_modules/**',
       '**/.next/**',
       '**/.next-check/**',
@@ -161,6 +163,26 @@ export default tseslint.config(
       {
         group: ['@lexaegis/web', '@lexaegis/verifier', '@lexaegis/agent', '@lexaegis/agent/*'],
         message: 'contracts tooling must not import applications or the agent.',
+      },
+    ]),
+  },
+  {
+    // indexer: read-only projection. It consumes the registry ABI and nothing else from the app.
+    files: ['indexer/**/*.ts'],
+    rules: restrict([
+      ...FRAMEWORK(),
+      {
+        group: [
+          '@lexaegis/web',
+          '@lexaegis/verifier',
+          '@lexaegis/agent',
+          '@lexaegis/agent/*',
+          '@lexaegis/vault',
+          '@lexaegis/vault/*',
+          '@scure/*',
+          '**/apps/**',
+        ],
+        message: 'The indexer is read-only and must not import applications, the agent or the vault.',
       },
     ]),
   },
