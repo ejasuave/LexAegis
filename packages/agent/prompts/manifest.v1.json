@@ -1,0 +1,112 @@
+{
+  "schema": "lexaegis.prompt-manifest.v1",
+  "manifestVersion": "1",
+  "hash": "SHA-256 of exact UTF-8 asset bytes; SHA-256 of RFC 8785 canonical JSON for schemas",
+  "assets": [
+    {
+      "id": "common-policy",
+      "file": "common-policy.md",
+      "sha256": "0xb936faf4d92f8d39490237680af0e885b3384d801c9ac69ee36487c21feffaa0",
+      "bytes": 3037,
+      "words": 463
+    },
+    {
+      "id": "router",
+      "file": "router.md",
+      "sha256": "0xcb651881070963c6213e84061b7295b7a33f5020a7040cb37c8855379d013ac3",
+      "bytes": 516,
+      "words": 74
+    },
+    {
+      "id": "intent:summarise",
+      "file": "intent-summarise.md",
+      "sha256": "0x59114d6c5251b43a96b3ca2d9efe77772e284df91b1c04fb4962ba04ea96abcc",
+      "bytes": 374,
+      "words": 63
+    },
+    {
+      "id": "intent:explain",
+      "file": "intent-explain.md",
+      "sha256": "0x495a2487851e559004857f7e7cc01e2a8b2f2aab7b605dfc84127db5c1184e62",
+      "bytes": 596,
+      "words": 101
+    },
+    {
+      "id": "intent:check_payments",
+      "file": "intent-check-payments.md",
+      "sha256": "0xcdda633e1e8e1c6437267bf86f09ea164f892c354a0ef5b25f7f49c3aeed373a",
+      "bytes": 674,
+      "words": 107
+    },
+    {
+      "id": "intent:missing_evidence",
+      "file": "intent-missing-evidence.md",
+      "sha256": "0x588878dc33e2cb3670ce9bd6f4f85288e7aba932c4a4cf62abd7114bb926c227",
+      "bytes": 524,
+      "words": 86
+    },
+    {
+      "id": "intent:brief_matter",
+      "file": "intent-brief-matter.md",
+      "sha256": "0xd0be677750793e44940a45d89219e6e00f56a06716e6bf4a4be7bd60694199bd",
+      "bytes": 474,
+      "words": 68
+    },
+    {
+      "id": "intent:prepare_review",
+      "file": "intent-prepare-review.md",
+      "sha256": "0xad30259a9d3ec5aeac01796799ab384e242f28ab662b0ca6e7de9ec076364b48",
+      "bytes": 472,
+      "words": 75
+    },
+    {
+      "id": "intent:status",
+      "file": "intent-status.md",
+      "sha256": "0xeb9928d218ac9b648075516d2f99c289061a49a3bfaf15a84badb90aeb32115a",
+      "bytes": 377,
+      "words": 56
+    }
+  ],
+  "schemas": [
+    {
+      "id": "output",
+      "sha256": "0xa86427e66d5c7cd413eb7fbd9561ac2619ed1cce069c7b3cfec21c320695549a"
+    },
+    {
+      "id": "intent-selection",
+      "sha256": "0xcfa1c78d7b7c5239fc9488cb748beede583e422a8e7b7e5451b63b935f6e25ad"
+    }
+  ],
+  "tools": [
+    {
+      "name": "read_sources",
+      "version": "1",
+      "sha256": "0x298ee9ba4f87f7416431101571059aac73baeb39cf7cbaf6b3db9b0b011a214d"
+    },
+    {
+      "name": "get_rules",
+      "version": "1",
+      "sha256": "0x78dd2f3ac0d65b666abdf845d8ea3d406ce53e508e3e0615ac855689ba2fedf2"
+    },
+    {
+      "name": "check_payments",
+      "version": "1",
+      "sha256": "0x32297c952ac985b0c771f363cc982c3bcb4ee888efd2218c4adf4d5b9913bb13"
+    },
+    {
+      "name": "check_evidence",
+      "version": "1",
+      "sha256": "0x57f17fcfaa8c38a008e87524b770342bd4381be1cf391f33a50f42df51b3e085"
+    },
+    {
+      "name": "get_status",
+      "version": "1",
+      "sha256": "0x4570a7d2f41e14f40ee325f31379976c3c8392bc64b181e9777d4f81d4da9f76"
+    },
+    {
+      "name": "prepare_review",
+      "version": "1",
+      "sha256": "0x8d49fe4f0a26709bcf9e8959d3c67a66f4ab5e694270b747f8ac445a7a245753"
+    }
+  ]
+}

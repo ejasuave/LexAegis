@@ -11,7 +11,9 @@
     "./testing": "./src/testing/index.ts"
   },
   "scripts": {
-    "typecheck": "tsc --noEmit -p tsconfig.json"
+    "typecheck": "tsc --noEmit -p tsconfig.json",
+    "prompts:generate": "tsx scripts/generate-prompts.ts",
+    "prompts:check": "tsx scripts/generate-prompts.ts --check"
   },
   "dependencies": {
     "@lexaegis/protocol": "workspace:*",

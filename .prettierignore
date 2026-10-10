@@ -18,3 +18,5 @@ fixtures/registry-v1/vectors.json
 fixtures/account-v1/vectors.json
 fixtures/vault-v1/vectors.json
 fixtures/documents-v1/cases.json
+packages/agent/prompts/manifest.v1.json
+packages/agent/src/runtime/generated

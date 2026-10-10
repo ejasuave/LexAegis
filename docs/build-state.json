@@ -3843,6 +3843,16 @@
           "apps/web/src/test-support/review-rig.ts (rig moved out of review-flow.test.ts)"
         ],
         "interfaces": "ReviewController.assistantContext(selection) returns the SelectedContextV1, snapshot digest and revision, and vault generation; ReviewSnapshot.inputRevision advances on every source, selection, fact or evidence change and on lock or matter change; buildRequestBody, prepareDisclosure, disclosureIsCurrent, consentToDisclosure"
+      },
+      "04": {
+        "status": "complete",
+        "summary": "One common policy, seven intent assets and a router asset, embedded with SHA-256 digests by a generator with a check mode; deterministic router with one optional utterance-only model selection.",
+        "files": [
+          "packages/agent/prompts/{common-policy,router,intent-*}.md and manifest.v1.json",
+          "packages/agent/scripts/generate-prompts.ts",
+          "packages/agent/src/runtime/{provider,model-schemas,tool-schemas,prompts,intent-router}.ts",
+          "packages/agent/src/runtime/generated/prompt-assets.ts"
+        ]
       }
     },
     "contracts": {
@@ -3873,6 +3883,18 @@
       "factsByIntent": "summarise and explain send no facts; check_payments sends payment facts and the passages they cite; missing_evidence, prepare_review and brief_matter send all confirmed facts and the evidence links; client-observed status only for status, prepare_review and unclassified free text",
       "localOnly": "A directly requested status, payment check or evidence check builds no request (LOCAL_INTENT) and discloses nothing",
       "savedContext": "Only confirmed, explicitly ticked note or outcome entries; fact and evidence entries (typed prefixes) are refused as free text"
+    },
+    "prompts": {
+      "manifestVersion": "1",
+      "words": "common policy 463; with the largest intent asset 570 (limit 1,200)",
+      "hashing": "SHA-256 of exact UTF-8 asset bytes; SHA-256 of RFC 8785 canonical JSON for the output, intent-selection and tool schemas; digests live in the manifest and the generated module, never inside hashed content",
+      "commands": ["pnpm agent:prompts:generate", "pnpm agent:prompts:check"],
+      "toolsByIntent": "summarise: read_sources; explain: read_sources, get_rules; check_payments: read_sources, get_rules, check_payments; missing_evidence: read_sources, get_rules, check_evidence; brief_matter: read_sources, check_payments, check_evidence, get_status; prepare_review: get_rules, check_payments, check_evidence, prepare_review; status: get_status",
+      "decisions": [
+        "The model is shown source handles and minimal metadata; excerpt text is read through read_sources, so every document read is a native tool call over the consented catalog.",
+        "Model output is a flat closed schema (provider keyword subset); handles are plain strings there and are resolved or rejected by code.",
+        "The server routes the utterance again and treats a claimed intent that contradicts it as unsupported."
+      ]
     }
   }
 }

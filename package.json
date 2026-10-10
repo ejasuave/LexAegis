@@ -49,7 +49,9 @@
     "tools:s3": "tsx tooling/scripts/install-versitygw.ts",
     "contracts:deploy:testnet": "pnpm --filter @lexaegis/contracts deploy:testnet",
     "test:chain:live": "pnpm --filter @lexaegis/contracts test:live",
-    "test:review:browser": "tsx tooling/scripts/review-browser-check.ts"
+    "test:review:browser": "tsx tooling/scripts/review-browser-check.ts",
+    "agent:prompts:generate": "pnpm --filter @lexaegis/agent prompts:generate",
+    "agent:prompts:check": "pnpm --filter @lexaegis/agent prompts:check"
   },
   "devDependencies": {
     "@eslint/js": "10.0.1",
