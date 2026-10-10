@@ -10,5 +10,6 @@ export * from './snapshot';
 export * from './facts';
 export * from './limits';
 export * from './context';
+export * from './disclosure';
 export * from './artifacts';
 export * from './tools';

@@ -9,7 +9,9 @@ import { canonicalDigest } from './hash';
 /*
  * ReviewInputSnapshot: the exact inputs a result was computed from. It binds content hashes, not
  * revision numbers alone. Its digest is a private application value, distinct from Chapter 2's
- * blinded public commitment, and never leaves the encrypted vault.
+ * blinded public commitment. It is stored only in the encrypted vault; a consented assistant
+ * request carries it to the server, which holds it in memory for that run and never stores it or
+ * sends it to a provider.
  */
 
 export interface ReviewInputSnapshot {

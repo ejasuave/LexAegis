@@ -11,6 +11,7 @@ const LABELS: Record<OrbState, string> = {
   completed: 'Run finished',
   cancelled: 'Cancelled',
   failed: 'Run failed',
+  interrupted: 'Interrupted: outcome unknown',
 };
 
 const ACTIVE: ReadonlySet<OrbState> = new Set(['running', 'stopping']);
@@ -24,6 +25,7 @@ const COLORS: Record<OrbState, string> = {
   completed: 'var(--lj-cyan)',
   cancelled: 'var(--lj-text-muted)',
   failed: 'var(--lj-error)',
+  interrupted: 'var(--lj-amber)',
 };
 
 export function orbLabel(state: OrbState): string {

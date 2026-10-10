@@ -1,31 +1,28 @@
 import { describe, expect, it } from 'vitest';
-import type { AssistantRequest } from './contracts';
 import { createUnavailableReviewAgent } from './ports';
+import { syntheticMatter, syntheticRequest } from './testing/fixtures';
 
 describe('unavailable review agent', () => {
   const agent = createUnavailableReviewAgent();
   const signal = new AbortController().signal;
 
-  it('returns NOT_IMPLEMENTED for start and cancel instead of pretending to work', async () => {
-    const request: AssistantRequest = {
-      schema: 'lexaegis.assistant-request.v1',
-      clientRequestId: 'req_1',
-      intent: 'summarise',
-      utterance: '',
-      context: { matterId: 'matter_1', documentVersionId: null, sourceReferences: [] },
-    };
-    const started = await agent.start(request, { ownerId: 'acct_1', signal });
+  it('returns NOT_CONFIGURED for start, status and cancel instead of pretending to work', async () => {
+    const request = await syntheticRequest(await syntheticMatter());
+    const started = await agent.start(request, {
+      ownerId: 'acct_1',
+      signal,
+      sessionValid: () => Promise.resolve(true),
+    });
     expect(started.ok).toBe(false);
-    expect(!started.ok && started.error.code).toBe('NOT_IMPLEMENTED');
+    expect(!started.ok && started.error.code).toBe('NOT_CONFIGURED');
 
     const cancelled = await agent.cancel({ runId: 'run_1', ownerId: 'acct_1' }, signal);
-    expect(cancelled.ok).toBe(false);
-    expect(!cancelled.ok && cancelled.error.code).toBe('NOT_IMPLEMENTED');
+    expect(!cancelled.ok && cancelled.error.code).toBe('NOT_CONFIGURED');
+    const status = await agent.status('run_1', 'acct_1');
+    expect(!status.ok && status.error.code).toBe('NOT_CONFIGURED');
   });
 
-  it('emits no events, so no tool progress or findings can be fabricated', async () => {
-    const seen: unknown[] = [];
-    for await (const item of agent.events('run_1', 'acct_1', signal)) seen.push(item);
-    expect(seen).toEqual([]);
+  it('reports no provider, so nothing can be disclosed to it', () => {
+    expect(agent.availability()).toMatchObject({ state: 'not_configured', providerScope: null });
   });
 });

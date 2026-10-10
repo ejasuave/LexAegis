@@ -3822,7 +3822,41 @@
         "status": "complete",
         "summary": "Documentation read; import boundaries added for the browser-safe review export, the production runtime and the test adapters.",
         "files": ["eslint.config.mjs", ".gitignore", ".prettierignore"]
+      },
+      "02": {
+        "status": "complete",
+        "summary": "Assistant contracts extended in place; old EvidenceReference-based shapes removed (nothing used them).",
+        "files": [
+          "packages/agent/src/contracts/{assistant,agent-config,tool-results,limits,intents,index}.ts",
+          "packages/agent/src/review/{context,disclosure}.ts",
+          "packages/agent/src/ports.ts",
+          "packages/agent/src/testing/{fixtures,index}.ts"
+        ]
       }
+    },
+    "contracts": {
+      "entryPoint": "@lexaegis/agent/contracts (browser-safe); pure helpers in @lexaegis/agent/review; test fixtures in @lexaegis/agent/testing",
+      "schemas": {
+        "request": "lexaegis.assistant-request.v1 (clientRequestId, matterId, documentVersionId or null, snapshot digest and revision, vaultGeneration, intent or null, trigger, utterance, context, history, clientObserved, consent)",
+        "selectedContext": "lexaegis.selected-context.v1 (sources as S1..Sn catalog entries holding the full SourceReferenceV1, confirmed facts, evidence selections, saved context, searchedScope with excerptsOnly)",
+        "consent": "lexaegis.disclosure-consent.v1 (explicit_send, providerScope, matter, version, disclosureDigest over lexaegis.disclosure.v1)",
+        "plan": "lexaegis.assistant-plan.v1 (1 to 5 steps)",
+        "toolResult": "lexaegis.tool-result.v1 (handle T1..T8, tool version 1, outcome succeeded|failed|needs_narrowing, typed output per tool)",
+        "response": "lexaegis.assistant-response.v1 (blocks explanation|quotation|calculation|finding|status referring to handles; fact proposals P1..P10; unresolved; questions; scope limitations; allowlisted next actions)",
+        "event": "lexaegis.assistant-event.v1 (plan_updated, state_changed, tool_started, tool_result, response_delta, response_completed, output_reference, run_completed, run_cancelled, run_failed, run_interrupted; every event carries runId, matterId, documentVersionId, snapshotDigest, vaultGeneration, seq, timestamp)",
+        "runMetadata": "lexaegis.agent-run-metadata.v1 (identifiers, state, outcome, deadlines, counters, usage provenance)",
+        "agentConfig": "lexaegis.agent-config.v1",
+        "intentSelection": "lexaegis.intent-selection.v1",
+        "availability": "lexaegis.assistant-availability.v1"
+      },
+      "runStates": "queued, running, stopping, completed, awaiting_input, cancelled, failed, interrupted; outcomes completed, needs_input, limited_scope, cancelled, failed, interrupted",
+      "limits": "request 128 KiB, utterance 4 KiB, context 32 KiB, history 6 messages and 8 KiB, catalog 64 entries, quote 4 KiB, 8 answer blocks, 10 fact proposals, 10 unresolved items, output 32 KiB, tool arguments 4 KiB, tool result 16 KiB; overflow returns a typed code (limitCodeOf)",
+      "routing": "routeUtterance: slash commands, unambiguous phrases, /stop to cancellation, approval or signing wording declined without a model; LOCAL_INTENTS (status, check_payments, missing_evidence) are served by browser code with no disclosure when asked for directly",
+      "decisions": [
+        "Responses cite sources and tool results by handle only. The browser resolves handles through its own catalog and the tool_result events, so document text and computed values are never retyped by the model or retransmitted in an answer.",
+        "The snapshot digest travels in a consented request and in events; the server holds it in memory for the run and never stores it or sends it to the provider.",
+        "ReviewAgent.start returns admission metadata plus the live event stream; a repeated request ID returns the existing metadata with no stream and runs nothing."
+      ]
     }
   }
 }

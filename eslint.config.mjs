@@ -253,6 +253,7 @@ export default tseslint.config(
   {
     // The browser-safe contracts export must stay free of server modules and credentials.
     files: ['packages/agent/src/contracts/**/*.ts'],
+    ignores: ['**/*.test.ts'],
     rules: restrict([
       ...FRAMEWORK(),
       NODE_ONLY,
