@@ -8,10 +8,12 @@ import {
   type ExtractedDocumentV1,
   type PaymentReconciliationV1,
   type RulePackReviewRecordV1,
+  type SelectedContextV1,
 } from '@lexaegis/agent/contracts';
 import {
   assembleComparison,
   assembleDraft,
+  buildSelectedContext,
   buildSnapshot,
   checkSelectionLimits,
   confirmFact as makeConfirmedFact,
@@ -23,6 +25,7 @@ import {
   runChecks,
   snapshotDigest,
   verifySourceSet,
+  type ContextSelection,
   type DiffOutcome,
   type DraftArtifact,
   type DraftRequirement,
@@ -138,7 +141,24 @@ export interface ReviewSnapshot {
   readonly comparison: ComparisonView;
   readonly save: 'saved' | 'unsaved' | 'saving' | 'error';
   readonly error: string | null;
+  /** Advances on every change to sources, selection, facts or evidence, and on lock or matter change. */
+  readonly inputRevision: number;
 }
+
+/** What an assistant request may disclose, chosen deliberately. Facts are named by ID. */
+export interface AssistantContextSelection extends Omit<ContextSelection, 'facts' | 'evidence'> {
+  readonly factIds: readonly string[];
+  readonly includeEvidence: boolean;
+}
+
+export type AssistantContextResult =
+  | {
+      readonly ok: true;
+      readonly context: SelectedContextV1;
+      readonly snapshot: { readonly digest: string; readonly revision: number };
+      readonly vaultGeneration: number;
+    }
+  | { readonly ok: false; readonly code: string };
 
 const EMPTY: ReviewSnapshot = Object.freeze({
   matterId: null,
@@ -159,6 +179,7 @@ const EMPTY: ReviewSnapshot = Object.freeze({
   comparison: Object.freeze({ status: 'none' as const, result: null, failure: null }),
   save: 'saved' as const,
   error: null,
+  inputRevision: 0,
 });
 export { EMPTY as EMPTY_REVIEW_SNAPSHOT };
 
@@ -179,6 +200,9 @@ export class ReviewController {
   #diffCancel: (() => void) | null = null;
   #factEntries = new Map<string, string>();
   #evidenceEntry: string | null = null;
+  /** Never reset, so a revision can not repeat across a lock, a matter change or a reload. */
+  #revision = 0;
+  #cleared = true;
 
   constructor(deps: ReviewDeps) {
     this.#deps = deps;
@@ -193,6 +217,7 @@ export class ReviewController {
   getSnapshot = (): ReviewSnapshot => this.#state;
 
   #publish(patch: Partial<ReviewSnapshot>): void {
+    this.#cleared = false;
     this.#state = Object.freeze({ ...this.#state, ...patch });
     for (const listener of this.#listeners) listener();
   }
@@ -229,7 +254,11 @@ export class ReviewController {
     this.#factEntries = new Map();
     this.#evidenceEntry = null;
     this.#matterId = null;
-    this.#state = EMPTY;
+    // Already empty (for example repeated vault events while locked): nothing to announce.
+    if (this.#cleared) return;
+    this.#cleared = true;
+    this.#revision += 1;
+    this.#state = Object.freeze({ ...EMPTY, inputRevision: this.#revision });
     for (const listener of this.#listeners) listener();
   }
 
@@ -241,7 +270,7 @@ export class ReviewController {
     const matterId = open ? vault.selectedMatterId : null;
     if (vault.generation !== this.#vaultGeneration || matterId !== this.#matterId || !open) {
       // Lock, account change, matter switch: private panes empty at once, jobs stop.
-      const changed = this.#matterId !== null || this.#state !== EMPTY;
+      const changed = this.#matterId !== null || this.#state.matterId !== null;
       this.#vaultGeneration = vault.generation;
       this.stop();
       if (changed || matterId === null) this.#clear();
@@ -376,8 +405,12 @@ export class ReviewController {
   /** Any change to sources, facts, evidence or rules marks dependent results stale and clears the draft. */
   #invalidate(): void {
     this.#epoch += 1;
+    this.#revision += 1;
     const checks = this.#state.checks;
-    if (checks.status !== 'none') this.#publish({ checks: { ...checks, status: 'stale' } });
+    this.#publish({
+      inputRevision: this.#revision,
+      ...(checks.status !== 'none' && { checks: { ...checks, status: 'stale' as const } }),
+    });
     if (this.#state.comparison.status === 'running') {
       this.#diffCancel?.();
       this.#diffCancel = null;
@@ -640,23 +673,7 @@ export class ReviewController {
     const epoch = ++this.#epoch;
     this.#publish({ checks: { ...this.#state.checks, status: 'running' } });
     const review = demoDraftReview(pack.digest);
-    const sources = [...(set?.sources.values() ?? [])].filter((s) =>
-      set?.selected.has(s.documentVersionId),
-    );
-    const snapshot = await snapshotDigest(
-      buildSnapshot({
-        matterId,
-        sources: sources.map((s) => ({
-          documentVersionId: s.documentVersionId,
-          sourceSha256: s.sourceSha256,
-          extractionSha256: s.extractionSha256,
-        })),
-        facts: this.#state.facts,
-        evidence: this.#state.evidence,
-        rulePackDigest: pack.digest,
-        reviewRecordState: review.state,
-      }),
-    );
+    const snapshot = await this.#inputDigest(matterId, pack);
     const emptySet: SourceSet = { matterId, sources: new Map(), selected: new Set() };
     const result = await runChecks({
       matterId,
@@ -685,6 +702,69 @@ export class ReviewController {
         reviewRecord: review,
       },
     });
+  }
+
+  /** Digest of the exact current inputs: selected sources, facts, evidence and the pinned rules. */
+  #inputDigest(matterId: string, pack: LoadedRulePack): Promise<string> {
+    const set = this.#set;
+    const sources = [...(set?.sources.values() ?? [])].filter((s) =>
+      set?.selected.has(s.documentVersionId),
+    );
+    return snapshotDigest(
+      buildSnapshot({
+        matterId,
+        sources: sources.map((s) => ({
+          documentVersionId: s.documentVersionId,
+          sourceSha256: s.sourceSha256,
+          extractionSha256: s.extractionSha256,
+        })),
+        facts: this.#state.facts,
+        evidence: this.#state.evidence,
+        rulePackDigest: pack.digest,
+        reviewRecordState: demoDraftReview(pack.digest).state,
+      }),
+    );
+  }
+
+  // ---- Assistant context --------------------------------------------------------------------------
+
+  /**
+   * Builds the context one assistant request may disclose, from the decrypted, hash-verified
+   * artifacts of this unlock. It sends nothing: transmission needs the separate consent step.
+   * Every excerpt must resolve against the verified set; nothing outside the selection is read.
+   */
+  async assistantContext(selection: AssistantContextSelection): Promise<AssistantContextResult> {
+    const matterId = this.#matterId;
+    const set = this.#set;
+    if (matterId === null || set === null) return { ok: false, code: 'NO_SOURCES' };
+    const pack = await this.#ensureRulePack();
+    if (pack === null) return { ok: false, code: 'RULE_PACK_INVALID' };
+    const epoch = this.#epoch;
+    const revision = this.#revision;
+    const wanted = new Set(selection.factIds);
+    const built = buildSelectedContext(set, {
+      documentVersionId: selection.documentVersionId,
+      references: selection.references,
+      facts: this.#state.facts.filter((f) => wanted.has(f.factId)),
+      evidence: selection.includeEvidence ? this.#state.evidence : [],
+      savedContext: selection.savedContext,
+    });
+    if (!built.ok) return built;
+    const digest = await this.#inputDigest(matterId, pack);
+    if (epoch !== this.#epoch || revision !== this.#revision) return { ok: false, code: 'STALE' };
+    return {
+      ok: true,
+      context: built.data,
+      snapshot: { digest, revision },
+      vaultGeneration: this.#vaultGeneration,
+    };
+  }
+
+  /** The current input digest, for comparing a finished run with the inputs it was built from. */
+  async currentInputDigest(): Promise<string | null> {
+    const matterId = this.#matterId;
+    const pack = await this.#ensureRulePack();
+    return matterId === null || pack === null ? null : this.#inputDigest(matterId, pack);
   }
 
   // ---- Comparison ---------------------------------------------------------------------------------

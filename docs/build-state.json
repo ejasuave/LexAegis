@@ -3832,6 +3832,17 @@
           "packages/agent/src/ports.ts",
           "packages/agent/src/testing/{fixtures,index}.ts"
         ]
+      },
+      "03": {
+        "status": "complete",
+        "summary": "Browser-side request builder and disclosure consent on the verified review controller; disclosure preview component. The conversation controller that clears state on lock and cancels on revisions is Task 11.",
+        "files": [
+          "apps/web/src/features/assistant/{selected-context,disclosure,public}.ts",
+          "apps/web/src/components/assistant/DisclosurePreview.tsx",
+          "apps/web/src/features/review/controller.ts (inputRevision, assistantContext, currentInputDigest)",
+          "apps/web/src/test-support/review-rig.ts (rig moved out of review-flow.test.ts)"
+        ],
+        "interfaces": "ReviewController.assistantContext(selection) returns the SelectedContextV1, snapshot digest and revision, and vault generation; ReviewSnapshot.inputRevision advances on every source, selection, fact or evidence change and on lock or matter change; buildRequestBody, prepareDisclosure, disclosureIsCurrent, consentToDisclosure"
       }
     },
     "contracts": {
@@ -3857,6 +3868,11 @@
         "The snapshot digest travels in a consented request and in events; the server holds it in memory for the run and never stores it or sends it to the provider.",
         "ReviewAgent.start returns admission metadata plus the live event stream; a repeated request ID returns the existing metadata with no stream and runs nothing."
       ]
+    },
+    "disclosure": {
+      "factsByIntent": "summarise and explain send no facts; check_payments sends payment facts and the passages they cite; missing_evidence, prepare_review and brief_matter send all confirmed facts and the evidence links; client-observed status only for status, prepare_review and unclassified free text",
+      "localOnly": "A directly requested status, payment check or evidence check builds no request (LOCAL_INTENT) and discloses nothing",
+      "savedContext": "Only confirmed, explicitly ticked note or outcome entries; fact and evidence entries (typed prefixes) are refused as free text"
     }
   }
 }

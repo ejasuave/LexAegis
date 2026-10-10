@@ -324,7 +324,7 @@ export default tseslint.config(
       'apps/web/src/lib/**/*.{ts,tsx}',
       'apps/web/src/config/**/*.ts',
     ],
-    rules: restrict(WEB_BROWSER_PATTERNS, [AGENT_RUNTIME, AGENT_TESTING]),
+    rules: restrict(WEB_BROWSER_PATTERNS, [AGENT_RUNTIME]),
   },
   {
     // UI code reaches the account only through its public surface: status and a few commands.
