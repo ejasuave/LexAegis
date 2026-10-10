@@ -3872,6 +3872,11 @@
           "packages/agent/src/runtime/{tools,tool-schemas}.ts",
           "packages/agent/src/review/requirements.ts"
         ]
+      },
+      "07": {
+        "status": "complete",
+        "summary": "Final-output validator: closed schema, size limits, handle resolution against the consented catalog, the pinned rules and this run's successful tool results, proposal validation as FactCandidateV1, plain-text handling and action allowlist.",
+        "files": ["packages/agent/src/runtime/validate-output.ts"]
       }
     },
     "contracts": {
@@ -3929,6 +3934,13 @@
       "adapters": "read_sources: consented catalog; get_rules: toolGetRules with the pack's real review state (demo_draft); check_payments: toolReconcilePayments over confirmed facts in review mode; check_evidence: buildChecklist over the reviewer's links, scope stated; get_status: server readings plus client_observed readings, chain through a StatusPort, indexer not_connected, receipt not_selected; prepare_review: requirementsPreview, saved false and frozen false",
       "limits": "arguments 4 KiB, result 16 KiB (needs_narrowing when larger, nothing partial), handles T1..T8, identical calls reuse the result within the run only",
       "notChanged": "runChecks is not called by a tool because it needs the full verified extraction; the browser keeps running it locally"
+    },
+    "outputValidation": {
+      "rejects": "unknown or cross-run source and tool handles, unknown rules, failed tool results, a calculation without a check_payments result, a status without a get_status result, a quotation without exactly one source, a supported statement with no reference, an amount in pounds that no code result, confirmed fact or cited quote contains, invalid money or dates in a proposal (never coerced), extra fields, unknown actions, output over 32 KiB",
+      "demotes": "a proposal with no source becomes an unresolved REVIEWER_STATEMENT_REQUIRED item",
+      "addsByCode": "the excerpt-scope limitation on every answer built from excerpts; confirm_fact only when a proposal exists",
+      "repairCodes": "compact machine codes only (for example UNKNOWN_SOURCE_HANDLE, OUTPUT_SCHEMA_INVALID:blocks.0.kind); they never contain case text",
+      "notAGuarantee": "Validation shows reference integrity and schema conformance. It does not show that a statement follows from its citation, that a PDF was transcribed correctly or that anything is legally correct."
     }
   }
 }
