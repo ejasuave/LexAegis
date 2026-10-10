@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "currentChapter": "09",
-  "nextChapter": "09",
+  "nextChapter": "07",
   "project": {
     "name": "LexAegis",
     "primitive": "Proof of Review",
@@ -82,7 +82,7 @@
       "id": "09",
       "title": "Qwen 3.8 Max, Aegis Assistant Runtime and Review Tools",
       "additive": false,
-      "state": "in-progress",
+      "state": "complete",
       "evidence": ["chapter09.checks"],
       "chapterPromptPath": "build_instructions/prompt_library/LexAegis_Prompt_Library_Chapter_09_Targeted_Build_Tasks_v1_0.md"
     },
@@ -4336,7 +4336,7 @@
   },
   "chapter09": {
     "startedOn": "2026-10-10",
-    "state": "in-progress",
+    "state": "complete",
     "note": "Built and verified offline on synthetic documents with a scripted provider, real PostgreSQL and S3-compatible storage and a virtual authenticator. No live Qwen call has been made by this project: the live smoke was blocked for lack of credentials and is tracked separately below. Not real-device evidence and not a legal review. Aegis can assist a review; package approval, signing and chain execution keep their own independent gates, and nothing in this chapter enables them.",
     "providerDocumentation": {
       "readOn": "2026-10-10",
