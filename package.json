@@ -53,7 +53,11 @@
     "agent:prompts:generate": "pnpm --filter @lexaegis/agent prompts:generate",
     "agent:prompts:check": "pnpm --filter @lexaegis/agent prompts:check",
     "test:assistant:browser": "tsx tooling/scripts/assistant-browser-check.ts",
-    "qwen:smoke": "pnpm --filter @lexaegis/web smoke:qwen"
+    "qwen:smoke": "pnpm --filter @lexaegis/web smoke:qwen",
+    "test:history:browser": "tsx tooling/scripts/history-browser-check.ts",
+    "indexer:codegen": "pnpm --filter @lexaegis/indexer codegen",
+    "indexer:check": "pnpm --filter @lexaegis/indexer config:check",
+    "indexer:verify-binding": "pnpm --filter @lexaegis/indexer verify:binding"
   },
   "devDependencies": {
     "@eslint/js": "10.0.1",

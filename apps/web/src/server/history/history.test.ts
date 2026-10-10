@@ -1,5 +1,5 @@
 import { readFileSync } from 'node:fs';
-import { resolve } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { describe, expect, it, vi } from 'vitest';
 import type { ChainPolicy, LiveChainClient } from '@lexaegis/sdk/registry';
 import type { EnvioClient } from './envio-client';
@@ -393,7 +393,7 @@ describe('Envio client', () => {
   it('keeps indexer/queries identical to the operations in use', () => {
     for (const [name, text] of Object.entries(OPERATIONS)) {
       const file = readFileSync(
-        resolve(process.cwd(), '../../indexer/queries', `${name}.graphql`),
+        fileURLToPath(new URL(`../../../../../indexer/queries/${name}.graphql`, import.meta.url)),
         'utf8',
       );
       expect(file.trim()).toBe(text.trim());

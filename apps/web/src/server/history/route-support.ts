@@ -15,9 +15,16 @@ export async function limitHistory(request: Request, requestId: string): Promise
   if (chain.state !== 'ready' || chain.allow === null) return null;
   const forwarded = request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ?? 'unknown';
   const window = new Date(Math.floor(chain.now().getTime() / 60_000) * 60_000);
-  return (await chain.allow(`history:${forwarded.slice(0, 64)}`, window, LIMIT_PER_MINUTE))
-    ? null
-    : errorResponse(createApplicationError('RATE_LIMITED', 'Too many requests.', requestId));
+  try {
+    return (await chain.allow(`history:${forwarded.slice(0, 64)}`, window, LIMIT_PER_MINUTE))
+      ? null
+      : errorResponse(createApplicationError('RATE_LIMITED', 'Too many requests.', requestId));
+  } catch {
+    // The shared limiter is unreachable: fail closed with a typed, retryable answer.
+    return errorResponse(
+      createApplicationError('UNAVAILABLE', 'Request limiting is unavailable.', requestId),
+    );
+  }
 }
 
 export function historyJson(

@@ -1,14 +1,18 @@
 'use client';
 
+import type { ReactNode } from 'react';
+
 import { useAccount } from '@/components/account/account-context';
 import { accountStatusLabel } from '@/features/account/public';
 import { useVault } from '@/components/vault/vault-context';
 import { vaultStatusLabel } from '@/components/vault/status';
+import { IndexerStatusIndicator } from '@/components/history/IndexerStatusIndicator';
+import { useHistory } from '@/components/history/history-context';
 import { Icon, type IconName } from './icons';
 
 interface Reading {
   readonly label: string;
-  readonly value: string;
+  readonly value: ReactNode;
   readonly icon: IconName;
 }
 
@@ -19,6 +23,7 @@ interface Reading {
 export function SystemStrip({ networkLabel }: { networkLabel: string }) {
   const { availability, snapshot } = useAccount();
   const vault = useVault();
+  const history = useHistory();
   const account =
     availability === 'loading' ? 'Checking' : accountStatusLabel(snapshot, availability);
   const readings: Reading[] = [
@@ -32,7 +37,7 @@ export function SystemStrip({ networkLabel }: { networkLabel: string }) {
     },
     { label: 'Vault', value: vaultStatusLabel(vault.snapshot, vault.available), icon: 'lock' },
     { label: 'Transaction', value: 'None', icon: 'tx' },
-    { label: 'Indexer', value: 'Unavailable', icon: 'index' },
+    { label: 'Indexer', value: <IndexerStatusIndicator health={history.health} />, icon: 'index' },
   ];
   return (
     <header className="border-b border-lj-divider px-3 py-2" aria-label="System status">

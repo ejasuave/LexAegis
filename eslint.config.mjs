@@ -80,6 +80,7 @@ export default tseslint.config(
       '**/.next-vault-check/**',
       '**/.next-review-check/**',
       '**/.next-assistant-check/**',
+      '**/.next-history-check/**',
       '**/dist/**',
       '**/coverage/**',
       '**/next-env.d.ts',

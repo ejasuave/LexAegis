@@ -324,6 +324,14 @@ async function pageOnce(
     return { kind: 'reset', body: reset('CURSOR_INVALID') };
   }
   const first = await readHealth(deps, configured, signal);
+  // A cursor from another generation or configuration is reset before availability is judged:
+  // a rebuild reads as "recovering" once, and the old cursor must not survive it.
+  if (cursor !== null && first.read?.state != null) {
+    const current = first.read.state;
+    if (cursor.fp !== current.configFingerprint || cursor.gen !== current.generation) {
+      return { kind: 'reset', body: reset('GENERATION_CHANGED') };
+    }
+  }
   if (first.health.availability !== 'available' || first.read === null || deps.envio === null) {
     return { kind: 'unavailable', health: first.health };
   }

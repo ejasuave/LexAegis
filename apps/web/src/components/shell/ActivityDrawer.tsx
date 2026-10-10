@@ -1,6 +1,8 @@
 'use client';
 
 import { useAssistant } from '@/components/assistant/assistant-context';
+import { useHistory } from '@/components/history/history-context';
+import { describeAction } from '@/features/history/public';
 import { useReview } from '@/components/review/review-context';
 import { useWorkspace } from './workspace-context';
 
@@ -16,8 +18,7 @@ const SECTIONS = [
   { title: 'Human decisions', empty: 'No recorded decisions.' },
   {
     title: 'On-chain events',
-    empty:
-      'No chain events in this session. Operation progress appears here; the indexer is not connected until a later chapter.',
+    empty: 'No indexed chain events for this account.',
   },
 ] as const;
 
@@ -49,7 +50,16 @@ export function ActivityDrawer() {
       }${tools === '' ? '' : `; tools: ${tools}`}`,
     );
   }
+  // Public-chain section: indexed registry events only, never assistant work or decisions.
+  const history = useHistory().state;
+  const chain = history.items
+    .slice(0, 5)
+    .map(
+      (item) =>
+        `${describeAction(item)} at block ${item.blockNumber}${item.provisional ? ' (provisional)' : ''}`,
+    );
   const lines: Record<string, string[]> = {
+    'On-chain events': chain,
     'Local processing': local,
     'Assistant and tool activity': runs,
   };

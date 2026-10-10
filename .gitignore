@@ -41,3 +41,4 @@ apps/web/public/pdfjs/
 # indexer local state
 indexer/.generation
 indexer/config.local.yaml
+.next-history-check/
