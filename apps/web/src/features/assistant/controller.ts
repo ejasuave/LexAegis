@@ -92,7 +92,7 @@ export interface AssistantPorts {
 }
 
 export type RunPhase = 'idle' | 'preview' | 'running' | 'stopping';
-export type OrbReading = AssistantRunState | 'unavailable';
+export type OrbReading = AssistantRunState | 'unavailable' | 'ready';
 
 export interface LocalStatus {
   readonly client: ClientObservedStatus;
@@ -340,7 +340,7 @@ export class AssistantController {
     const status = this.#state.availabilityStatus;
     const state = this.#state.availability?.state;
     return status === 'ready' && (state === 'verified' || state === 'test_provider')
-      ? 'queued'
+      ? 'ready'
       : 'unavailable';
   }
 

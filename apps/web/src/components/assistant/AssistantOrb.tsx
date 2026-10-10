@@ -1,9 +1,11 @@
 import type { AssistantRunState } from '@lexaegis/agent/contracts';
 
-export type OrbState = AssistantRunState | 'unavailable';
+/** Run states, plus the two idle readings: no usable assistant, or ready with nothing running. */
+export type OrbState = AssistantRunState | 'unavailable' | 'ready';
 
 const LABELS: Record<OrbState, string> = {
   unavailable: 'Assistant unavailable',
+  ready: 'Ready',
   queued: 'Queued',
   running: 'Working',
   awaiting_input: 'Needs your input',
@@ -18,6 +20,7 @@ const ACTIVE: ReadonlySet<OrbState> = new Set(['running', 'stopping']);
 
 const COLORS: Record<OrbState, string> = {
   unavailable: 'var(--lj-text-muted)',
+  ready: 'var(--lj-cyan)',
   queued: 'var(--lj-text-muted)',
   running: 'var(--lj-violet-text)',
   awaiting_input: 'var(--lj-amber)',

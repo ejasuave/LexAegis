@@ -32,6 +32,7 @@ jobs:
       # vectors must pass in a real browser using its own Web Crypto.
       - run: pnpm fixtures:check
       - run: pnpm protocol:check
+      - run: pnpm agent:prompts:check # pinned prompt and schema digests match the repository assets
       - run: pnpm exec playwright install --with-deps chromium
       - run: pnpm test:protocol:browser
       # Accounts: real PostgreSQL repository (embedded server) and the account flow in real
@@ -40,6 +41,9 @@ jobs:
       - run: pnpm test:auth:db # includes the vault repository and object store on real PostgreSQL and S3
       - run: pnpm test:account:browser
       - run: pnpm test:vault:browser
+      # Aegis assistant: scripted loopback provider and synthetic documents only. It never calls
+      # Qwen, needs no credential and is not live-provider evidence.
+      - run: pnpm test:assistant:browser
       # Registry: the Foundry release pinned in contracts/toolchain.json is downloaded and
       # accepted only if its SHA-256 matches. Everything runs on a local chain; nothing here
       # deploys to, or reads from, a public network.

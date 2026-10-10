@@ -20,6 +20,10 @@ export const KNOWN_TEST_SECRETS = [
 const FORBIDDEN_TEXT = [
   TEST_MARKER,
   'test-support/',
+  // Chapter 9: the scripted provider and in-memory run store exist for tests only.
+  'createScriptedProvider',
+  'createMemoryRunStore',
+  'startScriptedQwenServer',
   'replay-provider',
   'ReplayProvider',
   'TestSigner',
@@ -29,7 +33,7 @@ const FORBIDDEN_TEXT = [
 ] as const;
 
 const TEST_FILE =
-  /(?:\.test|\.spec|\.t)\.[cm]?[tj]sx?$|(?:^|[\\/])test-(?:helpers|support)(?:[\\/.])/;
+  /(?:\.test|\.spec|\.t)\.[cm]?[tj]sx?$|(?:^|[\\/])test-(?:helpers|support)(?:[\\/.])|[\\/]packages[\\/]agent[\\/]src[\\/]testing[\\/]/;
 
 export interface Finding {
   readonly file: string;
@@ -91,7 +95,7 @@ export function scanArtifacts(
 const IMPORT =
   /(?:import|export)\s[^'"]*?from\s*['"]([^'"]+)['"]|import\s*['"]([^'"]+)['"]|import\(\s*['"]([^'"]+)['"]\s*\)/g;
 const FORBIDDEN_SPECIFIER =
-  /test-support|@lexaegis\/tooling|[\\/]tooling[\\/]|contracts[\\/](integration|scripts)|replay|test-signer|virtual-authenticator/i;
+  /test-support|@lexaegis\/tooling|[\\/]tooling[\\/]|contracts[\\/](integration|scripts)|replay|test-signer|virtual-authenticator|@lexaegis\/agent\/testing|(?:^|[\\/])testing(?:[\\/]|$)/i;
 const EXTENSIONS = ['.ts', '.tsx', '.mts', '.js', '.mjs'];
 
 function specifiers(source: string): string[] {

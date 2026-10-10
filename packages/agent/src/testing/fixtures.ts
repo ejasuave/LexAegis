@@ -24,6 +24,7 @@ import {
 } from '../review';
 
 /*
+ * lexaegis-test-only
  * SYNTHETIC test matter. One invented settlement text with the Chapter 8 payment vector
  * (stated total 2,400,000 pence; instalments 1,000,000 and 1,200,000 pence) and an injected
  * instruction paragraph. No real document, person or matter. Test code only.

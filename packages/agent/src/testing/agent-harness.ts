@@ -6,7 +6,7 @@ import { createReviewAgent, type AgentDeps } from '../runtime/run-agent';
 import { DEFAULT_ADMISSION, type AdmissionLimits } from '../runtime/run-store';
 import type { StatusPort } from '../runtime/tools';
 import { TEST_IDS } from './fixtures';
-import { createMemoryRunStore } from './memory-run-store';
+import { createMemoryRunStore, type MemoryRunStore } from './memory-run-store';
 import {
   createScriptedProvider,
   json,
@@ -15,6 +15,7 @@ import {
 } from './scripted-provider';
 
 /*
+ * lexaegis-test-only
  * Test harness: the real runtime on a scripted provider and a run store. The clock starts ten
  * seconds after the synthetic consent time and advances with real time. Tests only.
  */
@@ -22,6 +23,8 @@ import {
 const CONSENT_TIME = Date.parse('2026-10-10T09:05:10.000Z');
 
 export interface HarnessOptions {
+  /** Share a store between harnesses to model two replicas, or a restart. */
+  readonly store?: MemoryRunStore;
   readonly budget?: RunBudget;
   readonly admission?: AdmissionLimits;
   readonly briefingEnabled?: boolean;
@@ -34,7 +37,7 @@ export function agentHarness(script: readonly ScriptStep[], options: HarnessOpti
   const started = Date.now();
   const clock = { offsetMs: 0 };
   const now = () => new Date(CONSENT_TIME + (Date.now() - started) + clock.offsetMs);
-  const store = createMemoryRunStore();
+  const store = options.store ?? createMemoryRunStore();
   const provider =
     options.provider === undefined ? createScriptedProvider(script) : options.provider;
   const session = { valid: true };

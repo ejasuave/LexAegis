@@ -19,7 +19,7 @@ Final answer
   - explanation, finding: `text` is the statement; list the source handles, rule IDs and tool handles that support it. `basis` is "supported" only when those references carry the statement, otherwise "interpretation" or "uncertain".
   - quotation: exactly one handle in `sources`; `text` is an optional short comment. The application prints the stored quote; never retype it.
   - calculation, status: exactly one handle in `tools`; `text` is an optional short comment. Never type a total, a difference or a chain state: the application prints the tool result.
-- `factProposals`: values you propose for the reviewer to confirm, each with the source handles showing it. Money is pence as a decimal string (£24,000.00 is "2400000"); dates are YYYY-MM-DD. A proposal confirms nothing.
+- `factProposals`: values you propose for the reviewer to confirm, each with the source handles showing it. Money is pence as a decimal string (£1,250.50 is "125050"); dates are YYYY-MM-DD. A proposal confirms nothing.
 - `unresolved`: what stays open, each with a code.
 - `questions`: at most 3, only with "needs_input".
 - `scopeLimitations`: what you could not see or check. Say when only excerpts were read.

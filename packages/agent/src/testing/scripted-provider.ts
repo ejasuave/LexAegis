@@ -7,6 +7,7 @@ import type {
 } from '../runtime/provider';
 
 /*
+ * lexaegis-test-only
  * SCRIPTED test provider. It answers from a fixed script and records what it was asked. It never
  * contacts a network and is labelled "scripted-test" wherever its output appears, so nothing it
  * produces can be mistaken for Qwen. Tests only.

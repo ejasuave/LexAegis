@@ -10,6 +10,7 @@ import type { VaultOutcome } from '@/features/vault/vault-controller';
 import { createVaultHarness, withVault, type VaultHarness } from './vault-harness';
 
 /*
+ * lexaegis-test-only
  * Test rig: the real review controller on the real account and vault controllers (real Web
  * Crypto, in-memory server) with real synthetic PDFs parsed by the real pdf.js. The "worker" is
  * an in-process stand-in that runs the same extraction code. Test code only; not real-device evidence.

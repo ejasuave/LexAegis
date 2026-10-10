@@ -11,6 +11,7 @@ import {
 } from '../runtime/run-store';
 
 /*
+ * lexaegis-test-only
  * The behaviour every RunStore must have, run against the in-memory store and against real
  * PostgreSQL. Imported by tests only.
  */

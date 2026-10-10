@@ -44,7 +44,11 @@ for (const pkg of ['protocol', 'sdk', 'vault', 'agent']) {
   const manifest = JSON.parse(
     readFileSync(join(ROOT, 'packages', pkg, 'package.json'), 'utf8'),
   ) as { exports: Record<string, unknown> };
-  const entries = Object.values(manifest.exports)
+  // Exports under ./testing are test-only entry points (scripted provider, in-memory store). They
+  // are not production entries; every other export must not be able to reach them.
+  const entries = Object.entries(manifest.exports)
+    .filter(([key]) => !key.startsWith('./testing'))
+    .map(([, v]) => v)
     .filter((v): v is string => typeof v === 'string' && v.endsWith('.ts'))
     .map((v) => join(ROOT, 'packages', pkg, v));
   findings.push(...scanImportGraph({ root: ROOT, entries }));

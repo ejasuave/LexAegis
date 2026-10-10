@@ -12,6 +12,7 @@ import {
 } from '../runtime/run-store';
 
 /*
+ * lexaegis-test-only
  * In-memory RunStore for tests of the runtime state machine. It follows the same contract suite
  * as the PostgreSQL store. It coordinates nothing across processes and is never used in
  * production: without DATABASE_URL the assistant is unavailable.

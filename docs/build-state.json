@@ -2888,6 +2888,74 @@
         "secondDeviceRecovery": "not-tested",
         "exportImport": "not-tested"
       }
+    },
+    {
+      "id": "assistant-browser-20261010020107",
+      "subject": "assistant-browser-check",
+      "sourceRevision": {
+        "commit": "d0f02ecabd6d51021c1cf5d065719ee1a2e045a6",
+        "dirtyWorktree": true,
+        "contentFingerprint": "83373b7bbb621702fdce0c9da6fea2aea64e5505e71a43b795d02b175dffd53c"
+      },
+      "checkedAt": "2026-10-10T02:01:08.038Z",
+      "command": "pnpm test:assistant:browser",
+      "environment": {
+        "node": "v24.21.0",
+        "os": "linux-x64",
+        "pnpm": "11.11.0"
+      },
+      "evidenceClass": "virtual_authenticator",
+      "outcome": "pass",
+      "reasonCodes": [
+        "AUTHENTICATOR_MODE_VIRTUAL",
+        "SYNTHETIC_DOCUMENTS_ONLY",
+        "SCRIPTED_PROVIDER_NOT_QWEN"
+      ],
+      "evidenceRefs": [],
+      "facts": {
+        "browser": "chromium 153.0.8010.12",
+        "checksPassed": "59",
+        "checksTotal": "59",
+        "provider": "scripted-test (loopback, no model)",
+        "storage": "postgresql + versitygw",
+        "authenticatorMode": "virtual",
+        "realDeviceEvidence": false,
+        "liveProviderEvidence": false
+      }
+    },
+    {
+      "id": "assistant-browser-20261010020746",
+      "subject": "assistant-browser-check",
+      "sourceRevision": {
+        "commit": "d0f02ecabd6d51021c1cf5d065719ee1a2e045a6",
+        "dirtyWorktree": true,
+        "contentFingerprint": "bd204467f569f10074cd09ccb6c94b08612408af1375050b52d62dfc76ffa110"
+      },
+      "checkedAt": "2026-10-10T02:07:46.800Z",
+      "command": "pnpm test:assistant:browser",
+      "environment": {
+        "node": "v24.21.0",
+        "os": "linux-x64",
+        "pnpm": "11.11.0"
+      },
+      "evidenceClass": "virtual_authenticator",
+      "outcome": "pass",
+      "reasonCodes": [
+        "AUTHENTICATOR_MODE_VIRTUAL",
+        "SYNTHETIC_DOCUMENTS_ONLY",
+        "SCRIPTED_PROVIDER_NOT_QWEN"
+      ],
+      "evidenceRefs": [],
+      "facts": {
+        "browser": "chromium 153.0.8010.12",
+        "checksPassed": "59",
+        "checksTotal": "59",
+        "provider": "scripted-test (loopback, no model)",
+        "storage": "postgresql + versitygw",
+        "authenticatorMode": "virtual",
+        "realDeviceEvidence": false,
+        "liveProviderEvidence": false
+      }
     }
   ],
   "appliedCuts": [],
@@ -3818,6 +3886,50 @@
       ]
     },
     "tasks": {
+      "10": {
+        "status": "complete",
+        "summary": "Assistant API routes on the Node runtime with a pull-based SSE stream over POST, the process-wide runtime, session and origin guards, and readiness wired to stored capability evidence.",
+        "files": [
+          "apps/web/src/app/api/assistant/route.ts",
+          "apps/web/src/app/api/assistant/runs/route.ts",
+          "apps/web/src/app/api/assistant/runs/[runId]/route.ts",
+          "apps/web/src/app/api/assistant/runs/[runId]/cancel/route.ts",
+          "apps/web/src/server/assistant/{runtime,route-support,sse}.ts",
+          "apps/web/src/app/api/readiness/route.ts"
+        ]
+      },
+      "11": {
+        "status": "complete",
+        "summary": "Browser assistant controller and runtime client; the command dock, both orb placements, the conversation panel (expanded in Command centre, docked in Review), task steps, result cards, the activity drawer and Explain selection are wired to real run state. Verified so far by controller tests on the real runtime with a scripted provider and by a production build; the browser check is Task 14.",
+        "files": [
+          "apps/web/src/features/assistant/{controller,api-client,sse-reader,public}.ts",
+          "apps/web/src/components/assistant/{assistant-context,ConversationPanel,RunCard,RunActions,DisclosurePreview}.tsx",
+          "apps/web/src/components/shell/{CommandDock,ActivityDrawer}.tsx",
+          "apps/web/src/components/review/{ReviewWorkspace,SourceViewer}.tsx",
+          "apps/web/src/app/layout.tsx",
+          "apps/web/src/test-support/assistant-rig.ts"
+        ]
+      },
+      "12": {
+        "status": "complete",
+        "summary": "Proposal cards with Confirm, Edit and Dismiss on Chapter 8's confirmation controller; follow-up handling bound to the current selection; explicit Save outcome through the encrypted vault with read-back before it shows as saved.",
+        "files": [
+          "apps/web/src/features/assistant/{controller,saved-outcomes}.ts",
+          "apps/web/src/components/assistant/{ProposalCard,RunActions,ConversationPanel}.tsx",
+          "packages/agent/src/review/agent-artifacts.ts",
+          "apps/web/src/features/vault/{vault-controller,public}.ts and features/matters/edits.ts (optional entry origin model_proposed; no vault v1 format or profile change)"
+        ]
+      },
+      "13": {
+        "status": "complete",
+        "summary": "AgentConfigV1 is written by the runtime from the execution and delivered on run_completed; the analysis artifact and the configuration are canonical JSON with digests held outside; the draft assembler accepts them only after its own checks.",
+        "files": [
+          "packages/agent/src/review/{agent-artifacts,artifacts}.ts",
+          "packages/agent/src/contracts/agent-config.ts",
+          "apps/web/src/features/review/controller.ts (draftArtifacts accepts saved agent artifact versions)",
+          "vitest.config.mts"
+        ]
+      },
       "01": {
         "status": "complete",
         "summary": "Documentation read; import boundaries added for the browser-safe review export, the production runtime and the test adapters.",
@@ -3900,48 +4012,17 @@
           "packages/agent/src/testing/agent-harness.ts"
         ]
       },
-      "10": {
+      "14": {
         "status": "complete",
-        "summary": "Assistant API routes on the Node runtime with a pull-based SSE stream over POST, the process-wide runtime, session and origin guards, and readiness wired to stored capability evidence.",
+        "summary": "Deterministic scripted provider (in process and as a loopback HTTP server speaking the Chat Completions wire format), agent and web test suites, and a Playwright check on the production build. Mock and live are separate everywhere: the scripted provider is labelled scripted-test in metadata, AgentConfigV1 and the interface.",
         "files": [
-          "apps/web/src/app/api/assistant/route.ts",
-          "apps/web/src/app/api/assistant/runs/route.ts",
-          "apps/web/src/app/api/assistant/runs/[runId]/route.ts",
-          "apps/web/src/app/api/assistant/runs/[runId]/cancel/route.ts",
-          "apps/web/src/server/assistant/{runtime,route-support,sse}.ts",
-          "apps/web/src/app/api/readiness/route.ts"
-        ]
-      },
-      "11": {
-        "status": "complete",
-        "summary": "Browser assistant controller and runtime client; the command dock, both orb placements, the conversation panel (expanded in Command centre, docked in Review), task steps, result cards, the activity drawer and Explain selection are wired to real run state. Verified so far by controller tests on the real runtime with a scripted provider and by a production build; the browser check is Task 14.",
-        "files": [
-          "apps/web/src/features/assistant/{controller,api-client,sse-reader,public}.ts",
-          "apps/web/src/components/assistant/{assistant-context,ConversationPanel,RunCard,RunActions,DisclosurePreview}.tsx",
-          "apps/web/src/components/shell/{CommandDock,ActivityDrawer}.tsx",
-          "apps/web/src/components/review/{ReviewWorkspace,SourceViewer}.tsx",
-          "apps/web/src/app/layout.tsx",
-          "apps/web/src/test-support/assistant-rig.ts"
-        ]
-      },
-      "12": {
-        "status": "complete",
-        "summary": "Proposal cards with Confirm, Edit and Dismiss on Chapter 8's confirmation controller; follow-up handling bound to the current selection; explicit Save outcome through the encrypted vault with read-back before it shows as saved.",
-        "files": [
-          "apps/web/src/features/assistant/{controller,saved-outcomes}.ts",
-          "apps/web/src/components/assistant/{ProposalCard,RunActions,ConversationPanel}.tsx",
-          "packages/agent/src/review/agent-artifacts.ts",
-          "apps/web/src/features/vault/{vault-controller,public}.ts and features/matters/edits.ts (optional entry origin model_proposed; no vault v1 format or profile change)"
-        ]
-      },
-      "13": {
-        "status": "complete",
-        "summary": "AgentConfigV1 is written by the runtime from the execution and delivered on run_completed; the analysis artifact and the configuration are canonical JSON with digests held outside; the draft assembler accepts them only after its own checks.",
-        "files": [
-          "packages/agent/src/review/{agent-artifacts,artifacts}.ts",
-          "packages/agent/src/contracts/agent-config.ts",
-          "apps/web/src/features/review/controller.ts (draftArtifacts accepts saved agent artifact versions)",
-          "vitest.config.mts"
+          "packages/agent/src/testing/* (fixtures, scripted-provider, memory-run-store, run-store-contract, agent-harness)",
+          "packages/agent/src/**/*.test.ts",
+          "apps/web/src/test-support/{assistant-rig,review-rig,scripted-qwen-server}.ts",
+          "apps/web/src/features/assistant/*.test.ts, apps/web/src/server/assistant/*.test.ts and run-store.pgtest.ts",
+          "tooling/scripts/assistant-browser-check.ts",
+          "tooling/src/exclusion.ts and tooling/scripts/exclusion-scan.ts (test-only agent modules added to the production exclusion rules)",
+          ".github/workflows/ci.yml"
         ]
       }
     },
@@ -4064,6 +4145,14 @@
     },
     "decisions": [
       "Unit tests run with maxWorkers 50%: the Chapter 8 comparison test in pipeline.test.ts measures a real 2-second diff limit and reported timeout instead of edit distance in 3 of 4 fully parallel runs once this chapter's integration tests were added. Its assertion is unchanged. Three consecutive full runs passed with the cap (1,041 tests at the time)."
-    ]
+    ],
+    "testCoverage": {
+      "intents": "every intent by command, interface action and equivalent phrase (routing); summarise, explain, check_payments, missing_evidence, brief_matter and prepare_review as full runs over the loopback provider; status and commanded checks as direct code handlers; unclear free text asked back; approval wording and unknown commands declined without a model",
+      "money": "2,400,000 - (1,000,000 + 1,200,000) = 200,000 pence through the real calculator in the tool, the direct handler, the device-local check and the browser; a SIMULATED second instalment of 1,400,000 changes no review result, fact or draft; displayed figures come from the tool result event",
+      "injection": "a scripted model that obeys the injected paragraph asks for signing, URL fetching, rule changes, secrets and fact confirmation tools: none exists and none runs; forged approval, persistence, signature and unlisted-action fields in the final answer are rejected; on the real controllers the injected run leaves facts, vault head, entries and saved packages unchanged",
+      "cancellation": "cancel before dispatch, during a provider wait, from another replica through the shared store, simultaneously with completion (PostgreSQL, eight rounds), on disconnect, on session loss, on lease loss (interrupted) and after a simulated restart (interrupted, no resume, repeated admission returns no stream); one terminal event in every case and no dispatch after an acknowledged stop",
+      "stream": "frames split at every byte boundary, heartbeat comments, duplicates, wrong snapshot or generation, gaps, malformed and forged events, a lost stream",
+      "notCovered": "Firefox and WebKit; a real screen reader; hosting-level response buffering; the briefing control in the interface (flag off; matterBriefing readiness is unchanged and stays for Chapter 10)"
+    }
   }
 }

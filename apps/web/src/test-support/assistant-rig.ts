@@ -6,6 +6,7 @@ import type { SseItem } from '@/features/assistant/sse-reader';
 import { confirm, importAndWait, port, range, rig, type Rig } from './review-rig';
 
 /*
+ * lexaegis-test-only
  * Test rig: the real browser assistant controller on the real review and vault controllers, with
  * a transport that calls the real runtime in process (scripted provider, in-memory run store).
  * `tamper` lets a test corrupt the event stream. Test code only.

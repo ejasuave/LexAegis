@@ -108,7 +108,7 @@ function orbCaption(
   orb: ReturnType<typeof useAssistant>['snapshot']['orb'],
   availability: ReturnType<typeof useAssistant>['snapshot']['availability'],
 ): string {
-  if (orb !== 'unavailable') return orb === 'queued' ? 'Ready' : orbLabel(orb);
+  if (orb !== 'unavailable') return orbLabel(orb);
   if (availability === null) return `${orbLabel('unavailable')}: local checks still work.`;
   return availability.state === 'not_configured'
     ? 'Analysis is not configured. Local checks still work.'
