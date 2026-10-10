@@ -84,6 +84,7 @@ describe('migration', () => {
       '0001_auth.sql',
       '0002_vault.sql',
       '0003_chain.sql',
+      '0004_assistant.sql',
     ]);
   });
 

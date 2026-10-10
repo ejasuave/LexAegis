@@ -3877,6 +3877,18 @@
         "status": "complete",
         "summary": "Final-output validator: closed schema, size limits, handle resolution against the consented catalog, the pinned rules and this run's successful tool results, proposal validation as FactCandidateV1, plain-text handling and action allowlist.",
         "files": ["packages/agent/src/runtime/validate-output.ts"]
+      },
+      "08": {
+        "status": "complete",
+        "summary": "Per-run budget tracker and the operational run store: a port in the agent package, a PostgreSQL implementation and an in-memory implementation for tests, both held to one contract suite.",
+        "files": [
+          "packages/agent/src/runtime/{budget,run-store}.ts",
+          "packages/agent/src/run-store.ts",
+          "packages/agent/src/server/capability-record.ts",
+          "packages/agent/src/testing/{memory-run-store,run-store-contract}.ts",
+          "apps/web/src/server/assistant/run-store.ts",
+          "apps/web/src/server/db/migrations/0004_assistant.sql"
+        ]
       }
     },
     "contracts": {
@@ -3941,6 +3953,19 @@
       "addsByCode": "the excerpt-scope limitation on every answer built from excerpts; confirm_fact only when a proposal exists",
       "repairCodes": "compact machine codes only (for example UNKNOWN_SOURCE_HANDLE, OUTPUT_SCHEMA_INVALID:blocks.0.kind); they never contain case text",
       "notAGuarantee": "Validation shows reference integrity and schema conformance. It does not show that a statement follows from its citation, that a PDF was transcribed correctly or that anything is legally correct."
+    },
+    "budget": {
+      "ceilings": "6 provider attempts per run (routing, repair and retry included), 8 tool executions, 120 s per run, 25 s per attempt, 2,048 completion tokens per attempt, 8,192 per run, 65,536 reserved input tokens per attempt, 196,608 per run",
+      "lowering": "ASSISTANT_RUN_SECONDS, ASSISTANT_MAX_PROVIDER_ATTEMPTS and ASSISTANT_MAX_TOOL_CALLS can lower a ceiling; a higher or malformed value leaves the default; no request field can change one",
+      "estimation": "No verified matching tokenizer is installed, so input is reserved as UTF-8 bytes of the serialized messages, tools and response format plus a 4,096-token framing reserve, labelled conservative_utf8_bytes. max_completion_tokens is sent 10 tokens below the reservation for the documented tolerance.",
+      "accounting": "Reported usage replaces the reservation. Missing or aborted usage stays unknown and the reservation stays charged. One transient retry and one repair per run; a tool round starts only while an attempt and 2,048 output tokens remain for the final answer. No exact invoice cap is promised."
+    },
+    "operationalStorage": {
+      "tables": "assistant_runs (id, owner, client_request_id, state, outcome, cancel_requested, lease_token, lease_expires_at, deadline_at, counters, usage_provenance, timestamps), assistant_quota (scope, utc_day, admitted), assistant_capability_checks (fingerprint, record, verified, checked_at)",
+      "notStored": "matter IDs, titles, document references, source hashes, snapshot digests, prompts, answers, tool payloads",
+      "admission": "one active run per account, three globally, 20 admitted per account per UTC day, 100 globally, decided in one transaction under an advisory lock; (owner, client_request_id) is unique and a repeat returns the existing run without running again",
+      "leases": "15-second lease renewed by a 1-second heartbeat that also reads the durable cancellation flag; an expired lease becomes interrupted, never completed; terminal rows are removed after 24 hours and quota buckets after two UTC days",
+      "terminal": "finish is the single terminal transition, taken under a row lock by the lease holder; if cancellation was requested the run ends cancelled whatever the worker asked for"
     }
   }
 }

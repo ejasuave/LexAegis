@@ -1,11 +1,11 @@
 import 'server-only';
-import { z } from 'zod';
-import { outputModeSchema, providerIdSchema } from '../contracts';
-import { timestampSchema } from '@lexaegis/protocol/v1';
+import { capabilityRecordSchema, type CapabilityRecord } from './capability-record';
 import { parseIntentSelection } from '../runtime/intent-router';
 import { routerRound } from '../runtime/prompts';
 import type { ChatProvider } from '../runtime/provider';
 import { TOOL_INPUTS, providerTool } from '../runtime/tool-schemas';
+
+export { capabilityRecordSchema, type CapabilityRecord } from './capability-record';
 
 /*
  * Synthetic capability checks for one exact configuration: native tool calls, the selected
@@ -14,27 +14,6 @@ import { TOOL_INPUTS, providerTool } from '../runtime/tool-schemas';
  * fingerprint enables real-matter inference, and a changed endpoint, model or output mode has no
  * record. Nothing probes the provider on an ordinary request.
  */
-
-export const capabilityRecordSchema = z.strictObject({
-  schema: z.literal('lexaegis.assistant-capability.v1'),
-  fingerprint: z.string().regex(/^0x[0-9a-f]{64}$/),
-  provider: providerIdSchema,
-  model: z.string().max(64),
-  region: z.string().max(40),
-  outputMode: outputModeSchema,
-  nativeToolCalls: z.boolean(),
-  structuredOutput: z.boolean(),
-  /** Whether responses carried usage. False leaves usage unknown; it does not block verification. */
-  usageReported: z.boolean(),
-  cancellation: z.boolean(),
-  returnedModel: z.string().max(128).nullable(),
-  requestIds: z.array(z.string().max(200)).max(4),
-  failures: z.array(z.string().max(60)).max(8),
-  checkedAt: timestampSchema,
-  /** True only when tool calls, the output mode and cancellation all passed. */
-  verified: z.boolean(),
-});
-export type CapabilityRecord = z.infer<typeof capabilityRecordSchema>;
 
 const ATTEMPT_MS = 25_000;
 const TOKENS = 256;

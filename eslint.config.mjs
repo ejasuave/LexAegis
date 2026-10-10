@@ -27,10 +27,20 @@ const AGENT_RUNTIME = {
   message:
     'The agent runtime is server-only. Browser code may import @lexaegis/agent/contracts only.',
 };
+// The run-store port is for server code and its tests.
+const AGENT_STORE = {
+  name: '@lexaegis/agent/run-store',
+  message:
+    'The run-store port is server-side. Browser code may import @lexaegis/agent/contracts only.',
+};
 // The scripted provider and in-memory run store exist for tests only.
 const AGENT_TESTING = {
   name: '@lexaegis/agent/testing',
   message: 'Agent test adapters are for tests only.',
+};
+const AGENT_TESTING_CONTRACT = {
+  name: '@lexaegis/agent/testing/run-store-contract',
+  message: 'Agent test suites are for tests only.',
 };
 
 const APPS_PRIVATE_SOURCE = {
@@ -324,7 +334,7 @@ export default tseslint.config(
       'apps/web/src/lib/**/*.{ts,tsx}',
       'apps/web/src/config/**/*.ts',
     ],
-    rules: restrict(WEB_BROWSER_PATTERNS, [AGENT_RUNTIME]),
+    rules: restrict(WEB_BROWSER_PATTERNS, [AGENT_RUNTIME, AGENT_STORE]),
   },
   {
     // UI code reaches the account only through its public surface: status and a few commands.
@@ -345,7 +355,7 @@ export default tseslint.config(
             'Import the account through @/features/account/public only; key-bearing modules are private to it.',
         },
       ],
-      [AGENT_RUNTIME, AGENT_TESTING],
+      [AGENT_RUNTIME, AGENT_STORE, AGENT_TESTING, AGENT_TESTING_CONTRACT],
     ),
   },
   {
@@ -383,7 +393,7 @@ export default tseslint.config(
           message: 'Account, key and test-support modules must not be imported by server code.',
         },
       ],
-      [AGENT_TESTING],
+      [AGENT_TESTING, AGENT_TESTING_CONTRACT],
     ),
   },
   {
@@ -402,7 +412,7 @@ export default tseslint.config(
           message: 'Test support is for tests only.',
         },
       ],
-      [AGENT_RUNTIME, AGENT_TESTING],
+      [AGENT_RUNTIME, AGENT_STORE, AGENT_TESTING, AGENT_TESTING_CONTRACT],
     ),
   },
   {
