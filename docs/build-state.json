@@ -3899,6 +3899,18 @@
           "packages/agent/src/ports.ts",
           "packages/agent/src/testing/agent-harness.ts"
         ]
+      },
+      "10": {
+        "status": "complete",
+        "summary": "Assistant API routes on the Node runtime with a pull-based SSE stream over POST, the process-wide runtime, session and origin guards, and readiness wired to stored capability evidence.",
+        "files": [
+          "apps/web/src/app/api/assistant/route.ts",
+          "apps/web/src/app/api/assistant/runs/route.ts",
+          "apps/web/src/app/api/assistant/runs/[runId]/route.ts",
+          "apps/web/src/app/api/assistant/runs/[runId]/cancel/route.ts",
+          "apps/web/src/server/assistant/{runtime,route-support,sse}.ts",
+          "apps/web/src/app/api/readiness/route.ts"
+        ]
       }
     },
     "contracts": {
@@ -3986,6 +3998,15 @@
       "cancellation": "Stop sets the durable flag and aborts the in-process controller; the run enters stopping at once and ends cancelled only when the worker has acknowledged; if the answer was validated at the same moment it is discarded; a lost lease or unreachable store ends as interrupted with the provider outcome unknown",
       "notDone": "No automatic resume, replay or takeover after a restart; no persisted transcript; plaintext and the AbortController live in process memory only",
       "completion": "run_completed carries the AgentConfigV1 written from the execution: provider, requested and returned model, snapshot known or unknown, output mode, capability state, prompt and schema digests, parameters, budget and usage provenance"
+    },
+    "routes": {
+      "GET /api/assistant": "signed-in only; availability (not_configured, configured_unverified, verified, test_provider), provider scope (provider, model, endpoint region) and notices; no URL, workspace ID or credential",
+      "POST /api/assistant/runs": "session, exact configured Origin, application/json, X-LexAegis-Request: 1, 128 KiB body counted while read; body is the consented AssistantRequestV1 only; responds with text/event-stream (no-store, no-transform, X-Accel-Buffering: no), or JSON metadata for a repeated request ID",
+      "GET /api/assistant/runs/[runId]": "owner-bound operational metadata only; another account's run and a missing run are the same NOT_FOUND; no event replay",
+      "POST /api/assistant/runs/[runId]/cancel": "empty JSON object, 16 KiB limit; 202 while stopping, 200 with the terminal state once acknowledged; idempotent",
+      "stream": "frames are written only when the client reads (backpressure), 40 KiB frame bound, 15-second heartbeat comments that are not progress, contiguous seq as the SSE id, exactly one terminal event; client disconnect cancels the run",
+      "logging": "event name, request ID and a code only (assistant.run.started, .rejected, .repeated, .cancel); the logger has no parameter for bodies, headers or prompts; no tracing or error reporter is configured",
+      "hosting": "The request stays open for the run (at most 120 s; maxDuration 150). Verified locally on the Node server only. A host that cannot hold a streaming response that long is an integration blocker for Chapter 13; nothing falls back to background work."
     }
   }
 }
