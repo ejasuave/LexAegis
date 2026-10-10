@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "currentChapter": "06",
+  "currentChapter": "09",
   "nextChapter": "09",
   "project": {
     "name": "LexAegis",
@@ -82,7 +82,7 @@
       "id": "09",
       "title": "Qwen 3.8 Max, Aegis Assistant Runtime and Review Tools",
       "additive": false,
-      "state": "pending",
+      "state": "in-progress",
       "evidence": [],
       "chapterPromptPath": "build_instructions/prompt_library/LexAegis_Prompt_Library_Chapter_09_Targeted_Build_Tasks_v1_0.md"
     },
@@ -3796,6 +3796,33 @@
     "handoff": {
       "chapter9": "Wrap the read-only entry points in @lexaegis/agent/review (toolResolveSources, toolGetRules, toolReconcilePayments, checks/checklist, buildSelectedContext, assembleDraft). FactCandidateV1 is the model's only way to propose a fact; confirmFact is reviewer-only. Nothing in the repository sends plaintext to a provider; consent must name provider, matter, version and disclosed content.",
       "chapter10": "ReviewController exposes draftArtifacts() with outstanding requirements (agent configuration, decision log, human review gate). No decision log or agent configuration is invented."
+    }
+  },
+  "chapter09": {
+    "startedOn": "2026-10-10",
+    "state": "in-progress",
+    "note": "Records observed results only. Nothing here is live Qwen evidence unless a check below says live.",
+    "providerDocumentation": {
+      "readOn": "2026-10-10",
+      "pages": {
+        "qwen3-8-max": "page dated 8 October 2026: model ID qwen3.8-max, snapshot qwen3.8-max-0902 (alias qwen3.8-max-2026-09-02), 1,000,000-token context, 131,072 maximum output; function calling and structured output listed for Beijing, Singapore, Frankfurt, Virginia, Tokyo and Hong Kong",
+        "qwen-api-via-openai-chat-completions": "page dated 28 September 2026: POST <base>/chat/completions with base https://{WorkspaceId}.<region>.maas.aliyuncs.com/compatible-mode/v1 (ap-southeast-1, us-east-1, cn-beijing, cn-hongkong, eu-central-1, ap-northeast-1); legacy hosts dashscope.aliyuncs.com, dashscope-intl.aliyuncs.com and cn-hongkong.dashscope.aliyuncs.com still accepted; non-standard parameters (enable_thinking, enable_search) go at the top level of a raw HTTP body; max_completion_tokens caps reasoning plus answer; parallel_tool_calls and enable_search default false; finish_reason is stop, length or tool_calls; usage has prompt_tokens and completion_tokens; the response id is the only documented request identifier",
+        "qwen-function-calling": "page dated 28 September 2026 (first 100,000 characters read): tools are type function with name, description and parameters; tool_calls carry id and a JSON string of arguments; results return as role tool with tool_call_id; tool_choice required is not supported by Qwen models; Qwen3.8-Max series listed; no strict function-schema mode documented",
+        "qwen-structured-output": "page dated 28 September 2026: response_format json_object (prompt must contain the word JSON) and json_schema with name, strict and schema; Qwen3.8-Max listed for json_schema; the page states Singapore-region models are not supported yet while its own examples use the Singapore endpoint; supported types string, number, integer, boolean, object, array, enum; the page advises against max_tokens with structured output"
+      },
+      "consequences": [
+        "The output mode is an explicit operator setting (QWEN_OUTPUT_MODE) because the regional statement is inconsistent; it is verified against the configured endpoint, never assumed.",
+        "Provider schemas use only type, properties, required, additionalProperties, items, enum and description; every size limit is enforced locally.",
+        "A length finish reason is a failure, since a truncated structured answer is not a completed analysis.",
+        "Not verified from documentation: whether thinking is on by default for qwen3.8-max, HTTP error codes, and a request-ID header. enable_thinking=false is always sent; the response id is recorded as the provider request ID."
+      ]
+    },
+    "tasks": {
+      "01": {
+        "status": "complete",
+        "summary": "Documentation read; import boundaries added for the browser-safe review export, the production runtime and the test adapters.",
+        "files": ["eslint.config.mjs", ".gitignore", ".prettierignore"]
+      }
     }
   }
 }

@@ -4,6 +4,7 @@ node_modules/
 .next-check/
 .next-vault-check/
 .next-review-check/
+.next-assistant-check/
 dist/
 out/
 build/

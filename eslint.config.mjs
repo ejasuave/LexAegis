@@ -27,6 +27,11 @@ const AGENT_RUNTIME = {
   message:
     'The agent runtime is server-only. Browser code may import @lexaegis/agent/contracts only.',
 };
+// The scripted provider and in-memory run store exist for tests only.
+const AGENT_TESTING = {
+  name: '@lexaegis/agent/testing',
+  message: 'Agent test adapters are for tests only.',
+};
 
 const APPS_PRIVATE_SOURCE = {
   group: [
@@ -62,6 +67,7 @@ export default tseslint.config(
       '**/.next-check/**',
       '**/.next-vault-check/**',
       '**/.next-review-check/**',
+      '**/.next-assistant-check/**',
       '**/dist/**',
       '**/coverage/**',
       '**/next-env.d.ts',
@@ -258,6 +264,53 @@ export default tseslint.config(
     ]),
   },
   {
+    // The browser-safe review export stays pure: no server runtime, provider adapter or test double.
+    files: ['packages/agent/src/review/**/*.ts'],
+    ignores: ['**/*.test.ts'],
+    rules: restrict([
+      ...FRAMEWORK(),
+      NODE_ONLY,
+      SERVER_ONLY,
+      {
+        group: [
+          '../runtime/*',
+          '../server/*',
+          '../testing/*',
+          '../ports',
+          '@lexaegis/web',
+          '@lexaegis/verifier',
+          '@lexaegis/vault',
+          '@category-labs/*',
+          '@scure/*',
+        ],
+        message: 'review functions must not import the server runtime, provider or test doubles.',
+      },
+    ]),
+  },
+  {
+    // The production runtime never loads a scripted provider or in-memory store.
+    files: ['packages/agent/src/runtime/**/*.ts', 'packages/agent/src/server/**/*.ts'],
+    ignores: ['**/*.test.ts'],
+    rules: restrict([
+      ...FRAMEWORK(),
+      {
+        group: ['../testing/*', '../testing', '@lexaegis/agent/testing'],
+        message: 'Test adapters are isolated from the production runtime.',
+      },
+      {
+        group: [
+          '@lexaegis/web',
+          '@lexaegis/verifier',
+          '@lexaegis/vault',
+          '@category-labs/*',
+          '@scure/*',
+          '**/features/account/**',
+        ],
+        message: 'agent must not import applications, the vault or account providers.',
+      },
+    ]),
+  },
+  {
     // Applications consume declared package exports, never private source paths.
     files: ['apps/**/*.{ts,tsx}'],
     rules: restrict([APPS_PRIVATE_SOURCE]),
@@ -270,7 +323,7 @@ export default tseslint.config(
       'apps/web/src/lib/**/*.{ts,tsx}',
       'apps/web/src/config/**/*.ts',
     ],
-    rules: restrict(WEB_BROWSER_PATTERNS, [AGENT_RUNTIME]),
+    rules: restrict(WEB_BROWSER_PATTERNS, [AGENT_RUNTIME, AGENT_TESTING]),
   },
   {
     // UI code reaches the account only through its public surface: status and a few commands.
@@ -291,7 +344,7 @@ export default tseslint.config(
             'Import the account through @/features/account/public only; key-bearing modules are private to it.',
         },
       ],
-      [AGENT_RUNTIME],
+      [AGENT_RUNTIME, AGENT_TESTING],
     ),
   },
   {
@@ -315,19 +368,22 @@ export default tseslint.config(
     // Server code never loads account or key modules: derivation and signing are browser-only.
     files: ['apps/web/src/server/**/*.ts', 'apps/web/src/app/api/**/*.ts', 'apps/web/src/proxy.ts'],
     ignores: ['**/*.test.ts', '**/*.pgtest.ts'],
-    rules: restrict([
-      APPS_PRIVATE_SOURCE,
-      {
-        group: [
-          '@/features/account/*',
-          '**/features/account/**',
-          '@category-labs/*',
-          '@scure/*',
-          '@/test-support/*',
-        ],
-        message: 'Account, key and test-support modules must not be imported by server code.',
-      },
-    ]),
+    rules: restrict(
+      [
+        APPS_PRIVATE_SOURCE,
+        {
+          group: [
+            '@/features/account/*',
+            '**/features/account/**',
+            '@category-labs/*',
+            '@scure/*',
+            '@/test-support/*',
+          ],
+          message: 'Account, key and test-support modules must not be imported by server code.',
+        },
+      ],
+      [AGENT_TESTING],
+    ),
   },
   {
     // Production web code never imports test support.
@@ -345,7 +401,7 @@ export default tseslint.config(
           message: 'Test support is for tests only.',
         },
       ],
-      [AGENT_RUNTIME],
+      [AGENT_RUNTIME, AGENT_TESTING],
     ),
   },
   {
