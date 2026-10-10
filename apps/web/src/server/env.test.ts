@@ -37,8 +37,22 @@ describe('server configuration', () => {
   });
 
   it('allows plain HTTP only for loopback endpoints', () => {
-    expect(loadServerConfig({ QWEN_BASE_URL: 'http://localhost:8080' }).ok).toBe(true);
-    expect(loadServerConfig({ QWEN_BASE_URL: 'http://api.example.com' }).ok).toBe(false);
-    expect(loadServerConfig({ QWEN_BASE_URL: 'https://api.example.com/v1' }).ok).toBe(true);
+    expect(loadServerConfig({ S3_ENDPOINT: 'http://localhost:8080' }).ok).toBe(true);
+    expect(loadServerConfig({ S3_ENDPOINT: 'http://api.example.com' }).ok).toBe(false);
+    expect(loadServerConfig({ S3_ENDPOINT: 'https://api.example.com/v1' }).ok).toBe(true);
+  });
+
+  it('accepts only a documented Qwen endpoint, never an arbitrary or loopback URL', () => {
+    expect(
+      loadServerConfig({
+        QWEN_BASE_URL: 'https://ws1.ap-southeast-1.maas.aliyuncs.com/compatible-mode/v1',
+      }).ok,
+    ).toBe(true);
+    for (const url of ['https://api.example.com/v1', 'http://localhost:8080']) {
+      expect(loadServerConfig({ QWEN_BASE_URL: url })).toEqual({
+        ok: false,
+        invalidKeys: ['QWEN_BASE_URL'],
+      });
+    }
   });
 });

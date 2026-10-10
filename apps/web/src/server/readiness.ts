@@ -43,9 +43,11 @@ export const CAPABILITIES: readonly CapabilityDefinition[] = [
     publicKeys: [],
   },
   {
+    // The runtime exists. Keys alone make it "configured"; "verified" needs a passing capability
+    // record for the exact endpoint, model and output mode (written by pnpm qwen:smoke).
     name: 'assistant.qwen',
-    implemented: false,
-    serverKeys: ['QWEN_API_KEY', 'QWEN_BASE_URL', 'QWEN_MODEL'],
+    implemented: true,
+    serverKeys: ['QWEN_API_KEY', 'QWEN_BASE_URL', 'QWEN_MODEL', 'DATABASE_URL'],
     publicKeys: [],
   },
   { name: 'chain.rpc', implemented: false, serverKeys: ['ALCHEMY_MONAD_RPC_URL'], publicKeys: [] },

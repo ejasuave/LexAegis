@@ -1,5 +1,6 @@
 import 'server-only';
 import { z } from 'zod';
+import { validateQwenBaseUrl, validateTestBaseUrl } from '@lexaegis/agent';
 
 type EnvRecord = Readonly<Record<string, string | undefined>>;
 
@@ -32,12 +33,30 @@ const flagSchema = z.enum(['true', 'false']);
 /** Decimal MON amount with at most 18 fractional digits, e.g. "0.2". */
 const monSchema = z.string().regex(/^(0|[1-9][0-9]{0,6})(\.[0-9]{1,18})?$/);
 const modelSchema = z.string().regex(/^[a-z0-9][a-z0-9._-]{0,63}$/);
+/** Only a documented provider host and the compatible-mode path; never a caller-chosen URL. */
+const qwenEndpointSchema = z
+  .string()
+  .refine((value) => validateQwenBaseUrl(value).ok, 'must be a documented Qwen endpoint');
+const testEndpointSchema = z
+  .string()
+  .refine((value) => validateTestBaseUrl(value).ok, 'must be a loopback test endpoint');
+/** A positive whole number. Used for ceilings that may be lowered, never raised. */
+const countSchema = z.string().regex(/^[1-9][0-9]{0,5}$/);
 
 /** Single source of truth for server-only variables. Every variable is optional so shells can boot. */
 export const serverEnvShape = {
   QWEN_API_KEY: secretSchema,
-  QWEN_BASE_URL: endpointSchema,
+  QWEN_BASE_URL: qwenEndpointSchema,
   QWEN_MODEL: modelSchema,
+  QWEN_OUTPUT_MODE: z.enum(['json_schema', 'json_object']),
+  ASSISTANT_RUN_SECONDS: countSchema,
+  ASSISTANT_MAX_PROVIDER_ATTEMPTS: countSchema,
+  ASSISTANT_MAX_TOOL_CALLS: countSchema,
+  ASSISTANT_DAILY_RUNS_PER_ACCOUNT: countSchema,
+  ASSISTANT_DAILY_RUNS_GLOBAL: countSchema,
+  ASSISTANT_ACTIVE_RUNS_GLOBAL: countSchema,
+  LEXAEGIS_TEST_MODE: z.enum(['scripted-assistant']),
+  ASSISTANT_TEST_PROVIDER_URL: testEndpointSchema,
   ALCHEMY_MONAD_RPC_URL: endpointSchema,
   ENVIO_GRAPHQL_URL: endpointSchema,
   ENVIO_API_TOKEN: secretSchema,
@@ -61,7 +80,17 @@ export const serverEnvShape = {
 export type ServerEnvKey = keyof typeof serverEnvShape;
 
 export interface ServerConfig {
-  readonly qwen: { apiKey?: string; baseUrl?: string; model?: string };
+  readonly qwen: { apiKey?: string; baseUrl?: string; model?: string; outputMode?: string };
+  readonly assistant: {
+    runSeconds?: string;
+    maxProviderAttempts?: string;
+    maxToolCalls?: string;
+    dailyRunsPerAccount?: string;
+    dailyRunsGlobal?: string;
+    activeRunsGlobal?: string;
+    testMode?: string;
+    testProviderUrl?: string;
+  };
   readonly alchemy: { rpcUrl?: string };
   readonly envio: { graphqlUrl?: string; apiToken?: string };
   readonly database: { url?: string };
@@ -126,6 +155,17 @@ export function loadServerConfig(env: EnvRecord): ServerConfigResult {
         apiKey: pick(env, 'QWEN_API_KEY'),
         baseUrl: pick(env, 'QWEN_BASE_URL'),
         model: pick(env, 'QWEN_MODEL'),
+        outputMode: pick(env, 'QWEN_OUTPUT_MODE'),
+      }),
+      assistant: defined({
+        runSeconds: pick(env, 'ASSISTANT_RUN_SECONDS'),
+        maxProviderAttempts: pick(env, 'ASSISTANT_MAX_PROVIDER_ATTEMPTS'),
+        maxToolCalls: pick(env, 'ASSISTANT_MAX_TOOL_CALLS'),
+        dailyRunsPerAccount: pick(env, 'ASSISTANT_DAILY_RUNS_PER_ACCOUNT'),
+        dailyRunsGlobal: pick(env, 'ASSISTANT_DAILY_RUNS_GLOBAL'),
+        activeRunsGlobal: pick(env, 'ASSISTANT_ACTIVE_RUNS_GLOBAL'),
+        testMode: pick(env, 'LEXAEGIS_TEST_MODE'),
+        testProviderUrl: pick(env, 'ASSISTANT_TEST_PROVIDER_URL'),
       }),
       alchemy: defined({ rpcUrl: pick(env, 'ALCHEMY_MONAD_RPC_URL') }),
       envio: defined({

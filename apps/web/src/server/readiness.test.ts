@@ -5,16 +5,20 @@ import { buildReadinessReport, CAPABILITIES, type CapabilityDefinition } from '.
 
 const SECRET_VALUES = {
   QWEN_API_KEY: 'qwen-secret-0123456789',
-  QWEN_BASE_URL: 'https://qwen.example.com/v1',
+  QWEN_BASE_URL: 'https://ws-secret-9.ap-southeast-1.maas.aliyuncs.com/compatible-mode/v1',
   QWEN_MODEL: 'qwen3.8-max',
   ALCHEMY_MONAD_RPC_URL: 'https://monad.alchemy.example/v2/rpc-key-ABCDEF',
   DATABASE_URL: 'postgres://app:db-password-xyz@db.example.com/lexaegis',
   AUTH_SESSION_SECRET: 'session-secret-0123456789',
 };
 
-const IMPLEMENTED: ReadonlySet<string> = new Set(['account.mera', 'database.postgres']);
+const IMPLEMENTED: ReadonlySet<string> = new Set([
+  'account.mera',
+  'assistant.qwen',
+  'database.postgres',
+]);
 
-describe('readiness (only accounts and the database are implemented)', () => {
+describe('readiness (accounts, the assistant runtime and the database are implemented)', () => {
   it('stays unavailable with no credentials at all, and nothing is called verified', () => {
     const report = buildReadinessReport({ env: {} }, 'req_1');
     expect(report.status).toBe('unavailable');
@@ -27,6 +31,7 @@ describe('readiness (only accounts and the database are implemented)', () => {
     }
     expect(CAPABILITIES.filter((item) => item.implemented).map((item) => item.name)).toEqual([
       'account.mera',
+      'assistant.qwen',
       'database.postgres',
     ]);
     expect(readinessReportSchema.safeParse(report).success).toBe(true);

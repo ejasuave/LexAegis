@@ -3853,6 +3853,17 @@
           "packages/agent/src/runtime/{provider,model-schemas,tool-schemas,prompts,intent-router}.ts",
           "packages/agent/src/runtime/generated/prompt-assets.ts"
         ]
+      },
+      "05": {
+        "status": "complete",
+        "summary": "Server-only Qwen Chat Completions adapter on fetch (no SDK), capability checks, scripted test provider and provider resolution from configuration. No live call has been made.",
+        "files": [
+          "packages/agent/src/server/{qwen-client,capability}.ts",
+          "packages/agent/src/testing/scripted-provider.ts",
+          "apps/web/src/server/assistant/config.ts",
+          "apps/web/src/server/{env,readiness}.ts",
+          ".env.example"
+        ]
       }
     },
     "contracts": {
@@ -3895,6 +3906,15 @@
         "Model output is a flat closed schema (provider keyword subset); handles are plain strings there and are resolved or rejected by code.",
         "The server routes the utterance again and treats a claimed intent that contradicts it as unsupported."
       ]
+    },
+    "provider": {
+      "request": "POST <base>/chat/completions with stream false, temperature 0, max_completion_tokens, enable_thinking false and enable_search false at the top level, parallel_tool_calls false whenever tools are offered, redirect error, no implicit retry, AbortSignal with a per-attempt timeout, response read capped at 128 KiB before parsing",
+      "endpoints": "https://<workspace>.<region>.maas.aliyuncs.com/compatible-mode/v1 for ap-southeast-1, us-east-1, cn-beijing, cn-hongkong, eu-central-1, ap-northeast-1, plus the three legacy dashscope hosts; anything else is CONFIG_INVALID",
+      "outputMode": "QWEN_OUTPUT_MODE json_schema (default, strict) or json_object (only when explicitly configured; the schema and the word JSON go in the prompt); never switched at run time",
+      "failures": "authentication, capability, rate_limit, timeout, transport, malformed_output, refusal, aborted; a length finish reason is reported as such and treated as a failure by the runtime",
+      "capability": "lexaegis.assistant-capability.v1: native tool call, structured output in the configured mode, usage reported, cancellation; verified needs the first, second and fourth; keyed by a SHA-256 fingerprint of provider, host, path, model and output mode",
+      "testMode": "LEXAEGIS_TEST_MODE=scripted-assistant with ASSISTANT_TEST_PROVIDER_URL on http://127.0.0.1:<port>/compatible-mode/v1; refused when QWEN_API_KEY is set; reported everywhere as provider scripted-test, region test-loopback",
+      "newEnvironment": "QWEN_OUTPUT_MODE, ASSISTANT_RUN_SECONDS, ASSISTANT_MAX_PROVIDER_ATTEMPTS, ASSISTANT_MAX_TOOL_CALLS, ASSISTANT_DAILY_RUNS_PER_ACCOUNT, ASSISTANT_DAILY_RUNS_GLOBAL, ASSISTANT_ACTIVE_RUNS_GLOBAL (all optional; ceilings can only be lowered)"
     }
   }
 }
