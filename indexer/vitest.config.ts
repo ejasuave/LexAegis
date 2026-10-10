@@ -5,6 +5,8 @@ export default defineConfig({
     name: 'indexer',
     include: ['test/**/*.test.ts'],
     environment: 'node',
+    pool: 'forks',
+    setupFiles: ['test/setup.ts'],
     testTimeout: 60_000,
     hookTimeout: 60_000,
     env: { ENVIO_INDEX_GENERATION: 'test-generation-0001' },
