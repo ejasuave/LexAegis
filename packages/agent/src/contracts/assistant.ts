@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { applicationErrorSchema, opaqueIdSchema, rfc3339TimestampSchema } from '@lexaegis/protocol';
+import { opaqueIdSchema } from '@lexaegis/protocol';
 import { digestSchema, timestampSchema, uuidSchema } from '@lexaegis/protocol/v1';
 import { ASSISTANT_LIMITS, jsonBytes, utf8Bytes } from './limits';
 import {
@@ -10,13 +10,11 @@ import {
   sourceReferenceSchema,
 } from './review';
 import {
-  assistantToolNameSchema,
   clientObservedStatusSchema,
   providerIdSchema,
   ruleIdSchema,
   sourceHandleSchema,
   toolHandleSchema,
-  toolResultSchema,
 } from './tool-results';
 
 /*
@@ -415,25 +413,6 @@ export const runFailureCodeSchema = z.enum([
 ]);
 export type RunFailureCode = z.infer<typeof runFailureCodeSchema>;
 
-// ---- Events ---------------------------------------------------------------------------------------
-
-const eventBase = {
-  schema: z.literal('lexaegis.assistant-event.v1'),
-  runId: opaqueIdSchema,
-  matterId: opaqueIdSchema,
-  documentVersionId: opaqueIdSchema.nullable(),
-  /** The inputs and vault generation the run is bound to; an event for others is discarded. */
-  snapshotDigest: digestSchema,
-  vaultGeneration: z.int().min(0),
-  /** Contiguous per-run sequence number, starting at 1. */
-  seq: z.int().min(1),
-  timestamp: rfc3339TimestampSchema,
-};
-
-function event<T extends string, P extends z.ZodType>(type: T, payload: P) {
-  return z.strictObject({ ...eventBase, type: z.literal(type), payload });
-}
-
 /** Counters only. Usage is reported, or explicitly unknown; never guessed. */
 export const runUsageSchema = z.strictObject({
   provenance: z.enum(['provider_reported', 'partially_reported', 'unknown', 'none']),
@@ -467,53 +446,6 @@ export const agentRunMetadataSchema = z.strictObject({
   usage: runUsageSchema,
 });
 export type AgentRunMetadataV1 = z.infer<typeof agentRunMetadataSchema>;
-
-const terminal = { metadata: agentRunMetadataSchema };
-
-export const assistantEventSchema = z.discriminatedUnion('type', [
-  event('plan_updated', z.strictObject({ plan: assistantPlanSchema })),
-  event('state_changed', z.strictObject({ state: assistantRunStateSchema })),
-  event(
-    'tool_started',
-    z.strictObject({ toolCallId: opaqueIdSchema, toolName: assistantToolNameSchema }),
-  ),
-  event('tool_result', z.strictObject({ result: toolResultSchema })),
-  /** One complete, validated block. Never raw provider text or a partial answer. */
-  event(
-    'response_delta',
-    z.strictObject({ index: z.int().min(0).max(7), block: answerBlockSchema }),
-  ),
-  event('response_completed', z.strictObject({ summary: responseSummarySchema })),
-  event(
-    'output_reference',
-    z.strictObject({ outputId: opaqueIdSchema, kind: z.enum(['response', 'draft_artifact']) }),
-  ),
-  event(
-    'run_completed',
-    z.strictObject({ outcome: z.enum(['completed', 'needs_input', 'limited_scope']), ...terminal }),
-  ),
-  event('run_cancelled', z.strictObject(terminal)),
-  event(
-    'run_failed',
-    z.strictObject({
-      error: applicationErrorSchema,
-      failure: runFailureCodeSchema,
-      /** Validated tool results delivered before the failure remain usable as partial work. */
-      partial: z.boolean(),
-      ...terminal,
-    }),
-  ),
-  event('run_interrupted', z.strictObject(terminal)),
-]);
-export type AssistantEvent = z.infer<typeof assistantEventSchema>;
-export type AssistantEventV1 = AssistantEvent;
-
-export const TERMINAL_EVENT_TYPES: readonly AssistantEvent['type'][] = [
-  'run_completed',
-  'run_cancelled',
-  'run_failed',
-  'run_interrupted',
-];
 
 /** Explicit cancellation, bound to the authenticated run owner (derived server-side, never from the browser). */
 export const cancelRunInputSchema = z.strictObject({

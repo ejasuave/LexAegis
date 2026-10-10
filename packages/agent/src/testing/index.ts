@@ -2,3 +2,4 @@
 export * from './fixtures';
 export * from './scripted-provider';
 export * from './memory-run-store';
+export * from './agent-harness';

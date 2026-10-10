@@ -3889,6 +3889,16 @@
           "apps/web/src/server/assistant/run-store.ts",
           "apps/web/src/server/db/migrations/0004_assistant.sql"
         ]
+      },
+      "09": {
+        "status": "complete",
+        "summary": "ReviewAgent runtime as one bounded state machine per run: admission, routing, direct code handlers, native tool rounds, one structured final round, one repair, one transient retry, heartbeat lease, durable cancellation and a single terminal transition.",
+        "files": [
+          "packages/agent/src/runtime/run-agent.ts",
+          "packages/agent/src/contracts/events.ts",
+          "packages/agent/src/ports.ts",
+          "packages/agent/src/testing/agent-harness.ts"
+        ]
       }
     },
     "contracts": {
@@ -3966,6 +3976,16 @@
       "admission": "one active run per account, three globally, 20 admitted per account per UTC day, 100 globally, decided in one transaction under an advisory lock; (owner, client_request_id) is unique and a repeat returns the existing run without running again",
       "leases": "15-second lease renewed by a 1-second heartbeat that also reads the durable cancellation flag; an expired lease becomes interrupted, never completed; terminal rows are removed after 24 hours and quota buckets after two UTC days",
       "terminal": "finish is the single terminal transition, taken under a row lock by the lease holder; if cancellation was requested the run ends cancelled whatever the worker asked for"
+    },
+    "runtime": {
+      "version": "lexaegis.agent-runtime.v1",
+      "flow": "consent digest and provider scope checked, then atomic admission, then routing (code first; one utterance-only completion only for unclassified free text), then either a direct code handler or tool rounds followed by one final round without tools and with the response format, then output validation and one terminal event",
+      "directHandlers": "status always; check_payments and missing_evidence when sent as a command. They record modelExecution none and no provider section.",
+      "beforeEveryDispatch": "stop observed, session still valid, lease renewed and durable cancel flag read, provider scope still equal to the consented one, budget reserved; the stop check and the dispatch are in the same tick, so nothing is sent after a stop is observed",
+      "toolRounds": "at most one native call per completion; several calls in one completion are never executed (one repair, then PARALLEL_TOOL_CALLS); an unknown or unauthorised tool or invalid arguments use the same single repair",
+      "cancellation": "Stop sets the durable flag and aborts the in-process controller; the run enters stopping at once and ends cancelled only when the worker has acknowledged; if the answer was validated at the same moment it is discarded; a lost lease or unreachable store ends as interrupted with the provider outcome unknown",
+      "notDone": "No automatic resume, replay or takeover after a restart; no persisted transcript; plaintext and the AbortController live in process memory only",
+      "completion": "run_completed carries the AgentConfigV1 written from the execution: provider, requested and returned model, snapshot known or unknown, output mode, capability state, prompt and schema digests, parameters, budget and usage provenance"
     }
   }
 }

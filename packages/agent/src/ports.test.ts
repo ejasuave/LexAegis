@@ -22,7 +22,10 @@ describe('unavailable review agent', () => {
     expect(!status.ok && status.error.code).toBe('NOT_CONFIGURED');
   });
 
-  it('reports no provider, so nothing can be disclosed to it', () => {
-    expect(agent.availability()).toMatchObject({ state: 'not_configured', providerScope: null });
+  it('reports no provider, so nothing can be disclosed to it', async () => {
+    expect(await agent.availability()).toMatchObject({
+      state: 'not_configured',
+      providerScope: null,
+    });
   });
 });

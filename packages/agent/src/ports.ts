@@ -39,7 +39,7 @@ export interface CancelOutcome {
  * No method here can approve, sign, revoke or supersede anything.
  */
 export interface ReviewAgent {
-  availability(): AssistantAvailability;
+  availability(): Promise<AssistantAvailability>;
   start(request: AssistantRequest, context: StartRunContext): Promise<Result<StartedRun>>;
   /** Owner-bound operational status only: never a prompt, an answer or a tool payload. */
   status(runId: string, ownerId: string): Promise<Result<AgentRunMetadataV1>>;
@@ -51,13 +51,14 @@ export function createUnavailableReviewAgent(
   code: 'NOT_IMPLEMENTED' | 'NOT_CONFIGURED' = 'NOT_CONFIGURED',
 ): ReviewAgent {
   return {
-    availability: () => ({
-      schema: 'lexaegis.assistant-availability.v1',
-      state: 'not_configured',
-      providerScope: null,
-      notices: [],
-      briefingEnabled: false,
-    }),
+    availability: () =>
+      Promise.resolve({
+        schema: 'lexaegis.assistant-availability.v1',
+        state: 'not_configured',
+        providerScope: null,
+        notices: [],
+        briefingEnabled: false,
+      }),
     start: () => Promise.resolve(unavailable(code, 'The review assistant')),
     status: () => Promise.resolve(unavailable(code, 'The review assistant')),
     cancel: () => Promise.resolve(unavailable(code, 'Run cancellation')),

@@ -51,7 +51,34 @@ const base = {
   timestamp: '2026-10-10T12:00:00.000Z',
 } as const;
 
-const completed = { outcome: 'completed', metadata };
+const agentConfig = {
+  schema: 'lexaegis.agent-config.v1',
+  profile: { id: 'lexaegis.employment-settlement.ew', version: '1' },
+  runtimeVersion: 'lexaegis.agent-runtime.v1',
+  modelExecution: 'none',
+  provider: null,
+  prompts: null,
+  parameters: null,
+  budget: {
+    providerAttempts: 6,
+    toolExecutions: 8,
+    totalMs: 120_000,
+    attemptMs: 25_000,
+    completionTokensPerAttempt: 2048,
+    completionTokensPerRun: 8192,
+    inputTokensPerAttempt: 65_536,
+    inputTokensPerRun: 196_608,
+  },
+  usage: metadata.usage,
+  run: {
+    runId: 'run_1',
+    intent: 'status',
+    startedAt: '2026-10-10T09:00:00.000Z',
+    finishedAt: '2026-10-10T09:00:01.000Z',
+    outcome: 'completed',
+  },
+};
+const completed = { outcome: 'completed', metadata, agentConfig };
 
 describe('assistant events', () => {
   it('accepts a terminal completion event that carries only an outcome and operational metadata', () => {

@@ -3,5 +3,6 @@ export * from './limits';
 export * from './tool-results';
 export * from './assistant';
 export * from './agent-config';
+export * from './events';
 export * from './intents';
 export * from './review';
