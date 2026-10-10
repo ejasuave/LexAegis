@@ -182,7 +182,8 @@ export default tseslint.config(
           '@scure/*',
           '**/apps/**',
         ],
-        message: 'The indexer is read-only and must not import applications, the agent or the vault.',
+        message:
+          'The indexer is read-only and must not import applications, the agent or the vault.',
       },
     ]),
   },

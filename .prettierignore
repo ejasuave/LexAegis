@@ -25,3 +25,4 @@ docs/evidence/chapter09-qwen-smoke-*.json
 # Chapter 7 indexer: generated, compact public JSON
 indexer/deployment-binding.json
 indexer/.envio/types.d.ts
+indexer/queries/*.graphql
