@@ -42,7 +42,7 @@
       "id": "04",
       "title": "Mera Passkeys, Signing Sessions and Account Recovery",
       "additive": false,
-      "state": "in-progress",
+      "state": "complete",
       "evidence": ["chapter04.checks"],
       "chapterPromptPath": "build_instructions/prompt_library/LexAegis_Prompt_Library_Chapter_04_Targeted_Build_Tasks_v1_0.md"
     },
@@ -174,11 +174,7 @@
       "dirtyWorktree": true,
       "note": "The repository has no commits yet; results describe the working tree."
     },
-    "environment": {
-      "node": "v24.21.0",
-      "pnpm": "11.11.0",
-      "os": "linux"
-    },
+    "environment": { "node": "v24.21.0", "pnpm": "11.11.0", "os": "linux" },
     "resolvedDependencies": {
       "typescript": "6.0.3",
       "next": "16.4.0",
@@ -209,29 +205,19 @@
         "outcome": "pass",
         "notes": "7 deliberate violations (next in protocol, agent in sdk, process.env in vault, server import and agent runtime in web components, vault in verifier, private src path) were all rejected; @lexaegis/agent/contracts was allowed. Temporary files removed."
       },
-      "formatCheck": {
-        "command": "pnpm format:check",
-        "outcome": "pass"
-      },
+      "formatCheck": { "command": "pnpm format:check", "outcome": "pass" },
       "typecheck": {
         "command": "pnpm typecheck",
         "outcome": "pass",
         "notes": "strict and noUncheckedIndexedAccess on all 7 projects"
       },
-      "unitTests": {
-        "command": "pnpm test",
-        "outcome": "pass",
-        "notes": "12 files, 80 tests"
-      },
+      "unitTests": { "command": "pnpm test", "outcome": "pass", "notes": "12 files, 80 tests" },
       "build": {
         "command": "pnpm build",
         "outcome": "pass",
         "notes": "next build (Turbopack) and vite build"
       },
-      "frozenLockfileInstall": {
-        "command": "pnpm install --frozen-lockfile",
-        "outcome": "pass"
-      },
+      "frozenLockfileInstall": { "command": "pnpm install --frozen-lockfile", "outcome": "pass" },
       "startWithoutCredentials": {
         "outcome": "pass",
         "notes": "Web on a custom port and verifier preview started independently. /api/health 200; /api/readiness 503 with every capability unimplemented; /review /vault /history /verify 200; / redirects to /review."
@@ -275,13 +261,7 @@
         "status": "not-started",
         "evidence": []
       },
-      {
-        "id": "consent",
-        "tier": "T0",
-        "chapter": "10",
-        "status": "not-started",
-        "evidence": []
-      },
+      { "id": "consent", "tier": "T0", "chapter": "10", "status": "not-started", "evidence": [] },
       {
         "id": "qwen-source-linked-findings",
         "tier": "T0",
@@ -387,13 +367,7 @@
         "status": "not-started",
         "evidence": []
       },
-      {
-        "id": "cli",
-        "tier": "T1",
-        "chapter": "15",
-        "status": "not-started",
-        "evidence": []
-      },
+      { "id": "cli", "tier": "T1", "chapter": "15", "status": "not-started", "evidence": [] },
       {
         "id": "embeddable-widget",
         "tier": "T1",
@@ -478,13 +452,7 @@
         "status": "not-started",
         "evidence": []
       },
-      {
-        "id": "voice",
-        "tier": "T3",
-        "chapter": "10",
-        "status": "not-started",
-        "evidence": []
-      },
+      { "id": "voice", "tier": "T3", "chapter": "10", "status": "not-started", "evidence": [] },
       {
         "id": "document-comparison",
         "tier": "T3",
@@ -621,18 +589,9 @@
       "pnpm protocol:generate"
     ],
     "checks": {
-      "lint": {
-        "command": "pnpm lint",
-        "outcome": "pass"
-      },
-      "formatCheck": {
-        "command": "pnpm format:check",
-        "outcome": "pass"
-      },
-      "typecheck": {
-        "command": "pnpm typecheck",
-        "outcome": "pass"
-      },
+      "lint": { "command": "pnpm lint", "outcome": "pass" },
+      "formatCheck": { "command": "pnpm format:check", "outcome": "pass" },
+      "typecheck": { "command": "pnpm typecheck", "outcome": "pass" },
       "unitTests": {
         "command": "pnpm test",
         "outcome": "pass",
@@ -654,10 +613,7 @@
         "outcome": "pass",
         "notes": "The generator uses node:crypto plus two independent JCS serializers that must agree. A third recomputation with Python hashlib and json agreed on all three cases (run once, not scripted)."
       },
-      "generatedArtifacts": {
-        "command": "pnpm protocol:check",
-        "outcome": "pass"
-      },
+      "generatedArtifacts": { "command": "pnpm protocol:check", "outcome": "pass" },
       "negativeControls": {
         "outcome": "pass",
         "notes": "Nine deliberate implementation breaks were each caught, then reverted: wrong package domain (27 failures), missing 0x00 separator (25), swapped nonce/digest order (20), duplicate keys allowed (4), context check skipped (3), snapshot returning internal buffers (1), caller bytes not copied (2), JSON.stringify instead of JCS (32), unknown fields stripped (3). Run by hand; not a committed script."
@@ -759,17 +715,8 @@
       ],
       "stateChanging": ["execute", "invalidateNonce"]
     },
-    "actionCodes": {
-      "ISSUE": 0,
-      "REVOKE": 1,
-      "SUPERSEDE": 2
-    },
-    "receiptStatus": {
-      "NotFound": 0,
-      "Active": 1,
-      "Revoked": 2,
-      "Superseded": 3
-    },
+    "actionCodes": { "ISSUE": 0, "REVOKE": 1, "SUPERSEDE": 2 },
+    "receiptStatus": { "NotFound": 0, "Active": 1, "Revoked": 2, "Superseded": 3 },
     "eip712": {
       "domain": {
         "name": "LexAegisProofOfReview",
@@ -859,10 +806,7 @@
         "outcome": "pass",
         "notes": "Before any edit: pnpm test:protocol (10 files, 219 tests), pnpm fixtures:check and pnpm protocol:check passed. The Chapter 2 commitment formula, opening format and vectors are unchanged."
       },
-      "contractFormat": {
-        "command": "pnpm contracts:fmt:check",
-        "outcome": "pass"
-      },
+      "contractFormat": { "command": "pnpm contracts:fmt:check", "outcome": "pass" },
       "contractBuild": {
         "command": "pnpm contracts:build",
         "outcome": "pass",
@@ -917,14 +861,8 @@
         "outcome": "pass",
         "notes": "ESLint rejected 8 temporary violations: SDK and web importing the contracts harness, the fixture generator importing viem, the SDK and contracts tooling, and protocol importing viem. Temporary files removed."
       },
-      "lint": {
-        "command": "pnpm lint",
-        "outcome": "pass"
-      },
-      "formatCheck": {
-        "command": "pnpm format:check",
-        "outcome": "pass"
-      },
+      "lint": { "command": "pnpm lint", "outcome": "pass" },
+      "formatCheck": { "command": "pnpm format:check", "outcome": "pass" },
       "typecheck": {
         "command": "pnpm typecheck",
         "outcome": "pass",
@@ -940,10 +878,7 @@
         "outcome": "pass",
         "notes": "Both applications build. No registry code or chain library appears in either client bundle."
       },
-      "frozenLockfileInstall": {
-        "command": "pnpm install --frozen-lockfile",
-        "outcome": "pass"
-      },
+      "frozenLockfileInstall": { "command": "pnpm install --frozen-lockfile", "outcome": "pass" },
       "ci": {
         "outcome": "unverified",
         "notes": "ci.yml now installs the pinned Foundry and runs the contract format, build, test, artifact and Anvil checks. It has still never executed on GitHub."
@@ -994,11 +929,7 @@
       },
       "checkedAt": "2026-10-08T18:46:58.604Z",
       "command": "pnpm exec tsx tooling/scripts/prf-probe.ts",
-      "environment": {
-        "node": "v24.21.0",
-        "os": "linux-x64",
-        "pnpm": "11.11.0"
-      },
+      "environment": { "node": "v24.21.0", "os": "linux-x64", "pnpm": "11.11.0" },
       "evidenceClass": "virtual_authenticator",
       "outcome": "fail",
       "reasonCodes": [
@@ -1030,11 +961,7 @@
       },
       "checkedAt": "2026-10-08T18:47:07.942Z",
       "command": "pnpm exec tsx tooling/scripts/prf-probe.ts",
-      "environment": {
-        "node": "v24.21.0",
-        "os": "linux-x64",
-        "pnpm": "11.11.0"
-      },
+      "environment": { "node": "v24.21.0", "os": "linux-x64", "pnpm": "11.11.0" },
       "evidenceClass": "virtual_authenticator",
       "outcome": "pass",
       "reasonCodes": [
@@ -1065,11 +992,7 @@
       },
       "checkedAt": "2026-10-08T18:49:59.446Z",
       "command": "pnpm readiness",
-      "environment": {
-        "node": "v24.21.0",
-        "os": "linux-x64",
-        "pnpm": "11.11.0"
-      },
+      "environment": { "node": "v24.21.0", "os": "linux-x64", "pnpm": "11.11.0" },
       "evidenceClass": "local_scripted",
       "outcome": "pass",
       "reasonCodes": [],
@@ -1085,11 +1008,7 @@
       },
       "checkedAt": "2026-10-08T18:49:59.446Z",
       "command": "pnpm readiness",
-      "environment": {
-        "node": "v24.21.0",
-        "os": "linux-x64",
-        "pnpm": "11.11.0"
-      },
+      "environment": { "node": "v24.21.0", "os": "linux-x64", "pnpm": "11.11.0" },
       "evidenceClass": "local_scripted",
       "outcome": "pass",
       "reasonCodes": [],
@@ -1105,11 +1024,7 @@
       },
       "checkedAt": "2026-10-08T18:49:59.446Z",
       "command": "pnpm readiness",
-      "environment": {
-        "node": "v24.21.0",
-        "os": "linux-x64",
-        "pnpm": "11.11.0"
-      },
+      "environment": { "node": "v24.21.0", "os": "linux-x64", "pnpm": "11.11.0" },
       "evidenceClass": "local_scripted",
       "outcome": "pass",
       "reasonCodes": [],
@@ -1125,11 +1040,7 @@
       },
       "checkedAt": "2026-10-08T18:49:59.446Z",
       "command": "pnpm readiness",
-      "environment": {
-        "node": "v24.21.0",
-        "os": "linux-x64",
-        "pnpm": "11.11.0"
-      },
+      "environment": { "node": "v24.21.0", "os": "linux-x64", "pnpm": "11.11.0" },
       "evidenceClass": "local_scripted",
       "outcome": "pass",
       "reasonCodes": [],
@@ -1145,11 +1056,7 @@
       },
       "checkedAt": "2026-10-08T18:49:59.446Z",
       "command": "pnpm readiness",
-      "environment": {
-        "node": "v24.21.0",
-        "os": "linux-x64",
-        "pnpm": "11.11.0"
-      },
+      "environment": { "node": "v24.21.0", "os": "linux-x64", "pnpm": "11.11.0" },
       "evidenceClass": "local_scripted",
       "outcome": "pass",
       "reasonCodes": [],
@@ -1165,11 +1072,7 @@
       },
       "checkedAt": "2026-10-08T18:49:59.446Z",
       "command": "pnpm readiness",
-      "environment": {
-        "node": "v24.21.0",
-        "os": "linux-x64",
-        "pnpm": "11.11.0"
-      },
+      "environment": { "node": "v24.21.0", "os": "linux-x64", "pnpm": "11.11.0" },
       "evidenceClass": "local_scripted",
       "outcome": "pass",
       "reasonCodes": [],
@@ -1185,11 +1088,7 @@
       },
       "checkedAt": "2026-10-08T18:49:59.446Z",
       "command": "pnpm readiness",
-      "environment": {
-        "node": "v24.21.0",
-        "os": "linux-x64",
-        "pnpm": "11.11.0"
-      },
+      "environment": { "node": "v24.21.0", "os": "linux-x64", "pnpm": "11.11.0" },
       "evidenceClass": "local_scripted",
       "outcome": "pass",
       "reasonCodes": [],
@@ -1205,11 +1104,7 @@
       },
       "checkedAt": "2026-10-08T18:49:59.446Z",
       "command": "pnpm readiness",
-      "environment": {
-        "node": "v24.21.0",
-        "os": "linux-x64",
-        "pnpm": "11.11.0"
-      },
+      "environment": { "node": "v24.21.0", "os": "linux-x64", "pnpm": "11.11.0" },
       "evidenceClass": "local_scripted",
       "outcome": "pass",
       "reasonCodes": [],
@@ -1225,24 +1120,12 @@
       },
       "checkedAt": "2026-10-08T18:50:26.988Z",
       "command": "pnpm smoke:local",
-      "environment": {
-        "node": "v24.21.0",
-        "os": "linux-x64",
-        "pnpm": "11.11.0"
-      },
+      "environment": { "node": "v24.21.0", "os": "linux-x64", "pnpm": "11.11.0" },
       "evidenceClass": "local_scripted",
       "outcome": "pending",
       "reasonCodes": ["PENDING_STEPS"],
-      "evidenceRefs": [
-        {
-          "type": "path",
-          "value": "docs/smoke-local-result.json"
-        }
-      ],
-      "facts": {
-        "stepsPassed": "0",
-        "stepsTotal": "10"
-      }
+      "evidenceRefs": [{ "type": "path", "value": "docs/smoke-local-result.json" }],
+      "facts": { "stepsPassed": "0", "stepsTotal": "10" }
     },
     {
       "id": "cutladder-20261008185030",
@@ -1254,11 +1137,7 @@
       },
       "checkedAt": "2026-10-08T18:50:30.606Z",
       "command": "pnpm cutladder:check",
-      "environment": {
-        "node": "v24.21.0",
-        "os": "linux-x64",
-        "pnpm": "11.11.0"
-      },
+      "environment": { "node": "v24.21.0", "os": "linux-x64", "pnpm": "11.11.0" },
       "evidenceClass": "local_scripted",
       "outcome": "blocked",
       "reasonCodes": ["T0_JOURNEY_PENDING", "OPTIONAL_FEATURES_UNIMPLEMENTED"],
@@ -1280,11 +1159,7 @@
       },
       "checkedAt": "2026-10-08T18:51:59.683Z",
       "command": "pnpm readiness",
-      "environment": {
-        "node": "v24.21.0",
-        "os": "linux-x64",
-        "pnpm": "11.11.0"
-      },
+      "environment": { "node": "v24.21.0", "os": "linux-x64", "pnpm": "11.11.0" },
       "evidenceClass": "local_scripted",
       "outcome": "pass",
       "reasonCodes": [],
@@ -1300,11 +1175,7 @@
       },
       "checkedAt": "2026-10-08T18:51:59.683Z",
       "command": "pnpm readiness",
-      "environment": {
-        "node": "v24.21.0",
-        "os": "linux-x64",
-        "pnpm": "11.11.0"
-      },
+      "environment": { "node": "v24.21.0", "os": "linux-x64", "pnpm": "11.11.0" },
       "evidenceClass": "local_scripted",
       "outcome": "pass",
       "reasonCodes": [],
@@ -1320,11 +1191,7 @@
       },
       "checkedAt": "2026-10-08T18:51:59.683Z",
       "command": "pnpm readiness",
-      "environment": {
-        "node": "v24.21.0",
-        "os": "linux-x64",
-        "pnpm": "11.11.0"
-      },
+      "environment": { "node": "v24.21.0", "os": "linux-x64", "pnpm": "11.11.0" },
       "evidenceClass": "local_scripted",
       "outcome": "pass",
       "reasonCodes": [],
@@ -1340,11 +1207,7 @@
       },
       "checkedAt": "2026-10-08T18:51:59.683Z",
       "command": "pnpm readiness",
-      "environment": {
-        "node": "v24.21.0",
-        "os": "linux-x64",
-        "pnpm": "11.11.0"
-      },
+      "environment": { "node": "v24.21.0", "os": "linux-x64", "pnpm": "11.11.0" },
       "evidenceClass": "local_scripted",
       "outcome": "pass",
       "reasonCodes": [],
@@ -1360,11 +1223,7 @@
       },
       "checkedAt": "2026-10-08T18:51:59.683Z",
       "command": "pnpm readiness",
-      "environment": {
-        "node": "v24.21.0",
-        "os": "linux-x64",
-        "pnpm": "11.11.0"
-      },
+      "environment": { "node": "v24.21.0", "os": "linux-x64", "pnpm": "11.11.0" },
       "evidenceClass": "local_scripted",
       "outcome": "pass",
       "reasonCodes": [],
@@ -1380,11 +1239,7 @@
       },
       "checkedAt": "2026-10-08T18:51:59.683Z",
       "command": "pnpm readiness",
-      "environment": {
-        "node": "v24.21.0",
-        "os": "linux-x64",
-        "pnpm": "11.11.0"
-      },
+      "environment": { "node": "v24.21.0", "os": "linux-x64", "pnpm": "11.11.0" },
       "evidenceClass": "local_scripted",
       "outcome": "pass",
       "reasonCodes": [],
@@ -1400,11 +1255,7 @@
       },
       "checkedAt": "2026-10-08T18:51:59.683Z",
       "command": "pnpm readiness",
-      "environment": {
-        "node": "v24.21.0",
-        "os": "linux-x64",
-        "pnpm": "11.11.0"
-      },
+      "environment": { "node": "v24.21.0", "os": "linux-x64", "pnpm": "11.11.0" },
       "evidenceClass": "local_scripted",
       "outcome": "pass",
       "reasonCodes": [],
@@ -1420,11 +1271,7 @@
       },
       "checkedAt": "2026-10-08T18:51:59.683Z",
       "command": "pnpm readiness",
-      "environment": {
-        "node": "v24.21.0",
-        "os": "linux-x64",
-        "pnpm": "11.11.0"
-      },
+      "environment": { "node": "v24.21.0", "os": "linux-x64", "pnpm": "11.11.0" },
       "evidenceClass": "local_scripted",
       "outcome": "pass",
       "reasonCodes": [],
@@ -1440,11 +1287,7 @@
       },
       "checkedAt": "2026-10-08T22:33:08.918Z",
       "command": "pnpm test:account:browser",
-      "environment": {
-        "node": "v24.21.0",
-        "os": "linux-x64",
-        "pnpm": "11.11.0"
-      },
+      "environment": { "node": "v24.21.0", "os": "linux-x64", "pnpm": "11.11.0" },
       "evidenceClass": "virtual_authenticator",
       "outcome": "pass",
       "reasonCodes": ["AUTHENTICATOR_MODE_VIRTUAL", "PASSKEY_STEP_REQUIRES_REAL_DEVICE_EVIDENCE"],
@@ -1470,11 +1313,7 @@
       },
       "checkedAt": "2026-10-08T22:40:51.235Z",
       "command": "pnpm test:account:browser",
-      "environment": {
-        "node": "v24.21.0",
-        "os": "linux-x64",
-        "pnpm": "11.11.0"
-      },
+      "environment": { "node": "v24.21.0", "os": "linux-x64", "pnpm": "11.11.0" },
       "evidenceClass": "virtual_authenticator",
       "outcome": "pass",
       "reasonCodes": ["AUTHENTICATOR_MODE_VIRTUAL", "PASSKEY_STEP_REQUIRES_REAL_DEVICE_EVIDENCE"],
@@ -1500,11 +1339,7 @@
       },
       "checkedAt": "2026-10-08T22:41:22.968Z",
       "command": "pnpm readiness",
-      "environment": {
-        "node": "v24.21.0",
-        "os": "linux-x64",
-        "pnpm": "11.11.0"
-      },
+      "environment": { "node": "v24.21.0", "os": "linux-x64", "pnpm": "11.11.0" },
       "evidenceClass": "local_scripted",
       "outcome": "pass",
       "reasonCodes": [],
@@ -1520,11 +1355,7 @@
       },
       "checkedAt": "2026-10-08T22:41:22.968Z",
       "command": "pnpm readiness",
-      "environment": {
-        "node": "v24.21.0",
-        "os": "linux-x64",
-        "pnpm": "11.11.0"
-      },
+      "environment": { "node": "v24.21.0", "os": "linux-x64", "pnpm": "11.11.0" },
       "evidenceClass": "local_scripted",
       "outcome": "pass",
       "reasonCodes": [],
@@ -1540,11 +1371,7 @@
       },
       "checkedAt": "2026-10-08T22:41:22.968Z",
       "command": "pnpm readiness",
-      "environment": {
-        "node": "v24.21.0",
-        "os": "linux-x64",
-        "pnpm": "11.11.0"
-      },
+      "environment": { "node": "v24.21.0", "os": "linux-x64", "pnpm": "11.11.0" },
       "evidenceClass": "local_scripted",
       "outcome": "pass",
       "reasonCodes": [],
@@ -1560,11 +1387,7 @@
       },
       "checkedAt": "2026-10-08T22:41:22.968Z",
       "command": "pnpm readiness",
-      "environment": {
-        "node": "v24.21.0",
-        "os": "linux-x64",
-        "pnpm": "11.11.0"
-      },
+      "environment": { "node": "v24.21.0", "os": "linux-x64", "pnpm": "11.11.0" },
       "evidenceClass": "local_scripted",
       "outcome": "pass",
       "reasonCodes": [],
@@ -1580,11 +1403,7 @@
       },
       "checkedAt": "2026-10-08T22:41:22.968Z",
       "command": "pnpm readiness",
-      "environment": {
-        "node": "v24.21.0",
-        "os": "linux-x64",
-        "pnpm": "11.11.0"
-      },
+      "environment": { "node": "v24.21.0", "os": "linux-x64", "pnpm": "11.11.0" },
       "evidenceClass": "local_scripted",
       "outcome": "pass",
       "reasonCodes": [],
@@ -1600,11 +1419,7 @@
       },
       "checkedAt": "2026-10-08T22:41:22.968Z",
       "command": "pnpm readiness",
-      "environment": {
-        "node": "v24.21.0",
-        "os": "linux-x64",
-        "pnpm": "11.11.0"
-      },
+      "environment": { "node": "v24.21.0", "os": "linux-x64", "pnpm": "11.11.0" },
       "evidenceClass": "local_scripted",
       "outcome": "pass",
       "reasonCodes": [],
@@ -1620,11 +1435,7 @@
       },
       "checkedAt": "2026-10-08T22:41:22.968Z",
       "command": "pnpm readiness",
-      "environment": {
-        "node": "v24.21.0",
-        "os": "linux-x64",
-        "pnpm": "11.11.0"
-      },
+      "environment": { "node": "v24.21.0", "os": "linux-x64", "pnpm": "11.11.0" },
       "evidenceClass": "local_scripted",
       "outcome": "pass",
       "reasonCodes": [],
@@ -1640,11 +1451,7 @@
       },
       "checkedAt": "2026-10-08T22:41:22.968Z",
       "command": "pnpm readiness",
-      "environment": {
-        "node": "v24.21.0",
-        "os": "linux-x64",
-        "pnpm": "11.11.0"
-      },
+      "environment": { "node": "v24.21.0", "os": "linux-x64", "pnpm": "11.11.0" },
       "evidenceClass": "local_scripted",
       "outcome": "pass",
       "reasonCodes": [],
@@ -1660,11 +1467,7 @@
       },
       "checkedAt": "2026-10-08T23:25:49.507Z",
       "command": "pnpm test:vault:browser",
-      "environment": {
-        "node": "v24.21.0",
-        "os": "linux-x64",
-        "pnpm": "11.11.0"
-      },
+      "environment": { "node": "v24.21.0", "os": "linux-x64", "pnpm": "11.11.0" },
       "evidenceClass": "virtual_authenticator",
       "outcome": "fail",
       "reasonCodes": [
@@ -1693,11 +1496,7 @@
       },
       "checkedAt": "2026-10-08T23:26:01.988Z",
       "command": "pnpm test:vault:browser",
-      "environment": {
-        "node": "v24.21.0",
-        "os": "linux-x64",
-        "pnpm": "11.11.0"
-      },
+      "environment": { "node": "v24.21.0", "os": "linux-x64", "pnpm": "11.11.0" },
       "evidenceClass": "virtual_authenticator",
       "outcome": "pass",
       "reasonCodes": ["AUTHENTICATOR_MODE_VIRTUAL", "PASSKEY_STEP_REQUIRES_REAL_DEVICE_EVIDENCE"],
@@ -1722,11 +1521,7 @@
       },
       "checkedAt": "2026-10-08T23:34:06.246Z",
       "command": "pnpm test:vault:browser",
-      "environment": {
-        "node": "v24.21.0",
-        "os": "linux-x64",
-        "pnpm": "11.11.0"
-      },
+      "environment": { "node": "v24.21.0", "os": "linux-x64", "pnpm": "11.11.0" },
       "evidenceClass": "virtual_authenticator",
       "outcome": "fail",
       "reasonCodes": [
@@ -1755,11 +1550,7 @@
       },
       "checkedAt": "2026-10-08T23:35:01.949Z",
       "command": "pnpm test:vault:browser",
-      "environment": {
-        "node": "v24.21.0",
-        "os": "linux-x64",
-        "pnpm": "11.11.0"
-      },
+      "environment": { "node": "v24.21.0", "os": "linux-x64", "pnpm": "11.11.0" },
       "evidenceClass": "virtual_authenticator",
       "outcome": "fail",
       "reasonCodes": [
@@ -1788,11 +1579,7 @@
       },
       "checkedAt": "2026-10-08T23:35:27.652Z",
       "command": "pnpm test:vault:browser",
-      "environment": {
-        "node": "v24.21.0",
-        "os": "linux-x64",
-        "pnpm": "11.11.0"
-      },
+      "environment": { "node": "v24.21.0", "os": "linux-x64", "pnpm": "11.11.0" },
       "evidenceClass": "virtual_authenticator",
       "outcome": "pass",
       "reasonCodes": ["AUTHENTICATOR_MODE_VIRTUAL", "PASSKEY_STEP_REQUIRES_REAL_DEVICE_EVIDENCE"],
@@ -1817,11 +1604,7 @@
       },
       "checkedAt": "2026-10-08T23:37:45.392Z",
       "command": "pnpm test:account:browser",
-      "environment": {
-        "node": "v24.21.0",
-        "os": "linux-x64",
-        "pnpm": "11.11.0"
-      },
+      "environment": { "node": "v24.21.0", "os": "linux-x64", "pnpm": "11.11.0" },
       "evidenceClass": "virtual_authenticator",
       "outcome": "pass",
       "reasonCodes": ["AUTHENTICATOR_MODE_VIRTUAL", "PASSKEY_STEP_REQUIRES_REAL_DEVICE_EVIDENCE"],
@@ -1847,11 +1630,7 @@
       },
       "checkedAt": "2026-10-08T23:37:58.102Z",
       "command": "pnpm test:vault:browser",
-      "environment": {
-        "node": "v24.21.0",
-        "os": "linux-x64",
-        "pnpm": "11.11.0"
-      },
+      "environment": { "node": "v24.21.0", "os": "linux-x64", "pnpm": "11.11.0" },
       "evidenceClass": "virtual_authenticator",
       "outcome": "pass",
       "reasonCodes": ["AUTHENTICATOR_MODE_VIRTUAL", "PASSKEY_STEP_REQUIRES_REAL_DEVICE_EVIDENCE"],
@@ -1876,11 +1655,7 @@
       },
       "checkedAt": "2026-10-08T23:38:01.937Z",
       "command": "pnpm readiness",
-      "environment": {
-        "node": "v24.21.0",
-        "os": "linux-x64",
-        "pnpm": "11.11.0"
-      },
+      "environment": { "node": "v24.21.0", "os": "linux-x64", "pnpm": "11.11.0" },
       "evidenceClass": "local_scripted",
       "outcome": "pass",
       "reasonCodes": [],
@@ -1896,11 +1671,7 @@
       },
       "checkedAt": "2026-10-08T23:38:01.937Z",
       "command": "pnpm readiness",
-      "environment": {
-        "node": "v24.21.0",
-        "os": "linux-x64",
-        "pnpm": "11.11.0"
-      },
+      "environment": { "node": "v24.21.0", "os": "linux-x64", "pnpm": "11.11.0" },
       "evidenceClass": "local_scripted",
       "outcome": "pass",
       "reasonCodes": [],
@@ -1916,11 +1687,7 @@
       },
       "checkedAt": "2026-10-08T23:38:01.937Z",
       "command": "pnpm readiness",
-      "environment": {
-        "node": "v24.21.0",
-        "os": "linux-x64",
-        "pnpm": "11.11.0"
-      },
+      "environment": { "node": "v24.21.0", "os": "linux-x64", "pnpm": "11.11.0" },
       "evidenceClass": "local_scripted",
       "outcome": "pass",
       "reasonCodes": [],
@@ -1936,11 +1703,7 @@
       },
       "checkedAt": "2026-10-08T23:38:01.937Z",
       "command": "pnpm readiness",
-      "environment": {
-        "node": "v24.21.0",
-        "os": "linux-x64",
-        "pnpm": "11.11.0"
-      },
+      "environment": { "node": "v24.21.0", "os": "linux-x64", "pnpm": "11.11.0" },
       "evidenceClass": "local_scripted",
       "outcome": "pass",
       "reasonCodes": [],
@@ -1956,11 +1719,7 @@
       },
       "checkedAt": "2026-10-08T23:38:01.937Z",
       "command": "pnpm readiness",
-      "environment": {
-        "node": "v24.21.0",
-        "os": "linux-x64",
-        "pnpm": "11.11.0"
-      },
+      "environment": { "node": "v24.21.0", "os": "linux-x64", "pnpm": "11.11.0" },
       "evidenceClass": "local_scripted",
       "outcome": "pass",
       "reasonCodes": [],
@@ -1976,11 +1735,7 @@
       },
       "checkedAt": "2026-10-08T23:38:01.937Z",
       "command": "pnpm readiness",
-      "environment": {
-        "node": "v24.21.0",
-        "os": "linux-x64",
-        "pnpm": "11.11.0"
-      },
+      "environment": { "node": "v24.21.0", "os": "linux-x64", "pnpm": "11.11.0" },
       "evidenceClass": "local_scripted",
       "outcome": "pass",
       "reasonCodes": [],
@@ -1996,11 +1751,7 @@
       },
       "checkedAt": "2026-10-08T23:38:01.937Z",
       "command": "pnpm readiness",
-      "environment": {
-        "node": "v24.21.0",
-        "os": "linux-x64",
-        "pnpm": "11.11.0"
-      },
+      "environment": { "node": "v24.21.0", "os": "linux-x64", "pnpm": "11.11.0" },
       "evidenceClass": "local_scripted",
       "outcome": "pass",
       "reasonCodes": [],
@@ -2016,11 +1767,7 @@
       },
       "checkedAt": "2026-10-08T23:38:01.937Z",
       "command": "pnpm readiness",
-      "environment": {
-        "node": "v24.21.0",
-        "os": "linux-x64",
-        "pnpm": "11.11.0"
-      },
+      "environment": { "node": "v24.21.0", "os": "linux-x64", "pnpm": "11.11.0" },
       "evidenceClass": "local_scripted",
       "outcome": "pass",
       "reasonCodes": [],
@@ -2036,11 +1783,7 @@
       },
       "checkedAt": "2026-10-09T09:36:41.012Z",
       "command": "pnpm test:vault:browser",
-      "environment": {
-        "node": "v24.21.0",
-        "os": "linux-x64",
-        "pnpm": "11.11.0"
-      },
+      "environment": { "node": "v24.21.0", "os": "linux-x64", "pnpm": "11.11.0" },
       "evidenceClass": "virtual_authenticator",
       "outcome": "pass",
       "reasonCodes": ["AUTHENTICATOR_MODE_VIRTUAL", "PASSKEY_STEP_REQUIRES_REAL_DEVICE_EVIDENCE"],
@@ -2065,11 +1808,7 @@
       },
       "checkedAt": "2026-10-09T09:36:54.078Z",
       "command": "pnpm test:account:browser",
-      "environment": {
-        "node": "v24.21.0",
-        "os": "linux-x64",
-        "pnpm": "11.11.0"
-      },
+      "environment": { "node": "v24.21.0", "os": "linux-x64", "pnpm": "11.11.0" },
       "evidenceClass": "virtual_authenticator",
       "outcome": "pass",
       "reasonCodes": ["AUTHENTICATOR_MODE_VIRTUAL", "PASSKEY_STEP_REQUIRES_REAL_DEVICE_EVIDENCE"],
@@ -2095,11 +1834,7 @@
       },
       "checkedAt": "2026-10-09T09:38:39.057Z",
       "command": "pnpm readiness",
-      "environment": {
-        "node": "v24.21.0",
-        "os": "linux-x64",
-        "pnpm": "11.11.0"
-      },
+      "environment": { "node": "v24.21.0", "os": "linux-x64", "pnpm": "11.11.0" },
       "evidenceClass": "local_scripted",
       "outcome": "pass",
       "reasonCodes": [],
@@ -2115,11 +1850,7 @@
       },
       "checkedAt": "2026-10-09T09:38:39.057Z",
       "command": "pnpm readiness",
-      "environment": {
-        "node": "v24.21.0",
-        "os": "linux-x64",
-        "pnpm": "11.11.0"
-      },
+      "environment": { "node": "v24.21.0", "os": "linux-x64", "pnpm": "11.11.0" },
       "evidenceClass": "local_scripted",
       "outcome": "fail",
       "reasonCodes": ["EXIT_1"],
@@ -2135,11 +1866,7 @@
       },
       "checkedAt": "2026-10-09T09:38:39.057Z",
       "command": "pnpm readiness",
-      "environment": {
-        "node": "v24.21.0",
-        "os": "linux-x64",
-        "pnpm": "11.11.0"
-      },
+      "environment": { "node": "v24.21.0", "os": "linux-x64", "pnpm": "11.11.0" },
       "evidenceClass": "local_scripted",
       "outcome": "pass",
       "reasonCodes": [],
@@ -2155,11 +1882,7 @@
       },
       "checkedAt": "2026-10-09T09:38:39.057Z",
       "command": "pnpm readiness",
-      "environment": {
-        "node": "v24.21.0",
-        "os": "linux-x64",
-        "pnpm": "11.11.0"
-      },
+      "environment": { "node": "v24.21.0", "os": "linux-x64", "pnpm": "11.11.0" },
       "evidenceClass": "local_scripted",
       "outcome": "fail",
       "reasonCodes": ["EXIT_1"],
@@ -2175,11 +1898,7 @@
       },
       "checkedAt": "2026-10-09T09:38:39.057Z",
       "command": "pnpm readiness",
-      "environment": {
-        "node": "v24.21.0",
-        "os": "linux-x64",
-        "pnpm": "11.11.0"
-      },
+      "environment": { "node": "v24.21.0", "os": "linux-x64", "pnpm": "11.11.0" },
       "evidenceClass": "local_scripted",
       "outcome": "fail",
       "reasonCodes": ["EXIT_1"],
@@ -2195,11 +1914,7 @@
       },
       "checkedAt": "2026-10-09T09:38:39.057Z",
       "command": "pnpm readiness",
-      "environment": {
-        "node": "v24.21.0",
-        "os": "linux-x64",
-        "pnpm": "11.11.0"
-      },
+      "environment": { "node": "v24.21.0", "os": "linux-x64", "pnpm": "11.11.0" },
       "evidenceClass": "local_scripted",
       "outcome": "pass",
       "reasonCodes": [],
@@ -2215,11 +1930,7 @@
       },
       "checkedAt": "2026-10-09T09:38:39.057Z",
       "command": "pnpm readiness",
-      "environment": {
-        "node": "v24.21.0",
-        "os": "linux-x64",
-        "pnpm": "11.11.0"
-      },
+      "environment": { "node": "v24.21.0", "os": "linux-x64", "pnpm": "11.11.0" },
       "evidenceClass": "local_scripted",
       "outcome": "pass",
       "reasonCodes": [],
@@ -2235,11 +1946,7 @@
       },
       "checkedAt": "2026-10-09T09:38:39.057Z",
       "command": "pnpm readiness",
-      "environment": {
-        "node": "v24.21.0",
-        "os": "linux-x64",
-        "pnpm": "11.11.0"
-      },
+      "environment": { "node": "v24.21.0", "os": "linux-x64", "pnpm": "11.11.0" },
       "evidenceClass": "local_scripted",
       "outcome": "fail",
       "reasonCodes": ["CHECKS_NOT_ALL_PASSED"],
@@ -2255,11 +1962,7 @@
       },
       "checkedAt": "2026-10-09T11:06:33.829Z",
       "command": "pnpm test:account:browser",
-      "environment": {
-        "node": "v24.21.0",
-        "os": "linux-x64",
-        "pnpm": "11.11.0"
-      },
+      "environment": { "node": "v24.21.0", "os": "linux-x64", "pnpm": "11.11.0" },
       "evidenceClass": "virtual_authenticator",
       "outcome": "pass",
       "reasonCodes": ["AUTHENTICATOR_MODE_VIRTUAL", "PASSKEY_STEP_REQUIRES_REAL_DEVICE_EVIDENCE"],
@@ -2285,11 +1988,7 @@
       },
       "checkedAt": "2026-10-09T11:06:48.434Z",
       "command": "pnpm test:vault:browser",
-      "environment": {
-        "node": "v24.21.0",
-        "os": "linux-x64",
-        "pnpm": "11.11.0"
-      },
+      "environment": { "node": "v24.21.0", "os": "linux-x64", "pnpm": "11.11.0" },
       "evidenceClass": "virtual_authenticator",
       "outcome": "pass",
       "reasonCodes": ["AUTHENTICATOR_MODE_VIRTUAL", "PASSKEY_STEP_REQUIRES_REAL_DEVICE_EVIDENCE"],
@@ -2314,11 +2013,7 @@
       },
       "checkedAt": "2026-10-09T13:02:40.296Z",
       "command": "pnpm test:review:browser",
-      "environment": {
-        "node": "v24.21.0",
-        "os": "linux-x64",
-        "pnpm": "11.11.0"
-      },
+      "environment": { "node": "v24.21.0", "os": "linux-x64", "pnpm": "11.11.0" },
       "evidenceClass": "virtual_authenticator",
       "outcome": "pass",
       "reasonCodes": ["AUTHENTICATOR_MODE_VIRTUAL", "SYNTHETIC_DOCUMENTS_ONLY"],
@@ -2342,11 +2037,7 @@
       },
       "checkedAt": "2026-10-09T13:06:31.885Z",
       "command": "pnpm test:review:browser",
-      "environment": {
-        "node": "v24.21.0",
-        "os": "linux-x64",
-        "pnpm": "11.11.0"
-      },
+      "environment": { "node": "v24.21.0", "os": "linux-x64", "pnpm": "11.11.0" },
       "evidenceClass": "virtual_authenticator",
       "outcome": "pass",
       "reasonCodes": ["AUTHENTICATOR_MODE_VIRTUAL", "SYNTHETIC_DOCUMENTS_ONLY"],
@@ -2370,11 +2061,7 @@
       },
       "checkedAt": "2026-10-09T13:13:24.289Z",
       "command": "pnpm test:review:browser",
-      "environment": {
-        "node": "v24.21.0",
-        "os": "linux-x64",
-        "pnpm": "11.11.0"
-      },
+      "environment": { "node": "v24.21.0", "os": "linux-x64", "pnpm": "11.11.0" },
       "evidenceClass": "virtual_authenticator",
       "outcome": "pass",
       "reasonCodes": ["AUTHENTICATOR_MODE_VIRTUAL", "SYNTHETIC_DOCUMENTS_ONLY"],
@@ -2398,11 +2085,7 @@
       },
       "checkedAt": "2026-10-09T13:13:46.954Z",
       "command": "pnpm test:vault:browser",
-      "environment": {
-        "node": "v24.21.0",
-        "os": "linux-x64",
-        "pnpm": "11.11.0"
-      },
+      "environment": { "node": "v24.21.0", "os": "linux-x64", "pnpm": "11.11.0" },
       "evidenceClass": "virtual_authenticator",
       "outcome": "pass",
       "reasonCodes": ["AUTHENTICATOR_MODE_VIRTUAL", "PASSKEY_STEP_REQUIRES_REAL_DEVICE_EVIDENCE"],
@@ -2427,11 +2110,7 @@
       },
       "checkedAt": "2026-10-09T13:14:03.550Z",
       "command": "pnpm test:account:browser",
-      "environment": {
-        "node": "v24.21.0",
-        "os": "linux-x64",
-        "pnpm": "11.11.0"
-      },
+      "environment": { "node": "v24.21.0", "os": "linux-x64", "pnpm": "11.11.0" },
       "evidenceClass": "virtual_authenticator",
       "outcome": "pass",
       "reasonCodes": ["AUTHENTICATOR_MODE_VIRTUAL", "PASSKEY_STEP_REQUIRES_REAL_DEVICE_EVIDENCE"],
@@ -2457,11 +2136,7 @@
       },
       "checkedAt": "2026-10-09T23:58:45.829Z",
       "command": "pnpm test:account:browser",
-      "environment": {
-        "node": "v24.21.0",
-        "os": "linux-x64",
-        "pnpm": "11.11.0"
-      },
+      "environment": { "node": "v24.21.0", "os": "linux-x64", "pnpm": "11.11.0" },
       "evidenceClass": "virtual_authenticator",
       "outcome": "pass",
       "reasonCodes": ["AUTHENTICATOR_MODE_VIRTUAL", "PASSKEY_STEP_REQUIRES_REAL_DEVICE_EVIDENCE"],
@@ -2476,6 +2151,290 @@
         "authenticatorMode": "virtual",
         "realDeviceEvidence": false
       }
+    },
+    {
+      "id": "mera-device-20261010000926",
+      "subject": "mera-real-device-check",
+      "sourceRevision": {
+        "commit": "7fe906032c40a01b155716b9748cb60c8ad25bed",
+        "dirtyWorktree": false,
+        "contentFingerprint": "ed49ca7ed7147fd162cb831fe6582d4c5f63268d352ada90383686d403c88e08"
+      },
+      "checkedAt": "2026-10-10T00:09:26.898Z",
+      "command": "manual: real passkey on real hardware, reported by the operator",
+      "environment": { "node": "v24.21.0", "os": "linux-x64", "pnpm": "11.11.0" },
+      "evidenceClass": "real_device",
+      "outcome": "pass",
+      "reasonCodes": ["OPERATOR_REPORTED", "SECOND_DEVICE_NOT_SHOWN"],
+      "evidenceRefs": [],
+      "facts": {
+        "address": "0x7e03648ff57557d9c0eddb786c6f840d29452cc1",
+        "browser": "Chrome (version not noted)",
+        "os": "Linux desktop",
+        "authenticator": "phone passkey via QR code (hybrid)",
+        "observedPromptsAtCreate": "unknown",
+        "createSeconds": "unknown",
+        "signedIn": true,
+        "lockedThenFresh": true,
+        "recoveredAfterClear": true,
+        "secondDeviceRecovery": "not-available"
+      }
+    },
+    {
+      "id": "rd-20261010000939-3b32a6-check-typecheck",
+      "subject": "check-typecheck",
+      "sourceRevision": {
+        "commit": "7fe906032c40a01b155716b9748cb60c8ad25bed",
+        "dirtyWorktree": true,
+        "contentFingerprint": "ed49ca7ed7147fd162cb831fe6582d4c5f63268d352ada90383686d403c88e08"
+      },
+      "checkedAt": "2026-10-10T00:09:39.327Z",
+      "command": "pnpm readiness",
+      "environment": { "node": "v24.21.0", "os": "linux-x64", "pnpm": "11.11.0" },
+      "evidenceClass": "local_scripted",
+      "outcome": "pass",
+      "reasonCodes": [],
+      "evidenceRefs": []
+    },
+    {
+      "id": "rd-20261010000939-3b32a6-check-unit-tests",
+      "subject": "check-unit-tests",
+      "sourceRevision": {
+        "commit": "7fe906032c40a01b155716b9748cb60c8ad25bed",
+        "dirtyWorktree": true,
+        "contentFingerprint": "ed49ca7ed7147fd162cb831fe6582d4c5f63268d352ada90383686d403c88e08"
+      },
+      "checkedAt": "2026-10-10T00:09:39.327Z",
+      "command": "pnpm readiness",
+      "environment": { "node": "v24.21.0", "os": "linux-x64", "pnpm": "11.11.0" },
+      "evidenceClass": "local_scripted",
+      "outcome": "fail",
+      "reasonCodes": ["EXIT_1"],
+      "evidenceRefs": []
+    },
+    {
+      "id": "rd-20261010000939-3b32a6-check-forge-test",
+      "subject": "check-forge-test",
+      "sourceRevision": {
+        "commit": "7fe906032c40a01b155716b9748cb60c8ad25bed",
+        "dirtyWorktree": true,
+        "contentFingerprint": "ed49ca7ed7147fd162cb831fe6582d4c5f63268d352ada90383686d403c88e08"
+      },
+      "checkedAt": "2026-10-10T00:09:39.327Z",
+      "command": "pnpm readiness",
+      "environment": { "node": "v24.21.0", "os": "linux-x64", "pnpm": "11.11.0" },
+      "evidenceClass": "local_scripted",
+      "outcome": "pass",
+      "reasonCodes": [],
+      "evidenceRefs": []
+    },
+    {
+      "id": "rd-20261010000939-3b32a6-check-secret-scan",
+      "subject": "check-secret-scan",
+      "sourceRevision": {
+        "commit": "7fe906032c40a01b155716b9748cb60c8ad25bed",
+        "dirtyWorktree": true,
+        "contentFingerprint": "ed49ca7ed7147fd162cb831fe6582d4c5f63268d352ada90383686d403c88e08"
+      },
+      "checkedAt": "2026-10-10T00:09:39.327Z",
+      "command": "pnpm readiness",
+      "environment": { "node": "v24.21.0", "os": "linux-x64", "pnpm": "11.11.0" },
+      "evidenceClass": "local_scripted",
+      "outcome": "fail",
+      "reasonCodes": ["EXIT_1"],
+      "evidenceRefs": []
+    },
+    {
+      "id": "rd-20261010000939-3b32a6-check-protected-baselines",
+      "subject": "check-protected-baselines",
+      "sourceRevision": {
+        "commit": "7fe906032c40a01b155716b9748cb60c8ad25bed",
+        "dirtyWorktree": true,
+        "contentFingerprint": "ed49ca7ed7147fd162cb831fe6582d4c5f63268d352ada90383686d403c88e08"
+      },
+      "checkedAt": "2026-10-10T00:09:39.327Z",
+      "command": "pnpm readiness",
+      "environment": { "node": "v24.21.0", "os": "linux-x64", "pnpm": "11.11.0" },
+      "evidenceClass": "local_scripted",
+      "outcome": "pass",
+      "reasonCodes": [],
+      "evidenceRefs": []
+    },
+    {
+      "id": "rd-20261010000939-3b32a6-check-build",
+      "subject": "check-build",
+      "sourceRevision": {
+        "commit": "7fe906032c40a01b155716b9748cb60c8ad25bed",
+        "dirtyWorktree": true,
+        "contentFingerprint": "ed49ca7ed7147fd162cb831fe6582d4c5f63268d352ada90383686d403c88e08"
+      },
+      "checkedAt": "2026-10-10T00:09:39.327Z",
+      "command": "pnpm readiness",
+      "environment": { "node": "v24.21.0", "os": "linux-x64", "pnpm": "11.11.0" },
+      "evidenceClass": "local_scripted",
+      "outcome": "pass",
+      "reasonCodes": [],
+      "evidenceRefs": []
+    },
+    {
+      "id": "rd-20261010000939-3b32a6-check-exclusion",
+      "subject": "check-exclusion",
+      "sourceRevision": {
+        "commit": "7fe906032c40a01b155716b9748cb60c8ad25bed",
+        "dirtyWorktree": true,
+        "contentFingerprint": "ed49ca7ed7147fd162cb831fe6582d4c5f63268d352ada90383686d403c88e08"
+      },
+      "checkedAt": "2026-10-10T00:09:39.327Z",
+      "command": "pnpm readiness",
+      "environment": { "node": "v24.21.0", "os": "linux-x64", "pnpm": "11.11.0" },
+      "evidenceClass": "local_scripted",
+      "outcome": "pass",
+      "reasonCodes": [],
+      "evidenceRefs": []
+    },
+    {
+      "id": "rd-20261010000939-3b32a6-chapters-1-3-checks",
+      "subject": "chapters-1-3-checks",
+      "sourceRevision": {
+        "commit": "7fe906032c40a01b155716b9748cb60c8ad25bed",
+        "dirtyWorktree": true,
+        "contentFingerprint": "ed49ca7ed7147fd162cb831fe6582d4c5f63268d352ada90383686d403c88e08"
+      },
+      "checkedAt": "2026-10-10T00:09:39.327Z",
+      "command": "pnpm readiness",
+      "environment": { "node": "v24.21.0", "os": "linux-x64", "pnpm": "11.11.0" },
+      "evidenceClass": "local_scripted",
+      "outcome": "fail",
+      "reasonCodes": ["CHECKS_NOT_ALL_PASSED"],
+      "evidenceRefs": []
+    },
+    {
+      "id": "rd-20261010001015-7a19af-check-typecheck",
+      "subject": "check-typecheck",
+      "sourceRevision": {
+        "commit": "7fe906032c40a01b155716b9748cb60c8ad25bed",
+        "dirtyWorktree": true,
+        "contentFingerprint": "ed49ca7ed7147fd162cb831fe6582d4c5f63268d352ada90383686d403c88e08"
+      },
+      "checkedAt": "2026-10-10T00:10:15.770Z",
+      "command": "pnpm readiness",
+      "environment": { "node": "v24.21.0", "os": "linux-x64", "pnpm": "11.11.0" },
+      "evidenceClass": "local_scripted",
+      "outcome": "pass",
+      "reasonCodes": [],
+      "evidenceRefs": []
+    },
+    {
+      "id": "rd-20261010001015-7a19af-check-unit-tests",
+      "subject": "check-unit-tests",
+      "sourceRevision": {
+        "commit": "7fe906032c40a01b155716b9748cb60c8ad25bed",
+        "dirtyWorktree": true,
+        "contentFingerprint": "ed49ca7ed7147fd162cb831fe6582d4c5f63268d352ada90383686d403c88e08"
+      },
+      "checkedAt": "2026-10-10T00:10:15.770Z",
+      "command": "pnpm readiness",
+      "environment": { "node": "v24.21.0", "os": "linux-x64", "pnpm": "11.11.0" },
+      "evidenceClass": "local_scripted",
+      "outcome": "fail",
+      "reasonCodes": ["EXIT_1"],
+      "evidenceRefs": []
+    },
+    {
+      "id": "rd-20261010001015-7a19af-check-forge-test",
+      "subject": "check-forge-test",
+      "sourceRevision": {
+        "commit": "7fe906032c40a01b155716b9748cb60c8ad25bed",
+        "dirtyWorktree": true,
+        "contentFingerprint": "ed49ca7ed7147fd162cb831fe6582d4c5f63268d352ada90383686d403c88e08"
+      },
+      "checkedAt": "2026-10-10T00:10:15.770Z",
+      "command": "pnpm readiness",
+      "environment": { "node": "v24.21.0", "os": "linux-x64", "pnpm": "11.11.0" },
+      "evidenceClass": "local_scripted",
+      "outcome": "pass",
+      "reasonCodes": [],
+      "evidenceRefs": []
+    },
+    {
+      "id": "rd-20261010001015-7a19af-check-secret-scan",
+      "subject": "check-secret-scan",
+      "sourceRevision": {
+        "commit": "7fe906032c40a01b155716b9748cb60c8ad25bed",
+        "dirtyWorktree": true,
+        "contentFingerprint": "ed49ca7ed7147fd162cb831fe6582d4c5f63268d352ada90383686d403c88e08"
+      },
+      "checkedAt": "2026-10-10T00:10:15.770Z",
+      "command": "pnpm readiness",
+      "environment": { "node": "v24.21.0", "os": "linux-x64", "pnpm": "11.11.0" },
+      "evidenceClass": "local_scripted",
+      "outcome": "fail",
+      "reasonCodes": ["EXIT_1"],
+      "evidenceRefs": []
+    },
+    {
+      "id": "rd-20261010001015-7a19af-check-protected-baselines",
+      "subject": "check-protected-baselines",
+      "sourceRevision": {
+        "commit": "7fe906032c40a01b155716b9748cb60c8ad25bed",
+        "dirtyWorktree": true,
+        "contentFingerprint": "ed49ca7ed7147fd162cb831fe6582d4c5f63268d352ada90383686d403c88e08"
+      },
+      "checkedAt": "2026-10-10T00:10:15.770Z",
+      "command": "pnpm readiness",
+      "environment": { "node": "v24.21.0", "os": "linux-x64", "pnpm": "11.11.0" },
+      "evidenceClass": "local_scripted",
+      "outcome": "pass",
+      "reasonCodes": [],
+      "evidenceRefs": []
+    },
+    {
+      "id": "rd-20261010001015-7a19af-check-build",
+      "subject": "check-build",
+      "sourceRevision": {
+        "commit": "7fe906032c40a01b155716b9748cb60c8ad25bed",
+        "dirtyWorktree": true,
+        "contentFingerprint": "ed49ca7ed7147fd162cb831fe6582d4c5f63268d352ada90383686d403c88e08"
+      },
+      "checkedAt": "2026-10-10T00:10:15.770Z",
+      "command": "pnpm readiness",
+      "environment": { "node": "v24.21.0", "os": "linux-x64", "pnpm": "11.11.0" },
+      "evidenceClass": "local_scripted",
+      "outcome": "pass",
+      "reasonCodes": [],
+      "evidenceRefs": []
+    },
+    {
+      "id": "rd-20261010001015-7a19af-check-exclusion",
+      "subject": "check-exclusion",
+      "sourceRevision": {
+        "commit": "7fe906032c40a01b155716b9748cb60c8ad25bed",
+        "dirtyWorktree": true,
+        "contentFingerprint": "ed49ca7ed7147fd162cb831fe6582d4c5f63268d352ada90383686d403c88e08"
+      },
+      "checkedAt": "2026-10-10T00:10:15.770Z",
+      "command": "pnpm readiness",
+      "environment": { "node": "v24.21.0", "os": "linux-x64", "pnpm": "11.11.0" },
+      "evidenceClass": "local_scripted",
+      "outcome": "pass",
+      "reasonCodes": [],
+      "evidenceRefs": []
+    },
+    {
+      "id": "rd-20261010001015-7a19af-chapters-1-3-checks",
+      "subject": "chapters-1-3-checks",
+      "sourceRevision": {
+        "commit": "7fe906032c40a01b155716b9748cb60c8ad25bed",
+        "dirtyWorktree": true,
+        "contentFingerprint": "ed49ca7ed7147fd162cb831fe6582d4c5f63268d352ada90383686d403c88e08"
+      },
+      "checkedAt": "2026-10-10T00:10:15.770Z",
+      "command": "pnpm readiness",
+      "environment": { "node": "v24.21.0", "os": "linux-x64", "pnpm": "11.11.0" },
+      "evidenceClass": "local_scripted",
+      "outcome": "fail",
+      "reasonCodes": ["CHECKS_NOT_ALL_PASSED"],
+      "evidenceRefs": []
     }
   ],
   "appliedCuts": [],
@@ -2503,7 +2462,7 @@
             "id": "A1",
             "label": "Chapters 1–3 build and tests pass",
             "state": "failed",
-            "resultId": "rd-20261009093839-55e75b-chapters-1-3-checks"
+            "resultId": "rd-20261010001015-7a19af-chapters-1-3-checks"
           },
           {
             "id": "A2",
@@ -2513,7 +2472,7 @@
           }
         ],
         "reasons": ["FAILED:A1", "MISSING:A2"],
-        "observedAt": "2026-10-09T09:38:39.057Z"
+        "observedAt": "2026-10-10T00:10:15.770Z"
       },
       {
         "gate": "B",
@@ -2568,36 +2527,11 @@
         "target": "2026-10-11T23:59:59+01:00",
         "outcome": "unknown",
         "requirements": [
-          {
-            "id": "D1",
-            "label": "Feature freeze recorded",
-            "state": "missing",
-            "resultId": null
-          },
-          {
-            "id": "D2",
-            "label": "Verifier passes",
-            "state": "missing",
-            "resultId": null
-          },
-          {
-            "id": "D3",
-            "label": "SDK passes",
-            "state": "missing",
-            "resultId": null
-          },
-          {
-            "id": "D4",
-            "label": "CLI passes",
-            "state": "missing",
-            "resultId": null
-          },
-          {
-            "id": "D5",
-            "label": "Judge path passes",
-            "state": "missing",
-            "resultId": null
-          },
+          { "id": "D1", "label": "Feature freeze recorded", "state": "missing", "resultId": null },
+          { "id": "D2", "label": "Verifier passes", "state": "missing", "resultId": null },
+          { "id": "D3", "label": "SDK passes", "state": "missing", "resultId": null },
+          { "id": "D4", "label": "CLI passes", "state": "missing", "resultId": null },
+          { "id": "D5", "label": "Judge path passes", "state": "missing", "resultId": null },
           {
             "id": "D6",
             "label": "Anonymously accessible public repository",
@@ -2623,7 +2557,7 @@
         "HOSTED_T0_INCOMPLETE: dropping the bounties does not complete the hosted golden path"
       ]
     },
-    "evaluatedAt": "2026-10-09T09:38:39.057Z"
+    "evaluatedAt": "2026-10-10T00:10:15.770Z"
   },
   "cutLadder": {
     "order": [
@@ -2651,65 +2585,23 @@
       "authorisation-checks",
       "envio-pipeline"
     ],
-    "fixtureTargets": {
-      "required": 8,
-      "stretch": 12
-    }
+    "fixtureTargets": { "required": 8, "stretch": 12 }
   },
   "readiness": {
-    "runId": "rd-20261009093839-55e75b",
-    "generatedAt": "2026-10-09T09:38:39.057Z",
+    "runId": "rd-20261010001015-7a19af",
+    "generatedAt": "2026-10-10T00:10:15.770Z",
     "live": false,
-    "fingerprint": "c2a0483a2346441383faa7a6c01e5932f79a17c148712949249e26b82ec0f0a2",
-    "totalMs": 22134,
-    "versions": {
-      "node": "v24.21.0",
-      "pnpm": "11.11.0",
-      "forge": "1.8.5"
-    },
+    "fingerprint": "ed49ca7ed7147fd162cb831fe6582d4c5f63268d352ada90383686d403c88e08",
+    "totalMs": 22561,
+    "versions": { "node": "v24.21.0", "pnpm": "11.11.0", "forge": "1.8.5" },
     "checks": [
-      {
-        "id": "typecheck",
-        "outcome": "pass",
-        "reason": "OK",
-        "durationMs": 12569
-      },
-      {
-        "id": "unit-tests",
-        "outcome": "fail",
-        "reason": "EXIT_1",
-        "durationMs": 6201
-      },
-      {
-        "id": "forge-test",
-        "outcome": "pass",
-        "reason": "OK",
-        "durationMs": 18479
-      },
-      {
-        "id": "secret-scan",
-        "outcome": "fail",
-        "reason": "EXIT_1",
-        "durationMs": 1216
-      },
-      {
-        "id": "protected-baselines",
-        "outcome": "fail",
-        "reason": "EXIT_1",
-        "durationMs": 563
-      },
-      {
-        "id": "build",
-        "outcome": "pass",
-        "reason": "OK",
-        "durationMs": 4476
-      },
-      {
-        "id": "exclusion",
-        "outcome": "pass",
-        "reason": "OK",
-        "durationMs": 640
-      }
+      { "id": "typecheck", "outcome": "pass", "reason": "OK", "durationMs": 14318 },
+      { "id": "unit-tests", "outcome": "fail", "reason": "EXIT_1", "durationMs": 6995 },
+      { "id": "forge-test", "outcome": "pass", "reason": "OK", "durationMs": 19473 },
+      { "id": "secret-scan", "outcome": "fail", "reason": "EXIT_1", "durationMs": 731 },
+      { "id": "protected-baselines", "outcome": "pass", "reason": "OK", "durationMs": 542 },
+      { "id": "build", "outcome": "pass", "reason": "OK", "durationMs": 4564 },
+      { "id": "exclusion", "outcome": "pass", "reason": "OK", "durationMs": 709 }
     ]
   },
   "cutLadderChecks": {
@@ -2883,10 +2775,7 @@
         "outcome": "fail",
         "notes": "All seven local checks passed in about 20 s of a 110 s budget; exit is nonzero because Gate A is overdue with no recorded Monad testnet deployment."
       },
-      "unitTests": {
-        "command": "pnpm test",
-        "outcome": "pass"
-      },
+      "unitTests": { "command": "pnpm test", "outcome": "pass" },
       "productionExclusion": {
         "command": "pnpm exclusion:check",
         "outcome": "pass",
@@ -2938,8 +2827,8 @@
   },
   "chapter04": {
     "startedOn": "2026-10-08",
-    "state": "in-progress",
-    "note": "Built and verified locally, with a virtual authenticator and real PostgreSQL. Real-device passkey checks have not been performed, so the chapter is not complete and nothing here is Gate B evidence.",
+    "state": "complete",
+    "note": "Built and verified locally and on a real device. A person completed account creation, sign-in, lock and fresh unlock, and recovery of the same address after clearing storage, using a phone passkey over QR on desktop Chrome (result mera-device-20261010000926, real_device). Prompt count and elapsed time at create were not observed and are recorded as unknown; second-device recovery was not available and is not shown. This is not Gate B evidence: no transaction or exact-action signature on Monad was involved.",
     "resolvedDependencies": {
       "@category-labs/mera": "0.2.0 (preview; not independently audited; engines node >=24; exact pin)",
       "@scure/bip32": "2.4.0",
@@ -3026,8 +2915,11 @@
         "notes": "The production gate refuses every preview and confirmation (UNAVAILABLE). No flag, request or environment variable opens it; tests open an explicit injected test gate."
       },
       "realDevicePasskey": {
-        "outcome": "unverified",
-        "notes": "Not performed: needs a person with a real authenticator. Steps: create; sign in without a second unlock; lock then fresh ceremony; clear storage and recover the same address; second device where available. Record with pnpm account:record-device-check."
+        "command": "pnpm account:record-device-check",
+        "outcome": "pass",
+        "evidenceClass": "real_device",
+        "resultId": "mera-device-20261010000926",
+        "notes": "Operator-reported: sign-in without a second unlock, lock then fresh ceremony, and recovery of 0x7e03648f…2cc1 from the same existing passkey after clearing storage. Not shown: prompt count and seconds at create (unknown), second-device recovery (not available), browser version."
       },
       "ci": {
         "outcome": "unverified",
@@ -3057,7 +2949,9 @@
       "A passkey made for one rpId does not recover on another: localhost credentials are separate from any deployed domain, and a preview domain's credentials will not recover on the final domain.",
       "No account rotation, administrator recovery or private-key export exists. Losing the passkey loses the account; a future evidence export does not restore a signing identity.",
       "SIWE proves control of the address. It does not attest a biometric, a passkey provider or a professional identity.",
-      "Mera 0.2.0 is a preview dependency and has not been independently audited by this project."
+      "Mera 0.2.0 is a preview dependency and has not been independently audited by this project.",
+      "One-prompt onboarding is not shown: the prompt count at create was not observed on the real device.",
+      "Synced cross-device recovery is not shown: no second device was available."
     ],
     "handoffToChapter5": [
       "Public identity: AccountSnapshot.account (address, verifiedThisSession) via @/features/account/public.",
@@ -3066,7 +2960,8 @@
       "Ownership: requireAccountSession(request) in apps/web/src/server/auth/session.ts; never trust an address in a request.",
       "Cleanup: SessionController.onLock(listener) fires on Lock, Sign out, expiry, account switch, page hide and other-tab invalidation.",
       "Recovery: same passkey and rpId reproduce the address with empty storage (shown with a virtual authenticator; real-device evidence pending)."
-    ]
+    ],
+    "completedOn": "2026-10-10"
   },
   "chapter05": {
     "startedOn": "2026-10-08",
@@ -3204,10 +3099,7 @@
       "monitor": "Poll every 2 s with backoff to 10 s, unresolved after 120 s; confirmed only for a matching, canonical block covered by the checkpoint and the exact registry events."
     },
     "checks": {
-      "lint": {
-        "command": "pnpm lint && pnpm format:check && pnpm typecheck",
-        "outcome": "pass"
-      },
+      "lint": { "command": "pnpm lint && pnpm format:check && pnpm typecheck", "outcome": "pass" },
       "unit": {
         "command": "pnpm test",
         "outcome": "pass",
@@ -3331,10 +3223,7 @@
         "evidenceClass": "local_scripted",
         "notes": "854 of 854. New: 30 fixture-driven pipeline tests on real PDFs, 8 extraction tests, 10 worker-lifecycle tests (deadline termination, Cancel, stale generation, one job at a time, crash), 9 controller tests on the real vault and account controllers, 3 flag-gating tests. Exact pence: 24,000 minus 22,000 is 200,000 pence; one penny is not hidden; values above 2^53 stay exact."
       },
-      "fixtures": {
-        "command": "pnpm fixtures:check",
-        "outcome": "pass"
-      },
+      "fixtures": { "command": "pnpm fixtures:check", "outcome": "pass" },
       "browser": {
         "command": "pnpm test:review:browser",
         "outcome": "pass",
