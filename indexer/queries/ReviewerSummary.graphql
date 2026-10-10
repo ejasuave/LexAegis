@@ -1,0 +1,3 @@
+query ReviewerSummary($id: String!) {
+  ReviewerSummary_by_pk(id: $id) { id reviewer nextNonce totalReceipts activeReceipts revokedReceipts supersededReceipts actionCount }
+}

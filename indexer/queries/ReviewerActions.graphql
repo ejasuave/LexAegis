@@ -1,0 +1,7 @@
+query ReviewerActions($reviewer: String!, $upper: numeric!, $limit: Int!) {
+  IndexedAction(
+    where: { reviewer: { _eq: $reviewer }, consumedNonce: { _lte: $upper } }
+    order_by: { consumedNonce: desc }
+    limit: $limit
+  ) { id reviewer kind consumedNonce nextNonce commitment relatedCommitment transactionHash executor blockNumber blockHash timestamp firstEventId lastEventId firstLogIndex lastLogIndex eventCount }
+}

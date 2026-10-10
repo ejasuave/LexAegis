@@ -1,0 +1,3 @@
+query ActionAnchors($ids: [String!]!) {
+  IndexedAction(where: { id: { _in: $ids } }, limit: 2) { id reviewer kind consumedNonce nextNonce commitment relatedCommitment transactionHash executor blockNumber blockHash timestamp firstEventId lastEventId firstLogIndex lastLogIndex eventCount }
+}

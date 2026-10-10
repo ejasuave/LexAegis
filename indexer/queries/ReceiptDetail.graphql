@@ -1,0 +1,3 @@
+query ReceiptDetail($id: String!) {
+  IndexedReceipt_by_pk(id: $id) { id reviewer commitment status predecessor successor issuedAt updatedAt issuingActionId latestActionId }
+}

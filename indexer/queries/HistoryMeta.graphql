@@ -1,0 +1,4 @@
+query HistoryMeta {
+  _meta { chainId startBlock progressBlock sourceBlock isReady eventsProcessed }
+  RegistryState(limit: 2) { id chainId genesisHash registryAddress configFingerprint generation projectionVersion startBlock rawEventCount actionCount pendingSupersessions lastEventId lastEventBlockNumber lastEventBlockHash lastEventLogIndex }
+}
