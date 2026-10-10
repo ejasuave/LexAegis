@@ -10,9 +10,10 @@
     "codegen": "pnpm config:generate && envio codegen",
     "typecheck": "tsc --noEmit -p tsconfig.json",
     "test": "vitest run --config vitest.config.ts",
-    "dev": "pnpm config:generate && envio dev",
-    "start": "pnpm config:check && envio start",
-    "rebuild": "tsx scripts/rebuild.ts"
+    "dev": "pnpm config:generate && tsx scripts/run.ts dev",
+    "start": "pnpm config:check && tsx scripts/verify-binding.ts && tsx scripts/run.ts start",
+    "rebuild": "tsx scripts/rebuild.ts",
+    "verify:binding": "tsx scripts/verify-binding.ts"
   },
   "dependencies": {
     "envio": "3.13.0"
@@ -20,6 +21,7 @@
   "devDependencies": {
     "@lexaegis/sdk": "workspace:*",
     "viem": "2.57.3",
-    "zod": "4.6.5"
+    "zod": "4.6.5",
+    "tsx": "4.23.15"
   }
 }
