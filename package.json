@@ -52,7 +52,8 @@
     "test:review:browser": "tsx tooling/scripts/review-browser-check.ts",
     "agent:prompts:generate": "pnpm --filter @lexaegis/agent prompts:generate",
     "agent:prompts:check": "pnpm --filter @lexaegis/agent prompts:check",
-    "test:assistant:browser": "tsx tooling/scripts/assistant-browser-check.ts"
+    "test:assistant:browser": "tsx tooling/scripts/assistant-browser-check.ts",
+    "qwen:smoke": "pnpm --filter @lexaegis/web smoke:qwen"
   },
   "devDependencies": {
     "@eslint/js": "10.0.1",

@@ -4024,6 +4024,15 @@
           "tooling/src/exclusion.ts and tooling/scripts/exclusion-scan.ts (test-only agent modules added to the production exclusion rules)",
           ".github/workflows/ci.yml"
         ]
+      },
+      "15": {
+        "status": "complete",
+        "summary": "Live smoke command written and exercised as a program against the loopback scripted provider. The live run itself was not executed: QWEN_API_KEY and QWEN_BASE_URL are not set, so the command recorded a blocked result.",
+        "files": [
+          "apps/web/scripts/{qwen-smoke,qwen-smoke-core}.ts",
+          "apps/web/src/server/assistant/qwen-smoke.test.ts",
+          "docs/evidence/chapter09-qwen-smoke-2026-10-10.json"
+        ]
       }
     },
     "contracts": {
@@ -4153,6 +4162,21 @@
       "cancellation": "cancel before dispatch, during a provider wait, from another replica through the shared store, simultaneously with completion (PostgreSQL, eight rounds), on disconnect, on session loss, on lease loss (interrupted) and after a simulated restart (interrupted, no resume, repeated admission returns no stream); one terminal event in every case and no dispatch after an acknowledged stop",
       "stream": "frames split at every byte boundary, heartbeat comments, duplicates, wrong snapshot or generation, gaps, malformed and forged events, a lost stream",
       "notCovered": "Firefox and WebKit; a real screen reader; hosting-level response buffering; the briefing control in the interface (flag off; matterBriefing readiness is unchanged and stays for Chapter 10)"
+    },
+    "smoke": {
+      "command": "pnpm qwen:smoke (apps/web/scripts/qwen-smoke.ts; loads the repository .env if present; not in CI or page startup)",
+      "location": "apps/web/scripts rather than tooling/scripts, because tooling may not import packages",
+      "steps": "capability checks for the exact endpoint, model and output mode (three completions; a passing record is stored by fingerprint when DATABASE_URL is set); one briefing run over fixtures/documents-v1/pdfs/discrepancy-2000.pdf in which the model must itself request at least two read-only tools; one run cancelled during a provider wait",
+      "assertions": "run_completed_with_validated_output, model_requested_two_read_only_tools, answer_cites_resolvable_sources, payment_discrepancy_or_evidence_gap_from_code, scope_limitations_stated, user_input_requirement, cancellation_acknowledged",
+      "evidenceFile": "docs/evidence/chapter09-qwen-smoke-<date>.json with evidenceKind live, scripted or blocked; requested and returned model, provider request IDs, function names and code results, output mode, usage or unknown, prompt and schema digests; no credential, endpoint URL or workspace identifier",
+      "observed": {
+        "ranOn": "2026-10-10",
+        "outcome": "blocked",
+        "reason": "QWEN_NOT_CONFIGURED",
+        "providerCalls": 0,
+        "exitStatus": 2
+      },
+      "notClaimed": "No live Qwen call has been made by this project. No article is published, no bounty is claimed, and nothing here shows production reliability or real users."
     }
   }
 }

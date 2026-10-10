@@ -12,6 +12,7 @@
   "include": [
     "next-env.d.ts",
     "src",
+    "scripts",
     "vitest.config.ts",
     "vitest.db.config.ts",
     "next.config.ts",

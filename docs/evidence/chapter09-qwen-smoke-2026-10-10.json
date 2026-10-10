@@ -1,0 +1,13 @@
+{
+  "schema": "lexaegis.qwen-smoke.v1",
+  "evidenceKind": "blocked",
+  "executedAt": "2026-10-10T02:13:13.112Z",
+  "command": "pnpm qwen:smoke",
+  "outcome": "blocked",
+  "reasons": [
+    "QWEN_NOT_CONFIGURED"
+  ],
+  "detail": "QWEN_API_KEY and QWEN_BASE_URL are required for a live check.",
+  "providerCalls": 0,
+  "note": "No provider was called. This is not a pass, a mocked result or live evidence."
+}

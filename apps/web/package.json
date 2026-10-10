@@ -10,7 +10,8 @@
     "typecheck": "tsc --noEmit -p tsconfig.json",
     "test:db": "vitest run --config vitest.db.config.ts",
     "predev": "node scripts/copy-pdfjs-assets.mjs",
-    "prebuild": "node scripts/copy-pdfjs-assets.mjs"
+    "prebuild": "node scripts/copy-pdfjs-assets.mjs",
+    "smoke:qwen": "tsx --conditions=react-server --env-file-if-exists=../../.env scripts/qwen-smoke.ts"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "3.1148.0",

@@ -135,6 +135,17 @@ export async function startScriptedQwenServer(): Promise<ScriptedQwenServer> {
     const user = messages.find((message) => message.role === 'user')?.content ?? '';
     const asked = between(user, 'REQUEST\n', ['\n\nGive the', '\n\nReturn the']).trim();
 
+    // The synthetic capability checks: a native tool call, and a request held open until aborted.
+    if (system.startsWith('Capability check')) {
+      callTool(response, body.tools?.[0]?.function.name ?? 'get_status', { scope: 'matter' });
+      return;
+    }
+    if (user.startsWith('Count slowly')) {
+      const timer = setTimeout(() => reply(response, { content: 'one' }), 30_000);
+      response.on('close', () => clearTimeout(timer));
+      return;
+    }
+
     // The single routing completion: the utterance only.
     if (system.startsWith('Classify the reviewer')) {
       const intent = /clause|passage|mean/i.test(asked) ? 'explain' : 'clarify';
