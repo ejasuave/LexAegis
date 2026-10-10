@@ -3911,6 +3911,18 @@
           "apps/web/src/server/assistant/{runtime,route-support,sse}.ts",
           "apps/web/src/app/api/readiness/route.ts"
         ]
+      },
+      "11": {
+        "status": "complete",
+        "summary": "Browser assistant controller and runtime client; the command dock, both orb placements, the conversation panel (expanded in Command centre, docked in Review), task steps, result cards, the activity drawer and Explain selection are wired to real run state. Verified so far by controller tests on the real runtime with a scripted provider and by a production build; the browser check is Task 14.",
+        "files": [
+          "apps/web/src/features/assistant/{controller,api-client,sse-reader,public}.ts",
+          "apps/web/src/components/assistant/{assistant-context,ConversationPanel,RunCard,RunActions,DisclosurePreview}.tsx",
+          "apps/web/src/components/shell/{CommandDock,ActivityDrawer}.tsx",
+          "apps/web/src/components/review/{ReviewWorkspace,SourceViewer}.tsx",
+          "apps/web/src/app/layout.tsx",
+          "apps/web/src/test-support/assistant-rig.ts"
+        ]
       }
     },
     "contracts": {
@@ -4007,6 +4019,14 @@
       "stream": "frames are written only when the client reads (backpressure), 40 KiB frame bound, 15-second heartbeat comments that are not progress, contiguous seq as the SSE id, exactly one terminal event; client disconnect cancels the run",
       "logging": "event name, request ID and a code only (assistant.run.started, .rejected, .repeated, .cancel); the logger has no parameter for bodies, headers or prompts; no tracing or error reporter is configured",
       "hosting": "The request stays open for the run (at most 120 s; maxDuration 150). Verified locally on the Node server only. A host that cannot hold a streaming response that long is an integration blocker for Chapter 13; nothing falls back to background work."
+    },
+    "browser": {
+      "routing": "The dock, slash commands, Explain selection and result actions go through one controller. /stop and Stop are handled by code. /status, /check-payments and /missing-evidence (typed or as an equivalent phrase) run on the device with no request. Everything else builds a disclosure preview; only its own Send creates consent and starts a run.",
+      "states": "The orb and the run cards show queued, working, stopping, finished, needs your input, failed, cancelled and interrupted from real events, each with text and an icon; the orb animates only while running or stopping and never under reduced motion (existing CSS).",
+      "streamRules": "Events are schema-validated; duplicates and events for another run, matter, version, snapshot or vault generation are dropped; a sequence gap, a malformed event, a block count mismatch or a stream that ends without a terminal event marks the result incomplete, cancels the run, reads operational status only and asks for a new request.",
+      "clearing": "Lock, account change or matter change clears the conversation, the pending disclosure and the excerpt catalog and abandons the run. A source, fact, evidence or selection revision stops the run, drops a pending disclosure and marks earlier results out of date.",
+      "rendering": "Model text is rendered as plain text by React (no HTML, Markdown or links). Quotations show the stored quote from the browser's own catalog; payment figures and status readings come from the tool result event. Citation buttons reopen the exact passage only if it still resolves against the current verified artifacts.",
+      "notWired": "Voice stays unavailable (Chapter 10). No approval control is enabled by a run."
     }
   }
 }

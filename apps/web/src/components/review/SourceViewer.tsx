@@ -5,6 +5,7 @@ import { FACT_FIELDS, type FactField } from '@lexaegis/agent/contracts';
 import { parseGbpAmount } from '@lexaegis/agent/review';
 import { renderPage } from '@/features/documents/page-renderer';
 import { useReview } from './review-context';
+import { useAssistant } from '@/components/assistant/assistant-context';
 import { btn, field, h2, h3, muted, type Focus } from './styles';
 
 const FIELD_LABEL: Record<FactField, string> = {
@@ -92,6 +93,7 @@ export function SourceViewer({
   onFocus: (focus: Focus) => void;
 }) {
   const { controller, snapshot } = useReview();
+  const { controller: assistant } = useAssistant();
   const usable = snapshot.documents.filter((d) => d.extraction === 'ready' && d.selected);
   const current = focus?.documentVersionId ?? usable[0]?.documentVersionId ?? null;
   const extraction = current === null ? null : (controller?.extraction(current) ?? null);
@@ -130,6 +132,7 @@ export function SourceViewer({
     const sel = window.getSelection();
     if (sel === null || sel.isCollapsed) {
       setSelection(null);
+      assistant?.setSelection(current, []);
       return;
     }
     const locate = (node: Node | null, offset: number) => {
@@ -144,6 +147,12 @@ export function SourceViewer({
     }
     const range = { start: Math.min(a, b), end: Math.max(a, b) };
     setSelection(range);
+    // The selected passage becomes the assistant's selection for /summarise and /explain.
+    const reference =
+      current === null
+        ? null
+        : controller?.createReference({ documentVersionId: current, page, ...range });
+    assistant?.setSelection(current, reference?.ok === true ? [reference.data] : []);
     // Suggest a value from the selection; it is only a suggestion, never applied silently.
     const raw = text.slice(range.start, range.end);
     const parsed = parseGbpAmount(raw.replace(/^[A-Za-z ]+/, ''));
@@ -155,6 +164,21 @@ export function SourceViewer({
     } else {
       setForm((f) => ({ ...f, value: raw.trim().slice(0, 256) }));
     }
+  }
+
+  /** Prepares an explanation request for the selected passage. Nothing is sent from here. */
+  function explain() {
+    if (controller === null || current === null || selection === null) {
+      setMessage('Select the passage in the text first.');
+      return;
+    }
+    const made = controller.createReference({ documentVersionId: current, page, ...selection });
+    if (!made.ok) {
+      setMessage(`That passage cannot be cited (${made.code.toLowerCase().replaceAll('_', ' ')}).`);
+      return;
+    }
+    void assistant?.action('explain', { references: [made.data] });
+    setMessage('See the assistant panel to review what would be sent.');
   }
 
   async function confirm() {
@@ -365,7 +389,13 @@ export function SourceViewer({
         <button type="button" className={btn} onClick={() => void confirm()}>
           Confirm fact
         </button>
-        <button type="button" className={btn} disabled aria-describedby="explain-reason">
+        <button
+          type="button"
+          className={btn}
+          aria-describedby="explain-reason"
+          data-testid="explain-selection"
+          onClick={() => explain()}
+        >
           Explain selection
         </button>
         <button
@@ -378,7 +408,8 @@ export function SourceViewer({
         </button>
       </div>
       <p id="explain-reason" className={muted}>
-        Explain selection is unavailable until the assistant runtime exists.
+        Explain selection prepares a request for the selected text only. You review exactly what
+        would be sent before anything leaves this browser.
       </p>
       <p role="status" aria-live="polite" className="m-0 mt-1 text-[0.875rem]">
         {message} {snapshot.save === 'unsaved' ? 'Unsaved changes.' : null}

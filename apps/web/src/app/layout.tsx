@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from 'next';
 import type { ReactNode } from 'react';
 import { AccountProvider } from '@/components/account/account-context';
+import { AssistantProvider } from '@/components/assistant/assistant-context';
 import { ReviewProvider } from '@/components/review/review-context';
 import { AppShell } from '@/components/shell/AppShell';
 import { FeatureFlagsProvider } from '@/components/shell/feature-flags-context';
@@ -41,7 +42,9 @@ export default function RootLayout({ children }: { children: ReactNode }) {
         <FeatureFlagsProvider flags={getFeatureConfiguration().flags}>
           <AccountProvider config={accountConfig}>
             <ReviewProvider>
-              <AppShell networkLabel={networkLabel(publicConfig)}>{children}</AppShell>
+              <AssistantProvider>
+                <AppShell networkLabel={networkLabel(publicConfig)}>{children}</AppShell>
+              </AssistantProvider>
             </ReviewProvider>
           </AccountProvider>
         </FeatureFlagsProvider>

@@ -1,5 +1,6 @@
 'use client';
 
+import { useAssistant } from '@/components/assistant/assistant-context';
 import { useReview } from '@/components/review/review-context';
 import { useWorkspace } from './workspace-context';
 
@@ -10,7 +11,7 @@ const SECTIONS = [
   },
   {
     title: 'Assistant and tool activity',
-    empty: 'No assistant activity. The assistant is not connected yet.',
+    empty: 'No assistant activity in this session.',
   },
   { title: 'Human decisions', empty: 'No recorded decisions.' },
   {
@@ -34,6 +35,24 @@ export function ActivityDrawer() {
     local.push(`${snapshot.checks.findings.length} findings from the current inputs`);
   if (snapshot.comparison.status === 'running') local.push('Comparing versions');
   if (snapshot.save === 'unsaved') local.push('Unsaved review changes');
+  // Assistant work is listed apart from local processing, human decisions and chain events. A
+  // finished run is none of the others: it confirms, approves and sends nothing.
+  const assistant = useAssistant().snapshot;
+  const runs: string[] = [];
+  for (const item of assistant.conversation) {
+    const run = item.run;
+    if (run === null || run.origin === 'local') continue;
+    const tools = run.tools.map((tool) => tool.toolName.replaceAll('_', ' ')).join(', ');
+    runs.push(
+      `${run.intent?.replaceAll('_', ' ') ?? 'request'}: ${run.state.replaceAll('_', ' ')}${
+        run.complete ? '' : ' (incomplete)'
+      }${tools === '' ? '' : `; tools: ${tools}`}`,
+    );
+  }
+  const lines: Record<string, string[]> = {
+    'Local processing': local,
+    'Assistant and tool activity': runs,
+  };
   return (
     <aside
       id="activity-drawer"
@@ -54,10 +73,10 @@ export function ActivityDrawer() {
       {SECTIONS.map((section) => (
         <section key={section.title} className="mt-4" aria-label={section.title}>
           <h3 className="m-0 text-base font-medium">{section.title}</h3>
-          {section.title === 'Local processing' && local.length > 0 ? (
+          {(lines[section.title]?.length ?? 0) > 0 ? (
             <ul className="m-0 mt-1 list-none p-0 text-[0.875rem] text-lj-secondary">
-              {local.map((line) => (
-                <li key={line}>{line}</li>
+              {(lines[section.title] ?? []).map((line, index) => (
+                <li key={`${index}:${line}`}>{line}</li>
               ))}
             </ul>
           ) : (

@@ -1,6 +1,8 @@
 'use client';
 
 import { AssistantOrb, orbLabel } from '@/components/assistant/AssistantOrb';
+import { useAssistant } from '@/components/assistant/assistant-context';
+import { ConversationPanel } from '@/components/assistant/ConversationPanel';
 import { ReadinessPanel } from '@/components/shell/ReadinessPanel';
 import { useVault } from '@/components/vault/vault-context';
 import { vaultStatusLabel } from '@/components/vault/status';
@@ -100,38 +102,66 @@ function VaultStatusLine() {
   );
 }
 
+/** What the orb means, in words. The graphic never carries meaning by itself. */
+function orbCaption(
+  orb: ReturnType<typeof useAssistant>['snapshot']['orb'],
+  availability: ReturnType<typeof useAssistant>['snapshot']['availability'],
+): string {
+  if (orb !== 'unavailable') return orb === 'queued' ? 'Ready' : orbLabel(orb);
+  if (availability === null) return `${orbLabel('unavailable')}: local checks still work.`;
+  return availability.state === 'not_configured'
+    ? 'Analysis is not configured. Local checks still work.'
+    : availability.state === 'configured_unverified'
+      ? 'The assistant configuration has not been verified.'
+      : orbLabel('unavailable');
+}
+
 function CommandCentre() {
+  const { snapshot } = useAssistant();
+  const vault = useVault();
+  const active = snapshot.conversation.find(
+    (item) => item.run?.id === snapshot.activeRunViewId,
+  )?.run;
   return (
     <div className="flex flex-col items-center text-center">
-      <AssistantOrb state="unavailable" size="expanded" />
-      <p role="status" className="m-0 mt-4 text-lg">
-        Open a matter to begin.
-      </p>
-      <p className="m-0 mt-1 text-[0.875rem] text-lj-secondary">
-        {orbLabel('unavailable')}: no assistant is connected yet.
+      <AssistantOrb state={snapshot.orb} size="expanded" />
+      <p role="status" aria-live="polite" className="m-0 mt-4 text-lg" data-testid="orb-caption">
+        {vault.snapshot.selectedMatterId === null
+          ? 'Open a matter to begin.'
+          : orbCaption(snapshot.orb, snapshot.availability)}
       </p>
       <VaultStatusLine />
       <section aria-label="Task steps" className="mt-6 w-full max-w-xl text-left">
         <h2 className={panelTitle}>Task steps</h2>
-        <p className={muted}>No task is running.</p>
+        {active?.plan == null ? (
+          <p className={muted}>No task is running.</p>
+        ) : (
+          <ol className="m-0 mt-2 list-none p-0 text-[0.875rem]">
+            {active.plan.steps.map((step) => (
+              <li key={step.stepId}>
+                <span className="text-lj-muted">{step.status}: </span>
+                {step.label}
+              </li>
+            ))}
+          </ol>
+        )}
       </section>
       <section aria-label="Conversation" className="mt-6 w-full max-w-xl text-left">
         <h2 className={panelTitle}>Conversation</h2>
-        <p className={muted}>
-          No conversation. Messages cannot be sent until the assistant is available.
-        </p>
+        <ConversationPanel />
       </section>
     </div>
   );
 }
 
 function ReviewView() {
+  const { snapshot } = useAssistant();
   return (
     <div className="grid gap-4 xl:grid-cols-[minmax(0,1fr)_minmax(16rem,20rem)]">
       <section aria-label="Document" className="min-w-0">
         <div className="flex items-center justify-between border-b border-lj-divider pb-2">
           <h2 className={panelTitle}>Document</h2>
-          <AssistantOrb state="unavailable" size="compact" />
+          <AssistantOrb state={snapshot.orb} size="compact" />
         </div>
         <VaultStatusLine />
         <ReviewDocuments />
@@ -141,7 +171,7 @@ function ReviewView() {
         className="min-w-0 border-t border-lj-divider pt-4 xl:border-l xl:border-t-0 xl:pl-4 xl:pt-0"
       >
         <h2 className={panelTitle}>Assistant</h2>
-        <p className={muted}>Unavailable. Use the command dock once the assistant is connected.</p>
+        <ConversationPanel compact />
       </section>
     </div>
   );
