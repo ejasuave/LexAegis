@@ -83,7 +83,7 @@
       "title": "Qwen 3.8 Max, Aegis Assistant Runtime and Review Tools",
       "additive": false,
       "state": "in-progress",
-      "evidence": [],
+      "evidence": ["chapter09.checks"],
       "chapterPromptPath": "build_instructions/prompt_library/LexAegis_Prompt_Library_Chapter_09_Targeted_Build_Tasks_v1_0.md"
     },
     {
@@ -286,7 +286,7 @@
         "id": "qwen-source-linked-findings",
         "tier": "T0",
         "chapter": "09",
-        "status": "not-started",
+        "status": "in-progress",
         "evidence": []
       },
       {
@@ -384,7 +384,7 @@
         "id": "pinned-runtime-prompts",
         "tier": "T1",
         "chapter": "09",
-        "status": "not-started",
+        "status": "in-progress",
         "evidence": []
       },
       {
@@ -547,7 +547,8 @@
     "Stored evidence is encrypted in the browser before upload; the service still observes account addresses, vault and object counts, object sizes and request timing.",
     "Selected plaintext analysis later reaches the backend and Qwen only through the explicit consent flow (Chapters 9 and 10). There is no zero-knowledge AI claim.",
     "Compromised same-origin code can read unlocked data; the CSP and in-memory keys reduce exposure but do not isolate it.",
-    "Recovery needs the original usable credential and rpId and the surviving ciphertext. A replayed older snapshot cannot be detected once all local state is lost, and erasure from storage or backups is not guaranteed. No security audit is claimed."
+    "Recovery needs the original usable credential and rpId and the surviving ciphertext. A replayed older snapshot cannot be detected once all local state is lost, and erasure from storage or backups is not guaranteed. No security audit is claimed.",
+    "An assistant request carries the selected excerpts, the confirmed facts listed in its preview and a digest of the review inputs to the application server in readable form. The server holds them in memory for that run and stores only run identifiers, state and counters. Where the provider processes the text and how long it keeps it are not known to this application."
   ],
   "persistence": {
     "operationalMetadata": "PostgreSQL (vaults, vault_objects, vault_heads, auth tables)",
@@ -2956,6 +2957,473 @@
         "realDeviceEvidence": false,
         "liveProviderEvidence": false
       }
+    },
+    {
+      "id": "assistant-browser-20261010021657",
+      "subject": "assistant-browser-check",
+      "sourceRevision": {
+        "commit": "79e788b15c1d08ddc9c3a29051cc5634b6d3cab7",
+        "dirtyWorktree": true,
+        "contentFingerprint": "25a4108a7bc66349dcb85a934b8ba9e6754f966a9d7406cc490fb59f89383a36"
+      },
+      "checkedAt": "2026-10-10T02:16:57.433Z",
+      "command": "pnpm test:assistant:browser",
+      "environment": {
+        "node": "v24.21.0",
+        "os": "linux-x64",
+        "pnpm": "11.11.0"
+      },
+      "evidenceClass": "virtual_authenticator",
+      "outcome": "pass",
+      "reasonCodes": [
+        "AUTHENTICATOR_MODE_VIRTUAL",
+        "SYNTHETIC_DOCUMENTS_ONLY",
+        "SCRIPTED_PROVIDER_NOT_QWEN"
+      ],
+      "evidenceRefs": [],
+      "facts": {
+        "browser": "chromium 153.0.8010.12",
+        "checksPassed": "59",
+        "checksTotal": "59",
+        "provider": "scripted-test (loopback, no model)",
+        "storage": "postgresql + versitygw",
+        "authenticatorMode": "virtual",
+        "realDeviceEvidence": false,
+        "liveProviderEvidence": false
+      }
+    },
+    {
+      "id": "review-browser-20261010021715",
+      "subject": "review-browser-check",
+      "sourceRevision": {
+        "commit": "79e788b15c1d08ddc9c3a29051cc5634b6d3cab7",
+        "dirtyWorktree": true,
+        "contentFingerprint": "c66299205b27954f693b571f553c8d8f5506b08e8538fe16fa033d11c65c2375"
+      },
+      "checkedAt": "2026-10-10T02:17:15.812Z",
+      "command": "pnpm test:review:browser",
+      "environment": {
+        "node": "v24.21.0",
+        "os": "linux-x64",
+        "pnpm": "11.11.0"
+      },
+      "evidenceClass": "virtual_authenticator",
+      "outcome": "pass",
+      "reasonCodes": ["AUTHENTICATOR_MODE_VIRTUAL", "SYNTHETIC_DOCUMENTS_ONLY"],
+      "evidenceRefs": [],
+      "facts": {
+        "browser": "chromium 153.0.8010.12",
+        "checksPassed": "33",
+        "checksTotal": "33",
+        "storage": "postgresql + versitygw 1.8.0",
+        "authenticatorMode": "virtual",
+        "realDeviceEvidence": false
+      }
+    },
+    {
+      "id": "vault-browser-20261010021738",
+      "subject": "vault-browser-check",
+      "sourceRevision": {
+        "commit": "79e788b15c1d08ddc9c3a29051cc5634b6d3cab7",
+        "dirtyWorktree": true,
+        "contentFingerprint": "3690a0883d4a12d5aa2160d8e8471cb4c94a942bd1ac48a41a740d59694c2aa9"
+      },
+      "checkedAt": "2026-10-10T02:17:38.568Z",
+      "command": "pnpm test:vault:browser",
+      "environment": {
+        "node": "v24.21.0",
+        "os": "linux-x64",
+        "pnpm": "11.11.0"
+      },
+      "evidenceClass": "virtual_authenticator",
+      "outcome": "pass",
+      "reasonCodes": ["AUTHENTICATOR_MODE_VIRTUAL", "PASSKEY_STEP_REQUIRES_REAL_DEVICE_EVIDENCE"],
+      "evidenceRefs": [],
+      "facts": {
+        "browser": "chromium 153.0.8010.12",
+        "checksPassed": "26",
+        "checksTotal": "26",
+        "recoveredAfterClearingStorage": true,
+        "storage": "postgresql + versitygw 1.8.0",
+        "authenticatorMode": "virtual",
+        "realDeviceEvidence": false
+      }
+    },
+    {
+      "id": "account-browser-20261010021752",
+      "subject": "account-browser-check",
+      "sourceRevision": {
+        "commit": "79e788b15c1d08ddc9c3a29051cc5634b6d3cab7",
+        "dirtyWorktree": true,
+        "contentFingerprint": "f300aff6a1b2911492e8141df628cf4e506a4e5bad5572a4e365b938fd7eda9e"
+      },
+      "checkedAt": "2026-10-10T02:17:52.668Z",
+      "command": "pnpm test:account:browser",
+      "environment": {
+        "node": "v24.21.0",
+        "os": "linux-x64",
+        "pnpm": "11.11.0"
+      },
+      "evidenceClass": "virtual_authenticator",
+      "outcome": "pass",
+      "reasonCodes": ["AUTHENTICATOR_MODE_VIRTUAL", "PASSKEY_STEP_REQUIRES_REAL_DEVICE_EVIDENCE"],
+      "evidenceRefs": [],
+      "facts": {
+        "browser": "chromium 153.0.8010.12",
+        "checksPassed": "31",
+        "checksTotal": "31",
+        "addressReproducedAfterClearingStorage": true,
+        "credentialsCreatedDuringCreate": "1",
+        "assertionsDuringCreate": "0",
+        "authenticatorMode": "virtual",
+        "realDeviceEvidence": false
+      }
+    },
+    {
+      "id": "rd-20261010021906-3361c2-check-typecheck",
+      "subject": "check-typecheck",
+      "sourceRevision": {
+        "commit": "79e788b15c1d08ddc9c3a29051cc5634b6d3cab7",
+        "dirtyWorktree": true,
+        "contentFingerprint": "850cbba782671cd1201850ee6e06f68a91ee47bd7e5d97a36e8f801e872a5149"
+      },
+      "checkedAt": "2026-10-10T02:19:06.685Z",
+      "command": "pnpm readiness",
+      "environment": {
+        "node": "v24.21.0",
+        "os": "linux-x64",
+        "pnpm": "11.11.0"
+      },
+      "evidenceClass": "local_scripted",
+      "outcome": "pass",
+      "reasonCodes": [],
+      "evidenceRefs": []
+    },
+    {
+      "id": "rd-20261010021906-3361c2-check-unit-tests",
+      "subject": "check-unit-tests",
+      "sourceRevision": {
+        "commit": "79e788b15c1d08ddc9c3a29051cc5634b6d3cab7",
+        "dirtyWorktree": true,
+        "contentFingerprint": "850cbba782671cd1201850ee6e06f68a91ee47bd7e5d97a36e8f801e872a5149"
+      },
+      "checkedAt": "2026-10-10T02:19:06.685Z",
+      "command": "pnpm readiness",
+      "environment": {
+        "node": "v24.21.0",
+        "os": "linux-x64",
+        "pnpm": "11.11.0"
+      },
+      "evidenceClass": "local_scripted",
+      "outcome": "fail",
+      "reasonCodes": ["EXIT_1"],
+      "evidenceRefs": []
+    },
+    {
+      "id": "rd-20261010021906-3361c2-check-forge-test",
+      "subject": "check-forge-test",
+      "sourceRevision": {
+        "commit": "79e788b15c1d08ddc9c3a29051cc5634b6d3cab7",
+        "dirtyWorktree": true,
+        "contentFingerprint": "850cbba782671cd1201850ee6e06f68a91ee47bd7e5d97a36e8f801e872a5149"
+      },
+      "checkedAt": "2026-10-10T02:19:06.685Z",
+      "command": "pnpm readiness",
+      "environment": {
+        "node": "v24.21.0",
+        "os": "linux-x64",
+        "pnpm": "11.11.0"
+      },
+      "evidenceClass": "local_scripted",
+      "outcome": "pass",
+      "reasonCodes": [],
+      "evidenceRefs": []
+    },
+    {
+      "id": "rd-20261010021906-3361c2-check-secret-scan",
+      "subject": "check-secret-scan",
+      "sourceRevision": {
+        "commit": "79e788b15c1d08ddc9c3a29051cc5634b6d3cab7",
+        "dirtyWorktree": true,
+        "contentFingerprint": "850cbba782671cd1201850ee6e06f68a91ee47bd7e5d97a36e8f801e872a5149"
+      },
+      "checkedAt": "2026-10-10T02:19:06.685Z",
+      "command": "pnpm readiness",
+      "environment": {
+        "node": "v24.21.0",
+        "os": "linux-x64",
+        "pnpm": "11.11.0"
+      },
+      "evidenceClass": "local_scripted",
+      "outcome": "fail",
+      "reasonCodes": ["EXIT_1"],
+      "evidenceRefs": []
+    },
+    {
+      "id": "rd-20261010021906-3361c2-check-protected-baselines",
+      "subject": "check-protected-baselines",
+      "sourceRevision": {
+        "commit": "79e788b15c1d08ddc9c3a29051cc5634b6d3cab7",
+        "dirtyWorktree": true,
+        "contentFingerprint": "850cbba782671cd1201850ee6e06f68a91ee47bd7e5d97a36e8f801e872a5149"
+      },
+      "checkedAt": "2026-10-10T02:19:06.685Z",
+      "command": "pnpm readiness",
+      "environment": {
+        "node": "v24.21.0",
+        "os": "linux-x64",
+        "pnpm": "11.11.0"
+      },
+      "evidenceClass": "local_scripted",
+      "outcome": "pass",
+      "reasonCodes": [],
+      "evidenceRefs": []
+    },
+    {
+      "id": "rd-20261010021906-3361c2-check-build",
+      "subject": "check-build",
+      "sourceRevision": {
+        "commit": "79e788b15c1d08ddc9c3a29051cc5634b6d3cab7",
+        "dirtyWorktree": true,
+        "contentFingerprint": "850cbba782671cd1201850ee6e06f68a91ee47bd7e5d97a36e8f801e872a5149"
+      },
+      "checkedAt": "2026-10-10T02:19:06.685Z",
+      "command": "pnpm readiness",
+      "environment": {
+        "node": "v24.21.0",
+        "os": "linux-x64",
+        "pnpm": "11.11.0"
+      },
+      "evidenceClass": "local_scripted",
+      "outcome": "pass",
+      "reasonCodes": [],
+      "evidenceRefs": []
+    },
+    {
+      "id": "rd-20261010021906-3361c2-check-exclusion",
+      "subject": "check-exclusion",
+      "sourceRevision": {
+        "commit": "79e788b15c1d08ddc9c3a29051cc5634b6d3cab7",
+        "dirtyWorktree": true,
+        "contentFingerprint": "850cbba782671cd1201850ee6e06f68a91ee47bd7e5d97a36e8f801e872a5149"
+      },
+      "checkedAt": "2026-10-10T02:19:06.685Z",
+      "command": "pnpm readiness",
+      "environment": {
+        "node": "v24.21.0",
+        "os": "linux-x64",
+        "pnpm": "11.11.0"
+      },
+      "evidenceClass": "local_scripted",
+      "outcome": "pass",
+      "reasonCodes": [],
+      "evidenceRefs": []
+    },
+    {
+      "id": "rd-20261010021906-3361c2-chapters-1-3-checks",
+      "subject": "chapters-1-3-checks",
+      "sourceRevision": {
+        "commit": "79e788b15c1d08ddc9c3a29051cc5634b6d3cab7",
+        "dirtyWorktree": true,
+        "contentFingerprint": "850cbba782671cd1201850ee6e06f68a91ee47bd7e5d97a36e8f801e872a5149"
+      },
+      "checkedAt": "2026-10-10T02:19:06.685Z",
+      "command": "pnpm readiness",
+      "environment": {
+        "node": "v24.21.0",
+        "os": "linux-x64",
+        "pnpm": "11.11.0"
+      },
+      "evidenceClass": "local_scripted",
+      "outcome": "fail",
+      "reasonCodes": ["CHECKS_NOT_ALL_PASSED"],
+      "evidenceRefs": []
+    },
+    {
+      "id": "rd-20261010022400-87feaa-check-typecheck",
+      "subject": "check-typecheck",
+      "sourceRevision": {
+        "commit": "79e788b15c1d08ddc9c3a29051cc5634b6d3cab7",
+        "dirtyWorktree": true,
+        "contentFingerprint": "720570aa2a98d4151360d67146a240e4e54db575112c616cf3b09de7b87e5fd3"
+      },
+      "checkedAt": "2026-10-10T02:24:00.863Z",
+      "command": "pnpm readiness",
+      "environment": {
+        "node": "v24.21.0",
+        "os": "linux-x64",
+        "pnpm": "11.11.0"
+      },
+      "evidenceClass": "local_scripted",
+      "outcome": "pass",
+      "reasonCodes": [],
+      "evidenceRefs": []
+    },
+    {
+      "id": "rd-20261010022400-87feaa-check-unit-tests",
+      "subject": "check-unit-tests",
+      "sourceRevision": {
+        "commit": "79e788b15c1d08ddc9c3a29051cc5634b6d3cab7",
+        "dirtyWorktree": true,
+        "contentFingerprint": "720570aa2a98d4151360d67146a240e4e54db575112c616cf3b09de7b87e5fd3"
+      },
+      "checkedAt": "2026-10-10T02:24:00.863Z",
+      "command": "pnpm readiness",
+      "environment": {
+        "node": "v24.21.0",
+        "os": "linux-x64",
+        "pnpm": "11.11.0"
+      },
+      "evidenceClass": "local_scripted",
+      "outcome": "pass",
+      "reasonCodes": [],
+      "evidenceRefs": []
+    },
+    {
+      "id": "rd-20261010022400-87feaa-check-forge-test",
+      "subject": "check-forge-test",
+      "sourceRevision": {
+        "commit": "79e788b15c1d08ddc9c3a29051cc5634b6d3cab7",
+        "dirtyWorktree": true,
+        "contentFingerprint": "720570aa2a98d4151360d67146a240e4e54db575112c616cf3b09de7b87e5fd3"
+      },
+      "checkedAt": "2026-10-10T02:24:00.863Z",
+      "command": "pnpm readiness",
+      "environment": {
+        "node": "v24.21.0",
+        "os": "linux-x64",
+        "pnpm": "11.11.0"
+      },
+      "evidenceClass": "local_scripted",
+      "outcome": "pass",
+      "reasonCodes": [],
+      "evidenceRefs": []
+    },
+    {
+      "id": "rd-20261010022400-87feaa-check-secret-scan",
+      "subject": "check-secret-scan",
+      "sourceRevision": {
+        "commit": "79e788b15c1d08ddc9c3a29051cc5634b6d3cab7",
+        "dirtyWorktree": true,
+        "contentFingerprint": "720570aa2a98d4151360d67146a240e4e54db575112c616cf3b09de7b87e5fd3"
+      },
+      "checkedAt": "2026-10-10T02:24:00.863Z",
+      "command": "pnpm readiness",
+      "environment": {
+        "node": "v24.21.0",
+        "os": "linux-x64",
+        "pnpm": "11.11.0"
+      },
+      "evidenceClass": "local_scripted",
+      "outcome": "fail",
+      "reasonCodes": ["EXIT_1"],
+      "evidenceRefs": []
+    },
+    {
+      "id": "rd-20261010022400-87feaa-check-protected-baselines",
+      "subject": "check-protected-baselines",
+      "sourceRevision": {
+        "commit": "79e788b15c1d08ddc9c3a29051cc5634b6d3cab7",
+        "dirtyWorktree": true,
+        "contentFingerprint": "720570aa2a98d4151360d67146a240e4e54db575112c616cf3b09de7b87e5fd3"
+      },
+      "checkedAt": "2026-10-10T02:24:00.863Z",
+      "command": "pnpm readiness",
+      "environment": {
+        "node": "v24.21.0",
+        "os": "linux-x64",
+        "pnpm": "11.11.0"
+      },
+      "evidenceClass": "local_scripted",
+      "outcome": "pass",
+      "reasonCodes": [],
+      "evidenceRefs": []
+    },
+    {
+      "id": "rd-20261010022400-87feaa-check-build",
+      "subject": "check-build",
+      "sourceRevision": {
+        "commit": "79e788b15c1d08ddc9c3a29051cc5634b6d3cab7",
+        "dirtyWorktree": true,
+        "contentFingerprint": "720570aa2a98d4151360d67146a240e4e54db575112c616cf3b09de7b87e5fd3"
+      },
+      "checkedAt": "2026-10-10T02:24:00.863Z",
+      "command": "pnpm readiness",
+      "environment": {
+        "node": "v24.21.0",
+        "os": "linux-x64",
+        "pnpm": "11.11.0"
+      },
+      "evidenceClass": "local_scripted",
+      "outcome": "pass",
+      "reasonCodes": [],
+      "evidenceRefs": []
+    },
+    {
+      "id": "rd-20261010022400-87feaa-check-exclusion",
+      "subject": "check-exclusion",
+      "sourceRevision": {
+        "commit": "79e788b15c1d08ddc9c3a29051cc5634b6d3cab7",
+        "dirtyWorktree": true,
+        "contentFingerprint": "720570aa2a98d4151360d67146a240e4e54db575112c616cf3b09de7b87e5fd3"
+      },
+      "checkedAt": "2026-10-10T02:24:00.863Z",
+      "command": "pnpm readiness",
+      "environment": {
+        "node": "v24.21.0",
+        "os": "linux-x64",
+        "pnpm": "11.11.0"
+      },
+      "evidenceClass": "local_scripted",
+      "outcome": "pass",
+      "reasonCodes": [],
+      "evidenceRefs": []
+    },
+    {
+      "id": "rd-20261010022400-87feaa-chapters-1-3-checks",
+      "subject": "chapters-1-3-checks",
+      "sourceRevision": {
+        "commit": "79e788b15c1d08ddc9c3a29051cc5634b6d3cab7",
+        "dirtyWorktree": true,
+        "contentFingerprint": "720570aa2a98d4151360d67146a240e4e54db575112c616cf3b09de7b87e5fd3"
+      },
+      "checkedAt": "2026-10-10T02:24:00.863Z",
+      "command": "pnpm readiness",
+      "environment": {
+        "node": "v24.21.0",
+        "os": "linux-x64",
+        "pnpm": "11.11.0"
+      },
+      "evidenceClass": "local_scripted",
+      "outcome": "pass",
+      "reasonCodes": [],
+      "evidenceRefs": []
+    },
+    {
+      "id": "cutladder-20261010022426",
+      "subject": "cut-ladder-matrix",
+      "sourceRevision": {
+        "commit": "79e788b15c1d08ddc9c3a29051cc5634b6d3cab7",
+        "dirtyWorktree": true,
+        "contentFingerprint": "720570aa2a98d4151360d67146a240e4e54db575112c616cf3b09de7b87e5fd3"
+      },
+      "checkedAt": "2026-10-10T02:24:26.404Z",
+      "command": "pnpm cutladder:check",
+      "environment": {
+        "node": "v24.21.0",
+        "os": "linux-x64",
+        "pnpm": "11.11.0"
+      },
+      "evidenceClass": "local_scripted",
+      "outcome": "blocked",
+      "reasonCodes": ["T0_JOURNEY_PENDING", "OPTIONAL_FEATURES_UNIMPLEMENTED"],
+      "evidenceRefs": [],
+      "facts": {
+        "configurations": "13",
+        "distinctEffective": "4",
+        "appliedProjectCuts": "0",
+        "fingerprint": "720570aa2a98d415"
+      }
     }
   ],
   "appliedCuts": [],
@@ -2982,8 +3450,8 @@
           {
             "id": "A1",
             "label": "Chapters 1–3 build and tests pass",
-            "state": "failed",
-            "resultId": "rd-20261010001015-7a19af-chapters-1-3-checks"
+            "state": "satisfied",
+            "resultId": "rd-20261010022400-87feaa-chapters-1-3-checks"
           },
           {
             "id": "A2",
@@ -2992,8 +3460,8 @@
             "resultId": null
           }
         ],
-        "reasons": ["FAILED:A1", "MISSING:A2"],
-        "observedAt": "2026-10-10T00:10:15.770Z"
+        "reasons": ["MISSING:A2", "UNPROVEN_AT_CUTOFF"],
+        "observedAt": "2026-10-10T02:24:00.863Z"
       },
       {
         "gate": "B",
@@ -3103,7 +3571,7 @@
         "HOSTED_T0_INCOMPLETE: dropping the bounties does not complete the hosted golden path"
       ]
     },
-    "evaluatedAt": "2026-10-10T00:10:15.770Z"
+    "evaluatedAt": "2026-10-10T02:24:00.863Z"
   },
   "cutLadder": {
     "order": [
@@ -3137,11 +3605,11 @@
     }
   },
   "readiness": {
-    "runId": "rd-20261010001015-7a19af",
-    "generatedAt": "2026-10-10T00:10:15.770Z",
+    "runId": "rd-20261010022400-87feaa",
+    "generatedAt": "2026-10-10T02:24:00.863Z",
     "live": false,
-    "fingerprint": "ed49ca7ed7147fd162cb831fe6582d4c5f63268d352ada90383686d403c88e08",
-    "totalMs": 22561,
+    "fingerprint": "720570aa2a98d4151360d67146a240e4e54db575112c616cf3b09de7b87e5fd3",
+    "totalMs": 24079,
     "versions": {
       "node": "v24.21.0",
       "pnpm": "11.11.0",
@@ -3152,43 +3620,43 @@
         "id": "typecheck",
         "outcome": "pass",
         "reason": "OK",
-        "durationMs": 14318
+        "durationMs": 14908
       },
       {
         "id": "unit-tests",
-        "outcome": "fail",
-        "reason": "EXIT_1",
-        "durationMs": 6995
+        "outcome": "pass",
+        "reason": "OK",
+        "durationMs": 8513
       },
       {
         "id": "forge-test",
         "outcome": "pass",
         "reason": "OK",
-        "durationMs": 19473
+        "durationMs": 19297
       },
       {
         "id": "secret-scan",
         "outcome": "fail",
         "reason": "EXIT_1",
-        "durationMs": 731
+        "durationMs": 614
       },
       {
         "id": "protected-baselines",
         "outcome": "pass",
         "reason": "OK",
-        "durationMs": 542
+        "durationMs": 555
       },
       {
         "id": "build",
         "outcome": "pass",
         "reason": "OK",
-        "durationMs": 4564
+        "durationMs": 4300
       },
       {
         "id": "exclusion",
         "outcome": "pass",
         "reason": "OK",
-        "durationMs": 709
+        "durationMs": 739
       }
     ]
   },
@@ -3869,7 +4337,7 @@
   "chapter09": {
     "startedOn": "2026-10-10",
     "state": "in-progress",
-    "note": "Records observed results only. Nothing here is live Qwen evidence unless a check below says live.",
+    "note": "Built and verified offline on synthetic documents with a scripted provider, real PostgreSQL and S3-compatible storage and a virtual authenticator. No live Qwen call has been made by this project: the live smoke was blocked for lack of credentials and is tracked separately below. Not real-device evidence and not a legal review. Aegis can assist a review; package approval, signing and chain execution keep their own independent gates, and nothing in this chapter enables them.",
     "providerDocumentation": {
       "readOn": "2026-10-10",
       "pages": {
@@ -3926,8 +4394,29 @@
         "files": [
           "packages/agent/src/review/{agent-artifacts,artifacts}.ts",
           "packages/agent/src/contracts/agent-config.ts",
-          "apps/web/src/features/review/controller.ts (draftArtifacts accepts saved agent artifact versions)",
-          "vitest.config.mts"
+          "apps/web/src/features/review/controller.ts (draftArtifacts accepts saved agent artifact versions)"
+        ]
+      },
+      "14": {
+        "status": "complete",
+        "summary": "Deterministic scripted provider (in process and as a loopback HTTP server speaking the Chat Completions wire format), agent and web test suites, and a Playwright check on the production build. Mock and live are separate everywhere: the scripted provider is labelled scripted-test in metadata, AgentConfigV1 and the interface.",
+        "files": [
+          "packages/agent/src/testing/* (fixtures, scripted-provider, memory-run-store, run-store-contract, agent-harness)",
+          "packages/agent/src/**/*.test.ts",
+          "apps/web/src/test-support/{assistant-rig,review-rig,scripted-qwen-server}.ts",
+          "apps/web/src/features/assistant/*.test.ts, apps/web/src/server/assistant/*.test.ts and run-store.pgtest.ts",
+          "tooling/scripts/assistant-browser-check.ts",
+          "tooling/src/exclusion.ts and tooling/scripts/exclusion-scan.ts (test-only agent modules added to the production exclusion rules)",
+          ".github/workflows/ci.yml"
+        ]
+      },
+      "15": {
+        "status": "complete",
+        "summary": "Live smoke command written and exercised as a program against the loopback scripted provider. The live run itself was not executed: QWEN_API_KEY and QWEN_BASE_URL are not set, so the command recorded a blocked result.",
+        "files": [
+          "apps/web/scripts/{qwen-smoke,qwen-smoke-core}.ts",
+          "apps/web/src/server/assistant/qwen-smoke.test.ts",
+          "docs/evidence/chapter09-qwen-smoke-2026-10-10.json"
         ]
       },
       "01": {
@@ -4012,26 +4501,16 @@
           "packages/agent/src/testing/agent-harness.ts"
         ]
       },
-      "14": {
+      "16": {
         "status": "complete",
-        "summary": "Deterministic scripted provider (in process and as a loopback HTTP server speaking the Chat Completions wire format), agent and web test suites, and a Playwright check on the production build. Mock and live are separate everywhere: the scripted provider is labelled scripted-test in metadata, AgentConfigV1 and the interface.",
+        "summary": "Gate run recorded below; CLAUDE.md (450 words) and docs/assistant-ui-contract.md (1,200 words) updated by replacing stale statements; Chapter 10 handoff written.",
         "files": [
-          "packages/agent/src/testing/* (fixtures, scripted-provider, memory-run-store, run-store-contract, agent-harness)",
-          "packages/agent/src/**/*.test.ts",
-          "apps/web/src/test-support/{assistant-rig,review-rig,scripted-qwen-server}.ts",
-          "apps/web/src/features/assistant/*.test.ts, apps/web/src/server/assistant/*.test.ts and run-store.pgtest.ts",
-          "tooling/scripts/assistant-browser-check.ts",
-          "tooling/src/exclusion.ts and tooling/scripts/exclusion-scan.ts (test-only agent modules added to the production exclusion rules)",
-          ".github/workflows/ci.yml"
-        ]
-      },
-      "15": {
-        "status": "complete",
-        "summary": "Live smoke command written and exercised as a program against the loopback scripted provider. The live run itself was not executed: QWEN_API_KEY and QWEN_BASE_URL are not set, so the command recorded a blocked result.",
-        "files": [
-          "apps/web/scripts/{qwen-smoke,qwen-smoke-core}.ts",
-          "apps/web/src/server/assistant/qwen-smoke.test.ts",
-          "docs/evidence/chapter09-qwen-smoke-2026-10-10.json"
+          "docs/build-state.json",
+          "CLAUDE.md",
+          "docs/assistant-ui-contract.md",
+          "tooling/src/secrets.ts (skips the per-check Next.js build directories; allowlists the adapter test's deliberately invalid URLs)",
+          "apps/web/src/features/documents/pipeline.test.ts (clock frozen for one step)",
+          ".prettierignore"
         ]
       }
     },
@@ -4153,7 +4632,10 @@
       "notDone": "No freeze, opening nonce, decision log, approval instruction or transaction. prepare_review returns requirements only."
     },
     "decisions": [
-      "Unit tests run with maxWorkers 50%: the Chapter 8 comparison test in pipeline.test.ts measures a real 2-second diff limit and reported timeout instead of edit distance in 3 of 4 fully parallel runs once this chapter's integration tests were added. Its assertion is unchanged. Three consecutive full runs passed with the cap (1,041 tests at the time)."
+      "The Chapter 8 comparison test in pipeline.test.ts (an edit-distance abort that takes about a second of CPU against a two-second wall-clock limit) reported timeout instead of edit distance in most fully parallel runs once this chapter's integration tests were added, and in the readiness gate. Its edit-distance step now runs with the Date clock frozen, so it tests that limit and not machine load; the assertion is unchanged. With that the suite passed three times under the gate's parallel load at the default worker count. An interim cap on test workers was removed again.",
+      "The secret scan skips the per-check Next.js build directories (.next-vault-check and the like) as it already skipped .next: they are build output, and the findings there were credential-shaped strings inside bundled dependencies.",
+      "The live smoke lives in apps/web/scripts because tooling may not import packages; its core is separate from the command wrapper so the same program can be exercised against the scripted provider.",
+      "matterBriefing readiness is unchanged: the runtime supports the intent, but the feature has no verified interface yet, so the flag cannot enable it."
     ],
     "testCoverage": {
       "intents": "every intent by command, interface action and equivalent phrase (routing); summarise, explain, check_payments, missing_evidence, brief_matter and prepare_review as full runs over the loopback provider; status and commanded checks as direct code handlers; unclear free text asked back; approval wording and unknown commands declined without a model",
@@ -4177,6 +4659,107 @@
         "exitStatus": 2
       },
       "notClaimed": "No live Qwen call has been made by this project. No article is published, no bounty is claimed, and nothing here shows production reliability or real users."
+    },
+    "completedOn": "2026-10-10",
+    "resolvedDependencies": {
+      "added": "none. The provider adapter uses fetch; no SDK, tokenizer, vector store or second provider was installed. pnpm-lock.yaml is unchanged.",
+      "node/pnpm": "v24.21.0 / 11.11.0"
+    },
+    "checks": {
+      "static": {
+        "command": "pnpm install --frozen-lockfile && pnpm lint && pnpm format:check && pnpm typecheck && pnpm build",
+        "outcome": "pass"
+      },
+      "unit": {
+        "command": "pnpm test",
+        "outcome": "pass",
+        "evidenceClass": "local_scripted",
+        "notes": "1,071 of 1,071 in 73 files (agent package 157 in 14 files; web 397 in 31 files). Passed three times in a row while typecheck, the Foundry tests and a build ran in parallel."
+      },
+      "operationalStorage": {
+        "command": "pnpm test:auth:db",
+        "outcome": "pass",
+        "evidenceClass": "local_scripted",
+        "notes": "56 of 56 on real PostgreSQL, of which 17 are the assistant run store: the shared contract suite plus cross-replica cancellation, transactional global limits across two pools, eight rounds of simultaneous completion and cancellation with one terminal state each, and a column check that no matter, document, digest, prompt or answer column exists."
+      },
+      "browser": {
+        "command": "pnpm test:assistant:browser",
+        "outcome": "pass",
+        "evidenceClass": "virtual_authenticator",
+        "notes": "59 of 59 in headless Chromium on the production build with real PostgreSQL, VersityGW and the loopback scripted provider. One path: selected text -> disclosure preview -> Send -> native read_sources call -> cited answer -> exact-source opening -> device-local payment check (difference 200,000 pence, no request) -> disclosed payment explanation with the figure from the tool result -> Stop during a provider wait (cancelled, nothing dispatched afterwards) -> proposal, typed yes and approve confirm nothing, Confirm records the fact -> refreshed check -> Save outcome shown saved after read-back -> a fact change drops a pending disclosure -> both layouts share the conversation -> lock clears it. Also: five run requests for five Sends, no private data in URLs or browser storage, operational rows hold IDs and counters only, only this origin contacted, no CSP violation. Scripted provider: says nothing about Qwen."
+      },
+      "syntheticPath": {
+        "outcome": "pass",
+        "notes": "The complete path required by the chapter (selected document, explicit disclosure, request, native tool execution, cited response, human fact confirmation, refreshed deterministic check, explicit encrypted saved outcome, with Stop and stale-input rejection) is the browser check above and, on the controllers, outcomes.test.ts and controller.test.ts."
+      },
+      "regression": {
+        "command": "pnpm test:review:browser && pnpm test:vault:browser && pnpm test:account:browser && pnpm test:contracts:integration",
+        "outcome": "pass",
+        "notes": "33 of 33, 26 of 26, 31 of 31 and 33 of 33."
+      },
+      "generated": {
+        "command": "pnpm fixtures:check && pnpm protocol:check && pnpm agent:prompts:check && pnpm baselines:check && pnpm state:validate && pnpm scope:docs:check",
+        "outcome": "pass",
+        "notes": "No v1 schema, vector, EIP-712 domain, registry ABI or profile changed: baselines match (43 files, compiled registry)."
+      },
+      "exclusion": {
+        "command": "pnpm exclusion:check",
+        "outcome": "pass",
+        "notes": "The scan now also treats packages/agent/src/testing, @lexaegis/agent/testing and the scripted adapters as test-only. Negative controls by hand, each reverted: importing the scripted provider into the server runtime gave TEST_IMPORT, and importing the in-memory store into run-agent.ts gave TEST_MODULE_REACHABLE; ESLint rejected both as well."
+      },
+      "boundaries": {
+        "outcome": "pass",
+        "notes": "Negative controls by hand, removed afterwards: ESLint rejected all 11 deliberate violations (server-only and the Qwen adapter in @lexaegis/agent/contracts; the runtime and node:crypto in the browser-safe review export; the agent root, the run-store port and server modules in web features and components; agent contracts in protocol, sdk and the verifier)."
+      },
+      "secretsInBundles": {
+        "outcome": "pass",
+        "notes": "Production build with a canary QWEN_API_KEY and a canary workspace host: neither value, the provider host, the compatible-mode path, enable_thinking, max_completion_tokens, the policy text, the admission lock name nor the test placeholder key appears in any client output file; none of the first four appears in 98,771 bytes of responses from four pages and six API calls."
+      },
+      "secrets": {
+        "command": "pnpm secrets:check",
+        "outcome": "fail",
+        "notes": "2 findings, both in the operator's git-ignored .env (real testnet keys), as in Chapters 6 and 8. No finding in any tracked file. The .env was not moved or read by this run, so a clean pass was not observed."
+      },
+      "readiness": {
+        "command": "pnpm readiness",
+        "outcome": "fail",
+        "notes": "typecheck, unit-tests, forge-test, protected-baselines, build and exclusion pass; secret-scan fails on the .env above. Gates A and B fail and C and D are unknown for the reasons they print (real-device and deployment evidence, a genuine Qwen run, the T0 journey). They are computed and were not edited."
+      },
+      "liveProvider": {
+        "command": "pnpm qwen:smoke",
+        "outcome": "blocked",
+        "notes": "QWEN_NOT_CONFIGURED: QWEN_API_KEY and QWEN_BASE_URL are not set. Zero provider calls. docs/evidence/chapter09-qwen-smoke-2026-10-10.json records the blocked result. The smoke program itself ran end to end against the loopback scripted provider in a unit test (recorded as scripted)."
+      },
+      "ci": {
+        "outcome": "unverified",
+        "notes": "ci.yml now runs agent:prompts:check and test:assistant:browser. It has still never executed on GitHub."
+      }
+    },
+    "capabilityEvidence": {
+      "qwen": "none. Configured is not verified: with keys and a database the application reports configured_unverified and refuses real-matter runs until pnpm qwen:smoke stores a passing record for the exact endpoint, model and output mode.",
+      "scriptedProvider": "native tool calls, strict structured output, usage reporting and abort were exercised against the loopback scripted provider over the real HTTP adapter. This is wire-format evidence only."
+    },
+    "unresolvedPrerequisites": [
+      "A Qwen API key and a documented Model Studio endpoint (QWEN_API_KEY, QWEN_BASE_URL), then pnpm qwen:smoke with DATABASE_URL set so the capability record is stored. Until then no model-assisted run is possible outside the scripted test mode.",
+      "Whether json_schema strict mode is accepted for qwen3.8-max on the chosen region: the provider's own page is inconsistent about Singapore. If it is not, set QWEN_OUTPUT_MODE=json_object and run the smoke again; nothing switches automatically.",
+      "Not verified from documentation: whether thinking is on by default (enable_thinking=false is always sent), HTTP error codes, and any request-ID header (the response id is recorded).",
+      "A host that keeps a streaming response open for up to 120 seconds (maxDuration 150). Only the local Node server has been used.",
+      "pnpm secrets:check has not been observed clean in this checkout because of the operator's .env.",
+      "No git remote is configured: every task was committed locally and no push could be made."
+    ],
+    "limitations": [
+      "Model output is not reproducible. Validation shows that references resolve and the output fits its schema; it does not show that a statement follows from its citation, that a PDF was transcribed correctly or that anything is legally correct.",
+      "Stop cannot retract text already sent, and a request already submitted may still be billed. Budgets bound attempts, tools, time and reserved tokens; they are not an invoice cap.",
+      "Input size is a conservative byte estimate, not a token count.",
+      "The briefing intent exists in the runtime and passes over the scripted provider, but its feature flag stays unimplemented (FEATURE_READINESS unchanged), so it has no command, button or route in a deployment. Voice is untouched.",
+      "A summary or explanation is limited to the selected excerpts (32 KiB, 64 passages): there is no whole-document mode.",
+      "get_status reports the chain client state and not_selected for a receipt; no receipt is read on the assistant's behalf.",
+      "Only Chromium was driven; no real screen reader or mobile device was used."
+    ],
+    "handoff": {
+      "chapter07": "The activity drawer keeps assistant runs, human decisions and on-chain events in separate sections; indexed history is reported by get_status as not_connected and must stay distinct from live reads when the indexer arrives.",
+      "chapter10": "Validated result cards: RunView (blocks, tools, catalog, summary, complete, incomplete, stale, agentConfig) from @/features/assistant/public, rendered by components/assistant/RunCard.tsx. Current plan and run state: AssistantSnapshot (phase, orb, activeRunViewId, pending) through useAssistant(). Confirmed-fact actions: AssistantController.confirmProposal and dismissProposal on ReviewController.confirmFact. Saved outcomes: saveOutcome, with decodeOutcome and describeContextEntry in features/assistant/saved-outcomes.ts giving analysisVersionId and agentConfigVersionId. Source navigation: openSource(viewId, handle) returns the Focus for ReviewProvider.setFocus only if the passage still resolves. Cancellation: stop() and the cancel route. Draft artifacts: ReviewController.draftArtifacts({ analysisVersionId, agentConfigVersionId }) returns artifacts including agent-config and the assistant analysis with DECISION_LOG_MISSING and HUMAN_REVIEW_GATE_PENDING still outstanding; Chapter 10 supplies the decision log and the approval gate. Command-centre and Review modes and the --lj-* visual system are unchanged. Voice and the briefing control remain to be built there.",
+      "chapters12and13": "Hosting needs QWEN_API_KEY, QWEN_BASE_URL, optional QWEN_MODEL and QWEN_OUTPUT_MODE, DATABASE_URL, a response that can stream for 120 seconds, and one pnpm qwen:smoke run against the deployed configuration. The smoke evidence file is the input for the Qwen article; no article is published and no bounty is claimed."
     }
   }
 }

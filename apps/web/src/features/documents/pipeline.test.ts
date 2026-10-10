@@ -2,7 +2,7 @@ import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import * as pdfjsModule from 'pdfjs-dist/legacy/build/pdf.mjs';
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 import {
   assembleDraft,
   buildChecklist,
@@ -852,7 +852,11 @@ describe('comparison of two versions', () => {
     });
     expect(ranged.ok).toBe(true);
 
-    // Total replacement beyond the edit-distance limit aborts: comparison_incomplete.
+    // Total replacement beyond the edit-distance limit aborts: comparison_incomplete. The clock is
+    // frozen for this step so the result is the edit-distance limit itself, not whichever of the
+    // two limits a busy machine happens to reach first (the diff takes about a second of CPU and
+    // the time limit is two seconds of wall clock).
+    vi.useFakeTimers({ toFake: ['Date'] });
     const a = structuredClone(item.document);
     const b = structuredClone(other.document);
     firstPage(a).text = Array.from({ length: 6000 }, (_, i) => `a${i}`).join(' ');
@@ -878,6 +882,7 @@ describe('comparison of two versions', () => {
       newPages: [1, 1],
     });
     if (!cmp.ok) throw new Error(cmp.code);
+    vi.useRealTimers();
     expect(cmp.data).toMatchObject({
       outcome: 'comparison_incomplete',
       incompleteReason: 'edit_distance',

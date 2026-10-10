@@ -23,6 +23,8 @@ export const SECRET_ALLOWLIST: Readonly<Record<string, string>> = {
   'apps/web/src/config/public.test.ts':
     'deliberately credential-bearing URLs as invalid-input cases',
   'apps/web/src/server/env.test.ts': 'deliberately credential-bearing URLs as invalid-input cases',
+  'packages/agent/src/server/qwen-client.test.ts':
+    'deliberately credential-bearing URLs as invalid-input cases',
   'apps/web/src/server/readiness.test.ts':
     'deliberately credential-bearing URLs as invalid-input cases',
   'tooling/src/exclusion.test.ts': 'fake credentials the scanner must detect (negative controls)',
@@ -48,7 +50,8 @@ export interface SecretFinding {
 
 function* walk(directory: string): Generator<string> {
   for (const entry of readdirSync(directory, { withFileTypes: true })) {
-    if (SKIP.has(entry.name)) continue;
+    // Build output, including the per-check Next.js directories (.next-vault-check and so on).
+    if (SKIP.has(entry.name) || /^\.next-[a-z-]+$/.test(entry.name)) continue;
     const path = join(directory, entry.name);
     if (entry.isDirectory()) yield* walk(path);
     else if (entry.isFile()) yield path;
