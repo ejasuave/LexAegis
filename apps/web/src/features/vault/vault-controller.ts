@@ -843,6 +843,7 @@ export class VaultController {
       text: string;
       confirmed: boolean;
       documentVersionId?: string;
+      origin?: 'user' | 'model_proposed';
     },
   ): VaultOutcome {
     return this.editMatter(
@@ -851,6 +852,7 @@ export class VaultController {
         kind: input.kind,
         text: input.text,
         confirmed: input.confirmed,
+        ...(input.origin !== undefined && { origin: input.origin }),
         ...(input.documentVersionId !== undefined && {
           sourceRefs: [{ documentVersionId: input.documentVersionId, anchor: null }],
         }),

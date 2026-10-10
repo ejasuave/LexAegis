@@ -3923,6 +3923,16 @@
           "apps/web/src/app/layout.tsx",
           "apps/web/src/test-support/assistant-rig.ts"
         ]
+      },
+      "12": {
+        "status": "complete",
+        "summary": "Proposal cards with Confirm, Edit and Dismiss on Chapter 8's confirmation controller; follow-up handling bound to the current selection; explicit Save outcome through the encrypted vault with read-back before it shows as saved.",
+        "files": [
+          "apps/web/src/features/assistant/{controller,saved-outcomes}.ts",
+          "apps/web/src/components/assistant/{ProposalCard,RunActions,ConversationPanel}.tsx",
+          "packages/agent/src/review/agent-artifacts.ts",
+          "apps/web/src/features/vault/{vault-controller,public}.ts and features/matters/edits.ts (optional entry origin model_proposed; no vault v1 format or profile change)"
+        ]
       }
     },
     "contracts": {
@@ -4027,6 +4037,13 @@
       "clearing": "Lock, account change or matter change clears the conversation, the pending disclosure and the excerpt catalog and abandons the run. A source, fact, evidence or selection revision stops the run, drops a pending disclosure and marks earlier results out of date.",
       "rendering": "Model text is rendered as plain text by React (no HTML, Markdown or links). Quotations show the stored quote from the browser's own catalog; payment figures and status readings come from the tool result event. Citation buttons reopen the exact passage only if it still resolves against the current verified artifacts.",
       "notWired": "Voice stays unavailable (Chapter 10). No approval control is enabled by a run."
+    },
+    "proposalsAndSaving": {
+      "confirmation": "Only the Confirm control on a proposal card calls ReviewController.confirmFact, after the cited sources resolve again against the verified artifacts. It records the reviewer's account and time. A typed yes or approve, model output and imported JSON reach no confirmation path. A value for an already confirmed field is a correction (new revision); dependent results become out of date.",
+      "followUps": "A follow-up uses the current matter, version and selection and a newly built disclosure. Free text that code cannot classify and that has no current selection is asked back once; an earlier passage, version or matter is never assumed.",
+      "saveOutcome": "Explicit action only. The analysis artifact (lexaegis.assistant-analysis.v1) and the agent configuration are stored as immutable encrypted artifacts under version IDs fixed per result, read back through the vault and hash-checked, then an outcome entry (origin model_proposed, unconfirmed, typed prefix lexaegis.assistant-outcome.v1:) is committed with saveMatter. Saved is shown only after the entry is present in the committed record. A failed write leaves the result on screen as unsaved; a retry completes the vault's pending commit instead of storing twice.",
+      "kept": "Raw chat is never stored. Unconfirmed proposals are not written into the analysis artifact. A saved outcome can become request context only after the reviewer confirms the entry with the existing vault controls.",
+      "observedVaultBehaviour": "A failed addSourceFile leaves the source in the working draft with its sealed object held in the vault's pending commit; reconcile completes it. Calling saveMatter instead would start a new commit without that object, so the assistant never does that for an unfinished artifact."
     }
   }
 }

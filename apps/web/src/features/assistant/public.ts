@@ -10,6 +10,7 @@ import { AssistantController } from './controller';
 export { DISCLOSURE_FACTS } from './disclosure';
 export type { PendingDisclosure } from './disclosure';
 export { AssistantController, EMPTY_ASSISTANT_SNAPSHOT } from './controller';
+export { describeContextEntry } from './saved-outcomes';
 export type {
   AssistantSnapshot,
   ConversationItem,

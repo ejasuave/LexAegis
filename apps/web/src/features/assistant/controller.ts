@@ -26,13 +26,20 @@ import {
   type SourceReferenceV1,
   type ToolResult,
 } from '@lexaegis/agent/contracts';
-import type { ResolvedSource } from '@lexaegis/agent/review';
+import {
+  agentConfigArtifactBytes,
+  analysisArtifactBytes,
+  localAgentConfig,
+  sha256Bytes,
+  type ArtifactBytes,
+  type ResolvedSource,
+} from '@lexaegis/agent/review';
 import type {
   AssistantContextResult,
   AssistantContextSelection,
   ReviewSnapshot,
 } from '@/features/review/controller';
-import type { VaultSnapshot } from '@/features/vault/public';
+import type { VaultCommands, VaultSnapshot } from '@/features/vault/public';
 import type { AssistantTransport } from './api-client';
 import {
   consentToDisclosure,
@@ -40,6 +47,7 @@ import {
   type CurrentBinding,
   type PendingDisclosure,
 } from './disclosure';
+import { AGENT_CONFIG_LABEL, ANALYSIS_LABEL, encodeOutcome, summariseRun } from './saved-outcomes';
 import { buildRequestBody, observeClient, type ContextPorts } from './selected-context';
 
 /*
@@ -60,8 +68,23 @@ export interface AssistantPorts {
     assistantContext(selection: AssistantContextSelection): Promise<AssistantContextResult>;
     resolve(reference: unknown): ResolvedSource;
     runChecks(): Promise<void>;
+    /** Chapter 8's reviewer-only confirmation. Called solely from an explicit Confirm control. */
+    confirmFact(input: {
+      candidate: unknown;
+      basis: 'source' | 'reviewer_statement';
+      statementReason: string | null;
+      replaces?: string;
+    }): Promise<{ ok: true } | { ok: false; code: string }>;
+    currentInputDigest(): Promise<string | null>;
   };
-  readonly vault: { getSnapshot(): VaultSnapshot; subscribe(listener: () => void): () => void };
+  readonly vault: {
+    getSnapshot(): VaultSnapshot;
+    subscribe(listener: () => void): () => void;
+    commands: Pick<
+      VaultCommands,
+      'addSourceFile' | 'readSource' | 'addEntry' | 'saveMatter' | 'reconcile'
+    >;
+  };
   readonly account: () => { readonly present: boolean; readonly unlocked: boolean };
   readonly transport: AssistantTransport;
   readonly now: () => Date;
@@ -108,6 +131,13 @@ export interface RunView {
   readonly vaultGeneration: number;
   readonly localStatus: LocalStatus | null;
   readonly startedAt: string;
+  /** What the reviewer did with each proposal. A proposal confirms nothing until they act. */
+  readonly proposals: Readonly<Record<string, 'confirmed' | 'dismissed'>>;
+  /** saved only after the encrypted artifact was read back and the catalog commit succeeded. */
+  readonly save: {
+    readonly state: 'unsaved' | 'saving' | 'saved' | 'failed';
+    readonly message: string | null;
+  };
 }
 
 export interface ConversationItem {
@@ -169,6 +199,8 @@ const NOTICES = {
   notConfigured: 'Aegis analysis is not configured. Local checks and status still work.',
   notVerified: 'The assistant configuration has not been verified, so nothing can be sent yet.',
   needSelection: 'Select the text in the document first, then ask again.',
+  whichPassage:
+    'Which passage is this about? Select it in the document and ask again, or use a command such as /check-payments.',
   noMatter: 'Open a matter and unlock the vault first.',
   stale: 'The review inputs changed, so the run was stopped. Start a new request.',
   cleared: 'The vault, account or matter changed. The conversation was cleared.',
@@ -211,6 +243,8 @@ export class AssistantController {
     references: [],
   };
   #lastInput: SubmitInput | null = null;
+  /** Version IDs fixed per result, so a retried save never stores an artifact twice. */
+  readonly #assigned = new Map<string, { analysis?: string; config?: string }>();
   #epoch = 0;
   #disposed = false;
 
@@ -267,6 +301,7 @@ export class AssistantController {
       this.#abandonActive();
       this.#selection = { documentVersionId: null, references: [] };
       this.#lastInput = null;
+      this.#assigned.clear();
       this.#publish({
         phase: 'idle',
         orb: this.#idleOrb(),
@@ -501,6 +536,8 @@ export class AssistantController {
       vaultGeneration: this.#ports.vault.getSnapshot().generation,
       localStatus: null,
       startedAt: this.#ports.now().toISOString(),
+      proposals: {},
+      save: { state: 'unsaved', message: null },
     });
 
     if (intent === 'status') {
@@ -624,6 +661,12 @@ export class AssistantController {
       this.#note(NOTICES.needSelection);
       return;
     }
+    // A follow-up that code cannot classify refers to the current selection only. Without one it
+    // is asked back once: an earlier passage, version or matter is never assumed.
+    if (input.intent === null && references.length === 0) {
+      this.#note(NOTICES.whichPassage);
+      return;
+    }
 
     const epoch = ++this.#epoch;
     this.#lastInput = { ...input, references };
@@ -711,6 +754,8 @@ export class AssistantController {
       vaultGeneration: request.vaultGeneration,
       localStatus: null,
       startedAt: this.#ports.now().toISOString(),
+      proposals: {},
+      save: { state: 'unsaved', message: null },
     };
     const active: ActiveRun = {
       viewId: view.id,
@@ -1038,15 +1083,247 @@ export class AssistantController {
     );
   }
 
-  /** Exposed to the outcome and proposal handlers in this feature. */
-  runView(viewId: string): RunView | null {
-    return this.#run(viewId);
+  // ---- Fact proposals ------------------------------------------------------------------------------
+
+  /**
+   * The reviewer's explicit Confirm on a proposal card, optionally with an edited value. This is
+   * the only path from a proposal to a confirmed fact: no model output, imported file or typed
+   * "yes" reaches it. The cited sources are re-checked first, and the confirmation is recorded by
+   * Chapter 8's controller with the reviewer's account and the time. A value for a field that is
+   * already confirmed is a correction: a new revision that makes dependent results out of date.
+   */
+  async confirmProposal(
+    viewId: string,
+    proposalId: string,
+    editedValue?: string,
+  ): Promise<boolean> {
+    const run = this.#run(viewId);
+    const proposal = run?.summary?.factProposals.find((item) => item.proposalId === proposalId);
+    if (run == null || proposal === undefined || run.proposals[proposalId] !== undefined)
+      return false;
+    const references = proposal.sources.map(
+      (handle) => run.catalog.find((entry) => entry.handle === handle)?.reference,
+    );
+    if (
+      references.some(
+        (reference) =>
+          reference === undefined || this.#ports.review.resolve(reference).state !== 'resolved',
+      )
+    ) {
+      this.#publish({
+        notice: 'The cited source no longer matches the stored document. Nothing was confirmed.',
+      });
+      return false;
+    }
+    const value = editedValue === undefined ? proposal.value : editedValue.trim();
+    const existing = this.#ports.review
+      .getSnapshot()
+      .facts.find(
+        (fact) =>
+          fact.field === proposal.field &&
+          fact.group === proposal.group &&
+          fact.slot === proposal.slot,
+      );
+    const result = await this.#ports.review.confirmFact({
+      candidate: {
+        schema: 'lexaegis.fact-candidate.v1',
+        factId: this.#ports.newId(),
+        matterId: run.matterId,
+        field: proposal.field,
+        group: proposal.group,
+        slot: proposal.slot,
+        value,
+        // An edited value is the reviewer's own; an unedited one keeps its model provenance.
+        provenance: editedValue === undefined ? 'model' : 'reviewer_selection',
+        references,
+      },
+      basis: 'source',
+      statementReason: null,
+      ...(existing !== undefined && { replaces: existing.factId }),
+    });
+    if (this.#gone() || this.#run(viewId) === null) return false;
+    if (!result.ok) {
+      this.#publish({
+        notice:
+          result.code === 'ACCOUNT_LOCKED'
+            ? 'Unlock your account to confirm a fact. Nothing was confirmed.'
+            : result.code === 'CANDIDATE_INVALID' || result.code === 'FACT_INVALID'
+              ? 'That value does not fit this field. Nothing was confirmed.'
+              : 'The fact was not confirmed.',
+      });
+      return false;
+    }
+    // The confirmation changed the review inputs, so earlier results are now marked out of date.
+    const current = this.#run(viewId);
+    this.#patchRun(viewId, { proposals: { ...current?.proposals, [proposalId]: 'confirmed' } });
+    this.#publish({
+      notice: 'Fact confirmed by you. Save facts to keep it. Earlier results are now out of date.',
+    });
+    return true;
   }
-  patchRunView(viewId: string, patch: Partial<RunView>): void {
-    this.#patchRun(viewId, patch);
+
+  dismissProposal(viewId: string, proposalId: string): void {
+    const run = this.#run(viewId);
+    if (run === null || run.proposals[proposalId] !== undefined) return;
+    this.#patchRun(viewId, { proposals: { ...run.proposals, [proposalId]: 'dismissed' } });
   }
-  announce(notice: string): void {
-    this.#publish({ notice });
+
+  // ---- Save outcome ---------------------------------------------------------------------------------
+
+  /**
+   * The explicit Save outcome action. The analysis and the agent configuration are stored as
+   * immutable encrypted artifacts and read back (decrypted and hash-checked) before an
+   * observation entry is committed to the encrypted catalog. Only then is the result shown as
+   * saved. A failure leaves the result on screen, clearly unsaved. Nothing here freezes a
+   * package, creates an opening nonce, records a decision or sends a transaction.
+   */
+  async saveOutcome(viewId: string): Promise<boolean> {
+    const run = this.#run(viewId);
+    if (run === null || run.save.state === 'saving' || run.save.state === 'saved') return false;
+    const refuse = (message: string): boolean => {
+      this.#patchRun(viewId, { save: { state: 'failed', message } });
+      this.#publish({ notice: message });
+      return false;
+    };
+    if (!run.complete || run.localStatus !== null || run.blocks.length === 0)
+      return refuse('Only a finished result can be saved.');
+    if (run.stale) return refuse('This result is out of date. Run it again before saving.');
+    if (!this.sourcesCurrent(viewId))
+      return refuse('A cited source no longer matches the stored document. Not saved.');
+
+    const epoch = this.#epoch;
+    const live = () => epoch === this.#epoch && !this.#gone() && this.#run(viewId) !== null;
+    this.#patchRun(viewId, { save: { state: 'saving', message: null } });
+    this.#publish({ notice: 'Saving encrypted files.' });
+    if (run.origin === 'assistant') {
+      const digest = await this.#ports.review.currentInputDigest();
+      if (!live()) return false;
+      if (digest !== run.snapshot.digest)
+        return refuse('The review inputs changed. Run it again before saving.');
+    }
+
+    const { commands } = this.#ports.vault;
+    const failed = (reason: string): boolean =>
+      live()
+        ? refuse(
+            `Not saved (${reason.toLowerCase().replaceAll('_', ' ')}). The result is still here, unsaved.`,
+          )
+        : false;
+    const assigned = this.#assigned.get(viewId) ?? {};
+    this.#assigned.set(viewId, assigned);
+    /**
+     * Stores one artifact under a version ID fixed for this result, then reads it back through
+     * the vault (fetch, decrypt, hash-check). If an earlier attempt already recorded it, the
+     * vault's own unfinished save is completed instead of storing it a second time.
+     */
+    const store = async (
+      kind: 'analysis' | 'config',
+      label: string,
+      artifact: ArtifactBytes,
+    ): Promise<string | null> => {
+      const versionId = (assigned[kind] ??= this.#ports.newId());
+      const recorded =
+        this.#ports.vault
+          .getSnapshot()
+          .selectedMatter?.sources.some((source) => source.documentVersionId === versionId) ===
+        true;
+      const written = recorded
+        ? await commands.reconcile()
+        : await commands.addSourceFile(run.matterId, {
+            bytes: artifact.bytes,
+            mediaType: 'application/json',
+            label,
+            documentVersionId: versionId,
+          });
+      if (!written.ok) {
+        failed(written.failure);
+        return null;
+      }
+      const back = await commands.readSource(run.matterId, versionId);
+      if (!back.ok) {
+        failed(back.failure);
+        return null;
+      }
+      const same = (await sha256Bytes(back.data)) === artifact.sha256;
+      back.data.fill(0);
+      if (!same) failed('INTEGRITY_FAILURE');
+      return same ? versionId : null;
+    };
+
+    const modelExecution = run.modelExecution === 'pending' ? 'none' : run.modelExecution;
+    const finishedAt = this.#ports.now().toISOString();
+    const config =
+      run.agentConfig ??
+      // A device-local check: no model, no provider, no usage. Nothing is invented for it.
+      localAgentConfig({
+        viewId: run.id,
+        intent: run.intent,
+        startedAt: run.startedAt,
+        finishedAt: run.startedAt,
+        toolExecutions: run.tools.length,
+      });
+    const runKey = run.runId ?? run.id;
+    let analysisVersionId: string;
+    {
+      const artifact = await analysisArtifactBytes({
+        matterId: run.matterId,
+        documentVersionId: run.documentVersionId,
+        snapshotDigest: run.snapshot.digest,
+        run: {
+          runId: run.runId,
+          intent: run.intent,
+          outcome: run.outcome,
+          startedAt: run.startedAt,
+          modelExecution,
+        },
+        blocks: run.blocks,
+        summary: run.summary,
+        catalog: run.catalog,
+        tools: run.tools,
+      });
+      const id = await store('analysis', `${ANALYSIS_LABEL}${runKey}`, artifact);
+      if (id === null || !live()) return false;
+      analysisVersionId = id;
+    }
+    const agentConfigVersionId = await store(
+      'config',
+      `${AGENT_CONFIG_LABEL}${runKey}`,
+      await agentConfigArtifactBytes(config),
+    );
+    if (agentConfigVersionId === null || !live()) return false;
+
+    const text = encodeOutcome({
+      v: 1,
+      runId: runKey,
+      intent: run.intent,
+      outcome: run.outcome,
+      modelExecution,
+      analysisVersionId,
+      agentConfigVersionId,
+      inputSnapshotDigest: run.snapshot.digest,
+      summary: summariseRun(run),
+      savedAt: finishedAt,
+    });
+    // An observation, never a confirmed fact: it is recorded as model-proposed and unconfirmed.
+    const added = commands.addEntry(run.matterId, {
+      kind: 'outcome',
+      text,
+      confirmed: false,
+      origin: 'model_proposed',
+      documentVersionId: run.documentVersionId ?? analysisVersionId,
+    });
+    if (!added.ok) return failed(added.failure);
+    const committed = await commands.saveMatter(run.matterId);
+    if (!live()) return false;
+    if (!committed.ok) return failed(committed.failure);
+    const matter = this.#ports.vault.getSnapshot().selectedMatter;
+    if (matter?.context.entries.some((entry) => entry.text === text) !== true)
+      return failed('NOT_FOUND');
+    this.#patchRun(viewId, { save: { state: 'saved', message: null } });
+    this.#publish({
+      notice: 'Saved and checked. It is kept as an observation, not a confirmed fact.',
+    });
+    return true;
   }
 }
 

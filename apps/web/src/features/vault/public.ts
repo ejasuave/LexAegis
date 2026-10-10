@@ -96,6 +96,7 @@ export interface VaultCommands {
       text: string;
       confirmed: boolean;
       documentVersionId?: string;
+      origin?: 'user' | 'model_proposed';
     },
   ): VaultOutcome;
   correctEntry(matterId: string, entryId: string, text: string): VaultOutcome;

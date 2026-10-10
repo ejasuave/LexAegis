@@ -24,6 +24,8 @@ export const editAddEntry =
       text: string;
       confirmed: boolean;
       sourceRefs?: ContextEntryV1['sourceRefs'];
+      /** "model_proposed" for a saved assistant observation: it always starts unconfirmed. */
+      origin?: 'user' | 'model_proposed';
     },
   ): MatterEdit =>
   (record) =>
@@ -34,6 +36,7 @@ export const editAddEntry =
         kind: input.kind,
         text: input.text,
         confirmed: input.confirmed,
+        ...(input.origin !== undefined && { origin: input.origin }),
         ...(input.sourceRefs !== undefined && { sourceRefs: input.sourceRefs }),
       },
       env.now(),

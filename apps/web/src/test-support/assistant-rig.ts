@@ -3,7 +3,7 @@ import { agentHarness, type ScriptStep } from '@lexaegis/agent/testing';
 import type { AssistantTransport } from '@/features/assistant/api-client';
 import { AssistantController } from '@/features/assistant/controller';
 import type { SseItem } from '@/features/assistant/sse-reader';
-import { confirm, importAndWait, range, rig, type Rig } from './review-rig';
+import { confirm, importAndWait, port, range, rig, type Rig } from './review-rig';
 
 /*
  * Test rig: the real browser assistant controller on the real review and vault controllers, with
@@ -115,7 +115,7 @@ export async function assistantRig(
 
   const assistant = new AssistantController({
     review: r.controller,
-    vault: r.h.vault,
+    vault: port(r.h),
     account: () => ({ present: true, unlocked: true }),
     transport,
     // The runtime's clock, so a consent is fresh for the server that checks it.

@@ -85,7 +85,8 @@ export const agentConfigSchema = z
         temperature: z.literal('0'),
       })
       .nullable(),
-    budget: runBudgetSchema,
+    /** The run ceilings that applied. Null only for a check that ran on the device with no run. */
+    budget: runBudgetSchema.nullable(),
     usage: runUsageSchema,
     run: z.strictObject({
       runId: opaqueIdSchema,
@@ -107,5 +108,6 @@ export const agentConfigSchema = z
     if (config.provider !== null && config.provider.id !== config.modelExecution)
       bad('provider does not match model execution');
     if (none && config.usage.provenance !== 'none') bad('no model ran: usage must be none');
+    if (!none && config.budget === null) bad('a model ran: the budget is required');
   });
 export type AgentConfigV1 = z.infer<typeof agentConfigSchema>;

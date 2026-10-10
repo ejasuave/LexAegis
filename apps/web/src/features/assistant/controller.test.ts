@@ -112,6 +112,23 @@ describe('disclosure before anything is sent', () => {
     dispose(none);
   });
 
+  it('asks which passage an unclear follow-up means instead of assuming an earlier one', async () => {
+    const a = await assistantRig([done(), answer()]);
+    await a.assistant.submit('And what about the other one?');
+    expect(a.assistant.getSnapshot()).toMatchObject({ phase: 'idle', pending: null });
+    expect(a.assistant.getSnapshot().notice).toContain('Which passage is this about?');
+    expect(a.transportCalls.start).toBe(0);
+    // With a current selection the same text becomes a disclosed request about that selection.
+    a.assistant.setSelection(a.documentVersionId, [a.clause]);
+    await a.assistant.submit('And what about the other one?');
+    expect(a.assistant.getSnapshot().pending?.summary.excerpts).toHaveLength(1);
+    expect(a.assistant.getSnapshot().pending?.body).toMatchObject({
+      intent: null,
+      trigger: 'free_text',
+    });
+    dispose(a);
+  });
+
   it('includes earlier messages only as visible, bounded history that can be switched off', async () => {
     const a = await assistantRig([done(), answer(), done(), answer()]);
     a.assistant.setSelection(a.documentVersionId, [a.clause]);

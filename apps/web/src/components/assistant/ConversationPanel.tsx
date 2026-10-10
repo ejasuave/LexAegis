@@ -3,6 +3,7 @@
 import { useEffect, useRef } from 'react';
 import { useReview } from '@/components/review/review-context';
 import { useVault } from '@/components/vault/vault-context';
+import type { RunView } from '@/features/assistant/public';
 import { useAssistant } from './assistant-context';
 import { DisclosurePreview } from './DisclosurePreview';
 import { RunCard } from './RunCard';
@@ -22,6 +23,12 @@ export function ConversationPanel({ compact = false }: { compact?: boolean }) {
   useEffect(() => {
     end.current?.scrollIntoView({ block: 'nearest' });
   }, [count, snapshot.pending]);
+
+  /** Reopens the exact cited passage, only if it still matches the current verified artifacts. */
+  const open = (run: RunView | null, handle: string) => {
+    const focus = run === null ? null : (controller?.openSource(run.id, handle) ?? null);
+    if (focus !== null) setFocus(focus);
+  };
 
   const matter = vault.snapshot.selectedMatter;
   const pending = snapshot.pending;
@@ -48,17 +55,8 @@ export function ConversationPanel({ compact = false }: { compact?: boolean }) {
                 {item.text}
               </p>
             ) : item.run !== null ? (
-              <RunCard
-                run={item.run}
-                onOpenSource={(handle) => {
-                  const focus =
-                    item.run === null
-                      ? null
-                      : (controller?.openSource(item.run.id, handle) ?? null);
-                  if (focus !== null) setFocus(focus);
-                }}
-              >
-                <RunActions run={item.run} />
+              <RunCard run={item.run} onOpenSource={(handle) => open(item.run, handle)}>
+                <RunActions run={item.run} onOpenSource={(handle) => open(item.run, handle)} />
               </RunCard>
             ) : (
               <p

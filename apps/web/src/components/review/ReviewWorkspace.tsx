@@ -3,6 +3,7 @@
 import { AssistantOrb, orbLabel } from '@/components/assistant/AssistantOrb';
 import { useAssistant } from '@/components/assistant/assistant-context';
 import { ConversationPanel } from '@/components/assistant/ConversationPanel';
+import { describeContextEntry } from '@/features/assistant/public';
 import { ReadinessPanel } from '@/components/shell/ReadinessPanel';
 import { useVault } from '@/components/vault/vault-context';
 import { vaultStatusLabel } from '@/components/vault/status';
@@ -81,7 +82,7 @@ function MatterRail() {
               <span className="text-lj-muted">
                 {entry.status === 'confirmed' ? 'Confirmed' : 'Unconfirmed'}:{' '}
               </span>
-              {entry.text}
+              {describeContextEntry(entry.text)}
             </li>
           ))}
         </ul>
