@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
-  "currentChapter": "09",
-  "nextChapter": "07",
+  "currentChapter": "07",
+  "nextChapter": "10",
   "project": {
     "name": "LexAegis",
     "primitive": "Proof of Review",
@@ -19,7 +19,9 @@
       "title": "Runnable Monorepo, Shared Types and Build Checks",
       "additive": false,
       "state": "complete",
-      "evidence": ["chapter01.checks"],
+      "evidence": [
+        "chapter01.checks"
+      ],
       "chapterPromptPath": "build_instructions/prompt_library/LexAegis_Prompt_Library_Chapter_01_Targeted_Build_Tasks_v2_2.md"
     },
     {
@@ -27,7 +29,9 @@
       "title": "Receipt Format, Canonical Hashing and Private Commitments",
       "additive": false,
       "state": "complete",
-      "evidence": ["chapter02.checks"],
+      "evidence": [
+        "chapter02.checks"
+      ],
       "chapterPromptPath": "build_instructions/prompt_library/LexAegis_Prompt_Library_Chapter_02_Targeted_Build_Tasks_v1_0.md"
     },
     {
@@ -35,7 +39,9 @@
       "title": "Monad Registry, Approval Signatures and Receipt Lifecycle",
       "additive": false,
       "state": "complete",
-      "evidence": ["chapter03.checks"],
+      "evidence": [
+        "chapter03.checks"
+      ],
       "chapterPromptPath": "build_instructions/prompt_library/LexAegis_Prompt_Library_Chapter_03_Targeted_Build_Tasks_v1_0.md"
     },
     {
@@ -43,7 +49,9 @@
       "title": "Mera Passkeys, Signing Sessions and Account Recovery",
       "additive": false,
       "state": "complete",
-      "evidence": ["chapter04.checks"],
+      "evidence": [
+        "chapter04.checks"
+      ],
       "chapterPromptPath": "build_instructions/prompt_library/LexAegis_Prompt_Library_Chapter_04_Targeted_Build_Tasks_v1_0.md"
     },
     {
@@ -51,15 +59,19 @@
       "title": "Encrypted Evidence Vault, Stateless Recovery and Portable Export",
       "additive": false,
       "state": "complete",
-      "evidence": ["chapter05.checks"],
+      "evidence": [
+        "chapter05.checks"
+      ],
       "chapterPromptPath": "build_instructions/prompt_library/LexAegis_Prompt_Library_Chapter_05_Targeted_Build_Tasks_v1_0.md"
     },
     {
       "id": "06",
       "title": "Alchemy Transactions, Testnet Funding and Live Verification",
       "additive": false,
-      "state": "in-progress",
-      "evidence": ["chapter06.checks"],
+      "state": "complete",
+      "evidence": [
+        "chapter06.checks"
+      ],
       "chapterPromptPath": "build_instructions/prompt_library/LexAegis_Prompt_Library_Chapter_06_Targeted_Build_Tasks_v1_0.md"
     },
     {
@@ -75,7 +87,9 @@
       "title": "Document Intake, Source References and Deterministic Checks",
       "additive": false,
       "state": "complete",
-      "evidence": ["chapter08.checks"],
+      "evidence": [
+        "chapter08.checks"
+      ],
       "chapterPromptPath": "build_instructions/prompt_library/LexAegis_Prompt_Library_Chapter_08_Targeted_Build_Tasks_v1_0.md"
     },
     {
@@ -83,7 +97,9 @@
       "title": "Qwen 3.8 Max, Aegis Assistant Runtime and Review Tools",
       "additive": false,
       "state": "complete",
-      "evidence": ["chapter09.checks"],
+      "evidence": [
+        "chapter09.checks"
+      ],
       "chapterPromptPath": "build_instructions/prompt_library/LexAegis_Prompt_Library_Chapter_09_Targeted_Build_Tasks_v1_0.md"
     },
     {
@@ -123,7 +139,9 @@
       "title": "Scope Gates, Feature Flags and Golden-Path Smoke Test",
       "additive": true,
       "state": "in-progress",
-      "evidence": ["chapter14.checks"],
+      "evidence": [
+        "chapter14.checks"
+      ],
       "chapterPromptPath": "build_instructions/prompt_library/LexAegis_Prompt_Library_Chapter_14_Targeted_Build_Tasks_v1_0.md"
     },
     {
@@ -605,7 +623,11 @@
     "fixtures": {
       "vectors": "fixtures/protocol-v1/vectors.json",
       "generator": "fixtures/protocol-v1/generate.mjs",
-      "cases": ["generic", "legal", "legal-revised"]
+      "cases": [
+        "generic",
+        "legal",
+        "legal-revised"
+      ]
     },
     "modules": {
       "packages/protocol/src/v1": "constants, errors, bytes, primitives, parse-json (strict import), schemas, parse (version dispatch), canonicalize (RFC 8785), hashes, commitment, artifacts, prepared, prepare, verify, descriptor, json-schema",
@@ -758,7 +780,10 @@
         "nonceOf(address)",
         "protocolVersion()"
       ],
-      "stateChanging": ["execute", "invalidateNonce"]
+      "stateChanging": [
+        "execute",
+        "invalidateNonce"
+      ]
     },
     "actionCodes": {
       "ISSUE": 0,
@@ -788,7 +813,10 @@
       "ReceiptRevoked": "reviewer (indexed), commitment (indexed), nonce, timestamp",
       "ReceiptSuperseded": "reviewer (indexed), previousCommitment (indexed), replacementCommitment (indexed), nonce, timestamp",
       "NonceInvalidated": "reviewer (indexed), previousNonce, newNonce, timestamp",
-      "supersessionOrder": ["ReceiptIssued", "ReceiptSuperseded"],
+      "supersessionOrder": [
+        "ReceiptIssued",
+        "ReceiptSuperseded"
+      ],
       "supersessionNote": "One SUPERSEDE emits ReceiptIssued for the replacement (predecessor set) and then ReceiptSuperseded, in one transaction and with the same nonce. They are one atomic action: the replacement is counted once."
     },
     "customErrors": [
@@ -1233,7 +1261,9 @@
       },
       "evidenceClass": "local_scripted",
       "outcome": "pending",
-      "reasonCodes": ["PENDING_STEPS"],
+      "reasonCodes": [
+        "PENDING_STEPS"
+      ],
       "evidenceRefs": [
         {
           "type": "path",
@@ -1262,7 +1292,10 @@
       },
       "evidenceClass": "local_scripted",
       "outcome": "blocked",
-      "reasonCodes": ["T0_JOURNEY_PENDING", "OPTIONAL_FEATURES_UNIMPLEMENTED"],
+      "reasonCodes": [
+        "T0_JOURNEY_PENDING",
+        "OPTIONAL_FEATURES_UNIMPLEMENTED"
+      ],
       "evidenceRefs": [],
       "facts": {
         "configurations": "13",
@@ -1448,7 +1481,10 @@
       },
       "evidenceClass": "virtual_authenticator",
       "outcome": "pass",
-      "reasonCodes": ["AUTHENTICATOR_MODE_VIRTUAL", "PASSKEY_STEP_REQUIRES_REAL_DEVICE_EVIDENCE"],
+      "reasonCodes": [
+        "AUTHENTICATOR_MODE_VIRTUAL",
+        "PASSKEY_STEP_REQUIRES_REAL_DEVICE_EVIDENCE"
+      ],
       "evidenceRefs": [],
       "facts": {
         "browser": "chromium 153.0.8010.12",
@@ -1478,7 +1514,10 @@
       },
       "evidenceClass": "virtual_authenticator",
       "outcome": "pass",
-      "reasonCodes": ["AUTHENTICATOR_MODE_VIRTUAL", "PASSKEY_STEP_REQUIRES_REAL_DEVICE_EVIDENCE"],
+      "reasonCodes": [
+        "AUTHENTICATOR_MODE_VIRTUAL",
+        "PASSKEY_STEP_REQUIRES_REAL_DEVICE_EVIDENCE"
+      ],
       "evidenceRefs": [],
       "facts": {
         "browser": "chromium 153.0.8010.12",
@@ -1701,7 +1740,10 @@
       },
       "evidenceClass": "virtual_authenticator",
       "outcome": "pass",
-      "reasonCodes": ["AUTHENTICATOR_MODE_VIRTUAL", "PASSKEY_STEP_REQUIRES_REAL_DEVICE_EVIDENCE"],
+      "reasonCodes": [
+        "AUTHENTICATOR_MODE_VIRTUAL",
+        "PASSKEY_STEP_REQUIRES_REAL_DEVICE_EVIDENCE"
+      ],
       "evidenceRefs": [],
       "facts": {
         "browser": "chromium 153.0.8010.12",
@@ -1796,7 +1838,10 @@
       },
       "evidenceClass": "virtual_authenticator",
       "outcome": "pass",
-      "reasonCodes": ["AUTHENTICATOR_MODE_VIRTUAL", "PASSKEY_STEP_REQUIRES_REAL_DEVICE_EVIDENCE"],
+      "reasonCodes": [
+        "AUTHENTICATOR_MODE_VIRTUAL",
+        "PASSKEY_STEP_REQUIRES_REAL_DEVICE_EVIDENCE"
+      ],
       "evidenceRefs": [],
       "facts": {
         "browser": "chromium 153.0.8010.12",
@@ -1825,7 +1870,10 @@
       },
       "evidenceClass": "virtual_authenticator",
       "outcome": "pass",
-      "reasonCodes": ["AUTHENTICATOR_MODE_VIRTUAL", "PASSKEY_STEP_REQUIRES_REAL_DEVICE_EVIDENCE"],
+      "reasonCodes": [
+        "AUTHENTICATOR_MODE_VIRTUAL",
+        "PASSKEY_STEP_REQUIRES_REAL_DEVICE_EVIDENCE"
+      ],
       "evidenceRefs": [],
       "facts": {
         "browser": "chromium 153.0.8010.12",
@@ -1855,7 +1903,10 @@
       },
       "evidenceClass": "virtual_authenticator",
       "outcome": "pass",
-      "reasonCodes": ["AUTHENTICATOR_MODE_VIRTUAL", "PASSKEY_STEP_REQUIRES_REAL_DEVICE_EVIDENCE"],
+      "reasonCodes": [
+        "AUTHENTICATOR_MODE_VIRTUAL",
+        "PASSKEY_STEP_REQUIRES_REAL_DEVICE_EVIDENCE"
+      ],
       "evidenceRefs": [],
       "facts": {
         "browser": "chromium 153.0.8010.12",
@@ -2044,7 +2095,10 @@
       },
       "evidenceClass": "virtual_authenticator",
       "outcome": "pass",
-      "reasonCodes": ["AUTHENTICATOR_MODE_VIRTUAL", "PASSKEY_STEP_REQUIRES_REAL_DEVICE_EVIDENCE"],
+      "reasonCodes": [
+        "AUTHENTICATOR_MODE_VIRTUAL",
+        "PASSKEY_STEP_REQUIRES_REAL_DEVICE_EVIDENCE"
+      ],
       "evidenceRefs": [],
       "facts": {
         "browser": "chromium 153.0.8010.12",
@@ -2073,7 +2127,10 @@
       },
       "evidenceClass": "virtual_authenticator",
       "outcome": "pass",
-      "reasonCodes": ["AUTHENTICATOR_MODE_VIRTUAL", "PASSKEY_STEP_REQUIRES_REAL_DEVICE_EVIDENCE"],
+      "reasonCodes": [
+        "AUTHENTICATOR_MODE_VIRTUAL",
+        "PASSKEY_STEP_REQUIRES_REAL_DEVICE_EVIDENCE"
+      ],
       "evidenceRefs": [],
       "facts": {
         "browser": "chromium 153.0.8010.12",
@@ -2123,7 +2180,9 @@
       },
       "evidenceClass": "local_scripted",
       "outcome": "fail",
-      "reasonCodes": ["EXIT_1"],
+      "reasonCodes": [
+        "EXIT_1"
+      ],
       "evidenceRefs": []
     },
     {
@@ -2163,7 +2222,9 @@
       },
       "evidenceClass": "local_scripted",
       "outcome": "fail",
-      "reasonCodes": ["EXIT_1"],
+      "reasonCodes": [
+        "EXIT_1"
+      ],
       "evidenceRefs": []
     },
     {
@@ -2183,7 +2244,9 @@
       },
       "evidenceClass": "local_scripted",
       "outcome": "fail",
-      "reasonCodes": ["EXIT_1"],
+      "reasonCodes": [
+        "EXIT_1"
+      ],
       "evidenceRefs": []
     },
     {
@@ -2243,7 +2306,9 @@
       },
       "evidenceClass": "local_scripted",
       "outcome": "fail",
-      "reasonCodes": ["CHECKS_NOT_ALL_PASSED"],
+      "reasonCodes": [
+        "CHECKS_NOT_ALL_PASSED"
+      ],
       "evidenceRefs": []
     },
     {
@@ -2263,7 +2328,10 @@
       },
       "evidenceClass": "virtual_authenticator",
       "outcome": "pass",
-      "reasonCodes": ["AUTHENTICATOR_MODE_VIRTUAL", "PASSKEY_STEP_REQUIRES_REAL_DEVICE_EVIDENCE"],
+      "reasonCodes": [
+        "AUTHENTICATOR_MODE_VIRTUAL",
+        "PASSKEY_STEP_REQUIRES_REAL_DEVICE_EVIDENCE"
+      ],
       "evidenceRefs": [],
       "facts": {
         "browser": "chromium 153.0.8010.12",
@@ -2293,7 +2361,10 @@
       },
       "evidenceClass": "virtual_authenticator",
       "outcome": "pass",
-      "reasonCodes": ["AUTHENTICATOR_MODE_VIRTUAL", "PASSKEY_STEP_REQUIRES_REAL_DEVICE_EVIDENCE"],
+      "reasonCodes": [
+        "AUTHENTICATOR_MODE_VIRTUAL",
+        "PASSKEY_STEP_REQUIRES_REAL_DEVICE_EVIDENCE"
+      ],
       "evidenceRefs": [],
       "facts": {
         "browser": "chromium 153.0.8010.12",
@@ -2322,7 +2393,10 @@
       },
       "evidenceClass": "virtual_authenticator",
       "outcome": "pass",
-      "reasonCodes": ["AUTHENTICATOR_MODE_VIRTUAL", "SYNTHETIC_DOCUMENTS_ONLY"],
+      "reasonCodes": [
+        "AUTHENTICATOR_MODE_VIRTUAL",
+        "SYNTHETIC_DOCUMENTS_ONLY"
+      ],
       "evidenceRefs": [],
       "facts": {
         "browser": "chromium 153.0.8010.12",
@@ -2350,7 +2424,10 @@
       },
       "evidenceClass": "virtual_authenticator",
       "outcome": "pass",
-      "reasonCodes": ["AUTHENTICATOR_MODE_VIRTUAL", "SYNTHETIC_DOCUMENTS_ONLY"],
+      "reasonCodes": [
+        "AUTHENTICATOR_MODE_VIRTUAL",
+        "SYNTHETIC_DOCUMENTS_ONLY"
+      ],
       "evidenceRefs": [],
       "facts": {
         "browser": "chromium 153.0.8010.12",
@@ -2378,7 +2455,10 @@
       },
       "evidenceClass": "virtual_authenticator",
       "outcome": "pass",
-      "reasonCodes": ["AUTHENTICATOR_MODE_VIRTUAL", "SYNTHETIC_DOCUMENTS_ONLY"],
+      "reasonCodes": [
+        "AUTHENTICATOR_MODE_VIRTUAL",
+        "SYNTHETIC_DOCUMENTS_ONLY"
+      ],
       "evidenceRefs": [],
       "facts": {
         "browser": "chromium 153.0.8010.12",
@@ -2406,7 +2486,10 @@
       },
       "evidenceClass": "virtual_authenticator",
       "outcome": "pass",
-      "reasonCodes": ["AUTHENTICATOR_MODE_VIRTUAL", "PASSKEY_STEP_REQUIRES_REAL_DEVICE_EVIDENCE"],
+      "reasonCodes": [
+        "AUTHENTICATOR_MODE_VIRTUAL",
+        "PASSKEY_STEP_REQUIRES_REAL_DEVICE_EVIDENCE"
+      ],
       "evidenceRefs": [],
       "facts": {
         "browser": "chromium 153.0.8010.12",
@@ -2435,7 +2518,10 @@
       },
       "evidenceClass": "virtual_authenticator",
       "outcome": "pass",
-      "reasonCodes": ["AUTHENTICATOR_MODE_VIRTUAL", "PASSKEY_STEP_REQUIRES_REAL_DEVICE_EVIDENCE"],
+      "reasonCodes": [
+        "AUTHENTICATOR_MODE_VIRTUAL",
+        "PASSKEY_STEP_REQUIRES_REAL_DEVICE_EVIDENCE"
+      ],
       "evidenceRefs": [],
       "facts": {
         "browser": "chromium 153.0.8010.12",
@@ -2465,7 +2551,10 @@
       },
       "evidenceClass": "virtual_authenticator",
       "outcome": "pass",
-      "reasonCodes": ["AUTHENTICATOR_MODE_VIRTUAL", "PASSKEY_STEP_REQUIRES_REAL_DEVICE_EVIDENCE"],
+      "reasonCodes": [
+        "AUTHENTICATOR_MODE_VIRTUAL",
+        "PASSKEY_STEP_REQUIRES_REAL_DEVICE_EVIDENCE"
+      ],
       "evidenceRefs": [],
       "facts": {
         "browser": "chromium 153.0.8010.12",
@@ -2495,7 +2584,10 @@
       },
       "evidenceClass": "real_device",
       "outcome": "pass",
-      "reasonCodes": ["OPERATOR_REPORTED", "SECOND_DEVICE_NOT_SHOWN"],
+      "reasonCodes": [
+        "OPERATOR_REPORTED",
+        "SECOND_DEVICE_NOT_SHOWN"
+      ],
       "evidenceRefs": [],
       "facts": {
         "address": "0x7e03648ff57557d9c0eddb786c6f840d29452cc1",
@@ -2547,7 +2639,9 @@
       },
       "evidenceClass": "local_scripted",
       "outcome": "fail",
-      "reasonCodes": ["EXIT_1"],
+      "reasonCodes": [
+        "EXIT_1"
+      ],
       "evidenceRefs": []
     },
     {
@@ -2587,7 +2681,9 @@
       },
       "evidenceClass": "local_scripted",
       "outcome": "fail",
-      "reasonCodes": ["EXIT_1"],
+      "reasonCodes": [
+        "EXIT_1"
+      ],
       "evidenceRefs": []
     },
     {
@@ -2667,7 +2763,9 @@
       },
       "evidenceClass": "local_scripted",
       "outcome": "fail",
-      "reasonCodes": ["CHECKS_NOT_ALL_PASSED"],
+      "reasonCodes": [
+        "CHECKS_NOT_ALL_PASSED"
+      ],
       "evidenceRefs": []
     },
     {
@@ -2707,7 +2805,9 @@
       },
       "evidenceClass": "local_scripted",
       "outcome": "fail",
-      "reasonCodes": ["EXIT_1"],
+      "reasonCodes": [
+        "EXIT_1"
+      ],
       "evidenceRefs": []
     },
     {
@@ -2747,7 +2847,9 @@
       },
       "evidenceClass": "local_scripted",
       "outcome": "fail",
-      "reasonCodes": ["EXIT_1"],
+      "reasonCodes": [
+        "EXIT_1"
+      ],
       "evidenceRefs": []
     },
     {
@@ -2827,7 +2929,9 @@
       },
       "evidenceClass": "local_scripted",
       "outcome": "fail",
-      "reasonCodes": ["CHECKS_NOT_ALL_PASSED"],
+      "reasonCodes": [
+        "CHECKS_NOT_ALL_PASSED"
+      ],
       "evidenceRefs": []
     },
     {
@@ -2847,7 +2951,10 @@
       },
       "evidenceClass": "virtual_authenticator",
       "outcome": "pass",
-      "reasonCodes": ["AUTHENTICATOR_MODE_VIRTUAL", "PASSKEY_STEP_REQUIRES_REAL_DEVICE_EVIDENCE"],
+      "reasonCodes": [
+        "AUTHENTICATOR_MODE_VIRTUAL",
+        "PASSKEY_STEP_REQUIRES_REAL_DEVICE_EVIDENCE"
+      ],
       "evidenceRefs": [],
       "facts": {
         "browser": "chromium 153.0.8010.12",
@@ -2876,7 +2983,11 @@
       },
       "evidenceClass": "real_device",
       "outcome": "fail",
-      "reasonCodes": ["OPERATOR_REPORTED", "SECOND_DEVICE_NOT_SHOWN", "EXPORT_IMPORT_NOT_SHOWN"],
+      "reasonCodes": [
+        "OPERATOR_REPORTED",
+        "SECOND_DEVICE_NOT_SHOWN",
+        "EXPORT_IMPORT_NOT_SHOWN"
+      ],
       "evidenceRefs": [],
       "facts": {
         "browser": "Chrome",
@@ -3009,7 +3120,10 @@
       },
       "evidenceClass": "virtual_authenticator",
       "outcome": "pass",
-      "reasonCodes": ["AUTHENTICATOR_MODE_VIRTUAL", "SYNTHETIC_DOCUMENTS_ONLY"],
+      "reasonCodes": [
+        "AUTHENTICATOR_MODE_VIRTUAL",
+        "SYNTHETIC_DOCUMENTS_ONLY"
+      ],
       "evidenceRefs": [],
       "facts": {
         "browser": "chromium 153.0.8010.12",
@@ -3037,7 +3151,10 @@
       },
       "evidenceClass": "virtual_authenticator",
       "outcome": "pass",
-      "reasonCodes": ["AUTHENTICATOR_MODE_VIRTUAL", "PASSKEY_STEP_REQUIRES_REAL_DEVICE_EVIDENCE"],
+      "reasonCodes": [
+        "AUTHENTICATOR_MODE_VIRTUAL",
+        "PASSKEY_STEP_REQUIRES_REAL_DEVICE_EVIDENCE"
+      ],
       "evidenceRefs": [],
       "facts": {
         "browser": "chromium 153.0.8010.12",
@@ -3066,7 +3183,10 @@
       },
       "evidenceClass": "virtual_authenticator",
       "outcome": "pass",
-      "reasonCodes": ["AUTHENTICATOR_MODE_VIRTUAL", "PASSKEY_STEP_REQUIRES_REAL_DEVICE_EVIDENCE"],
+      "reasonCodes": [
+        "AUTHENTICATOR_MODE_VIRTUAL",
+        "PASSKEY_STEP_REQUIRES_REAL_DEVICE_EVIDENCE"
+      ],
       "evidenceRefs": [],
       "facts": {
         "browser": "chromium 153.0.8010.12",
@@ -3116,7 +3236,9 @@
       },
       "evidenceClass": "local_scripted",
       "outcome": "fail",
-      "reasonCodes": ["EXIT_1"],
+      "reasonCodes": [
+        "EXIT_1"
+      ],
       "evidenceRefs": []
     },
     {
@@ -3156,7 +3278,9 @@
       },
       "evidenceClass": "local_scripted",
       "outcome": "fail",
-      "reasonCodes": ["EXIT_1"],
+      "reasonCodes": [
+        "EXIT_1"
+      ],
       "evidenceRefs": []
     },
     {
@@ -3236,7 +3360,9 @@
       },
       "evidenceClass": "local_scripted",
       "outcome": "fail",
-      "reasonCodes": ["CHECKS_NOT_ALL_PASSED"],
+      "reasonCodes": [
+        "CHECKS_NOT_ALL_PASSED"
+      ],
       "evidenceRefs": []
     },
     {
@@ -3316,7 +3442,9 @@
       },
       "evidenceClass": "local_scripted",
       "outcome": "fail",
-      "reasonCodes": ["EXIT_1"],
+      "reasonCodes": [
+        "EXIT_1"
+      ],
       "evidenceRefs": []
     },
     {
@@ -3416,7 +3544,10 @@
       },
       "evidenceClass": "local_scripted",
       "outcome": "blocked",
-      "reasonCodes": ["T0_JOURNEY_PENDING", "OPTIONAL_FEATURES_UNIMPLEMENTED"],
+      "reasonCodes": [
+        "T0_JOURNEY_PENDING",
+        "OPTIONAL_FEATURES_UNIMPLEMENTED"
+      ],
       "evidenceRefs": [],
       "facts": {
         "configurations": "13",
@@ -3424,6 +3555,168 @@
         "appliedProjectCuts": "0",
         "fingerprint": "720570aa2a98d415"
       }
+    },
+    {
+      "id": "rd-20261010232546-829ded-check-typecheck",
+      "subject": "check-typecheck",
+      "sourceRevision": {
+        "commit": "6127f4a7716e30bafdc3314157615af6b812ad61",
+        "dirtyWorktree": false,
+        "contentFingerprint": "720570aa2a98d4151360d67146a240e4e54db575112c616cf3b09de7b87e5fd3"
+      },
+      "checkedAt": "2026-10-10T23:25:46.728Z",
+      "command": "pnpm readiness",
+      "environment": {
+        "node": "v24.21.0",
+        "os": "linux-x64",
+        "pnpm": "11.11.0"
+      },
+      "evidenceClass": "local_scripted",
+      "outcome": "pass",
+      "reasonCodes": [],
+      "evidenceRefs": []
+    },
+    {
+      "id": "rd-20261010232546-829ded-check-unit-tests",
+      "subject": "check-unit-tests",
+      "sourceRevision": {
+        "commit": "6127f4a7716e30bafdc3314157615af6b812ad61",
+        "dirtyWorktree": false,
+        "contentFingerprint": "720570aa2a98d4151360d67146a240e4e54db575112c616cf3b09de7b87e5fd3"
+      },
+      "checkedAt": "2026-10-10T23:25:46.728Z",
+      "command": "pnpm readiness",
+      "environment": {
+        "node": "v24.21.0",
+        "os": "linux-x64",
+        "pnpm": "11.11.0"
+      },
+      "evidenceClass": "local_scripted",
+      "outcome": "pass",
+      "reasonCodes": [],
+      "evidenceRefs": []
+    },
+    {
+      "id": "rd-20261010232546-829ded-check-forge-test",
+      "subject": "check-forge-test",
+      "sourceRevision": {
+        "commit": "6127f4a7716e30bafdc3314157615af6b812ad61",
+        "dirtyWorktree": false,
+        "contentFingerprint": "720570aa2a98d4151360d67146a240e4e54db575112c616cf3b09de7b87e5fd3"
+      },
+      "checkedAt": "2026-10-10T23:25:46.728Z",
+      "command": "pnpm readiness",
+      "environment": {
+        "node": "v24.21.0",
+        "os": "linux-x64",
+        "pnpm": "11.11.0"
+      },
+      "evidenceClass": "local_scripted",
+      "outcome": "pass",
+      "reasonCodes": [],
+      "evidenceRefs": []
+    },
+    {
+      "id": "rd-20261010232546-829ded-check-secret-scan",
+      "subject": "check-secret-scan",
+      "sourceRevision": {
+        "commit": "6127f4a7716e30bafdc3314157615af6b812ad61",
+        "dirtyWorktree": false,
+        "contentFingerprint": "720570aa2a98d4151360d67146a240e4e54db575112c616cf3b09de7b87e5fd3"
+      },
+      "checkedAt": "2026-10-10T23:25:46.728Z",
+      "command": "pnpm readiness",
+      "environment": {
+        "node": "v24.21.0",
+        "os": "linux-x64",
+        "pnpm": "11.11.0"
+      },
+      "evidenceClass": "local_scripted",
+      "outcome": "fail",
+      "reasonCodes": [
+        "EXIT_1"
+      ],
+      "evidenceRefs": []
+    },
+    {
+      "id": "rd-20261010232546-829ded-check-protected-baselines",
+      "subject": "check-protected-baselines",
+      "sourceRevision": {
+        "commit": "6127f4a7716e30bafdc3314157615af6b812ad61",
+        "dirtyWorktree": false,
+        "contentFingerprint": "720570aa2a98d4151360d67146a240e4e54db575112c616cf3b09de7b87e5fd3"
+      },
+      "checkedAt": "2026-10-10T23:25:46.728Z",
+      "command": "pnpm readiness",
+      "environment": {
+        "node": "v24.21.0",
+        "os": "linux-x64",
+        "pnpm": "11.11.0"
+      },
+      "evidenceClass": "local_scripted",
+      "outcome": "pass",
+      "reasonCodes": [],
+      "evidenceRefs": []
+    },
+    {
+      "id": "rd-20261010232546-829ded-check-build",
+      "subject": "check-build",
+      "sourceRevision": {
+        "commit": "6127f4a7716e30bafdc3314157615af6b812ad61",
+        "dirtyWorktree": false,
+        "contentFingerprint": "720570aa2a98d4151360d67146a240e4e54db575112c616cf3b09de7b87e5fd3"
+      },
+      "checkedAt": "2026-10-10T23:25:46.728Z",
+      "command": "pnpm readiness",
+      "environment": {
+        "node": "v24.21.0",
+        "os": "linux-x64",
+        "pnpm": "11.11.0"
+      },
+      "evidenceClass": "local_scripted",
+      "outcome": "pass",
+      "reasonCodes": [],
+      "evidenceRefs": []
+    },
+    {
+      "id": "rd-20261010232546-829ded-check-exclusion",
+      "subject": "check-exclusion",
+      "sourceRevision": {
+        "commit": "6127f4a7716e30bafdc3314157615af6b812ad61",
+        "dirtyWorktree": false,
+        "contentFingerprint": "720570aa2a98d4151360d67146a240e4e54db575112c616cf3b09de7b87e5fd3"
+      },
+      "checkedAt": "2026-10-10T23:25:46.728Z",
+      "command": "pnpm readiness",
+      "environment": {
+        "node": "v24.21.0",
+        "os": "linux-x64",
+        "pnpm": "11.11.0"
+      },
+      "evidenceClass": "local_scripted",
+      "outcome": "pass",
+      "reasonCodes": [],
+      "evidenceRefs": []
+    },
+    {
+      "id": "rd-20261010232546-829ded-chapters-1-3-checks",
+      "subject": "chapters-1-3-checks",
+      "sourceRevision": {
+        "commit": "6127f4a7716e30bafdc3314157615af6b812ad61",
+        "dirtyWorktree": false,
+        "contentFingerprint": "720570aa2a98d4151360d67146a240e4e54db575112c616cf3b09de7b87e5fd3"
+      },
+      "checkedAt": "2026-10-10T23:25:46.728Z",
+      "command": "pnpm readiness",
+      "environment": {
+        "node": "v24.21.0",
+        "os": "linux-x64",
+        "pnpm": "11.11.0"
+      },
+      "evidenceClass": "local_scripted",
+      "outcome": "pass",
+      "reasonCodes": [],
+      "evidenceRefs": []
     }
   ],
   "appliedCuts": [],
@@ -3451,7 +3744,7 @@
             "id": "A1",
             "label": "Chapters 1–3 build and tests pass",
             "state": "satisfied",
-            "resultId": "rd-20261010022400-87feaa-chapters-1-3-checks"
+            "resultId": "rd-20261010232546-829ded-chapters-1-3-checks"
           },
           {
             "id": "A2",
@@ -3460,8 +3753,11 @@
             "resultId": null
           }
         ],
-        "reasons": ["MISSING:A2", "UNPROVEN_AT_CUTOFF"],
-        "observedAt": "2026-10-10T02:24:00.863Z"
+        "reasons": [
+          "MISSING:A2",
+          "UNPROVEN_AT_CUTOFF"
+        ],
+        "observedAt": "2026-10-10T23:25:46.728Z"
       },
       {
         "gate": "B",
@@ -3487,13 +3783,18 @@
             "resultId": null
           }
         ],
-        "reasons": ["MISSING:B1", "MISSING:B2", "MISSING:B3", "UNPROVEN_AT_CUTOFF"],
+        "reasons": [
+          "MISSING:B1",
+          "MISSING:B2",
+          "MISSING:B3",
+          "UNPROVEN_AT_CUTOFF"
+        ],
         "observedAt": null
       },
       {
         "gate": "C",
         "target": "2026-10-10T23:59:59+01:00",
-        "outcome": "unknown",
+        "outcome": "fail",
         "requirements": [
           {
             "id": "C1",
@@ -3508,7 +3809,11 @@
             "resultId": null
           }
         ],
-        "reasons": ["MISSING:C1", "MISSING:C2"],
+        "reasons": [
+          "MISSING:C1",
+          "MISSING:C2",
+          "UNPROVEN_AT_CUTOFF"
+        ],
         "observedAt": null
       },
       {
@@ -3571,7 +3876,7 @@
         "HOSTED_T0_INCOMPLETE: dropping the bounties does not complete the hosted golden path"
       ]
     },
-    "evaluatedAt": "2026-10-10T02:24:00.863Z"
+    "evaluatedAt": "2026-10-10T23:25:46.728Z"
   },
   "cutLadder": {
     "order": [
@@ -3605,11 +3910,11 @@
     }
   },
   "readiness": {
-    "runId": "rd-20261010022400-87feaa",
-    "generatedAt": "2026-10-10T02:24:00.863Z",
+    "runId": "rd-20261010232546-829ded",
+    "generatedAt": "2026-10-10T23:25:46.728Z",
     "live": false,
     "fingerprint": "720570aa2a98d4151360d67146a240e4e54db575112c616cf3b09de7b87e5fd3",
-    "totalMs": 24079,
+    "totalMs": 28322,
     "versions": {
       "node": "v24.21.0",
       "pnpm": "11.11.0",
@@ -3620,43 +3925,43 @@
         "id": "typecheck",
         "outcome": "pass",
         "reason": "OK",
-        "durationMs": 14908
+        "durationMs": 18377
       },
       {
         "id": "unit-tests",
         "outcome": "pass",
         "reason": "OK",
-        "durationMs": 8513
+        "durationMs": 10117
       },
       {
         "id": "forge-test",
         "outcome": "pass",
         "reason": "OK",
-        "durationMs": 19297
+        "durationMs": 21022
       },
       {
         "id": "secret-scan",
         "outcome": "fail",
         "reason": "EXIT_1",
-        "durationMs": 614
+        "durationMs": 609
       },
       {
         "id": "protected-baselines",
         "outcome": "pass",
         "reason": "OK",
-        "durationMs": 555
+        "durationMs": 554
       },
       {
         "id": "build",
         "outcome": "pass",
         "reason": "OK",
-        "durationMs": 4300
+        "durationMs": 4750
       },
       {
         "id": "exclusion",
         "outcome": "pass",
         "reason": "OK",
-        "durationMs": 739
+        "durationMs": 761
       }
     ]
   },
@@ -3725,7 +4030,9 @@
         "name": "ladder-5-nonessential-orb-animation",
         "effective": "7059ede017cc",
         "enabled": [],
-        "presentation": ["nonessential-orb-animation"],
+        "presentation": [
+          "nonessential-orb-animation"
+        ],
         "outcome": "blocked",
         "reason": "T0_JOURNEY_PENDING"
       },
@@ -3733,7 +4040,10 @@
         "name": "ladder-6-history-ui-polish",
         "effective": "046d77a117a6",
         "enabled": [],
-        "presentation": ["nonessential-orb-animation", "history-ui-polish"],
+        "presentation": [
+          "nonessential-orb-animation",
+          "history-ui-polish"
+        ],
         "outcome": "blocked",
         "reason": "T0_JOURNEY_PENDING"
       },
@@ -4145,7 +4455,7 @@
   },
   "chapter06": {
     "startedOn": "2026-10-09",
-    "state": "in-progress",
+    "state": "complete",
     "note": "Deployed to Monad Testnet and run end to end on the real network on 2026-10-09 through the configured Alchemy endpoint. The chain, registry, funding and transactions are real (live_testnet). The passkey is not: the authenticator was a scripted WebAuthn double driving the real Mera functions, and the vault server was in memory, so no step is user-controlled-credential or real-device evidence and none of it is Gate B passkey evidence. Packages are synthetic; this is not a legal review. The chapter stays in-progress until a real-device passkey run exists.",
     "resolvedDependencies": {
       "viem": "2.57.3 (unchanged; explicit HTTP transport, retryCount 0 for broadcasts)",
@@ -4210,6 +4520,17 @@
         "command": "pnpm baselines:check",
         "outcome": "pass",
         "notes": "Rewritten on the owner's instruction after the earlier bulk rename edit (43 files plus the compiled registry); the old file was removed first because --write refuses to overwrite."
+      },
+      "authDb": {
+        "command": "pnpm test:auth:db",
+        "outcome": "pass",
+        "evidenceClass": "local_scripted",
+        "notes": "4 files, 56 tests, observed 2026-10-11."
+      },
+      "readinessRun": {
+        "command": "pnpm readiness",
+        "outcome": "fail",
+        "notes": "typecheck, unit-tests, forge-test, protected-baselines, build, exclusion passed. secret-scan failed: KEY_ASSIGNMENT and PROVIDER_KEY_URL in the git-ignored, untracked .env (local credentials; not in the repository). Gates A-D report fail/unknown as computed; not edited."
       }
     },
     "blocked": {
@@ -4257,7 +4578,9 @@
       "corroboration": "Dev database showed 4 backend sessions for one address 0x7e03648ff57557d9c0eddb786c6f840d29452cc1 and one funding grant to it, confirmed on Monad Testnet (tx 0xd06efe0c01b75436074752604a266da74ccec68529f4fc48c4aecb96cb803873). The database held no chain_operations row, so no registry transaction was signed or sent from the UI.",
       "notRecorded": "Browser, OS, authenticator, prompt counts and timings were not supplied, so no real_device result was written with pnpm account:record-device-check.",
       "stillMissing": "A real-device signature on an exact registry action (Gate B B1) needs the Chapter 10 review UI; B3 needs the Chapter 11 verifier. Gates are computed by pnpm readiness and were not edited."
-    }
+    },
+    "completedOn": "2026-10-11",
+    "completionNote": "Marked complete on the owner instruction after all Chapter 6 checks and the live_testnet run passed. Carried forward, not satisfied: real-device passkey run (no real_device record exists), Gate B (needs Chapter 10 UI signature and Chapter 11 verifier), readiness secret-scan on local .env."
   },
   "chapter08": {
     "completedOn": "2026-10-09",
@@ -4419,10 +4742,26 @@
           "docs/evidence/chapter09-qwen-smoke-2026-10-10.json"
         ]
       },
+      "16": {
+        "status": "complete",
+        "summary": "Gate run recorded below; CLAUDE.md (450 words) and docs/assistant-ui-contract.md (1,200 words) updated by replacing stale statements; Chapter 10 handoff written.",
+        "files": [
+          "docs/build-state.json",
+          "CLAUDE.md",
+          "docs/assistant-ui-contract.md",
+          "tooling/src/secrets.ts (skips the per-check Next.js build directories; allowlists the adapter test's deliberately invalid URLs)",
+          "apps/web/src/features/documents/pipeline.test.ts (clock frozen for one step)",
+          ".prettierignore"
+        ]
+      },
       "01": {
         "status": "complete",
         "summary": "Documentation read; import boundaries added for the browser-safe review export, the production runtime and the test adapters.",
-        "files": ["eslint.config.mjs", ".gitignore", ".prettierignore"]
+        "files": [
+          "eslint.config.mjs",
+          ".gitignore",
+          ".prettierignore"
+        ]
       },
       "02": {
         "status": "complete",
@@ -4477,7 +4816,9 @@
       "07": {
         "status": "complete",
         "summary": "Final-output validator: closed schema, size limits, handle resolution against the consented catalog, the pinned rules and this run's successful tool results, proposal validation as FactCandidateV1, plain-text handling and action allowlist.",
-        "files": ["packages/agent/src/runtime/validate-output.ts"]
+        "files": [
+          "packages/agent/src/runtime/validate-output.ts"
+        ]
       },
       "08": {
         "status": "complete",
@@ -4499,18 +4840,6 @@
           "packages/agent/src/contracts/events.ts",
           "packages/agent/src/ports.ts",
           "packages/agent/src/testing/agent-harness.ts"
-        ]
-      },
-      "16": {
-        "status": "complete",
-        "summary": "Gate run recorded below; CLAUDE.md (450 words) and docs/assistant-ui-contract.md (1,200 words) updated by replacing stale statements; Chapter 10 handoff written.",
-        "files": [
-          "docs/build-state.json",
-          "CLAUDE.md",
-          "docs/assistant-ui-contract.md",
-          "tooling/src/secrets.ts (skips the per-check Next.js build directories; allowlists the adapter test's deliberately invalid URLs)",
-          "apps/web/src/features/documents/pipeline.test.ts (clock frozen for one step)",
-          ".prettierignore"
         ]
       }
     },
@@ -4547,7 +4876,10 @@
       "manifestVersion": "1",
       "words": "common policy 463; with the largest intent asset 570 (limit 1,200)",
       "hashing": "SHA-256 of exact UTF-8 asset bytes; SHA-256 of RFC 8785 canonical JSON for the output, intent-selection and tool schemas; digests live in the manifest and the generated module, never inside hashed content",
-      "commands": ["pnpm agent:prompts:generate", "pnpm agent:prompts:check"],
+      "commands": [
+        "pnpm agent:prompts:generate",
+        "pnpm agent:prompts:check"
+      ],
       "toolsByIntent": "summarise: read_sources; explain: read_sources, get_rules; check_payments: read_sources, get_rules, check_payments; missing_evidence: read_sources, get_rules, check_evidence; brief_matter: read_sources, check_payments, check_evidence, get_status; prepare_review: get_rules, check_payments, check_evidence, prepare_review; status: get_status",
       "decisions": [
         "The model is shown source handles and minimal metadata; excerpt text is read through read_sources, so every document read is a native tool call over the consented catalog.",
