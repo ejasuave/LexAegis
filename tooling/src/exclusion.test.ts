@@ -1,4 +1,4 @@
-import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs';
+import { mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { afterEach, describe, expect, it } from 'vitest';
@@ -83,6 +83,51 @@ describe('artifact scan', () => {
     expect(
       scanArtifacts([join(root, 'dist')], { allowedPaths: ['fixtures/demo-agreement.pdf'] }),
     ).toEqual([]);
+  });
+});
+
+describe('public interoperability vectors (Chapter 15)', () => {
+  // The published asset is read as bytes from the repository; tooling imports no package code.
+  const published = readFileSync(
+    join(
+      import.meta.dirname,
+      '..',
+      '..',
+      'packages',
+      'protocol',
+      'test-vectors',
+      'protocol-v1.json',
+    ),
+    'utf8',
+  );
+
+  it('permits the public synthetic vectors in a distributable', () => {
+    const root = tree({
+      'package/dist/index.js': 'export {};',
+      'package/test-vectors/protocol-v1.json': published,
+      'package/test-vectors/README.md': '# vectors',
+    });
+    expect(scanArtifacts([join(root, 'package')])).toEqual([]);
+  });
+
+  it('still rejects test signers, replays and development keys beside the vectors', () => {
+    const root = tree({
+      'package/test-vectors/protocol-v1.json': published,
+      'package/test-vectors/signer.json': `{"key":"0x${KNOWN_TEST_SECRETS[0]}"}`,
+      'package/test-vectors/replay.json': '{"provider":"ReplayProvider"}',
+    });
+    const found = scanArtifacts([join(root, 'package')]);
+    expect(found.map((f) => `${f.rule}:${f.file}`).sort()).toEqual([
+      'TEST_MARKER_TEXT:test-vectors/replay.json',
+      'TEST_SECRET_LITERAL:test-vectors/signer.json',
+    ]);
+  });
+
+  it('still classifies the signed registry fixtures as test artifacts', () => {
+    const root = tree({ 'package/fixtures/registry-v1/vectors.json': '{}' });
+    expect(scanArtifacts([join(root, 'package')]).map((f) => f.rule)).toEqual([
+      'TEST_ARTIFACT_PATH',
+    ]);
   });
 });
 

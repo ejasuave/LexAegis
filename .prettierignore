@@ -33,3 +33,7 @@ indexer/src/binding.generated.ts
 docs/evidence/chapter07-envio-rpc-source-*.json
 docs/evidence/chapter07-*.json
 packages/sdk/schemas
+
+# Chapter 15: generated, machine-readable interoperability vectors
+fixtures/protocol-interop-v1/cases.json
+packages/protocol/test-vectors/protocol-v1.json

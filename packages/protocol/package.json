@@ -9,13 +9,16 @@
     ".": "./src/index.ts",
     "./v1": "./src/v1/index.ts",
     "./portable": "./src/portable/index.ts",
-    "./schemas/v1/*": "./schemas/v1/*"
+    "./schemas/v1/*": "./schemas/v1/*",
+    "./test-vectors/*": "./test-vectors/*"
   },
   "scripts": {
     "typecheck": "tsc --noEmit -p tsconfig.json",
     "generate": "tsx scripts/generate-artifacts.ts",
     "generate:check": "tsx scripts/generate-artifacts.ts --check",
-    "test:browser": "vitest run --config vitest.browser.config.ts"
+    "test:browser": "vitest run --config vitest.browser.config.ts",
+    "vectors:export": "tsx scripts/export-test-vectors.ts",
+    "vectors:check": "tsx scripts/export-test-vectors.ts --check"
   },
   "dependencies": {
     "canonicalize": "5.1.0",
@@ -27,7 +30,8 @@
   },
   "files": [
     "dist",
-    "schemas"
+    "schemas",
+    "test-vectors"
   ],
   "publishConfig": {
     "exports": {
@@ -43,7 +47,8 @@
         "types": "./dist/portable/index.d.ts",
         "default": "./dist/portable/index.js"
       },
-      "./schemas/v1/*": "./schemas/v1/*"
+      "./schemas/v1/*": "./schemas/v1/*",
+      "./test-vectors/*": "./test-vectors/*"
     }
   }
 }

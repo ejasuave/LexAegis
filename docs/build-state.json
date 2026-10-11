@@ -5278,6 +5278,38 @@
       "outcome": "pass",
       "reasonCodes": [],
       "evidenceRefs": []
+    },
+    {
+      "id": "packages-check-20261011113601",
+      "subject": "packaged-consumer-check",
+      "sourceRevision": {
+        "commit": "11e312514e9015327b0581696f26ec104766eac8",
+        "dirtyWorktree": true,
+        "contentFingerprint": "7b7a4d4c73015e8baffd9a0c4a041b1b303f572e3fd8cd2ff1bd71c13ffdab91"
+      },
+      "checkedAt": "2026-10-11T11:36:01.865Z",
+      "command": "pnpm packages:check",
+      "environment": {
+        "node": "v24.21.0",
+        "os": "linux-x64",
+        "pnpm": "11.11.0"
+      },
+      "evidenceClass": "local_scripted",
+      "outcome": "pass",
+      "reasonCodes": ["LOCAL_TARBALLS_NOT_PUBLISHED", "AUTHORED_EXAMPLE_NOT_ADOPTION"],
+      "evidenceRefs": [],
+      "facts": {
+        "checksPassed": "20",
+        "checksTotal": "20",
+        "protocolTarballBytes": "66062",
+        "sdkTarballBytes": "52795",
+        "protocolTarballSha256": "6f3d68fca628fb78608510a3ee50100cc8e431ddc43590c56b2993dbc2475c0a",
+        "sdkTarballSha256": "ef2565233c5993c4d977291df95a249eee56638e9c0e579d88472bb9bd9cf0bf",
+        "protocolFiles": "64",
+        "sdkFiles": "54",
+        "browser": "chromium (playwright)",
+        "published": false
+      }
     }
   ],
   "appliedCuts": [],
@@ -7356,6 +7388,21 @@
           "packages/sdk/package.json",
           "package.json",
           ".gitignore"
+        ]
+      },
+      "3": {
+        "status": "complete",
+        "summary": "Published language-neutral vectors: packages/protocol/test-vectors/protocol-v1.json (+README: encodings, operations, stages, test-only data) holds the 3 original Chapter 2 goldens verbatim plus 125 operation cases (canonicalization properties incl. UTF-16 vs code-point ordering, composed/decomposed Unicode, escapes; artifact/package/commitment derivations; 100+ negatives stored as raw text or hex bytes across strict-json, version, schema, cross-field and verification stages; presentation-variant imports that must verify identically). New independent generator fixtures/protocol-interop-v1/generate.mjs (no implementation import; two serializers must agree; expected stages/codes are authored literals) writes cases.json; pnpm vectors:export materializes the asset explicitly and pnpm vectors:check is read-only (a test runs it against five altered temporary copies and requires exit 1). src/interop/interop-vectors.test.ts runs every case in Node and Chromium (131 tests; all authored expectations matched the implementation on first run apart from my own stage label on one case, which I corrected in the generator). Original goldens and protected baselines unchanged. Exclusion tests extended: public vectors are permitted, test keys, replays and fixtures paths are still rejected. test-vectors added to the protocol package files/exports; packages:check still 20/20.",
+        "files": [
+          "fixtures/protocol-interop-v1",
+          "packages/protocol/test-vectors",
+          "packages/protocol/scripts",
+          "packages/protocol/src/interop",
+          "packages/protocol/package.json",
+          "packages/protocol/vitest.browser.config.ts",
+          "tooling/src/exclusion.test.ts",
+          "package.json",
+          ".prettierignore"
         ]
       }
     }
