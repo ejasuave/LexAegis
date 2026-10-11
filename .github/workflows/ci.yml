@@ -63,3 +63,60 @@ jobs:
       - run: pnpm baselines:check
       - run: pnpm secrets:check
       - run: pnpm exclusion:check
+
+  # Chapter 17 security checks. Bounded jobs on local chains with synthetic keys and documents and a
+  # scripted provider: no live signing, no sponsor secret and no paid model call. Passing here is
+  # not an audit, and the full recorded campaigns (docs/security/invariants.md) are not run in CI.
+  security:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm threat:check # every test the threat model cites exists; uncovered cases say so
+      # Contracts: the REDUCED campaign (1,000 fuzz cases per property, 256 invariant runs at depth
+      # 128). It is recorded as `ci`, never as the full campaign, and fails on missing suites,
+      # short counts or an unexercised operation, not only on a failed test.
+      - run: pnpm contracts:toolchain
+      - run: pnpm contracts:test:ci
+      # Static analysis: pinned Slither in its own environment. Exit 3 means a tool was unavailable,
+      # which fails this job: an analyser that did not run is not a clean result.
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      - run: |
+          python -m venv .tools/slither/venv
+          .tools/slither/venv/bin/pip install slither-analyzer==0.11.6 crytic-compile==0.4.2
+      - run: pnpm contracts:static
+      # Disclosure boundaries: two observed local journeys (virtual authenticator, scripted provider
+      # and chain, throwaway database and object store) and a scan of the assets they build. A
+      # journey that does not end within its limit is stopped and reported, never waited on.
+      - run: pnpm exec playwright install --with-deps chromium
+      - run: pnpm tools:s3
+      - run: pnpm packages:build && pnpm build # the packed entry points and the verifier that the asset scan reads
+      - run: pnpm test:privacy:browser --no-record
+
+  # READ-ONLY live gate, kept apart from the local checks: reads the existing Monad testnet registry
+  # over the public endpoint and compares its runtime code with a fresh build. No key, no signature
+  # and no transaction. Exit 10 is a mismatch, 12 an unavailable network. A failed or skipped run of
+  # this job is NOT a verified deployment; `continue-on-error` only stops a public endpoint outage
+  # from blocking unrelated changes, and the job still shows as failed.
+  deployment-read-only:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    continue-on-error: true
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm contracts:toolchain
+      - run: pnpm verify:deployment --public-rpc
