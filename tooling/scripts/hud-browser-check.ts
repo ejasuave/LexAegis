@@ -120,6 +120,18 @@ const env = {
   S3_SECRET_ACCESS_KEY: s3.secretAccessKey,
   WEB_PORT: String(PORT),
   FEATURE_VOICE: 'true',
+  // Chapter 16: the T0 journey runs with the optional identity and feedback features OFF by default,
+  // and with the identity path configured but UNAVAILABLE (HUD_AGENT_IDENTITY=unavailable). Both
+  // must leave review, vault, approval, receipt lifecycle and verification unchanged.
+  FEATURE_AGENT_IDENTITY: process.env.HUD_AGENT_IDENTITY === undefined ? 'false' : 'true',
+  FEATURE_REPUTATION_FEEDBACK: 'false',
+  ...(process.env.HUD_AGENT_IDENTITY === 'unavailable'
+    ? {
+        AGENT_IDENTITY_AGENT_ID: '7',
+        AGENT_IDENTITY_CARD_URI: 'https://lexaegis.example.test/api/agent-card',
+        AGENT_IDENTITY_RPC_URL: 'https://127.0.0.1:9/',
+      }
+    : {}),
   LEXAEGIS_TEST_MODE: 'scripted-assistant',
   ASSISTANT_TEST_PROVIDER_URL: provider.baseUrl,
   QWEN_API_KEY: '',

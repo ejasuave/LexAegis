@@ -15,6 +15,7 @@
  * production randomness. No case holds a signing key, a signature or a provider replay.
  */
 import { Buffer } from 'node:buffer';
+import { createHash } from 'node:crypto';
 import { readFileSync, writeFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import process from 'node:process';
@@ -1017,6 +1018,234 @@ verify(
         value: a.bytesBase64,
       })),
       expectedReference: raw(JSON.stringify(legal.expected.reference)),
+    },
+    expected: {
+      outcome: 'ok',
+      manifestIntegrity: 'mismatch',
+      artifactIntegrity: 'unknown',
+      issues: [{ code: 'COMMITMENT_MISMATCH' }, { code: 'ARTIFACTS_NOT_EVALUATED' }],
+    },
+  });
+}
+
+// ---- Chapter 16: agent-configuration artifacts with and without the optional identity reference ---------
+// The protocol never reads an artifact's content, so these are SYNTHETIC agent-config bytes. The
+// expected digests and commitments are computed here, independently, from the two published domains.
+{
+  const digest = (...parts) => {
+    const hash = createHash('sha256');
+    for (const part of parts) hash.update(part);
+    return hash.digest();
+  };
+  const REGISTRY_ADDRESS = `0x${'11'.repeat(20)}`;
+  const REVIEWER_ADDRESS = `0x${'22'.repeat(20)}`;
+  const identity = {
+    standard: 'erc-8004',
+    chainId: '10143',
+    identityRegistry: '0x8004a818bfb912233c491871b3d84c89a494bd9e',
+    agentId: '7',
+    cardUri: 'https://app.example.test/api/agent-card',
+  };
+  const configV1 = text(
+    minimalJcs({ schema: 'lexaegis.agent-config.v1', synthetic: true, modelExecution: 'none' }),
+  );
+  const configV2 = (reference) =>
+    text(
+      minimalJcs({
+        schema: 'lexaegis.agent-config.v2',
+        synthetic: true,
+        modelExecution: 'none',
+        agentIdentity: reference,
+      }),
+    );
+  const build = (n, agentConfig, nonceStart) => {
+    const parts = [
+      {
+        id: uuid(700 + n * 10 + 1),
+        role: 'source',
+        bytes: text('SYNTHETIC document for the identity vectors.\n'),
+      },
+      { id: uuid(700 + n * 10 + 2), role: 'agent-config', bytes: agentConfig },
+      { id: uuid(700 + n * 10 + 3), role: 'decision-log', bytes: text('{"synthetic":true}\n') },
+    ];
+    const manifest = {
+      schema: 'lexaegis.review-package.v1',
+      packageId: uuid(700 + n * 10),
+      preparedAt: '2026-01-01T00:00:00.000Z',
+      profile: { id: 'example.identity-vectors', version: '1' },
+      context: {
+        chainId: '31337',
+        registryAddress: REGISTRY_ADDRESS,
+        reviewerAddress: REVIEWER_ADDRESS,
+      },
+      supersedes: null,
+      artifacts: parts.map((part) => ({
+        id: part.id,
+        role: part.role,
+        mediaType: 'application/json',
+        label: null,
+        byteLength: String(part.bytes.length),
+        sha256: hex(digest(part.bytes)),
+      })),
+      approval: {
+        intent: 'approve-review-package',
+        scopeArtifactIds: parts.map((p) => p.id),
+        decisionLogArtifactId: parts[2].id,
+      },
+    };
+    const nonce = Buffer.from(Array.from({ length: 32 }, (_, i) => nonceStart + i));
+    const canonical = Buffer.from(minimalJcs(manifest), 'utf8');
+    const packageDigest = digest(text('lexaegis:review-package:v1'), Buffer.from([0]), canonical);
+    const commitment = digest(
+      text('lexaegis:review-commitment:v1'),
+      Buffer.from([0]),
+      nonce,
+      packageDigest,
+    );
+    return {
+      parts,
+      opening: { schema: 'lexaegis.opening.v1', manifest, blindingNonce: hex(nonce) },
+      reference: {
+        schema: 'lexaegis.receipt-ref.v1',
+        chainId: '31337',
+        registryAddress: REGISTRY_ADDRESS,
+        reviewerAddress: REVIEWER_ADDRESS,
+        commitment: hex(commitment),
+      },
+      packageDigest: hex(packageDigest),
+      commitment: hex(commitment),
+      canonicalHex: hex(canonical),
+    };
+  };
+  const old = build(1, configV1, 0x60);
+  const withIdentity = build(2, configV2(identity), 0x60);
+  const source = { kind: 'supplemental', base: 'chapter-16 synthetic agent-config packages' };
+  const suppliedOf = (pkg, replace = {}) =>
+    pkg.parts.map((part) => ({
+      id: part.id,
+      encoding: 'base64',
+      value: (replace[part.role] ?? part.bytes).toString('base64'),
+    }));
+  const ok = { outcome: 'ok', manifestIntegrity: 'match', artifactIntegrity: 'match', issues: [] };
+  for (const [name, pkg] of [
+    ['v1-without-identity', old],
+    ['v2-with-identity', withIdentity],
+  ]) {
+    add({
+      id: `identity-${name}-canonical-manifest`,
+      stage: 'canonicalization',
+      operation: 'canonical-manifest',
+      description: `Canonical manifest bytes of a package whose agent-config is ${name}.`,
+      source,
+      input: raw(JSON.stringify(pkg.opening)),
+      expected: { outcome: 'ok', canonicalUtf8Hex: pkg.canonicalHex },
+    });
+    add({
+      id: `identity-${name}-commitment`,
+      stage: 'commitment',
+      operation: 'commitment',
+      description:
+        'The commitment of that package (the same fixed test nonce in both: only the artifact differs).',
+      source,
+      input: { blindingNonce: pkg.opening.blindingNonce, packageDigest: pkg.packageDigest },
+      expected: { outcome: 'ok', commitment: pkg.commitment },
+    });
+    add({
+      id: `identity-${name}-verify`,
+      stage: 'verification',
+      operation: 'verify-package',
+      description: 'Verifies against its own original reference.',
+      source,
+      input: {
+        opening: raw(JSON.stringify(pkg.opening)),
+        artifacts: suppliedOf(pkg),
+        expectedReference: raw(JSON.stringify(pkg.reference)),
+      },
+      expected: ok,
+    });
+  }
+  if (old.commitment === withIdentity.commitment)
+    throw new Error('an identity must change the commitment');
+  // Mutations after freeze: the same length, so only the digest can tell. The old reference detects each.
+  const mutations = [
+    ['chain-id', configV2({ ...identity, chainId: '10144' })],
+    [
+      'registry',
+      configV2({ ...identity, identityRegistry: '0x8004a818bfb912233c491871b3d84c89a494bd9f' }),
+    ],
+    ['agent-id', configV2({ ...identity, agentId: '8' })],
+    ['card-uri', configV2({ ...identity, cardUri: 'https://app.example.test/api/agent-cars' })],
+  ];
+  for (const [name, mutated] of mutations) {
+    if (mutated.length !== configV2(identity).length)
+      throw new Error(`mutation ${name} must keep the length`);
+    add({
+      id: `identity-mutated-${name}-detected`,
+      stage: 'verification',
+      operation: 'verify-package',
+      description: `The ${name} in the frozen agent-config is edited after freezing: the old reference detects the changed bytes.`,
+      source,
+      input: {
+        opening: raw(JSON.stringify(withIdentity.opening)),
+        artifacts: suppliedOf(withIdentity, { 'agent-config': mutated }),
+        expectedReference: raw(JSON.stringify(withIdentity.reference)),
+      },
+      expected: {
+        outcome: 'ok',
+        manifestIntegrity: 'match',
+        artifactIntegrity: 'mismatch',
+        issues: [{ code: 'ARTIFACT_DIGEST_MISMATCH', artifactId: withIdentity.parts[1].id }],
+      },
+    });
+  }
+  // Removing the optional field is valid only against the reference that was frozen without it.
+  add({
+    id: 'identity-field-removed-against-v2-reference',
+    stage: 'verification',
+    operation: 'verify-package',
+    description:
+      'The v1 (no identity) bytes supplied for the v2 package: a different length, so detected.',
+    source,
+    input: {
+      opening: raw(JSON.stringify(withIdentity.opening)),
+      artifacts: suppliedOf(withIdentity, { 'agent-config': configV1 }),
+      expectedReference: raw(JSON.stringify(withIdentity.reference)),
+    },
+    expected: {
+      outcome: 'ok',
+      manifestIntegrity: 'match',
+      artifactIntegrity: 'mismatch',
+      issues: [{ code: 'ARTIFACT_LENGTH_MISMATCH', artifactId: withIdentity.parts[1].id }],
+    },
+  });
+  add({
+    id: 'identity-v2-bytes-against-v1-reference',
+    stage: 'verification',
+    operation: 'verify-package',
+    description: 'Adding an identity to a frozen v1 package is detected the same way.',
+    source,
+    input: {
+      opening: raw(JSON.stringify(old.opening)),
+      artifacts: suppliedOf(old, { 'agent-config': configV2(identity) }),
+      expectedReference: raw(JSON.stringify(old.reference)),
+    },
+    expected: {
+      outcome: 'ok',
+      manifestIntegrity: 'match',
+      artifactIntegrity: 'mismatch',
+      issues: [{ code: 'ARTIFACT_LENGTH_MISMATCH', artifactId: old.parts[1].id }],
+    },
+  });
+  add({
+    id: 'identity-v2-reference-for-v1-package',
+    stage: 'verification',
+    operation: 'verify-package',
+    description: 'Checking the v1 package against the v2 package reference: the manifests differ.',
+    source,
+    input: {
+      opening: raw(JSON.stringify(old.opening)),
+      artifacts: suppliedOf(old),
+      expectedReference: raw(JSON.stringify(withIdentity.reference)),
     },
     expected: {
       outcome: 'ok',

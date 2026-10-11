@@ -2954,6 +2954,502 @@
           }
         ]
       }
+    },
+    {
+      "id": "identity-v1-without-identity-canonical-manifest",
+      "stage": "canonicalization",
+      "operation": "canonical-manifest",
+      "description": "Canonical manifest bytes of a package whose agent-config is v1-without-identity.",
+      "source": {
+        "kind": "supplemental",
+        "base": "chapter-16 synthetic agent-config packages"
+      },
+      "input": {
+        "encoding": "utf8",
+        "value": "{\"schema\":\"lexaegis.opening.v1\",\"manifest\":{\"schema\":\"lexaegis.review-package.v1\",\"packageId\":\"d0000000-0000-4000-8000-000000000710\",\"preparedAt\":\"2026-01-01T00:00:00.000Z\",\"profile\":{\"id\":\"example.identity-vectors\",\"version\":\"1\"},\"context\":{\"chainId\":\"31337\",\"registryAddress\":\"0x1111111111111111111111111111111111111111\",\"reviewerAddress\":\"0x2222222222222222222222222222222222222222\"},\"supersedes\":null,\"artifacts\":[{\"id\":\"d0000000-0000-4000-8000-000000000711\",\"role\":\"source\",\"mediaType\":\"application/json\",\"label\":null,\"byteLength\":\"45\",\"sha256\":\"0x53391d6ad3780dc87e0df63b048cd9859afabfeb2fb81dde6f48977052c917b6\"},{\"id\":\"d0000000-0000-4000-8000-000000000712\",\"role\":\"agent-config\",\"mediaType\":\"application/json\",\"label\":null,\"byteLength\":\"78\",\"sha256\":\"0x5d7d5e900e95fe1d9894847ba3356a80c46d41b83fdf78273948cfd30e470a30\"},{\"id\":\"d0000000-0000-4000-8000-000000000713\",\"role\":\"decision-log\",\"mediaType\":\"application/json\",\"label\":null,\"byteLength\":\"19\",\"sha256\":\"0xcb8daed7b30399a1c3c8b83b3b7bee4b774a30fc389afc1d375e4c23a3cc4ae8\"}],\"approval\":{\"intent\":\"approve-review-package\",\"scopeArtifactIds\":[\"d0000000-0000-4000-8000-000000000711\",\"d0000000-0000-4000-8000-000000000712\",\"d0000000-0000-4000-8000-000000000713\"],\"decisionLogArtifactId\":\"d0000000-0000-4000-8000-000000000713\"}},\"blindingNonce\":\"0x606162636465666768696a6b6c6d6e6f707172737475767778797a7b7c7d7e7f\"}"
+      },
+      "expected": {
+        "outcome": "ok",
+        "canonicalUtf8Hex": "0x7b22617070726f76616c223a7b226465636973696f6e4c6f6741727469666163744964223a2264303030303030302d303030302d343030302d383030302d303030303030303030373133222c22696e74656e74223a22617070726f76652d7265766965772d7061636b616765222c2273636f70654172746966616374496473223a5b2264303030303030302d303030302d343030302d383030302d303030303030303030373131222c2264303030303030302d303030302d343030302d383030302d303030303030303030373132222c2264303030303030302d303030302d343030302d383030302d303030303030303030373133225d7d2c22617274696661637473223a5b7b22627974654c656e677468223a223435222c226964223a2264303030303030302d303030302d343030302d383030302d303030303030303030373131222c226c6162656c223a6e756c6c2c226d6564696154797065223a226170706c69636174696f6e2f6a736f6e222c22726f6c65223a22736f75726365222c22736861323536223a22307835333339316436616433373830646338376530646636336230343863643938353961666162666562326662383164646536663438393737303532633931376236227d2c7b22627974654c656e677468223a223738222c226964223a2264303030303030302d303030302d343030302d383030302d303030303030303030373132222c226c6162656c223a6e756c6c2c226d6564696154797065223a226170706c69636174696f6e2f6a736f6e222c22726f6c65223a226167656e742d636f6e666967222c22736861323536223a22307835643764356539303065393566653164393839343834376261333335366138306334366434316238336664663738323733393438636664333065343730613330227d2c7b22627974654c656e677468223a223139222c226964223a2264303030303030302d303030302d343030302d383030302d303030303030303030373133222c226c6162656c223a6e756c6c2c226d6564696154797065223a226170706c69636174696f6e2f6a736f6e222c22726f6c65223a226465636973696f6e2d6c6f67222c22736861323536223a22307863623864616564376233303339396131633363386238336233623762656534623737346133306663333839616663316433373565346332336133636334616538227d5d2c22636f6e74657874223a7b22636861696e4964223a223331333337222c22726567697374727941646472657373223a22307831313131313131313131313131313131313131313131313131313131313131313131313131313131222c22726576696577657241646472657373223a22307832323232323232323232323232323232323232323232323232323232323232323232323232323232227d2c227061636b6167654964223a2264303030303030302d303030302d343030302d383030302d303030303030303030373130222c2270726570617265644174223a22323032362d30312d30315430303a30303a30302e3030305a222c2270726f66696c65223a7b226964223a226578616d706c652e6964656e746974792d766563746f7273222c2276657273696f6e223a2231227d2c22736368656d61223a226c657861656769732e7265766965772d7061636b6167652e7631222c2273757065727365646573223a6e756c6c7d"
+      }
+    },
+    {
+      "id": "identity-v1-without-identity-commitment",
+      "stage": "commitment",
+      "operation": "commitment",
+      "description": "The commitment of that package (the same fixed test nonce in both: only the artifact differs).",
+      "source": {
+        "kind": "supplemental",
+        "base": "chapter-16 synthetic agent-config packages"
+      },
+      "input": {
+        "blindingNonce": "0x606162636465666768696a6b6c6d6e6f707172737475767778797a7b7c7d7e7f",
+        "packageDigest": "0x225f18da199d9a01a88643e659b5109a21742cdb7bb7832ddc1c487556463b7b"
+      },
+      "expected": {
+        "outcome": "ok",
+        "commitment": "0xd99f1e6348aa3a570484f48f0cf8bf1f839dfa92870371c90e39d41e124987f9"
+      }
+    },
+    {
+      "id": "identity-v1-without-identity-verify",
+      "stage": "verification",
+      "operation": "verify-package",
+      "description": "Verifies against its own original reference.",
+      "source": {
+        "kind": "supplemental",
+        "base": "chapter-16 synthetic agent-config packages"
+      },
+      "input": {
+        "opening": {
+          "encoding": "utf8",
+          "value": "{\"schema\":\"lexaegis.opening.v1\",\"manifest\":{\"schema\":\"lexaegis.review-package.v1\",\"packageId\":\"d0000000-0000-4000-8000-000000000710\",\"preparedAt\":\"2026-01-01T00:00:00.000Z\",\"profile\":{\"id\":\"example.identity-vectors\",\"version\":\"1\"},\"context\":{\"chainId\":\"31337\",\"registryAddress\":\"0x1111111111111111111111111111111111111111\",\"reviewerAddress\":\"0x2222222222222222222222222222222222222222\"},\"supersedes\":null,\"artifacts\":[{\"id\":\"d0000000-0000-4000-8000-000000000711\",\"role\":\"source\",\"mediaType\":\"application/json\",\"label\":null,\"byteLength\":\"45\",\"sha256\":\"0x53391d6ad3780dc87e0df63b048cd9859afabfeb2fb81dde6f48977052c917b6\"},{\"id\":\"d0000000-0000-4000-8000-000000000712\",\"role\":\"agent-config\",\"mediaType\":\"application/json\",\"label\":null,\"byteLength\":\"78\",\"sha256\":\"0x5d7d5e900e95fe1d9894847ba3356a80c46d41b83fdf78273948cfd30e470a30\"},{\"id\":\"d0000000-0000-4000-8000-000000000713\",\"role\":\"decision-log\",\"mediaType\":\"application/json\",\"label\":null,\"byteLength\":\"19\",\"sha256\":\"0xcb8daed7b30399a1c3c8b83b3b7bee4b774a30fc389afc1d375e4c23a3cc4ae8\"}],\"approval\":{\"intent\":\"approve-review-package\",\"scopeArtifactIds\":[\"d0000000-0000-4000-8000-000000000711\",\"d0000000-0000-4000-8000-000000000712\",\"d0000000-0000-4000-8000-000000000713\"],\"decisionLogArtifactId\":\"d0000000-0000-4000-8000-000000000713\"}},\"blindingNonce\":\"0x606162636465666768696a6b6c6d6e6f707172737475767778797a7b7c7d7e7f\"}"
+        },
+        "artifacts": [
+          {
+            "id": "d0000000-0000-4000-8000-000000000711",
+            "encoding": "base64",
+            "value": "U1lOVEhFVElDIGRvY3VtZW50IGZvciB0aGUgaWRlbnRpdHkgdmVjdG9ycy4K"
+          },
+          {
+            "id": "d0000000-0000-4000-8000-000000000712",
+            "encoding": "base64",
+            "value": "eyJtb2RlbEV4ZWN1dGlvbiI6Im5vbmUiLCJzY2hlbWEiOiJsZXhhZWdpcy5hZ2VudC1jb25maWcudjEiLCJzeW50aGV0aWMiOnRydWV9"
+          },
+          {
+            "id": "d0000000-0000-4000-8000-000000000713",
+            "encoding": "base64",
+            "value": "eyJzeW50aGV0aWMiOnRydWV9Cg=="
+          }
+        ],
+        "expectedReference": {
+          "encoding": "utf8",
+          "value": "{\"schema\":\"lexaegis.receipt-ref.v1\",\"chainId\":\"31337\",\"registryAddress\":\"0x1111111111111111111111111111111111111111\",\"reviewerAddress\":\"0x2222222222222222222222222222222222222222\",\"commitment\":\"0xd99f1e6348aa3a570484f48f0cf8bf1f839dfa92870371c90e39d41e124987f9\"}"
+        }
+      },
+      "expected": {
+        "outcome": "ok",
+        "manifestIntegrity": "match",
+        "artifactIntegrity": "match",
+        "issues": []
+      }
+    },
+    {
+      "id": "identity-v2-with-identity-canonical-manifest",
+      "stage": "canonicalization",
+      "operation": "canonical-manifest",
+      "description": "Canonical manifest bytes of a package whose agent-config is v2-with-identity.",
+      "source": {
+        "kind": "supplemental",
+        "base": "chapter-16 synthetic agent-config packages"
+      },
+      "input": {
+        "encoding": "utf8",
+        "value": "{\"schema\":\"lexaegis.opening.v1\",\"manifest\":{\"schema\":\"lexaegis.review-package.v1\",\"packageId\":\"d0000000-0000-4000-8000-000000000720\",\"preparedAt\":\"2026-01-01T00:00:00.000Z\",\"profile\":{\"id\":\"example.identity-vectors\",\"version\":\"1\"},\"context\":{\"chainId\":\"31337\",\"registryAddress\":\"0x1111111111111111111111111111111111111111\",\"reviewerAddress\":\"0x2222222222222222222222222222222222222222\"},\"supersedes\":null,\"artifacts\":[{\"id\":\"d0000000-0000-4000-8000-000000000721\",\"role\":\"source\",\"mediaType\":\"application/json\",\"label\":null,\"byteLength\":\"45\",\"sha256\":\"0x53391d6ad3780dc87e0df63b048cd9859afabfeb2fb81dde6f48977052c917b6\"},{\"id\":\"d0000000-0000-4000-8000-000000000722\",\"role\":\"agent-config\",\"mediaType\":\"application/json\",\"label\":null,\"byteLength\":\"266\",\"sha256\":\"0xa63bafd200791561b8423369dca24ccce0dc0f13b8c09a1c05e5707d1d2fc95d\"},{\"id\":\"d0000000-0000-4000-8000-000000000723\",\"role\":\"decision-log\",\"mediaType\":\"application/json\",\"label\":null,\"byteLength\":\"19\",\"sha256\":\"0xcb8daed7b30399a1c3c8b83b3b7bee4b774a30fc389afc1d375e4c23a3cc4ae8\"}],\"approval\":{\"intent\":\"approve-review-package\",\"scopeArtifactIds\":[\"d0000000-0000-4000-8000-000000000721\",\"d0000000-0000-4000-8000-000000000722\",\"d0000000-0000-4000-8000-000000000723\"],\"decisionLogArtifactId\":\"d0000000-0000-4000-8000-000000000723\"}},\"blindingNonce\":\"0x606162636465666768696a6b6c6d6e6f707172737475767778797a7b7c7d7e7f\"}"
+      },
+      "expected": {
+        "outcome": "ok",
+        "canonicalUtf8Hex": "0x7b22617070726f76616c223a7b226465636973696f6e4c6f6741727469666163744964223a2264303030303030302d303030302d343030302d383030302d303030303030303030373233222c22696e74656e74223a22617070726f76652d7265766965772d7061636b616765222c2273636f70654172746966616374496473223a5b2264303030303030302d303030302d343030302d383030302d303030303030303030373231222c2264303030303030302d303030302d343030302d383030302d303030303030303030373232222c2264303030303030302d303030302d343030302d383030302d303030303030303030373233225d7d2c22617274696661637473223a5b7b22627974654c656e677468223a223435222c226964223a2264303030303030302d303030302d343030302d383030302d303030303030303030373231222c226c6162656c223a6e756c6c2c226d6564696154797065223a226170706c69636174696f6e2f6a736f6e222c22726f6c65223a22736f75726365222c22736861323536223a22307835333339316436616433373830646338376530646636336230343863643938353961666162666562326662383164646536663438393737303532633931376236227d2c7b22627974654c656e677468223a22323636222c226964223a2264303030303030302d303030302d343030302d383030302d303030303030303030373232222c226c6162656c223a6e756c6c2c226d6564696154797065223a226170706c69636174696f6e2f6a736f6e222c22726f6c65223a226167656e742d636f6e666967222c22736861323536223a22307861363362616664323030373931353631623834323333363964636132346363636530646330663133623863303961316330356535373037643164326663393564227d2c7b22627974654c656e677468223a223139222c226964223a2264303030303030302d303030302d343030302d383030302d303030303030303030373233222c226c6162656c223a6e756c6c2c226d6564696154797065223a226170706c69636174696f6e2f6a736f6e222c22726f6c65223a226465636973696f6e2d6c6f67222c22736861323536223a22307863623864616564376233303339396131633363386238336233623762656534623737346133306663333839616663316433373565346332336133636334616538227d5d2c22636f6e74657874223a7b22636861696e4964223a223331333337222c22726567697374727941646472657373223a22307831313131313131313131313131313131313131313131313131313131313131313131313131313131222c22726576696577657241646472657373223a22307832323232323232323232323232323232323232323232323232323232323232323232323232323232227d2c227061636b6167654964223a2264303030303030302d303030302d343030302d383030302d303030303030303030373230222c2270726570617265644174223a22323032362d30312d30315430303a30303a30302e3030305a222c2270726f66696c65223a7b226964223a226578616d706c652e6964656e746974792d766563746f7273222c2276657273696f6e223a2231227d2c22736368656d61223a226c657861656769732e7265766965772d7061636b6167652e7631222c2273757065727365646573223a6e756c6c7d"
+      }
+    },
+    {
+      "id": "identity-v2-with-identity-commitment",
+      "stage": "commitment",
+      "operation": "commitment",
+      "description": "The commitment of that package (the same fixed test nonce in both: only the artifact differs).",
+      "source": {
+        "kind": "supplemental",
+        "base": "chapter-16 synthetic agent-config packages"
+      },
+      "input": {
+        "blindingNonce": "0x606162636465666768696a6b6c6d6e6f707172737475767778797a7b7c7d7e7f",
+        "packageDigest": "0x825c95df6a439dfd055ac6bf9d301c536f07db4e33b62d74a825b7b889cca16a"
+      },
+      "expected": {
+        "outcome": "ok",
+        "commitment": "0xbe6338bcc6a505cc0f4df69fc4d80ce411dd556c4df09f3d3638a7b7c08ae911"
+      }
+    },
+    {
+      "id": "identity-v2-with-identity-verify",
+      "stage": "verification",
+      "operation": "verify-package",
+      "description": "Verifies against its own original reference.",
+      "source": {
+        "kind": "supplemental",
+        "base": "chapter-16 synthetic agent-config packages"
+      },
+      "input": {
+        "opening": {
+          "encoding": "utf8",
+          "value": "{\"schema\":\"lexaegis.opening.v1\",\"manifest\":{\"schema\":\"lexaegis.review-package.v1\",\"packageId\":\"d0000000-0000-4000-8000-000000000720\",\"preparedAt\":\"2026-01-01T00:00:00.000Z\",\"profile\":{\"id\":\"example.identity-vectors\",\"version\":\"1\"},\"context\":{\"chainId\":\"31337\",\"registryAddress\":\"0x1111111111111111111111111111111111111111\",\"reviewerAddress\":\"0x2222222222222222222222222222222222222222\"},\"supersedes\":null,\"artifacts\":[{\"id\":\"d0000000-0000-4000-8000-000000000721\",\"role\":\"source\",\"mediaType\":\"application/json\",\"label\":null,\"byteLength\":\"45\",\"sha256\":\"0x53391d6ad3780dc87e0df63b048cd9859afabfeb2fb81dde6f48977052c917b6\"},{\"id\":\"d0000000-0000-4000-8000-000000000722\",\"role\":\"agent-config\",\"mediaType\":\"application/json\",\"label\":null,\"byteLength\":\"266\",\"sha256\":\"0xa63bafd200791561b8423369dca24ccce0dc0f13b8c09a1c05e5707d1d2fc95d\"},{\"id\":\"d0000000-0000-4000-8000-000000000723\",\"role\":\"decision-log\",\"mediaType\":\"application/json\",\"label\":null,\"byteLength\":\"19\",\"sha256\":\"0xcb8daed7b30399a1c3c8b83b3b7bee4b774a30fc389afc1d375e4c23a3cc4ae8\"}],\"approval\":{\"intent\":\"approve-review-package\",\"scopeArtifactIds\":[\"d0000000-0000-4000-8000-000000000721\",\"d0000000-0000-4000-8000-000000000722\",\"d0000000-0000-4000-8000-000000000723\"],\"decisionLogArtifactId\":\"d0000000-0000-4000-8000-000000000723\"}},\"blindingNonce\":\"0x606162636465666768696a6b6c6d6e6f707172737475767778797a7b7c7d7e7f\"}"
+        },
+        "artifacts": [
+          {
+            "id": "d0000000-0000-4000-8000-000000000721",
+            "encoding": "base64",
+            "value": "U1lOVEhFVElDIGRvY3VtZW50IGZvciB0aGUgaWRlbnRpdHkgdmVjdG9ycy4K"
+          },
+          {
+            "id": "d0000000-0000-4000-8000-000000000722",
+            "encoding": "base64",
+            "value": "eyJhZ2VudElkZW50aXR5Ijp7ImFnZW50SWQiOiI3IiwiY2FyZFVyaSI6Imh0dHBzOi8vYXBwLmV4YW1wbGUudGVzdC9hcGkvYWdlbnQtY2FyZCIsImNoYWluSWQiOiIxMDE0MyIsImlkZW50aXR5UmVnaXN0cnkiOiIweDgwMDRhODE4YmZiOTEyMjMzYzQ5MTg3MWIzZDg0Yzg5YTQ5NGJkOWUiLCJzdGFuZGFyZCI6ImVyYy04MDA0In0sIm1vZGVsRXhlY3V0aW9uIjoibm9uZSIsInNjaGVtYSI6ImxleGFlZ2lzLmFnZW50LWNvbmZpZy52MiIsInN5bnRoZXRpYyI6dHJ1ZX0="
+          },
+          {
+            "id": "d0000000-0000-4000-8000-000000000723",
+            "encoding": "base64",
+            "value": "eyJzeW50aGV0aWMiOnRydWV9Cg=="
+          }
+        ],
+        "expectedReference": {
+          "encoding": "utf8",
+          "value": "{\"schema\":\"lexaegis.receipt-ref.v1\",\"chainId\":\"31337\",\"registryAddress\":\"0x1111111111111111111111111111111111111111\",\"reviewerAddress\":\"0x2222222222222222222222222222222222222222\",\"commitment\":\"0xbe6338bcc6a505cc0f4df69fc4d80ce411dd556c4df09f3d3638a7b7c08ae911\"}"
+        }
+      },
+      "expected": {
+        "outcome": "ok",
+        "manifestIntegrity": "match",
+        "artifactIntegrity": "match",
+        "issues": []
+      }
+    },
+    {
+      "id": "identity-mutated-chain-id-detected",
+      "stage": "verification",
+      "operation": "verify-package",
+      "description": "The chain-id in the frozen agent-config is edited after freezing: the old reference detects the changed bytes.",
+      "source": {
+        "kind": "supplemental",
+        "base": "chapter-16 synthetic agent-config packages"
+      },
+      "input": {
+        "opening": {
+          "encoding": "utf8",
+          "value": "{\"schema\":\"lexaegis.opening.v1\",\"manifest\":{\"schema\":\"lexaegis.review-package.v1\",\"packageId\":\"d0000000-0000-4000-8000-000000000720\",\"preparedAt\":\"2026-01-01T00:00:00.000Z\",\"profile\":{\"id\":\"example.identity-vectors\",\"version\":\"1\"},\"context\":{\"chainId\":\"31337\",\"registryAddress\":\"0x1111111111111111111111111111111111111111\",\"reviewerAddress\":\"0x2222222222222222222222222222222222222222\"},\"supersedes\":null,\"artifacts\":[{\"id\":\"d0000000-0000-4000-8000-000000000721\",\"role\":\"source\",\"mediaType\":\"application/json\",\"label\":null,\"byteLength\":\"45\",\"sha256\":\"0x53391d6ad3780dc87e0df63b048cd9859afabfeb2fb81dde6f48977052c917b6\"},{\"id\":\"d0000000-0000-4000-8000-000000000722\",\"role\":\"agent-config\",\"mediaType\":\"application/json\",\"label\":null,\"byteLength\":\"266\",\"sha256\":\"0xa63bafd200791561b8423369dca24ccce0dc0f13b8c09a1c05e5707d1d2fc95d\"},{\"id\":\"d0000000-0000-4000-8000-000000000723\",\"role\":\"decision-log\",\"mediaType\":\"application/json\",\"label\":null,\"byteLength\":\"19\",\"sha256\":\"0xcb8daed7b30399a1c3c8b83b3b7bee4b774a30fc389afc1d375e4c23a3cc4ae8\"}],\"approval\":{\"intent\":\"approve-review-package\",\"scopeArtifactIds\":[\"d0000000-0000-4000-8000-000000000721\",\"d0000000-0000-4000-8000-000000000722\",\"d0000000-0000-4000-8000-000000000723\"],\"decisionLogArtifactId\":\"d0000000-0000-4000-8000-000000000723\"}},\"blindingNonce\":\"0x606162636465666768696a6b6c6d6e6f707172737475767778797a7b7c7d7e7f\"}"
+        },
+        "artifacts": [
+          {
+            "id": "d0000000-0000-4000-8000-000000000721",
+            "encoding": "base64",
+            "value": "U1lOVEhFVElDIGRvY3VtZW50IGZvciB0aGUgaWRlbnRpdHkgdmVjdG9ycy4K"
+          },
+          {
+            "id": "d0000000-0000-4000-8000-000000000722",
+            "encoding": "base64",
+            "value": "eyJhZ2VudElkZW50aXR5Ijp7ImFnZW50SWQiOiI3IiwiY2FyZFVyaSI6Imh0dHBzOi8vYXBwLmV4YW1wbGUudGVzdC9hcGkvYWdlbnQtY2FyZCIsImNoYWluSWQiOiIxMDE0NCIsImlkZW50aXR5UmVnaXN0cnkiOiIweDgwMDRhODE4YmZiOTEyMjMzYzQ5MTg3MWIzZDg0Yzg5YTQ5NGJkOWUiLCJzdGFuZGFyZCI6ImVyYy04MDA0In0sIm1vZGVsRXhlY3V0aW9uIjoibm9uZSIsInNjaGVtYSI6ImxleGFlZ2lzLmFnZW50LWNvbmZpZy52MiIsInN5bnRoZXRpYyI6dHJ1ZX0="
+          },
+          {
+            "id": "d0000000-0000-4000-8000-000000000723",
+            "encoding": "base64",
+            "value": "eyJzeW50aGV0aWMiOnRydWV9Cg=="
+          }
+        ],
+        "expectedReference": {
+          "encoding": "utf8",
+          "value": "{\"schema\":\"lexaegis.receipt-ref.v1\",\"chainId\":\"31337\",\"registryAddress\":\"0x1111111111111111111111111111111111111111\",\"reviewerAddress\":\"0x2222222222222222222222222222222222222222\",\"commitment\":\"0xbe6338bcc6a505cc0f4df69fc4d80ce411dd556c4df09f3d3638a7b7c08ae911\"}"
+        }
+      },
+      "expected": {
+        "outcome": "ok",
+        "manifestIntegrity": "match",
+        "artifactIntegrity": "mismatch",
+        "issues": [
+          {
+            "code": "ARTIFACT_DIGEST_MISMATCH",
+            "artifactId": "d0000000-0000-4000-8000-000000000722"
+          }
+        ]
+      }
+    },
+    {
+      "id": "identity-mutated-registry-detected",
+      "stage": "verification",
+      "operation": "verify-package",
+      "description": "The registry in the frozen agent-config is edited after freezing: the old reference detects the changed bytes.",
+      "source": {
+        "kind": "supplemental",
+        "base": "chapter-16 synthetic agent-config packages"
+      },
+      "input": {
+        "opening": {
+          "encoding": "utf8",
+          "value": "{\"schema\":\"lexaegis.opening.v1\",\"manifest\":{\"schema\":\"lexaegis.review-package.v1\",\"packageId\":\"d0000000-0000-4000-8000-000000000720\",\"preparedAt\":\"2026-01-01T00:00:00.000Z\",\"profile\":{\"id\":\"example.identity-vectors\",\"version\":\"1\"},\"context\":{\"chainId\":\"31337\",\"registryAddress\":\"0x1111111111111111111111111111111111111111\",\"reviewerAddress\":\"0x2222222222222222222222222222222222222222\"},\"supersedes\":null,\"artifacts\":[{\"id\":\"d0000000-0000-4000-8000-000000000721\",\"role\":\"source\",\"mediaType\":\"application/json\",\"label\":null,\"byteLength\":\"45\",\"sha256\":\"0x53391d6ad3780dc87e0df63b048cd9859afabfeb2fb81dde6f48977052c917b6\"},{\"id\":\"d0000000-0000-4000-8000-000000000722\",\"role\":\"agent-config\",\"mediaType\":\"application/json\",\"label\":null,\"byteLength\":\"266\",\"sha256\":\"0xa63bafd200791561b8423369dca24ccce0dc0f13b8c09a1c05e5707d1d2fc95d\"},{\"id\":\"d0000000-0000-4000-8000-000000000723\",\"role\":\"decision-log\",\"mediaType\":\"application/json\",\"label\":null,\"byteLength\":\"19\",\"sha256\":\"0xcb8daed7b30399a1c3c8b83b3b7bee4b774a30fc389afc1d375e4c23a3cc4ae8\"}],\"approval\":{\"intent\":\"approve-review-package\",\"scopeArtifactIds\":[\"d0000000-0000-4000-8000-000000000721\",\"d0000000-0000-4000-8000-000000000722\",\"d0000000-0000-4000-8000-000000000723\"],\"decisionLogArtifactId\":\"d0000000-0000-4000-8000-000000000723\"}},\"blindingNonce\":\"0x606162636465666768696a6b6c6d6e6f707172737475767778797a7b7c7d7e7f\"}"
+        },
+        "artifacts": [
+          {
+            "id": "d0000000-0000-4000-8000-000000000721",
+            "encoding": "base64",
+            "value": "U1lOVEhFVElDIGRvY3VtZW50IGZvciB0aGUgaWRlbnRpdHkgdmVjdG9ycy4K"
+          },
+          {
+            "id": "d0000000-0000-4000-8000-000000000722",
+            "encoding": "base64",
+            "value": "eyJhZ2VudElkZW50aXR5Ijp7ImFnZW50SWQiOiI3IiwiY2FyZFVyaSI6Imh0dHBzOi8vYXBwLmV4YW1wbGUudGVzdC9hcGkvYWdlbnQtY2FyZCIsImNoYWluSWQiOiIxMDE0MyIsImlkZW50aXR5UmVnaXN0cnkiOiIweDgwMDRhODE4YmZiOTEyMjMzYzQ5MTg3MWIzZDg0Yzg5YTQ5NGJkOWYiLCJzdGFuZGFyZCI6ImVyYy04MDA0In0sIm1vZGVsRXhlY3V0aW9uIjoibm9uZSIsInNjaGVtYSI6ImxleGFlZ2lzLmFnZW50LWNvbmZpZy52MiIsInN5bnRoZXRpYyI6dHJ1ZX0="
+          },
+          {
+            "id": "d0000000-0000-4000-8000-000000000723",
+            "encoding": "base64",
+            "value": "eyJzeW50aGV0aWMiOnRydWV9Cg=="
+          }
+        ],
+        "expectedReference": {
+          "encoding": "utf8",
+          "value": "{\"schema\":\"lexaegis.receipt-ref.v1\",\"chainId\":\"31337\",\"registryAddress\":\"0x1111111111111111111111111111111111111111\",\"reviewerAddress\":\"0x2222222222222222222222222222222222222222\",\"commitment\":\"0xbe6338bcc6a505cc0f4df69fc4d80ce411dd556c4df09f3d3638a7b7c08ae911\"}"
+        }
+      },
+      "expected": {
+        "outcome": "ok",
+        "manifestIntegrity": "match",
+        "artifactIntegrity": "mismatch",
+        "issues": [
+          {
+            "code": "ARTIFACT_DIGEST_MISMATCH",
+            "artifactId": "d0000000-0000-4000-8000-000000000722"
+          }
+        ]
+      }
+    },
+    {
+      "id": "identity-mutated-agent-id-detected",
+      "stage": "verification",
+      "operation": "verify-package",
+      "description": "The agent-id in the frozen agent-config is edited after freezing: the old reference detects the changed bytes.",
+      "source": {
+        "kind": "supplemental",
+        "base": "chapter-16 synthetic agent-config packages"
+      },
+      "input": {
+        "opening": {
+          "encoding": "utf8",
+          "value": "{\"schema\":\"lexaegis.opening.v1\",\"manifest\":{\"schema\":\"lexaegis.review-package.v1\",\"packageId\":\"d0000000-0000-4000-8000-000000000720\",\"preparedAt\":\"2026-01-01T00:00:00.000Z\",\"profile\":{\"id\":\"example.identity-vectors\",\"version\":\"1\"},\"context\":{\"chainId\":\"31337\",\"registryAddress\":\"0x1111111111111111111111111111111111111111\",\"reviewerAddress\":\"0x2222222222222222222222222222222222222222\"},\"supersedes\":null,\"artifacts\":[{\"id\":\"d0000000-0000-4000-8000-000000000721\",\"role\":\"source\",\"mediaType\":\"application/json\",\"label\":null,\"byteLength\":\"45\",\"sha256\":\"0x53391d6ad3780dc87e0df63b048cd9859afabfeb2fb81dde6f48977052c917b6\"},{\"id\":\"d0000000-0000-4000-8000-000000000722\",\"role\":\"agent-config\",\"mediaType\":\"application/json\",\"label\":null,\"byteLength\":\"266\",\"sha256\":\"0xa63bafd200791561b8423369dca24ccce0dc0f13b8c09a1c05e5707d1d2fc95d\"},{\"id\":\"d0000000-0000-4000-8000-000000000723\",\"role\":\"decision-log\",\"mediaType\":\"application/json\",\"label\":null,\"byteLength\":\"19\",\"sha256\":\"0xcb8daed7b30399a1c3c8b83b3b7bee4b774a30fc389afc1d375e4c23a3cc4ae8\"}],\"approval\":{\"intent\":\"approve-review-package\",\"scopeArtifactIds\":[\"d0000000-0000-4000-8000-000000000721\",\"d0000000-0000-4000-8000-000000000722\",\"d0000000-0000-4000-8000-000000000723\"],\"decisionLogArtifactId\":\"d0000000-0000-4000-8000-000000000723\"}},\"blindingNonce\":\"0x606162636465666768696a6b6c6d6e6f707172737475767778797a7b7c7d7e7f\"}"
+        },
+        "artifacts": [
+          {
+            "id": "d0000000-0000-4000-8000-000000000721",
+            "encoding": "base64",
+            "value": "U1lOVEhFVElDIGRvY3VtZW50IGZvciB0aGUgaWRlbnRpdHkgdmVjdG9ycy4K"
+          },
+          {
+            "id": "d0000000-0000-4000-8000-000000000722",
+            "encoding": "base64",
+            "value": "eyJhZ2VudElkZW50aXR5Ijp7ImFnZW50SWQiOiI4IiwiY2FyZFVyaSI6Imh0dHBzOi8vYXBwLmV4YW1wbGUudGVzdC9hcGkvYWdlbnQtY2FyZCIsImNoYWluSWQiOiIxMDE0MyIsImlkZW50aXR5UmVnaXN0cnkiOiIweDgwMDRhODE4YmZiOTEyMjMzYzQ5MTg3MWIzZDg0Yzg5YTQ5NGJkOWUiLCJzdGFuZGFyZCI6ImVyYy04MDA0In0sIm1vZGVsRXhlY3V0aW9uIjoibm9uZSIsInNjaGVtYSI6ImxleGFlZ2lzLmFnZW50LWNvbmZpZy52MiIsInN5bnRoZXRpYyI6dHJ1ZX0="
+          },
+          {
+            "id": "d0000000-0000-4000-8000-000000000723",
+            "encoding": "base64",
+            "value": "eyJzeW50aGV0aWMiOnRydWV9Cg=="
+          }
+        ],
+        "expectedReference": {
+          "encoding": "utf8",
+          "value": "{\"schema\":\"lexaegis.receipt-ref.v1\",\"chainId\":\"31337\",\"registryAddress\":\"0x1111111111111111111111111111111111111111\",\"reviewerAddress\":\"0x2222222222222222222222222222222222222222\",\"commitment\":\"0xbe6338bcc6a505cc0f4df69fc4d80ce411dd556c4df09f3d3638a7b7c08ae911\"}"
+        }
+      },
+      "expected": {
+        "outcome": "ok",
+        "manifestIntegrity": "match",
+        "artifactIntegrity": "mismatch",
+        "issues": [
+          {
+            "code": "ARTIFACT_DIGEST_MISMATCH",
+            "artifactId": "d0000000-0000-4000-8000-000000000722"
+          }
+        ]
+      }
+    },
+    {
+      "id": "identity-mutated-card-uri-detected",
+      "stage": "verification",
+      "operation": "verify-package",
+      "description": "The card-uri in the frozen agent-config is edited after freezing: the old reference detects the changed bytes.",
+      "source": {
+        "kind": "supplemental",
+        "base": "chapter-16 synthetic agent-config packages"
+      },
+      "input": {
+        "opening": {
+          "encoding": "utf8",
+          "value": "{\"schema\":\"lexaegis.opening.v1\",\"manifest\":{\"schema\":\"lexaegis.review-package.v1\",\"packageId\":\"d0000000-0000-4000-8000-000000000720\",\"preparedAt\":\"2026-01-01T00:00:00.000Z\",\"profile\":{\"id\":\"example.identity-vectors\",\"version\":\"1\"},\"context\":{\"chainId\":\"31337\",\"registryAddress\":\"0x1111111111111111111111111111111111111111\",\"reviewerAddress\":\"0x2222222222222222222222222222222222222222\"},\"supersedes\":null,\"artifacts\":[{\"id\":\"d0000000-0000-4000-8000-000000000721\",\"role\":\"source\",\"mediaType\":\"application/json\",\"label\":null,\"byteLength\":\"45\",\"sha256\":\"0x53391d6ad3780dc87e0df63b048cd9859afabfeb2fb81dde6f48977052c917b6\"},{\"id\":\"d0000000-0000-4000-8000-000000000722\",\"role\":\"agent-config\",\"mediaType\":\"application/json\",\"label\":null,\"byteLength\":\"266\",\"sha256\":\"0xa63bafd200791561b8423369dca24ccce0dc0f13b8c09a1c05e5707d1d2fc95d\"},{\"id\":\"d0000000-0000-4000-8000-000000000723\",\"role\":\"decision-log\",\"mediaType\":\"application/json\",\"label\":null,\"byteLength\":\"19\",\"sha256\":\"0xcb8daed7b30399a1c3c8b83b3b7bee4b774a30fc389afc1d375e4c23a3cc4ae8\"}],\"approval\":{\"intent\":\"approve-review-package\",\"scopeArtifactIds\":[\"d0000000-0000-4000-8000-000000000721\",\"d0000000-0000-4000-8000-000000000722\",\"d0000000-0000-4000-8000-000000000723\"],\"decisionLogArtifactId\":\"d0000000-0000-4000-8000-000000000723\"}},\"blindingNonce\":\"0x606162636465666768696a6b6c6d6e6f707172737475767778797a7b7c7d7e7f\"}"
+        },
+        "artifacts": [
+          {
+            "id": "d0000000-0000-4000-8000-000000000721",
+            "encoding": "base64",
+            "value": "U1lOVEhFVElDIGRvY3VtZW50IGZvciB0aGUgaWRlbnRpdHkgdmVjdG9ycy4K"
+          },
+          {
+            "id": "d0000000-0000-4000-8000-000000000722",
+            "encoding": "base64",
+            "value": "eyJhZ2VudElkZW50aXR5Ijp7ImFnZW50SWQiOiI3IiwiY2FyZFVyaSI6Imh0dHBzOi8vYXBwLmV4YW1wbGUudGVzdC9hcGkvYWdlbnQtY2FycyIsImNoYWluSWQiOiIxMDE0MyIsImlkZW50aXR5UmVnaXN0cnkiOiIweDgwMDRhODE4YmZiOTEyMjMzYzQ5MTg3MWIzZDg0Yzg5YTQ5NGJkOWUiLCJzdGFuZGFyZCI6ImVyYy04MDA0In0sIm1vZGVsRXhlY3V0aW9uIjoibm9uZSIsInNjaGVtYSI6ImxleGFlZ2lzLmFnZW50LWNvbmZpZy52MiIsInN5bnRoZXRpYyI6dHJ1ZX0="
+          },
+          {
+            "id": "d0000000-0000-4000-8000-000000000723",
+            "encoding": "base64",
+            "value": "eyJzeW50aGV0aWMiOnRydWV9Cg=="
+          }
+        ],
+        "expectedReference": {
+          "encoding": "utf8",
+          "value": "{\"schema\":\"lexaegis.receipt-ref.v1\",\"chainId\":\"31337\",\"registryAddress\":\"0x1111111111111111111111111111111111111111\",\"reviewerAddress\":\"0x2222222222222222222222222222222222222222\",\"commitment\":\"0xbe6338bcc6a505cc0f4df69fc4d80ce411dd556c4df09f3d3638a7b7c08ae911\"}"
+        }
+      },
+      "expected": {
+        "outcome": "ok",
+        "manifestIntegrity": "match",
+        "artifactIntegrity": "mismatch",
+        "issues": [
+          {
+            "code": "ARTIFACT_DIGEST_MISMATCH",
+            "artifactId": "d0000000-0000-4000-8000-000000000722"
+          }
+        ]
+      }
+    },
+    {
+      "id": "identity-field-removed-against-v2-reference",
+      "stage": "verification",
+      "operation": "verify-package",
+      "description": "The v1 (no identity) bytes supplied for the v2 package: a different length, so detected.",
+      "source": {
+        "kind": "supplemental",
+        "base": "chapter-16 synthetic agent-config packages"
+      },
+      "input": {
+        "opening": {
+          "encoding": "utf8",
+          "value": "{\"schema\":\"lexaegis.opening.v1\",\"manifest\":{\"schema\":\"lexaegis.review-package.v1\",\"packageId\":\"d0000000-0000-4000-8000-000000000720\",\"preparedAt\":\"2026-01-01T00:00:00.000Z\",\"profile\":{\"id\":\"example.identity-vectors\",\"version\":\"1\"},\"context\":{\"chainId\":\"31337\",\"registryAddress\":\"0x1111111111111111111111111111111111111111\",\"reviewerAddress\":\"0x2222222222222222222222222222222222222222\"},\"supersedes\":null,\"artifacts\":[{\"id\":\"d0000000-0000-4000-8000-000000000721\",\"role\":\"source\",\"mediaType\":\"application/json\",\"label\":null,\"byteLength\":\"45\",\"sha256\":\"0x53391d6ad3780dc87e0df63b048cd9859afabfeb2fb81dde6f48977052c917b6\"},{\"id\":\"d0000000-0000-4000-8000-000000000722\",\"role\":\"agent-config\",\"mediaType\":\"application/json\",\"label\":null,\"byteLength\":\"266\",\"sha256\":\"0xa63bafd200791561b8423369dca24ccce0dc0f13b8c09a1c05e5707d1d2fc95d\"},{\"id\":\"d0000000-0000-4000-8000-000000000723\",\"role\":\"decision-log\",\"mediaType\":\"application/json\",\"label\":null,\"byteLength\":\"19\",\"sha256\":\"0xcb8daed7b30399a1c3c8b83b3b7bee4b774a30fc389afc1d375e4c23a3cc4ae8\"}],\"approval\":{\"intent\":\"approve-review-package\",\"scopeArtifactIds\":[\"d0000000-0000-4000-8000-000000000721\",\"d0000000-0000-4000-8000-000000000722\",\"d0000000-0000-4000-8000-000000000723\"],\"decisionLogArtifactId\":\"d0000000-0000-4000-8000-000000000723\"}},\"blindingNonce\":\"0x606162636465666768696a6b6c6d6e6f707172737475767778797a7b7c7d7e7f\"}"
+        },
+        "artifacts": [
+          {
+            "id": "d0000000-0000-4000-8000-000000000721",
+            "encoding": "base64",
+            "value": "U1lOVEhFVElDIGRvY3VtZW50IGZvciB0aGUgaWRlbnRpdHkgdmVjdG9ycy4K"
+          },
+          {
+            "id": "d0000000-0000-4000-8000-000000000722",
+            "encoding": "base64",
+            "value": "eyJtb2RlbEV4ZWN1dGlvbiI6Im5vbmUiLCJzY2hlbWEiOiJsZXhhZWdpcy5hZ2VudC1jb25maWcudjEiLCJzeW50aGV0aWMiOnRydWV9"
+          },
+          {
+            "id": "d0000000-0000-4000-8000-000000000723",
+            "encoding": "base64",
+            "value": "eyJzeW50aGV0aWMiOnRydWV9Cg=="
+          }
+        ],
+        "expectedReference": {
+          "encoding": "utf8",
+          "value": "{\"schema\":\"lexaegis.receipt-ref.v1\",\"chainId\":\"31337\",\"registryAddress\":\"0x1111111111111111111111111111111111111111\",\"reviewerAddress\":\"0x2222222222222222222222222222222222222222\",\"commitment\":\"0xbe6338bcc6a505cc0f4df69fc4d80ce411dd556c4df09f3d3638a7b7c08ae911\"}"
+        }
+      },
+      "expected": {
+        "outcome": "ok",
+        "manifestIntegrity": "match",
+        "artifactIntegrity": "mismatch",
+        "issues": [
+          {
+            "code": "ARTIFACT_LENGTH_MISMATCH",
+            "artifactId": "d0000000-0000-4000-8000-000000000722"
+          }
+        ]
+      }
+    },
+    {
+      "id": "identity-v2-bytes-against-v1-reference",
+      "stage": "verification",
+      "operation": "verify-package",
+      "description": "Adding an identity to a frozen v1 package is detected the same way.",
+      "source": {
+        "kind": "supplemental",
+        "base": "chapter-16 synthetic agent-config packages"
+      },
+      "input": {
+        "opening": {
+          "encoding": "utf8",
+          "value": "{\"schema\":\"lexaegis.opening.v1\",\"manifest\":{\"schema\":\"lexaegis.review-package.v1\",\"packageId\":\"d0000000-0000-4000-8000-000000000710\",\"preparedAt\":\"2026-01-01T00:00:00.000Z\",\"profile\":{\"id\":\"example.identity-vectors\",\"version\":\"1\"},\"context\":{\"chainId\":\"31337\",\"registryAddress\":\"0x1111111111111111111111111111111111111111\",\"reviewerAddress\":\"0x2222222222222222222222222222222222222222\"},\"supersedes\":null,\"artifacts\":[{\"id\":\"d0000000-0000-4000-8000-000000000711\",\"role\":\"source\",\"mediaType\":\"application/json\",\"label\":null,\"byteLength\":\"45\",\"sha256\":\"0x53391d6ad3780dc87e0df63b048cd9859afabfeb2fb81dde6f48977052c917b6\"},{\"id\":\"d0000000-0000-4000-8000-000000000712\",\"role\":\"agent-config\",\"mediaType\":\"application/json\",\"label\":null,\"byteLength\":\"78\",\"sha256\":\"0x5d7d5e900e95fe1d9894847ba3356a80c46d41b83fdf78273948cfd30e470a30\"},{\"id\":\"d0000000-0000-4000-8000-000000000713\",\"role\":\"decision-log\",\"mediaType\":\"application/json\",\"label\":null,\"byteLength\":\"19\",\"sha256\":\"0xcb8daed7b30399a1c3c8b83b3b7bee4b774a30fc389afc1d375e4c23a3cc4ae8\"}],\"approval\":{\"intent\":\"approve-review-package\",\"scopeArtifactIds\":[\"d0000000-0000-4000-8000-000000000711\",\"d0000000-0000-4000-8000-000000000712\",\"d0000000-0000-4000-8000-000000000713\"],\"decisionLogArtifactId\":\"d0000000-0000-4000-8000-000000000713\"}},\"blindingNonce\":\"0x606162636465666768696a6b6c6d6e6f707172737475767778797a7b7c7d7e7f\"}"
+        },
+        "artifacts": [
+          {
+            "id": "d0000000-0000-4000-8000-000000000711",
+            "encoding": "base64",
+            "value": "U1lOVEhFVElDIGRvY3VtZW50IGZvciB0aGUgaWRlbnRpdHkgdmVjdG9ycy4K"
+          },
+          {
+            "id": "d0000000-0000-4000-8000-000000000712",
+            "encoding": "base64",
+            "value": "eyJhZ2VudElkZW50aXR5Ijp7ImFnZW50SWQiOiI3IiwiY2FyZFVyaSI6Imh0dHBzOi8vYXBwLmV4YW1wbGUudGVzdC9hcGkvYWdlbnQtY2FyZCIsImNoYWluSWQiOiIxMDE0MyIsImlkZW50aXR5UmVnaXN0cnkiOiIweDgwMDRhODE4YmZiOTEyMjMzYzQ5MTg3MWIzZDg0Yzg5YTQ5NGJkOWUiLCJzdGFuZGFyZCI6ImVyYy04MDA0In0sIm1vZGVsRXhlY3V0aW9uIjoibm9uZSIsInNjaGVtYSI6ImxleGFlZ2lzLmFnZW50LWNvbmZpZy52MiIsInN5bnRoZXRpYyI6dHJ1ZX0="
+          },
+          {
+            "id": "d0000000-0000-4000-8000-000000000713",
+            "encoding": "base64",
+            "value": "eyJzeW50aGV0aWMiOnRydWV9Cg=="
+          }
+        ],
+        "expectedReference": {
+          "encoding": "utf8",
+          "value": "{\"schema\":\"lexaegis.receipt-ref.v1\",\"chainId\":\"31337\",\"registryAddress\":\"0x1111111111111111111111111111111111111111\",\"reviewerAddress\":\"0x2222222222222222222222222222222222222222\",\"commitment\":\"0xd99f1e6348aa3a570484f48f0cf8bf1f839dfa92870371c90e39d41e124987f9\"}"
+        }
+      },
+      "expected": {
+        "outcome": "ok",
+        "manifestIntegrity": "match",
+        "artifactIntegrity": "mismatch",
+        "issues": [
+          {
+            "code": "ARTIFACT_LENGTH_MISMATCH",
+            "artifactId": "d0000000-0000-4000-8000-000000000712"
+          }
+        ]
+      }
+    },
+    {
+      "id": "identity-v2-reference-for-v1-package",
+      "stage": "verification",
+      "operation": "verify-package",
+      "description": "Checking the v1 package against the v2 package reference: the manifests differ.",
+      "source": {
+        "kind": "supplemental",
+        "base": "chapter-16 synthetic agent-config packages"
+      },
+      "input": {
+        "opening": {
+          "encoding": "utf8",
+          "value": "{\"schema\":\"lexaegis.opening.v1\",\"manifest\":{\"schema\":\"lexaegis.review-package.v1\",\"packageId\":\"d0000000-0000-4000-8000-000000000710\",\"preparedAt\":\"2026-01-01T00:00:00.000Z\",\"profile\":{\"id\":\"example.identity-vectors\",\"version\":\"1\"},\"context\":{\"chainId\":\"31337\",\"registryAddress\":\"0x1111111111111111111111111111111111111111\",\"reviewerAddress\":\"0x2222222222222222222222222222222222222222\"},\"supersedes\":null,\"artifacts\":[{\"id\":\"d0000000-0000-4000-8000-000000000711\",\"role\":\"source\",\"mediaType\":\"application/json\",\"label\":null,\"byteLength\":\"45\",\"sha256\":\"0x53391d6ad3780dc87e0df63b048cd9859afabfeb2fb81dde6f48977052c917b6\"},{\"id\":\"d0000000-0000-4000-8000-000000000712\",\"role\":\"agent-config\",\"mediaType\":\"application/json\",\"label\":null,\"byteLength\":\"78\",\"sha256\":\"0x5d7d5e900e95fe1d9894847ba3356a80c46d41b83fdf78273948cfd30e470a30\"},{\"id\":\"d0000000-0000-4000-8000-000000000713\",\"role\":\"decision-log\",\"mediaType\":\"application/json\",\"label\":null,\"byteLength\":\"19\",\"sha256\":\"0xcb8daed7b30399a1c3c8b83b3b7bee4b774a30fc389afc1d375e4c23a3cc4ae8\"}],\"approval\":{\"intent\":\"approve-review-package\",\"scopeArtifactIds\":[\"d0000000-0000-4000-8000-000000000711\",\"d0000000-0000-4000-8000-000000000712\",\"d0000000-0000-4000-8000-000000000713\"],\"decisionLogArtifactId\":\"d0000000-0000-4000-8000-000000000713\"}},\"blindingNonce\":\"0x606162636465666768696a6b6c6d6e6f707172737475767778797a7b7c7d7e7f\"}"
+        },
+        "artifacts": [
+          {
+            "id": "d0000000-0000-4000-8000-000000000711",
+            "encoding": "base64",
+            "value": "U1lOVEhFVElDIGRvY3VtZW50IGZvciB0aGUgaWRlbnRpdHkgdmVjdG9ycy4K"
+          },
+          {
+            "id": "d0000000-0000-4000-8000-000000000712",
+            "encoding": "base64",
+            "value": "eyJtb2RlbEV4ZWN1dGlvbiI6Im5vbmUiLCJzY2hlbWEiOiJsZXhhZWdpcy5hZ2VudC1jb25maWcudjEiLCJzeW50aGV0aWMiOnRydWV9"
+          },
+          {
+            "id": "d0000000-0000-4000-8000-000000000713",
+            "encoding": "base64",
+            "value": "eyJzeW50aGV0aWMiOnRydWV9Cg=="
+          }
+        ],
+        "expectedReference": {
+          "encoding": "utf8",
+          "value": "{\"schema\":\"lexaegis.receipt-ref.v1\",\"chainId\":\"31337\",\"registryAddress\":\"0x1111111111111111111111111111111111111111\",\"reviewerAddress\":\"0x2222222222222222222222222222222222222222\",\"commitment\":\"0xbe6338bcc6a505cc0f4df69fc4d80ce411dd556c4df09f3d3638a7b7c08ae911\"}"
+        }
+      },
+      "expected": {
+        "outcome": "ok",
+        "manifestIntegrity": "mismatch",
+        "artifactIntegrity": "unknown",
+        "issues": [
+          {
+            "code": "COMMITMENT_MISMATCH"
+          },
+          {
+            "code": "ARTIFACTS_NOT_EVALUATED"
+          }
+        ]
+      }
     }
   ]
 }

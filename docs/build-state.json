@@ -5952,6 +5952,243 @@
         "browser": "chromium (playwright)",
         "published": false
       }
+    },
+    {
+      "id": "hud-browser-20261011150444",
+      "subject": "hud-browser-check",
+      "sourceRevision": {
+        "commit": "b2ec8c167d36f2ea1c340a91ab3aa0795363bf4c",
+        "dirtyWorktree": true,
+        "contentFingerprint": "9d2ec44c4b030a9e8cccc883d4dce8b2efce604c37b2e45384b3ffb9ecc1a1a7"
+      },
+      "checkedAt": "2026-10-11T15:04:45.080Z",
+      "command": "pnpm test:hud:browser",
+      "environment": {
+        "node": "v24.21.0",
+        "os": "linux-x64",
+        "pnpm": "11.11.0"
+      },
+      "evidenceClass": "virtual_authenticator",
+      "outcome": "pass",
+      "reasonCodes": [
+        "AUTHENTICATOR_MODE_VIRTUAL",
+        "SYNTHETIC_DOCUMENTS_ONLY",
+        "SCRIPTED_CHAIN_STATE",
+        "MOCK_SPEECH_ADAPTERS"
+      ],
+      "evidenceRefs": [
+        {
+          "type": "path",
+          "value": "docs/evidence/chapter10/01-command-centre-empty-1440x900.png"
+        },
+        {
+          "type": "path",
+          "value": "docs/evidence/chapter10/02-review-1440x900.png"
+        },
+        {
+          "type": "path",
+          "value": "docs/evidence/chapter10/03-approval-preview-1440x900.png"
+        },
+        {
+          "type": "path",
+          "value": "docs/evidence/chapter10/04-transaction-unavailable-1440x900.png"
+        },
+        {
+          "type": "path",
+          "value": "docs/evidence/chapter10/05-review-after-approval-1440x900.png"
+        },
+        {
+          "type": "path",
+          "value": "docs/evidence/chapter10/06-command-centre-1440x900.png"
+        },
+        {
+          "type": "path",
+          "value": "docs/evidence/chapter10/07-command-centre-1024x768.png"
+        },
+        {
+          "type": "path",
+          "value": "docs/evidence/chapter10/08-review-package-390x844.png"
+        },
+        {
+          "type": "path",
+          "value": "docs/evidence/chapter10/09-review-320x640.png"
+        },
+        {
+          "type": "path",
+          "value": "docs/evidence/chapter10/10-locked-1440x900.png"
+        }
+      ],
+      "facts": {
+        "browser": "chromium 153.0.8010.12",
+        "checksPassed": "69",
+        "checksTotal": "69",
+        "provider": "scripted-test (loopback, no model)",
+        "chain": "scripted live state, fixture registry address, no network",
+        "speech": "mock adapters, not a real device",
+        "storage": "postgresql + versitygw",
+        "authenticatorMode": "virtual",
+        "realDeviceEvidence": false,
+        "liveProviderEvidence": false,
+        "screenshotCount": "10"
+      }
+    },
+    {
+      "id": "hud-browser-20261011150537",
+      "subject": "hud-browser-check",
+      "sourceRevision": {
+        "commit": "b2ec8c167d36f2ea1c340a91ab3aa0795363bf4c",
+        "dirtyWorktree": true,
+        "contentFingerprint": "c1d333330efbd41d1aa8109e0946d48138f08b2a19fe45f6d9f1e23d84ea0074"
+      },
+      "checkedAt": "2026-10-11T15:05:37.448Z",
+      "command": "pnpm test:hud:browser",
+      "environment": {
+        "node": "v24.21.0",
+        "os": "linux-x64",
+        "pnpm": "11.11.0"
+      },
+      "evidenceClass": "virtual_authenticator",
+      "outcome": "pass",
+      "reasonCodes": [
+        "AUTHENTICATOR_MODE_VIRTUAL",
+        "SYNTHETIC_DOCUMENTS_ONLY",
+        "SCRIPTED_CHAIN_STATE",
+        "MOCK_SPEECH_ADAPTERS"
+      ],
+      "evidenceRefs": [
+        {
+          "type": "path",
+          "value": "docs/evidence/chapter10/01-command-centre-empty-1440x900.png"
+        },
+        {
+          "type": "path",
+          "value": "docs/evidence/chapter10/02-review-1440x900.png"
+        },
+        {
+          "type": "path",
+          "value": "docs/evidence/chapter10/03-approval-preview-1440x900.png"
+        },
+        {
+          "type": "path",
+          "value": "docs/evidence/chapter10/04-transaction-unavailable-1440x900.png"
+        },
+        {
+          "type": "path",
+          "value": "docs/evidence/chapter10/05-review-after-approval-1440x900.png"
+        },
+        {
+          "type": "path",
+          "value": "docs/evidence/chapter10/06-command-centre-1440x900.png"
+        },
+        {
+          "type": "path",
+          "value": "docs/evidence/chapter10/07-command-centre-1024x768.png"
+        },
+        {
+          "type": "path",
+          "value": "docs/evidence/chapter10/08-review-package-390x844.png"
+        },
+        {
+          "type": "path",
+          "value": "docs/evidence/chapter10/09-review-320x640.png"
+        },
+        {
+          "type": "path",
+          "value": "docs/evidence/chapter10/10-locked-1440x900.png"
+        }
+      ],
+      "facts": {
+        "browser": "chromium 153.0.8010.12",
+        "checksPassed": "69",
+        "checksTotal": "69",
+        "provider": "scripted-test (loopback, no model)",
+        "chain": "scripted live state, fixture registry address, no network",
+        "speech": "mock adapters, not a real device",
+        "storage": "postgresql + versitygw",
+        "authenticatorMode": "virtual",
+        "realDeviceEvidence": false,
+        "liveProviderEvidence": false,
+        "screenshotCount": "10"
+      }
+    },
+    {
+      "id": "hud-browser-20261011150612",
+      "subject": "hud-browser-check",
+      "sourceRevision": {
+        "commit": "b2ec8c167d36f2ea1c340a91ab3aa0795363bf4c",
+        "dirtyWorktree": true,
+        "contentFingerprint": "bcae87cb35ccec4c88c78732d0e88834a07578d1db30c0f4bbe96be7e7ddd4ee"
+      },
+      "checkedAt": "2026-10-11T15:06:12.680Z",
+      "command": "pnpm test:hud:browser",
+      "environment": {
+        "node": "v24.21.0",
+        "os": "linux-x64",
+        "pnpm": "11.11.0"
+      },
+      "evidenceClass": "virtual_authenticator",
+      "outcome": "pass",
+      "reasonCodes": [
+        "AUTHENTICATOR_MODE_VIRTUAL",
+        "SYNTHETIC_DOCUMENTS_ONLY",
+        "SCRIPTED_CHAIN_STATE",
+        "MOCK_SPEECH_ADAPTERS"
+      ],
+      "evidenceRefs": [
+        {
+          "type": "path",
+          "value": "docs/evidence/chapter10/01-command-centre-empty-1440x900.png"
+        },
+        {
+          "type": "path",
+          "value": "docs/evidence/chapter10/02-review-1440x900.png"
+        },
+        {
+          "type": "path",
+          "value": "docs/evidence/chapter10/03-approval-preview-1440x900.png"
+        },
+        {
+          "type": "path",
+          "value": "docs/evidence/chapter10/04-transaction-unavailable-1440x900.png"
+        },
+        {
+          "type": "path",
+          "value": "docs/evidence/chapter10/05-review-after-approval-1440x900.png"
+        },
+        {
+          "type": "path",
+          "value": "docs/evidence/chapter10/06-command-centre-1440x900.png"
+        },
+        {
+          "type": "path",
+          "value": "docs/evidence/chapter10/07-command-centre-1024x768.png"
+        },
+        {
+          "type": "path",
+          "value": "docs/evidence/chapter10/08-review-package-390x844.png"
+        },
+        {
+          "type": "path",
+          "value": "docs/evidence/chapter10/09-review-320x640.png"
+        },
+        {
+          "type": "path",
+          "value": "docs/evidence/chapter10/10-locked-1440x900.png"
+        }
+      ],
+      "facts": {
+        "browser": "chromium 153.0.8010.12",
+        "checksPassed": "69",
+        "checksTotal": "69",
+        "provider": "scripted-test (loopback, no model)",
+        "chain": "scripted live state, fixture registry address, no network",
+        "speech": "mock adapters, not a real device",
+        "storage": "postgresql + versitygw",
+        "authenticatorMode": "virtual",
+        "realDeviceEvidence": false,
+        "liveProviderEvidence": false,
+        "screenshotCount": "10"
+      }
     }
   ],
   "appliedCuts": [],
@@ -8350,6 +8587,20 @@
           "docs-entries",
           "typedoc.json",
           "tooling"
+        ]
+      },
+      "10": {
+        "status": "complete",
+        "summary": "Reputation feedback: NOT STARTED, CUT (stretch, not elected by the operator). No giveFeedback path, no control, no environment can enable it: FEATURE_READINESS.reputationFeedback stays {implemented:false, verified:false} and a test (no-feedback.test.ts) guards the shipped web, verifier, SDK identity and CLI sources against feedback, registration and raw-transaction methods. No feedback was written or claimed.",
+        "files": ["apps/web/src/features/identity/no-feedback.test.ts"]
+      },
+      "11": {
+        "status": "complete",
+        "summary": "Regression and compatibility. Protected Chapter 2 vectors and baselines unchanged (baselines:check 43 files match; vectors:check match). New independently computed SYNTHETIC interop cases (138 total, were fewer) generated by fixtures/protocol-interop-v1/generate.mjs with the standard-library digest code and checked by the TypeScript suite (144 tests) and the Python checker (138/138): agent-config v1 without identity and v2 with identity (canonical manifest, commitment, original-reference verification; the identity changes the commitment), post-freeze mutations of chain id, registry, agent id and card URI detected by the old reference, field removal and addition detected, cross-version reference mismatch. Verifier tests prove malformed-but-hash-correct identity data leaves the proof result untouched and nothing is read when files mismatch. Existing suites cover flag-off traffic and stale generations (controller generation checks), cross-matter isolation (assistant matter-scoped controller) and CLI default compatibility (default JSON identical; Anvil suite 17/17). T0 smoke journey (hud browser check) 69/69 with agentIdentity off, and 69/69 with the identity path configured but its RPC unreachable (HUD_AGENT_IDENTITY=unavailable): review, vault, approval and receipt lifecycle unchanged. exclusion:check clean; secrets:check still reports only the pre-existing .env findings (carried forward).",
+        "files": [
+          "fixtures/protocol-interop-v1",
+          "packages/protocol/test-vectors",
+          "tooling/scripts/hud-browser-check.ts"
         ]
       }
     }
