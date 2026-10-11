@@ -71,7 +71,13 @@ function rig(findings: CheckFindingV1[], snapshotDigest = SNAP1) {
     now: () => new Date('2026-10-11T10:00:00.000Z'),
     newId: () => `44444444-4444-4444-8444-${String(++n).padStart(12, '0')}`,
   });
-  const settle = () => new Promise((r) => setTimeout(r, 5));
+  // Digests are computed asynchronously; wait until the controller reaches the expected state.
+  const settle = async (
+    done: () => boolean = () => controller.getSnapshot().snapshotDigest !== null,
+  ) => {
+    for (let i = 0; i < 400 && !done(); i++) await new Promise((r) => setTimeout(r, 5));
+    await new Promise((r) => setTimeout(r, 10));
+  };
   return {
     controller,
     entries,
@@ -166,7 +172,7 @@ describe('review dispositions', () => {
     });
     r.setAccount(ACCOUNT);
     r.setReview({ status: 'stale' });
-    await r.settle();
+    await r.settle(() => r.controller.getSnapshot().snapshotDigest === null);
     expect(r.controller.decide({ findingId: 'a', kind: 'acknowledged', reason: '' }).ok).toBe(
       false,
     );
@@ -209,7 +215,7 @@ describe('decision log', () => {
     expect(r.controller.getSnapshot().recorded).toBe(true);
     // Same finding id, different result: the earlier disposition no longer applies.
     r.setReview({ findings: [finding('a', 'attention', 'changed result')], snapshotDigest: SNAP2 });
-    await r.settle();
+    await r.settle(() => r.controller.getSnapshot().snapshotDigest === SNAP2);
     const state = r.controller.getSnapshot();
     expect(state.recorded).toBe(false);
     expect(state.stale).toBe(true);
@@ -222,7 +228,7 @@ describe('decision log', () => {
     await r.settle();
     r.controller.decide({ findingId: 'a', kind: 'acknowledged', reason: '' });
     r.setReview({ matterId: null });
-    await r.settle();
+    await r.settle(() => r.controller.getSnapshot().matterId === null);
     expect(r.controller.getSnapshot().dispositions).toHaveLength(0);
   });
 
