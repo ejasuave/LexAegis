@@ -1,0 +1,191 @@
+{
+  "schema": "lexaegis.evidence.contract-campaign.v1",
+  "note": "Local Foundry tests with synthetic keys against the unchanged registry source. Not live-chain evidence and not an audit.",
+  "profile": "full",
+  "fullCampaignTarget": true,
+  "seed": "0x4c657841656769732e4368617074657231372e63616d706169676e2e32",
+  "outcome": "pass",
+  "issues": [],
+  "startedAt": "2026-10-11T15:58:34.524Z",
+  "finishedAt": "2026-10-11T17:05:20.095Z",
+  "durationSeconds": 4006,
+  "command": "pnpm contracts:campaign -- --profile full --seed 0x4c657841656769732e4368617074657231372e63616d706169676e2e32",
+  "sourceRevision": {
+    "commit": "458d3c54bb70000ad2c2563bb37bf91e68349e97",
+    "dirtyWorktree": false,
+    "contentFingerprint": "56c595e9e84bb9de25ba38e5362f22a148ebe8cd8fc1731166bb254ac80f3574"
+  },
+  "contractSources": {
+    "sha256": "2001781f576486f58f8e1dace5bd3110f542f2b08ff62e9028477481aa6ffc5b",
+    "files": 15
+  },
+  "toolchain": {
+    "forge": "1.8.5",
+    "forgeCommit": "51a52c59cffd940f76eddd0b4bb1791aa4b5ac7f",
+    "solc": "0.8.37",
+    "evmVersion": "osaka",
+    "node": "v24.21.0"
+  },
+  "effective": {
+    "fuzzRuns": 10000,
+    "fuzzSeed": "0x4c657841656769732e4368617074657231372e63616d706169676e2e32",
+    "fuzzTimeoutSeconds": null,
+    "invariantRuns": 1000,
+    "invariantDepth": 256,
+    "invariantDepthMode": "fixed",
+    "invariantWorkers": "1",
+    "invariantFailOnRevert": true,
+    "invariantTimeoutSeconds": null,
+    "processTimeoutMinutes": 240
+  },
+  "buildSettingsUnchangedByProfile": true,
+  "buildSettings": {
+    "solc": "0.8.37",
+    "evm_version": "osaka",
+    "optimizer": true,
+    "optimizer_runs": 200,
+    "via_ir": false,
+    "bytecode_hash": "none",
+    "cbor_metadata": true,
+    "use_literal_content": true
+  },
+  "totals": {
+    "suites": 11,
+    "tests": 105,
+    "passed": 105,
+    "failed": 0,
+    "fuzzProperties": 15,
+    "fuzzCases": 150000,
+    "invariantCampaigns": 2,
+    "invariantCalls": 512000
+  },
+  "invariantCampaigns": [
+    {
+      "suite": "test/Invariants.t.sol:RegistryInvariantTest",
+      "status": "Success",
+      "runs": 1000,
+      "calls": 256000,
+      "reverts": 0,
+      "selectorCalls": {
+        "invalidate": 31992,
+        "forgeSignature": 31757,
+        "supersede": 32160,
+        "revoke": 31995,
+        "replay": 32098,
+        "issue": 32068,
+        "invalidTransition": 32201,
+        "strangerInvalidates": 31729
+      }
+    },
+    {
+      "suite": "test/RegistryInvariants.t.sol:RegistryInvariantsTest",
+      "status": "Success",
+      "runs": 1000,
+      "calls": 256000,
+      "reverts": 0,
+      "selectorCalls": {
+        "revoke": 31920,
+        "invalidate": 31977,
+        "rejectSignature": 32070,
+        "rejectLifecycle": 32123,
+        "issue": 32137,
+        "supersede": 31932,
+        "rejectNonce": 32013,
+        "rejectShapeOrDeadline": 31828
+      }
+    }
+  ],
+  "fuzzProperties": [
+    {
+      "suite": "test/Authorization.t.sol:AuthorizationBoundaryTest",
+      "name": "testFuzz_aSignatureCannotBeReplayedOnASecondRegistry(bytes32,address)",
+      "cases": 10000,
+      "status": "Success"
+    },
+    {
+      "suite": "test/Authorization.t.sol:AuthorizationBoundaryTest",
+      "name": "testFuzz_aSignatureForAnotherChainIsRejected(uint64,bytes32)",
+      "cases": 10000,
+      "status": "Success"
+    },
+    {
+      "suite": "test/Authorization.t.sol:AuthorizationBoundaryTest",
+      "name": "testFuzz_aSignatureOverAnotherNonceDoesNotAuthorizeTheCurrentOne(uint256)",
+      "cases": 10000,
+      "status": "Success"
+    },
+    {
+      "suite": "test/Authorization.t.sol:AuthorizationBoundaryTest",
+      "name": "testFuzz_anUnrelatedExecutorSubmittingFirstGetsExactlyTheAuthorisedResult(address,address,bytes32)",
+      "cases": 10000,
+      "status": "Success"
+    },
+    {
+      "suite": "test/Authorization.t.sol:AuthorizationBoundaryTest",
+      "name": "testFuzz_anyOtherDomainNameOrVersionIsRejected(string,string)",
+      "cases": 10000,
+      "status": "Success"
+    },
+    {
+      "suite": "test/Authorization.t.sol:AuthorizationBoundaryTest",
+      "name": "testFuzz_anyOtherKeyIsRejectedForAnEoaAndForAContractAccount(uint256,bytes32)",
+      "cases": 10000,
+      "status": "Success"
+    },
+    {
+      "suite": "test/Authorization.t.sol:AuthorizationBoundaryTest",
+      "name": "testFuzz_deadlineBoundaryForEveryActionShape(uint256,uint8)",
+      "cases": 10000,
+      "status": "Success"
+    },
+    {
+      "suite": "test/Authorization.t.sol:AuthorizationBoundaryTest",
+      "name": "testFuzz_eachIndividuallyAlteredFieldInvalidatesTheSignature(uint8,uint256)",
+      "cases": 10000,
+      "status": "Success"
+    },
+    {
+      "suite": "test/Authorization.t.sol:AuthorizationBoundaryTest",
+      "name": "testFuzz_zeroDeadlineNeverAuthorizes(uint64)",
+      "cases": 10000,
+      "status": "Success"
+    },
+    {
+      "suite": "test/Authorization.t.sol:AuthorizationTest",
+      "name": "testFuzz_hashActionMatchesAnIndependentEip712Digest((address,uint8,bytes32,bytes32,uint256,uint256))",
+      "cases": 10000,
+      "status": "Success"
+    },
+    {
+      "suite": "test/Lifecycle.t.sol:LifecycleTest",
+      "name": "testFuzz_invalidOperationsNeverChangeState(uint8,bytes32,bytes32,uint256,uint256,bytes)",
+      "cases": 10000,
+      "status": "Success"
+    },
+    {
+      "suite": "test/Lifecycle.t.sol:LifecycleTest",
+      "name": "testFuzz_issueThenRevoke(uint256,bytes32,uint32,address)",
+      "cases": 10000,
+      "status": "Success"
+    },
+    {
+      "suite": "test/Lifecycle.t.sol:LifecycleTest",
+      "name": "testFuzz_reviewerNamespacesAreIsolated(uint256,uint256,bytes32)",
+      "cases": 10000,
+      "status": "Success"
+    },
+    {
+      "suite": "test/Lifecycle.t.sol:LifecycleTest",
+      "name": "testFuzz_supersessionChainKeepsLinksAndTimes(uint8,bytes32)",
+      "cases": 10000,
+      "status": "Success"
+    },
+    {
+      "suite": "test/Lifecycle.t.sol:LifecycleTest",
+      "name": "testFuzz_unknownActionCodesAreRejected(uint8,bytes32,bytes32,bool)",
+      "cases": 10000,
+      "status": "Success"
+    }
+  ],
+  "notPassed": []
+}

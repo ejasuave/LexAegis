@@ -1,0 +1,191 @@
+{
+  "schema": "lexaegis.evidence.contract-campaign.v1",
+  "note": "Local Foundry tests with synthetic keys against the unchanged registry source. Not live-chain evidence and not an audit.",
+  "profile": "ci",
+  "fullCampaignTarget": false,
+  "seed": "0x4c657841656769732e50726f6f664f665265766965772e7631",
+  "outcome": "pass",
+  "issues": [],
+  "startedAt": "2026-10-11T20:31:24.651Z",
+  "finishedAt": "2026-10-11T20:34:42.353Z",
+  "durationSeconds": 198,
+  "command": "pnpm contracts:campaign -- --profile ci --seed 0x4c657841656769732e50726f6f664f665265766965772e7631",
+  "sourceRevision": {
+    "commit": "640ea6596711abcf99d0231b3ffdde3a63e1ce66",
+    "dirtyWorktree": true,
+    "contentFingerprint": "9f0a9220cecfcf6fee2e36d6d5f09e79dfacbe604f793de16696ff5c92ebba51"
+  },
+  "contractSources": {
+    "sha256": "2001781f576486f58f8e1dace5bd3110f542f2b08ff62e9028477481aa6ffc5b",
+    "files": 15
+  },
+  "toolchain": {
+    "forge": "1.8.5",
+    "forgeCommit": "51a52c59cffd940f76eddd0b4bb1791aa4b5ac7f",
+    "solc": "0.8.37",
+    "evmVersion": "osaka",
+    "node": "v24.21.0"
+  },
+  "effective": {
+    "fuzzRuns": 1000,
+    "fuzzSeed": "0x4c657841656769732e50726f6f664f665265766965772e7631",
+    "fuzzTimeoutSeconds": null,
+    "invariantRuns": 256,
+    "invariantDepth": 128,
+    "invariantDepthMode": "fixed",
+    "invariantWorkers": "1",
+    "invariantFailOnRevert": true,
+    "invariantTimeoutSeconds": null,
+    "processTimeoutMinutes": 45
+  },
+  "buildSettingsUnchangedByProfile": true,
+  "buildSettings": {
+    "solc": "0.8.37",
+    "evm_version": "osaka",
+    "optimizer": true,
+    "optimizer_runs": 200,
+    "via_ir": false,
+    "bytecode_hash": "none",
+    "cbor_metadata": true,
+    "use_literal_content": true
+  },
+  "totals": {
+    "suites": 11,
+    "tests": 105,
+    "passed": 105,
+    "failed": 0,
+    "fuzzProperties": 15,
+    "fuzzCases": 15000,
+    "invariantCampaigns": 2,
+    "invariantCalls": 65536
+  },
+  "invariantCampaigns": [
+    {
+      "suite": "test/Invariants.t.sol:RegistryInvariantTest",
+      "status": "Success",
+      "runs": 256,
+      "calls": 32768,
+      "reverts": 0,
+      "selectorCalls": {
+        "issue": 4120,
+        "revoke": 4098,
+        "strangerInvalidates": 4068,
+        "replay": 4042,
+        "supersede": 4029,
+        "invalidTransition": 4114,
+        "invalidate": 4167,
+        "forgeSignature": 4130
+      }
+    },
+    {
+      "suite": "test/RegistryInvariants.t.sol:RegistryInvariantsTest",
+      "status": "Success",
+      "runs": 256,
+      "calls": 32768,
+      "reverts": 0,
+      "selectorCalls": {
+        "issue": 4122,
+        "invalidate": 4008,
+        "rejectSignature": 4076,
+        "rejectNonce": 4187,
+        "rejectShapeOrDeadline": 4053,
+        "supersede": 4089,
+        "rejectLifecycle": 4129,
+        "revoke": 4104
+      }
+    }
+  ],
+  "fuzzProperties": [
+    {
+      "suite": "test/Authorization.t.sol:AuthorizationBoundaryTest",
+      "name": "testFuzz_aSignatureCannotBeReplayedOnASecondRegistry(bytes32,address)",
+      "cases": 1000,
+      "status": "Success"
+    },
+    {
+      "suite": "test/Authorization.t.sol:AuthorizationBoundaryTest",
+      "name": "testFuzz_aSignatureForAnotherChainIsRejected(uint64,bytes32)",
+      "cases": 1000,
+      "status": "Success"
+    },
+    {
+      "suite": "test/Authorization.t.sol:AuthorizationBoundaryTest",
+      "name": "testFuzz_aSignatureOverAnotherNonceDoesNotAuthorizeTheCurrentOne(uint256)",
+      "cases": 1000,
+      "status": "Success"
+    },
+    {
+      "suite": "test/Authorization.t.sol:AuthorizationBoundaryTest",
+      "name": "testFuzz_anUnrelatedExecutorSubmittingFirstGetsExactlyTheAuthorisedResult(address,address,bytes32)",
+      "cases": 1000,
+      "status": "Success"
+    },
+    {
+      "suite": "test/Authorization.t.sol:AuthorizationBoundaryTest",
+      "name": "testFuzz_anyOtherDomainNameOrVersionIsRejected(string,string)",
+      "cases": 1000,
+      "status": "Success"
+    },
+    {
+      "suite": "test/Authorization.t.sol:AuthorizationBoundaryTest",
+      "name": "testFuzz_anyOtherKeyIsRejectedForAnEoaAndForAContractAccount(uint256,bytes32)",
+      "cases": 1000,
+      "status": "Success"
+    },
+    {
+      "suite": "test/Authorization.t.sol:AuthorizationBoundaryTest",
+      "name": "testFuzz_deadlineBoundaryForEveryActionShape(uint256,uint8)",
+      "cases": 1000,
+      "status": "Success"
+    },
+    {
+      "suite": "test/Authorization.t.sol:AuthorizationBoundaryTest",
+      "name": "testFuzz_eachIndividuallyAlteredFieldInvalidatesTheSignature(uint8,uint256)",
+      "cases": 1000,
+      "status": "Success"
+    },
+    {
+      "suite": "test/Authorization.t.sol:AuthorizationBoundaryTest",
+      "name": "testFuzz_zeroDeadlineNeverAuthorizes(uint64)",
+      "cases": 1000,
+      "status": "Success"
+    },
+    {
+      "suite": "test/Authorization.t.sol:AuthorizationTest",
+      "name": "testFuzz_hashActionMatchesAnIndependentEip712Digest((address,uint8,bytes32,bytes32,uint256,uint256))",
+      "cases": 1000,
+      "status": "Success"
+    },
+    {
+      "suite": "test/Lifecycle.t.sol:LifecycleTest",
+      "name": "testFuzz_invalidOperationsNeverChangeState(uint8,bytes32,bytes32,uint256,uint256,bytes)",
+      "cases": 1000,
+      "status": "Success"
+    },
+    {
+      "suite": "test/Lifecycle.t.sol:LifecycleTest",
+      "name": "testFuzz_issueThenRevoke(uint256,bytes32,uint32,address)",
+      "cases": 1000,
+      "status": "Success"
+    },
+    {
+      "suite": "test/Lifecycle.t.sol:LifecycleTest",
+      "name": "testFuzz_reviewerNamespacesAreIsolated(uint256,uint256,bytes32)",
+      "cases": 1000,
+      "status": "Success"
+    },
+    {
+      "suite": "test/Lifecycle.t.sol:LifecycleTest",
+      "name": "testFuzz_supersessionChainKeepsLinksAndTimes(uint8,bytes32)",
+      "cases": 1000,
+      "status": "Success"
+    },
+    {
+      "suite": "test/Lifecycle.t.sol:LifecycleTest",
+      "name": "testFuzz_unknownActionCodesAreRejected(uint8,bytes32,bytes32,bool)",
+      "cases": 1000,
+      "status": "Success"
+    }
+  ],
+  "notPassed": []
+}
