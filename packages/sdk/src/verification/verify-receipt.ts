@@ -17,7 +17,12 @@ import {
 } from '../registry/live-reader';
 import { createRpcLiveClient, parseRpcEndpoint, type FetchLike } from '../registry/rpc-client';
 import type { ObservedReceipt } from '../registry/decode';
-import { verifyOffline, type OfflineInput, type OfflineVerification } from './offline';
+import {
+  offlineVerificationSchema,
+  verifyOffline,
+  type OfflineInput,
+  type OfflineVerification,
+} from './offline';
 import {
   VERIFICATION_REPORT_SCHEMA,
   registryPolicySchema,
@@ -61,6 +66,12 @@ export interface LiveOptions {
 }
 
 export interface VerifyReceiptInput extends OfflineInput {
+  /**
+   * An offline result already computed on this device (for example by a worker, with the artifact
+   * bytes long discarded). It is re-validated and used instead of re-verifying; the other offline
+   * fields are then ignored. Never accept one from an untrusted source.
+   */
+  readonly offline?: unknown;
   readonly live?: LiveOptions;
   readonly signerPolicy?: SignerAcceptancePolicy;
   readonly signal?: AbortSignal;
@@ -345,8 +356,16 @@ export async function verifyReceipt(input: VerifyReceiptInput): Promise<VerifyRe
   // The observation time is read once, here; pure verification below stays deterministic.
   const observedAt = (input.now ?? (() => new Date()))().toISOString();
 
-  const offline = await verifyOffline(input);
-  if (!offline.ok) return offline;
+  let offline: { readonly ok: true; readonly data: OfflineVerification };
+  if (input.offline === undefined) {
+    const computed = await verifyOffline(input);
+    if (!computed.ok) return computed;
+    offline = computed;
+  } else {
+    const checked = offlineVerificationSchema.safeParse(input.offline);
+    if (!checked.success) return { ok: false, error: { code: 'SCHEMA_INVALID', path: 'offline' } };
+    offline = { ok: true, data: checked.data };
+  }
 
   let outcome = emptyOutcome();
   if (input.live === undefined) outcome.issues.push({ code: 'NETWORK_NOT_REQUESTED' });

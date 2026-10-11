@@ -6285,6 +6285,31 @@
           "packages/sdk/src/verification/verify-receipt.ts",
           "packages/sdk/src/registry/budget.ts"
         ]
+      },
+      "8": {
+        "status": "complete",
+        "summary": "Dedicated local verification worker (apps/verifier/src/verification-worker.ts) running the portable decoder and offline SDK verifier: size bound before reading, buffer transferred, format detected by validated content (wrong-format messages for encrypted backups and context exports), opening-plus-separate-reference input, real progress counts (no percentages), 30 s deadline enforced by terminating the worker, cancel/new input/Clear terminate the job and discard late generations, bytes zeroed best-effort, pagehide and bfcache restore clear all state, nothing persisted. verifyReceipt gained an 'offline' option so a worker result is re-validated and reused for the registry check.",
+        "files": [
+          "apps/verifier/src/verification-job.ts",
+          "apps/verifier/src/verification-worker.ts",
+          "apps/verifier/src/local-job.ts",
+          "apps/verifier/src/controller.ts",
+          "packages/sdk/src/verification"
+        ]
+      },
+      "9": {
+        "status": "complete",
+        "summary": "Verifier interface rebuilt as a separate Vite/React app: choose input, inspect reference (declared vs independently supplied, never silently replaced), check files locally, optional registry check. Default registry policy from the generated deployment projection, shown read-only; unrecognised registries stay unverified; other deployments need integrator build-time configuration (VITE_REGISTRY_POLICY_JSON, VITE_RPC_ALLOWED_ORIGINS) and the build's CSP connect-src lists exactly the allowed RPC origins. Optional signer-address rule ('No signer policy selected' when absent). Registry check is an explicit action that names the receiving RPC origin; Cancel, Clear and Refresh status; keyboard operable, reduced motion honoured.",
+        "files": ["apps/verifier/src", "apps/verifier/vite.config.ts"]
+      },
+      "10": {
+        "status": "complete",
+        "summary": "Independent result panels (manifest, artifacts, registry identity, receipt binding/status, signer) with text and icon plus colour, no combined valid badge; precise labels; bounded artifact inventory with escaped inert labels and distinct changed/missing/not-supplied states; private digests only in a local technical disclosure; as-of status kept on refresh failure; successors as separate observations with copyable references and an incomplete-history indicator; explicit Download of a versioned public projection (lexaegis.verification-result.v1: no opening, digests, labels, artifact IDs, endpoint or raw errors) with an unsigned-observation notice, generic filename, never accepted as a review package.",
+        "files": [
+          "apps/verifier/src/result-export.ts",
+          "apps/verifier/src/labels.ts",
+          "apps/verifier/src/components"
+        ]
       }
     }
   }

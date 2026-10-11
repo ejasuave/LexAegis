@@ -127,6 +127,12 @@ export class LiveBudget {
       if (stopped !== null) throw this.#stop(stopped);
       if (this.#attempts >= this.#limits.maxAttempts) throw this.#stop('ATTEMPTS');
       await this.#slot();
+      // A stop that arrived while this read waited for a slot must not start a request.
+      const late = this.#stopped;
+      if (late !== null) {
+        this.#release();
+        throw this.#stop(late);
+      }
       const call = new AbortController();
       const state = { timedOut: false };
       const timer = setTimeout(() => {

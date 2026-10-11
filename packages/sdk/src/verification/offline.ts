@@ -8,7 +8,18 @@ import {
   type ProtocolResult,
   type ReceiptReferenceV1,
 } from '@lexaegis/protocol/v1';
-import type { CheckResult, ReferenceOrigin, ReportIssue, VerificationMode } from './report';
+import { z } from 'zod';
+import { commitmentOpeningV1Schema, receiptReferenceV1Schema } from '@lexaegis/protocol/v1';
+import {
+  REFERENCE_ORIGINS,
+  VERIFICATION_MODES,
+  checkResultSchema,
+  reportIssueSchema,
+  type CheckResult,
+  type ReferenceOrigin,
+  type ReportIssue,
+  type VerificationMode,
+} from './report';
 
 /*
  * Offline verification composes the existing protocol verifiers into three explicit modes. It is
@@ -42,6 +53,18 @@ export interface OfflineVerification {
   readonly verifiedOpening: CommitmentOpeningV1 | null;
   readonly profile: { readonly id: string; readonly version: string } | null;
 }
+
+/** Closed shape of an offline result, so a result computed elsewhere (a worker) can be re-checked. */
+export const offlineVerificationSchema = z.strictObject({
+  mode: z.enum(VERIFICATION_MODES),
+  expectedReference: receiptReferenceV1Schema,
+  referenceOrigin: z.enum(REFERENCE_ORIGINS),
+  manifestIntegrity: checkResultSchema,
+  artifactIntegrity: checkResultSchema,
+  issues: z.array(reportIssueSchema).max(300),
+  verifiedOpening: commitmentOpeningV1Schema.nullable(),
+  profile: z.strictObject({ id: z.string().max(80), version: z.string().max(10) }).nullable(),
+});
 
 const sameReference = (a: ReceiptReferenceV1, b: ReceiptReferenceV1): boolean =>
   a.chainId === b.chainId &&

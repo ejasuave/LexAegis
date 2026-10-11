@@ -8,6 +8,7 @@ export default defineConfig({
       'packages/vault',
       'packages/agent',
       'apps/web',
+      'apps/verifier',
       'tooling',
       'indexer',
     ],

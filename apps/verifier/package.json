@@ -7,13 +7,15 @@
     "dev": "vite --port ${VERIFIER_PORT:-5173} --strictPort",
     "build": "vite build",
     "preview": "vite preview --port ${VERIFIER_PORT:-5173} --strictPort",
-    "typecheck": "tsc --noEmit -p tsconfig.json"
+    "typecheck": "tsc --noEmit -p tsconfig.json",
+    "test": "vitest run"
   },
   "dependencies": {
     "@lexaegis/protocol": "workspace:*",
     "@lexaegis/sdk": "workspace:*",
     "react": "19.3.0",
-    "react-dom": "19.3.0"
+    "react-dom": "19.3.0",
+    "zod": "4.6.5"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "4.3.3",
@@ -22,6 +24,7 @@
     "@vitejs/plugin-react": "6.1.2",
     "postcss": "8.5.29",
     "tailwindcss": "4.3.3",
+    "viem": "2.57.3",
     "vite": "8.3.4"
   }
 }
