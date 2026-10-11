@@ -68,3 +68,72 @@ export function createLiveStateReader(fetchFn: typeof fetch = fetch): LiveStateR
     }
   };
 }
+
+/** The confirmed-checkpoint reading of a receipt (/api/chain/receipts), with its as-of block. */
+export type ConfirmedLifecycle =
+  | {
+      readonly status: 'ok';
+      readonly receiptLifecycle: ReceiptLifecycle;
+      readonly blockNumber: string;
+      readonly blockTimestamp: string;
+      readonly observedAt: string;
+    }
+  | { readonly status: 'unknown'; readonly reason: string };
+
+export function parseConfirmedLifecycle(value: unknown): ConfirmedLifecycle {
+  if (typeof value !== 'object' || value === null) return { status: 'unknown', reason: 'INVALID' };
+  const v = value as {
+    status?: unknown;
+    reason?: unknown;
+    receipt?: unknown;
+    checkpoint?: unknown;
+  };
+  if (v.status !== 'ok') {
+    return { status: 'unknown', reason: typeof v.reason === 'string' ? v.reason : 'UNKNOWN' };
+  }
+  const receipt = v.receipt as { receiptLifecycle?: unknown } | null;
+  const checkpoint = v.checkpoint as {
+    blockNumber?: unknown;
+    blockTimestamp?: unknown;
+    observedAt?: unknown;
+  } | null;
+  if (
+    receipt !== null &&
+    typeof receipt === 'object' &&
+    typeof receipt.receiptLifecycle === 'string' &&
+    LIFECYCLES.includes(receipt.receiptLifecycle) &&
+    checkpoint !== null &&
+    typeof checkpoint === 'object' &&
+    typeof checkpoint.blockNumber === 'string' &&
+    DECIMAL.test(checkpoint.blockNumber) &&
+    typeof checkpoint.blockTimestamp === 'string' &&
+    typeof checkpoint.observedAt === 'string'
+  ) {
+    return {
+      status: 'ok',
+      receiptLifecycle: receipt.receiptLifecycle as ReceiptLifecycle,
+      blockNumber: checkpoint.blockNumber,
+      blockTimestamp: checkpoint.blockTimestamp,
+      observedAt: checkpoint.observedAt,
+    };
+  }
+  return { status: 'unknown', reason: 'INVALID' };
+}
+
+export async function readConfirmedLifecycle(
+  reviewer: string,
+  commitment: string,
+  fetchFn: typeof fetch = fetch,
+): Promise<ConfirmedLifecycle> {
+  try {
+    const response = await fetchFn(`/api/chain/receipts/${reviewer}/${commitment}`, {
+      credentials: 'same-origin',
+      cache: 'no-store',
+    });
+    return response.ok
+      ? parseConfirmedLifecycle(await response.json())
+      : { status: 'unknown', reason: 'HTTP' };
+  } catch {
+    return { status: 'unknown', reason: 'NETWORK' };
+  }
+}

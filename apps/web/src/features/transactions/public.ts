@@ -4,3 +4,5 @@ export { TransactionController } from './controller';
 export type { ControllerDeps, TransactionStage, TransactionState } from './controller';
 export { createLiveStateReader, parseLiveState } from './live-state';
 export type { LiveState, LiveStateReader, ReceiptLifecycle } from './live-state';
+export { parseConfirmedLifecycle, readConfirmedLifecycle } from './live-state';
+export type { ConfirmedLifecycle } from './live-state';

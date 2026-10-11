@@ -5183,6 +5183,20 @@
           "apps/web/src/components/review/approval-context.tsx",
           "apps/web/src/integration/approval-flow.test.ts"
         ]
+      },
+      "11": {
+        "status": "complete",
+        "summary": "Transaction stage on the existing Chapter 6 controller: quote view with expected and maximum fee in MON from the exact signed-calldata quote, 30 s validity with Renew quote (no re-sign), separate Send transaction ticket, duplicate-send guard, outcome states, hash only when observed, external execution shown separately, receipt lifecycle read separately with its as-of block, indexer shown independently, Stop cannot cancel a sent transaction, refresh and explorer link. The signed approval reaches the controller only through takeAuthorisation().",
+        "files": [
+          "apps/web/src/features/transactions/controller.ts",
+          "apps/web/src/features/transactions/live-state.ts",
+          "apps/web/src/features/transactions/public.ts",
+          "apps/web/src/features/transactions/controller.test.ts",
+          "apps/web/src/features/transactions/live-state.test.ts",
+          "apps/web/src/components/chain/TransactionPanel.tsx",
+          "apps/web/src/components/chain/transaction-context.tsx",
+          "apps/web/src/components/chain/explorer.ts"
+        ]
       }
     }
   }

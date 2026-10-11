@@ -36,6 +36,13 @@ export interface TransactionState {
   readonly reason: string | null;
   /** True once bytes may have reached the server or network. */
   readonly mayHaveBroadcast: boolean;
+  /** Fee figures of the current quote, exactly as the server quoted them (wei, decimal strings). */
+  readonly quote: {
+    readonly expectedFeeWei: string | null;
+    readonly maxFeeWei: string;
+    /** RFC 3339. A quote is valid for 30 seconds. */
+    readonly expiresAt: string;
+  } | null;
 }
 
 const INITIAL: TransactionState = Object.freeze({
@@ -44,6 +51,7 @@ const INITIAL: TransactionState = Object.freeze({
   preview: null,
   reason: null,
   mayHaveBroadcast: false,
+  quote: null,
 });
 
 const STAGE_BY_PHASE: Record<Phase, TransactionStage> = {
@@ -82,6 +90,8 @@ export class TransactionController {
   #signed: SignedRegistryTransaction | null = null;
   #epoch = 0;
   #request: PublicRequest | null = null;
+  /** The stage-one signature, kept in memory only so an expired quote can be renewed. Never stored. */
+  #authorisation: SignedReviewAction | null = null;
 
   constructor(deps: ControllerDeps) {
     this.#deps = deps;
@@ -103,6 +113,7 @@ export class TransactionController {
     const epoch = ++this.#epoch;
     this.#signed = null;
     this.#request = request;
+    this.#authorisation = authorization;
     this.#set({ ...INITIAL, stage: 'checking_network' });
     const created = await this.#deps.api.create(this.#deps.newIdempotencyKey(), request);
     if (epoch !== this.#epoch) return;
@@ -149,11 +160,30 @@ export class TransactionController {
       quote: quoted.data.quote,
       operationId: created.data.operation.operationId,
     };
+    const q = quoted.data.quote as Record<string, unknown>;
     this.#set({
       stage: 'awaiting_confirmation',
       operation: quoted.data.operation,
       preview: ticket.data.preview,
+      quote: {
+        expectedFeeWei: typeof q.expectedFeeWei === 'string' ? q.expectedFeeWei : null,
+        maxFeeWei: quoted.data.quote.maxFeeWei,
+        expiresAt: quoted.data.quote.expiresAt,
+      },
     });
+  }
+
+  /**
+   * A quote lasts 30 seconds. Renewing asks for a new quote for the same stage-one authorisation
+   * and requires a new Send confirmation. It never re-signs, bumps a fee or changes a nonce.
+   */
+  async requote(): Promise<void> {
+    const request = this.#request;
+    if (request === null || this.#state.mayHaveBroadcast) return;
+    if (request.kind === 'execute' && this.#authorisation === null) return;
+    this.#deps.signing.invalidateAll();
+    this.#pending = null;
+    await this.begin(request, this.#authorisation);
   }
 
   /** The explicit "Send transaction" confirmation. Consumes the single-use ticket. */
@@ -253,13 +283,15 @@ export class TransactionController {
       return;
     }
     this.#signed = null;
-    this.#set({ stage: 'cancelled', preview: null });
+    this.#authorisation = null;
+    this.#set({ stage: 'cancelled', preview: null, quote: null });
   }
 
   /** Lock, expiry or account switch: unused tickets and any held signed bytes are dropped. */
   onAccountLost(): void {
     this.#pending = null;
     this.#signed = null;
+    this.#authorisation = null;
     this.#epoch += 1;
     if (!this.#state.mayHaveBroadcast)
       this.#set({ stage: 'cancelled', preview: null, reason: 'LOCKED' });
