@@ -7,6 +7,7 @@ import {
   type ReceiptReferenceV1,
 } from '@lexaegis/protocol/v1';
 import { verifyOffline, type OfflineVerification } from '@lexaegis/sdk';
+import { extractAgentIdentity, type AgentIdentityExtraction } from '@lexaegis/sdk/agent-identity';
 
 /*
  * The local verification job: the only code that touches imported bytes. It runs inside the
@@ -68,6 +69,12 @@ export interface LocalResult {
   readonly inventory: InventoryItem[];
   readonly artifactCount: number;
   readonly totalBytes: number;
+  /**
+   * The optional ERC-8004 reference found in the agent-configuration artifact, read only after every
+   * file matched. Null: not evaluated (opening-only input or the files did not match). It never
+   * affects the proof result: no reference means not included, not failed.
+   */
+  readonly agentIdentity: AgentIdentityExtraction | null;
 }
 
 export type JobProgress =
@@ -183,6 +190,7 @@ export async function runVerificationJob(
           inventory: inventoryOf(opening.data, verified.data, false),
           artifactCount: 0,
           totalBytes: bytes.byteLength,
+          agentIdentity: null,
         },
       };
     }
@@ -210,6 +218,24 @@ export async function runVerificationJob(
       opening,
       artifacts,
     });
+    // The identity claim is read from the exact, integrity-checked artifact bytes, before they are cleared.
+    let agentIdentity: AgentIdentityExtraction | null = null;
+    if (
+      verified.ok &&
+      verified.data.manifestIntegrity === 'match' &&
+      verified.data.artifactIntegrity === 'match'
+    ) {
+      agentIdentity = { status: 'not_included' };
+      for (const artifact of opening.manifest.artifacts) {
+        const content = artifact.role === 'agent-config' ? artifacts.get(artifact.id) : undefined;
+        if (content === undefined) continue;
+        const found = extractAgentIdentity(content);
+        if (found.status !== 'not_included') {
+          agentIdentity = found;
+          if (found.status === 'included') break;
+        }
+      }
+    }
     // Best effort: the decoded copies are no longer needed once hashing is done.
     for (const value of artifacts.values()) value.fill(0);
     if (!verified.ok) return fail('VERIFY_FAILED');
@@ -221,6 +247,7 @@ export async function runVerificationJob(
         inventory: inventoryOf(opening, verified.data, true),
         artifactCount: artifacts.size,
         totalBytes: totalArtifactBytes,
+        agentIdentity,
       },
     };
   } finally {

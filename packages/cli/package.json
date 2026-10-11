@@ -31,5 +31,8 @@
         "default": "./dist/index.js"
       }
     }
+  },
+  "devDependencies": {
+    "viem": "2.57.3"
   }
 }

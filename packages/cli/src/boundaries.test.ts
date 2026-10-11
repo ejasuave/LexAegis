@@ -21,7 +21,7 @@ describe('CLI dependency boundaries', () => {
         const allowed =
           specifier.startsWith('node:') ||
           specifier.startsWith('./') ||
-          /^@lexaegis\/sdk(\/(registry|verify|offline|portable))?$/.test(specifier);
+          /^@lexaegis\/sdk(\/(registry|verify|offline|portable|agent-identity))?$/.test(specifier);
         expect(allowed, `${name} imports ${specifier}`).toBe(true);
       }
     }

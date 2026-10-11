@@ -13,6 +13,11 @@ import {
   type FetchLike,
   type RpcConfigError,
 } from '@lexaegis/sdk/verify';
+import {
+  resolveAgentIdentity,
+  type AgentIdentityPolicy,
+  type AgentIdentityResolutionV1,
+} from '@lexaegis/sdk/agent-identity';
 import { startLocalJob, type LocalJobHandle, type WorkerFactory } from './local-job';
 import type { JobFailureCode, JobProgress, LocalResult } from './verification-job';
 
@@ -25,6 +30,7 @@ import type { JobFailureCode, JobProgress, LocalResult } from './verification-jo
 export type Phase = 'idle' | 'reading' | 'checking' | 'ready' | 'failed';
 export type InputKind = 'none' | 'reference' | 'file' | 'opening';
 export type LivePhase = 'idle' | 'running' | 'done' | 'failed';
+export type IdentityPhase = 'idle' | 'running' | 'done';
 
 export interface VerifierSnapshot {
   readonly phase: Phase;
@@ -50,6 +56,9 @@ export interface VerifierSnapshot {
   readonly lastObserved: VerificationReportV1 | null;
   /** True after a refresh failed and `report` no longer carries the last good status. */
   readonly refreshFailed: boolean;
+  /** The optional agent-identity sidecar. It never feeds the proof report. */
+  readonly identityPhase: IdentityPhase;
+  readonly identity: AgentIdentityResolutionV1 | null;
 }
 
 export interface ControllerDeps {
@@ -62,6 +71,11 @@ export interface ControllerDeps {
   readonly deadlineMs?: number;
   /** Origins this build allows for registry reads (it also fixes the page's CSP). Null: unrestricted (tests). */
   readonly allowedRpcOrigins?: readonly string[] | null;
+  /** Enabled-feature configuration for the optional identity section. Absent or disabled: no controls, no requests. */
+  readonly agentIdentity?: {
+    readonly enabled: boolean;
+    readonly policy: AgentIdentityPolicy | null;
+  };
 }
 
 const INITIAL = (deps: ControllerDeps): VerifierSnapshot => {
@@ -90,6 +104,8 @@ const INITIAL = (deps: ControllerDeps): VerifierSnapshot => {
     report: null,
     lastObserved: null,
     refreshFailed: false,
+    identityPhase: 'idle',
+    identity: null,
   };
 };
 
@@ -205,6 +221,8 @@ export class VerifierController {
       livePhase: 'idle',
       lastObserved: null,
       refreshFailed: false,
+      identityPhase: 'idle',
+      identity: null,
       progress: null,
       failure: null,
       phase: parsed === null || parsed === 'invalid' ? 'idle' : 'ready',
@@ -245,6 +263,8 @@ export class VerifierController {
       livePhase: 'idle',
       lastObserved: null,
       refreshFailed: false,
+      identityPhase: 'idle',
+      identity: null,
     });
     // Bound the size before reading anything into memory.
     if (chosen.file.size > limit) {
@@ -305,6 +325,8 @@ export class VerifierController {
       livePhase: 'idle',
       lastObserved: null,
       refreshFailed: false,
+      identityPhase: 'idle',
+      identity: null,
     });
     void this.#localReport(this.#generation);
   }
@@ -326,6 +348,8 @@ export class VerifierController {
       livePhase: 'idle',
       lastObserved: null,
       refreshFailed: false,
+      identityPhase: 'idle',
+      identity: null,
     });
     void this.#localReport(this.#generation);
   }
@@ -408,6 +432,51 @@ export class VerifierController {
       // Keep the last good status "as of" its own time; show this failure beside it.
       this.#set({ livePhase: 'failed', report, refreshFailed: previous !== null });
     }
+  }
+
+  get canCheckAgentIdentity(): boolean {
+    const s = this.#snapshot;
+    const feature = this.#deps.agentIdentity;
+    return (
+      feature?.enabled === true &&
+      feature.policy !== null &&
+      s.local?.agentIdentity?.status === 'included' &&
+      s.rpcError === null &&
+      s.rpcOrigin !== null &&
+      s.identityPhase !== 'running'
+    );
+  }
+
+  /** Explicit action. One bounded, read-only lookup of the CAPTURED reference; never part of the proof result. */
+  async checkAgentIdentity(): Promise<void> {
+    const before = this.#snapshot;
+    const feature = this.#deps.agentIdentity;
+    const found = before.local?.agentIdentity;
+    if (!this.canCheckAgentIdentity || feature?.policy == null || found?.status !== 'included')
+      return;
+    this.#abort?.abort();
+    this.#generation += 1;
+    const generation = this.#generation;
+    const abort = new AbortController();
+    this.#abort = abort;
+    this.#set({ identityPhase: 'running', identity: null });
+    const resolution = await resolveAgentIdentity({
+      reference: found.reference,
+      policy: feature.policy,
+      transport: {
+        kind: 'rpc',
+        url: before.rpcUrl,
+        ...(this.#deps.fetch !== undefined && { fetch: this.#deps.fetch }),
+        ...(this.#deps.allowLoopbackHttp === true && { allowLoopbackHttp: true }),
+      },
+      signal: abort.signal,
+      generation,
+      now: this.#deps.now ?? (() => new Date()),
+    });
+    // Input, provider or policy changed (or Clear/Cancel ran) meanwhile: the answer is stale.
+    if (generation !== this.#generation) return;
+    this.#abort = null;
+    this.#set({ identityPhase: 'done', identity: resolution });
   }
 
   /** Cancels a running local job or registry check. Local results already shown are kept. */

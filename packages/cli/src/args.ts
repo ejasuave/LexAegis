@@ -12,17 +12,38 @@ export interface UsageError {
 }
 
 type ValueOption =
-  'chain-id' | 'registry' | 'rpc' | 'expected-reference' | 'deployment' | 'reviewer' | 'commitment';
-type FlagOption = 'json' | 'allow-loopback-http' | 'help' | 'version';
+  | 'chain-id'
+  | 'registry'
+  | 'rpc'
+  | 'expected-reference'
+  | 'deployment'
+  | 'reviewer'
+  | 'commitment'
+  | 'agent-policy'
+  | 'agent-card-origin';
+type FlagOption =
+  'json' | 'allow-loopback-http' | 'help' | 'version' | 'agent-identity' | 'fetch-agent-card';
 
 const COMMAND_OPTIONS: Readonly<Record<'verify' | 'status', readonly ValueOption[]>> = {
-  verify: ['chain-id', 'registry', 'rpc', 'expected-reference', 'deployment'],
+  verify: [
+    'chain-id',
+    'registry',
+    'rpc',
+    'expected-reference',
+    'deployment',
+    'agent-policy',
+    'agent-card-origin',
+  ],
   status: ['chain-id', 'registry', 'reviewer', 'commitment', 'rpc', 'deployment'],
 };
 const FLAGS: readonly FlagOption[] = ['json', 'allow-loopback-http', 'help', 'version'];
+/** Verify-only options for the optional agent-identity sidecar. Status never has them. */
+const VERIFY_FLAGS: readonly FlagOption[] = ['agent-identity', 'fetch-agent-card'];
 
 export interface CommonOptions {
   readonly json: boolean;
+  readonly agentIdentity: boolean;
+  readonly fetchAgentCard: boolean;
   readonly allowLoopbackHttp: boolean;
   readonly values: Readonly<Partial<Record<ValueOption, string>>>;
 }
@@ -61,7 +82,11 @@ export function parseArguments(argv: readonly string[]): Parsed {
   const flags = new Set<FlagOption>();
   const values: Partial<Record<ValueOption, string>> = {};
   const positionals: string[] = [];
-  const known = new Set<string>([...FLAGS, ...COMMAND_OPTIONS[command]]);
+  const known = new Set<string>([
+    ...FLAGS,
+    ...(command === 'verify' ? VERIFY_FLAGS : []),
+    ...COMMAND_OPTIONS[command],
+  ]);
   for (let index = 0; index < rest.length; index += 1) {
     const item = rest[index] ?? '';
     if (item === '--') {
@@ -79,7 +104,10 @@ export function parseArguments(argv: readonly string[]): Parsed {
     const equals = item.indexOf('=');
     const name = item.slice(2, equals === -1 ? undefined : equals);
     if (!known.has(name)) return fail(json, 'USAGE_OPTION_UNKNOWN', `--${name}`);
-    if ((FLAGS as readonly string[]).includes(name)) {
+    if (
+      (FLAGS as readonly string[]).includes(name) ||
+      (VERIFY_FLAGS as readonly string[]).includes(name)
+    ) {
       if (equals !== -1) return fail(json, 'USAGE_VALUE_INVALID', `--${name}`);
       flags.add(name as FlagOption);
       continue;
@@ -104,9 +132,19 @@ export function parseArguments(argv: readonly string[]): Parsed {
 
   const common: CommonOptions = {
     json: flags.has('json'),
+    agentIdentity: flags.has('agent-identity'),
+    fetchAgentCard: flags.has('fetch-agent-card'),
     allowLoopbackHttp: flags.has('allow-loopback-http'),
     values,
   };
+  // Card retrieval and its policy options only make sense with the identity sidecar.
+  if (!flags.has('agent-identity')) {
+    if (flags.has('fetch-agent-card'))
+      return fail(json, 'USAGE_OPTION_REQUIRES', '--fetch-agent-card');
+    for (const option of ['agent-policy', 'agent-card-origin'] as const) {
+      if (values[option] !== undefined) return fail(json, 'USAGE_OPTION_REQUIRES', `--${option}`);
+    }
+  }
   const required: readonly ValueOption[] =
     command === 'verify'
       ? ['chain-id', 'registry']

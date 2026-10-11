@@ -95,6 +95,7 @@ try {
       '_lexaegis_sdk_verify',
       '_lexaegis_sdk_registry',
       '_lexaegis_sdk_transactions',
+      '_lexaegis_sdk_agent_identity',
     ].every((name) => modules.includes(name)),
     modules.length.toString(),
   );

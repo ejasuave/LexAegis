@@ -42,3 +42,5 @@ export {
   type CardTransport,
   type FetchCardInput,
 } from './card';
+export { extractAgentIdentity, type AgentIdentityExtraction } from './reference';
+export type { AgentIdentityRef } from '@lexaegis/protocol';

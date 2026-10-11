@@ -5782,6 +5782,176 @@
         "realDeviceEvidence": false,
         "liveProviderEvidence": false
       }
+    },
+    {
+      "id": "hud-browser-20261011150216",
+      "subject": "hud-browser-check",
+      "sourceRevision": {
+        "commit": "8354c17dc92071fc95c6890ebc91d11d3c555816",
+        "dirtyWorktree": true,
+        "contentFingerprint": "9d84a14aad55b886e9a8327a4729316835d4a32fa12d96037caa28701e714b1f"
+      },
+      "checkedAt": "2026-10-11T15:02:16.953Z",
+      "command": "pnpm test:hud:browser",
+      "environment": {
+        "node": "v24.21.0",
+        "os": "linux-x64",
+        "pnpm": "11.11.0"
+      },
+      "evidenceClass": "virtual_authenticator",
+      "outcome": "pass",
+      "reasonCodes": [
+        "AUTHENTICATOR_MODE_VIRTUAL",
+        "SYNTHETIC_DOCUMENTS_ONLY",
+        "SCRIPTED_CHAIN_STATE",
+        "MOCK_SPEECH_ADAPTERS"
+      ],
+      "evidenceRefs": [
+        {
+          "type": "path",
+          "value": "docs/evidence/chapter10/01-command-centre-empty-1440x900.png"
+        },
+        {
+          "type": "path",
+          "value": "docs/evidence/chapter10/02-review-1440x900.png"
+        },
+        {
+          "type": "path",
+          "value": "docs/evidence/chapter10/03-approval-preview-1440x900.png"
+        },
+        {
+          "type": "path",
+          "value": "docs/evidence/chapter10/04-transaction-unavailable-1440x900.png"
+        },
+        {
+          "type": "path",
+          "value": "docs/evidence/chapter10/05-review-after-approval-1440x900.png"
+        },
+        {
+          "type": "path",
+          "value": "docs/evidence/chapter10/06-command-centre-1440x900.png"
+        },
+        {
+          "type": "path",
+          "value": "docs/evidence/chapter10/07-command-centre-1024x768.png"
+        },
+        {
+          "type": "path",
+          "value": "docs/evidence/chapter10/08-review-package-390x844.png"
+        },
+        {
+          "type": "path",
+          "value": "docs/evidence/chapter10/09-review-320x640.png"
+        },
+        {
+          "type": "path",
+          "value": "docs/evidence/chapter10/10-locked-1440x900.png"
+        }
+      ],
+      "facts": {
+        "browser": "chromium 153.0.8010.12",
+        "checksPassed": "69",
+        "checksTotal": "69",
+        "provider": "scripted-test (loopback, no model)",
+        "chain": "scripted live state, fixture registry address, no network",
+        "speech": "mock adapters, not a real device",
+        "storage": "postgresql + versitygw",
+        "authenticatorMode": "virtual",
+        "realDeviceEvidence": false,
+        "liveProviderEvidence": false,
+        "screenshotCount": "10"
+      }
+    },
+    {
+      "id": "verifier-browser-20261011150228",
+      "subject": "verifier-browser-check",
+      "sourceRevision": {
+        "commit": "8354c17dc92071fc95c6890ebc91d11d3c555816",
+        "dirtyWorktree": true,
+        "contentFingerprint": "9d84a14aad55b886e9a8327a4729316835d4a32fa12d96037caa28701e714b1f"
+      },
+      "checkedAt": "2026-10-11T15:02:29.150Z",
+      "command": "pnpm test:verifier:browser",
+      "environment": {
+        "node": "v24.21.0",
+        "os": "linux-x64",
+        "pnpm": "11.11.0"
+      },
+      "evidenceClass": "virtual_authenticator",
+      "outcome": "pass",
+      "reasonCodes": [
+        "EXPORT_FROM_CHAPTER10_FLOW",
+        "SYNTHETIC_DOCUMENTS_ONLY",
+        "SCRIPTED_RPC_LOOPBACK_FOR_PRIVACY_CHECK"
+      ],
+      "evidenceRefs": [
+        {
+          "type": "path",
+          "value": "docs/evidence/chapter11/01-local-check-1280.png"
+        },
+        {
+          "type": "path",
+          "value": "docs/evidence/chapter11/02-substituted-reference-1280.png"
+        },
+        {
+          "type": "path",
+          "value": "docs/evidence/chapter11/03-live-status-scripted-rpc-1280.png"
+        },
+        {
+          "type": "path",
+          "value": "docs/evidence/chapter11/04-local-check-390.png"
+        },
+        {
+          "type": "path",
+          "value": "docs/evidence/chapter11/04-local-check-320.png"
+        },
+        {
+          "type": "path",
+          "value": "docs/evidence/chapter11/05-live-testnet-superseded-1280.png"
+        }
+      ],
+      "facts": {
+        "browser": "chromium 153.0.8010.12",
+        "checksPassed": "60",
+        "checksTotal": "60",
+        "liveReadOutcome": "pass",
+        "realDeviceEvidence": false
+      }
+    },
+    {
+      "id": "packages-check-20261011150248",
+      "subject": "packaged-consumer-check",
+      "sourceRevision": {
+        "commit": "8354c17dc92071fc95c6890ebc91d11d3c555816",
+        "dirtyWorktree": true,
+        "contentFingerprint": "9d84a14aad55b886e9a8327a4729316835d4a32fa12d96037caa28701e714b1f"
+      },
+      "checkedAt": "2026-10-11T15:02:48.823Z",
+      "command": "pnpm packages:check",
+      "environment": {
+        "node": "v24.21.0",
+        "os": "linux-x64",
+        "pnpm": "11.11.0"
+      },
+      "evidenceClass": "local_scripted",
+      "outcome": "pass",
+      "reasonCodes": ["LOCAL_TARBALLS_NOT_PUBLISHED", "AUTHORED_EXAMPLE_NOT_ADOPTION"],
+      "evidenceRefs": [],
+      "facts": {
+        "checksPassed": "40",
+        "checksTotal": "40",
+        "protocolTarballBytes": "69122",
+        "sdkTarballBytes": "85117",
+        "cliTarballBytes": "21320",
+        "protocolTarballSha256": "51eb9f097e4bc032f12848a53ce4d8f5f0f52985725a2c6989b25f9972891bf6",
+        "sdkTarballSha256": "e970c2ce2df348244a867c4ab9233bf86d820f454c21b07e2a9c8d7857f57b2b",
+        "cliTarballSha256": "a88cdfab6c7b8b01f9da7409c15ea8cfc0e483fad1ee0fa8447f1804e2fe06a9",
+        "protocolFiles": "68",
+        "sdkFiles": "71",
+        "cliFiles": "28",
+        "browser": "chromium (playwright)",
+        "published": false
+      }
     }
   ],
   "appliedCuts": [],
@@ -8169,6 +8339,18 @@
         "status": "complete",
         "summary": "Aegis HUD assistant identity line. features/identity (controller, describe, public) and components/assistant/AgentIdentityLine.tsx inside the conversation panel; server route GET /api/agent-identity (404 via rejectIfDisabled when the server-owned agentIdentity flag is off; otherwise one read-only SDK resolution of the CURRENT assistant against the configured testnet, or the plain fact that no registration is configured; no client input, no caching) with server/agent-identity.ts loading the reference from operator environment only (AGENT_IDENTITY_AGENT_ID, card URI defaulting to the public /api/agent-card). FEATURE_READINESS.agentIdentity is now implemented+verified (tests below); the Chapter 14 default-on rule therefore shows the line by default, but with no configured registration it says Not registered and makes no lookup. States: registered (agent ID, registry, network, block and observation time, a card link only for a plain public https URI, explicit 'not a verification' wording, changed-URI note), Not registered (no configured registration vs the registry's known nonexistent answer kept as distinct reasons), 'Agent identity unavailable on this network' (missing code, unsupported ABI, wrong chain/genesis, network not configured) and 'Unable to check agent identity' (RPC failure, budget, reorg, abort: never claimed absent), checking (neutral, no reused success). Reads happen only on Check or Refresh; matter change, vault lock, flag change and unmount invalidate, abort and discard stale answers (generation); no polling. The line is labelled Current assistant: it never substitutes today's identity into a review's evidence. Stop, approval, citations, capture readiness and receipt states are untouched. Tests: 4 wording + 4 controller (off: zero requests, explicit-only reads, stale discard, malformed = unknown), 2 server config, flags readiness updated; pnpm test:assistant:browser 61/61 including a keyboard Check that reports Not registered with exactly one route request and no lookup before it; test:hud:browser 69/69. No registration exists yet.",
         "files": ["apps", "tooling"]
+      },
+      "9": {
+        "status": "complete",
+        "summary": "Independent verifier and CLI identity sidecar. SDK: extractAgentIdentity reads the optional reference from the exact bytes of an agent-configuration artifact (v1: not_included, or malformed if it carries the field; v2: included/malformed; other versions unsupported_version), used only after the core files matched; hash-correct bytes with a malformed claim are reported as such and never as a failed receipt. apps/verifier: the local job extracts the reference from integrity-checked bytes (null when not evaluated); an optional section 5 Agent identity appears only in a build with VITE_AGENT_IDENTITY=true and uses the build's own pinned testnet policy (same genesis pin as the registry policy) and the caller-chosen RPC; resolution happens only on an explicit Check button, never feeds the proof report, shows the captured reference apart from the current registry observation (a changed card address is labelled as not tampering with unchanged bytes) and is discarded by new input, endpoint or policy change and Clear; card retrieval is not offered (the build's CSP allows only the registry endpoint). No backend, session, Mera, Qwen or Envio. CLI: verify gains --agent-identity, --agent-policy <file>, --fetch-agent-card and --agent-card-origin <origin> (verify only and only with --agent-identity; status rejects them as unknown options); the ERC-8004 policy is the caller's file or the built-in documented testnet registry pinned to the verified genesis; the card transport is a Node DNS-resolving adapter that rejects any non-public address and connects to the validated address (no rebinding), no redirects, identity encoding so the 32 KiB limit is decoded bytes. Output: unchanged lexaegis.cli-result.v1 without the option; with it a versioned lexaegis.cli-result-agent-identity.v1 envelope { core: <the unchanged document>, agentIdentity } and a separate text line; no exit code, precedence or core field changes (notFound of the identity is not the receipt's not_found). 6 verifier tests, 6 sidecar/option/output tests; verifier browser check 60/60 and packages:check 40/40 and the Chapter 15 CLI Anvil suite 17/17 unchanged. The CLI never loads a key, registers, rates or signs. Registry answers in these tests come from a controlled scripted node, not from the deployed contract.",
+        "files": [
+          "apps/verifier",
+          "packages/cli",
+          "packages/sdk/src/agent-identity",
+          "docs-entries",
+          "typedoc.json",
+          "tooling"
+        ]
       }
     }
   }

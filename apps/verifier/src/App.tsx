@@ -3,6 +3,7 @@ import { VerifierController } from './controller';
 import { loadVerifierConfig } from './config';
 import { InputSection } from './components/InputSection';
 import { RegistrySection } from './components/RegistrySection';
+import { AgentIdentitySection } from './components/AgentIdentitySection';
 import { ResultSection } from './components/ResultSection';
 import { useVerifier } from './use-verifier';
 
@@ -17,6 +18,7 @@ function createController(): VerifierController {
     policy: config.policy,
     rpcUrl: config.rpcUrl,
     allowedRpcOrigins: config.allowedRpcOrigins,
+    agentIdentity: { enabled: config.agentIdentityEnabled, policy: config.agentIdentityPolicy },
     ...(loopback && { allowLoopbackHttp: true }),
   });
 }
@@ -62,6 +64,9 @@ export function App() {
         policyNote={config.policyNote}
         policySource={config.policySource}
       />
+      {config.agentIdentityEnabled ? (
+        <AgentIdentitySection controller={controller} snapshot={snapshot} />
+      ) : null}
     </div>
   );
 }

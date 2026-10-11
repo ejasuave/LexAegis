@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import type { AgentIdentityPolicy } from '@lexaegis/sdk/agent-identity';
 import { parseRpcEndpoint } from '@lexaegis/sdk/verify';
 import { registryPolicySchema, type RegistryPolicy } from '@lexaegis/sdk';
 import generated from './generated/default-policy.json';
@@ -21,6 +22,10 @@ export interface VerifierConfig {
   readonly allowedRpcOrigins: readonly string[];
   /** Where the installed policy came from, for display. */
   readonly policyNote: string;
+  /** Build-time switch for the optional agent-identity section (VITE_AGENT_IDENTITY=true). */
+  readonly agentIdentityEnabled: boolean;
+  /** The documented Monad testnet ERC-8004 deployment, pinned to the recorded chain's genesis. */
+  readonly agentIdentityPolicy: AgentIdentityPolicy | null;
 }
 
 const generatedSchema = z.strictObject({
@@ -45,11 +50,13 @@ export function parseAllowedOrigins(
   return [...origins];
 }
 
-export function loadVerifierConfig(
+type BaseConfig = Omit<VerifierConfig, 'agentIdentityEnabled' | 'agentIdentityPolicy'>;
+
+function loadBaseConfig(
   env: Readonly<Record<string, string | undefined>>,
-  defaults: unknown = generated,
-  options: { readonly allowLoopbackHttp?: boolean } = {},
-): VerifierConfig {
+  defaults: unknown,
+  options: { readonly allowLoopbackHttp?: boolean },
+): BaseConfig {
   const loopback = options.allowLoopbackHttp === true;
   const rpc = parseRpcEndpoint(env.VITE_RPC_URL ?? DEFAULT_PUBLIC_RPC_URL, {
     allowLoopbackHttp: loopback,
@@ -100,4 +107,29 @@ export function loadVerifierConfig(
     allowedRpcOrigins,
     policyNote: `Generated from the recorded Monad Testnet deployment (${parsed.data.source}).`,
   };
+}
+
+/** The documented ERC-8004 Identity Registry on Monad testnet (docs/erc8004-availability.md). */
+const TESTNET_IDENTITY_REGISTRY = '0x8004a818bfb912233c491871b3d84c89a494bd9e';
+
+export function loadVerifierConfig(
+  env: Readonly<Record<string, string | undefined>>,
+  defaults: unknown = generated,
+  options: { readonly allowLoopbackHttp?: boolean } = {},
+): VerifierConfig {
+  const base = loadBaseConfig(env, defaults, options);
+  const enabled = env.VITE_AGENT_IDENTITY === 'true';
+  // The agent-identity policy is pinned to the same recorded testnet chain as the registry policy:
+  // never taken from a package, a card or an RPC response.
+  const agentIdentityPolicy: AgentIdentityPolicy | null =
+    enabled && base.policy !== null && base.policy.chainId === '10143'
+      ? {
+          id: 'lexaegis.monad-testnet.erc8004',
+          chainId: base.policy.chainId,
+          genesisHash: base.policy.genesisHash,
+          identityRegistry: TESTNET_IDENTITY_REGISTRY,
+          executionDelayBlocks: base.policy.executionDelayBlocks,
+        }
+      : null;
+  return { ...base, agentIdentityEnabled: enabled, agentIdentityPolicy };
 }

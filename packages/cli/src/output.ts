@@ -1,5 +1,6 @@
 import type { ReceiptReferenceV1, VerificationReportV1 } from '@lexaegis/sdk';
 import { EXIT_MEANING, type ExitCode } from './exit.js';
+import { IDENTITY_ENVELOPE_SCHEMA, type SidecarResult } from './identity-sidecar.js';
 
 /*
  * What the CLI prints. Text and JSON are built from an allowlisted projection of the SDK report:
@@ -76,6 +77,8 @@ export interface CliResult {
   readonly error: CliFailure | null;
   /** Where the RPC endpoint came from, or null when no read was made. The endpoint itself is never printed. */
   readonly rpcSource: 'flag' | 'environment' | 'known-public' | null;
+  /** Present only when the caller opted in with --agent-identity. Never changes `exit`. */
+  readonly agentIdentity?: SidecarResult;
   /** Short factual notes, for example how the expected reference was obtained. */
   readonly notes: readonly string[];
 }
@@ -105,21 +108,23 @@ export function escapeText(value: string): string {
 }
 
 export function formatJson(result: CliResult): string {
-  return `${JSON.stringify(
-    {
-      schema: RESULT_SCHEMA,
-      command: result.command,
-      exit: { code: result.exit, meaning: EXIT_MEANING[result.exit] },
-      filesEvaluated: result.filesEvaluated,
-      // The CLI has no signer-policy editor: acceptance is only ever `unknown` here.
-      signerRequirements: 'not_evaluated',
-      rpcSource: result.rpcSource,
-      report: result.report,
-      error: result.error,
-    },
-    null,
-    2,
-  )}\n`;
+  const core = {
+    schema: RESULT_SCHEMA,
+    command: result.command,
+    exit: { code: result.exit, meaning: EXIT_MEANING[result.exit] },
+    filesEvaluated: result.filesEvaluated,
+    // The CLI has no signer-policy editor: acceptance is only ever `unknown` here.
+    signerRequirements: 'not_evaluated',
+    rpcSource: result.rpcSource,
+    report: result.report,
+    error: result.error,
+  };
+  // Without --agent-identity the default document is exactly what it always was.
+  const document =
+    result.agentIdentity === undefined
+      ? core
+      : { schema: IDENTITY_ENVELOPE_SCHEMA, core, agentIdentity: result.agentIdentity };
+  return `${JSON.stringify(document, null, 2)}\n`;
 }
 
 const label = (name: string): string => `  ${name.padEnd(20)}`;
@@ -181,8 +186,35 @@ export function formatText(result: CliResult): string {
       }${error.subject === undefined ? '' : ` (${escapeText(error.subject)})`}`,
     );
   }
+  if (result.agentIdentity !== undefined) lines.push(...identityLines(result.agentIdentity));
   lines.push(
     `  exit ${String(result.exit)} (${EXIT_MEANING[result.exit]}). This does not establish signer acceptance, legal correctness or the reviewer's identity.`,
   );
   return `${lines.join('\n')}\n`;
+}
+
+function identityLines(identity: SidecarResult): string[] {
+  const lines = [
+    `  Agent identity (sidecar, not part of the receipt result): ${escapeText(identity.status)}${identity.reason === null ? '' : ` (${escapeText(identity.reason)})`}`,
+  ];
+  if (identity.reference !== null) {
+    lines.push(
+      `${label('')}captured reference: agent ${escapeText(identity.reference.agentId)} in registry ${escapeText(identity.reference.identityRegistry)} on chain ${escapeText(identity.reference.chainId)}`,
+    );
+  }
+  const { resolution } = identity;
+  if (resolution !== null) {
+    lines.push(
+      `${label('')}registry now: ${escapeText(resolution.status)}${resolution.checkpoint === null ? '' : ` at block ${escapeText(resolution.checkpoint.blockNumber)}`}${resolution.agent === null ? '' : `, owner ${escapeText(resolution.agent.owner)}${resolution.agent.uri.changed ? ', card address CHANGED since capture' : ''}`}`,
+    );
+  }
+  if (identity.card !== null) {
+    lines.push(
+      `${label('')}card (self-declared): ${escapeText(identity.card.status)} (${escapeText(identity.card.reason)})${identity.card.card === null ? '' : ` name "${escapeText(identity.card.card.name)}"`}`,
+    );
+  }
+  lines.push(
+    `${label('')}A registry record is discovery only: not proof of authorship, correctness, human identity or qualification.`,
+  );
+  return lines;
 }

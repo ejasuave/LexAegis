@@ -27,6 +27,18 @@ Trust inputs (all local, none taken from the package):
   --allow-loopback-http Permit http://127.0.0.1 for a throwaway local chain. Test use only.
   --json                One JSON result on stdout; diagnostics stay on stderr.
 
+Optional agent identity (verify only; off unless asked, and never changes the exit code):
+  --agent-identity      After the core checks match, read the ERC-8004 reference in the package's
+                        agent-configuration artifact and look it up on the registry you trust. A
+                        missing reference, notFound or a failure is a separate, non-fatal result.
+                        The JSON document then uses lexaegis.cli-result-agent-identity.v1:
+                        { core: <the unchanged result>, agentIdentity }.
+  --agent-policy <file> The ERC-8004 deployment you trust (chain, genesis hash, Identity Registry).
+                        Built in for the documented Monad testnet registry only.
+  --fetch-agent-card    Also fetch the registered card (https, 5 s, 32 KiB, no redirects, DNS
+                        pinned to public addresses). Needs --agent-card-origin <origin>, the exact
+                        origin you allow. Card contents are self-declared claims, never verified.
+
 Signer: this tool has no signer-policy editor. Signer requirements are reported as not evaluated;
 use the SDK's signer policy if you need to decide whom to accept. A reviewer address selects a
 record and does not certify the account.

@@ -10,7 +10,8 @@
     "docs-entries/sdk-offline.ts",
     "docs-entries/sdk-verify.ts",
     "docs-entries/sdk-registry.ts",
-    "docs-entries/sdk-transactions.ts"
+    "docs-entries/sdk-transactions.ts",
+    "docs-entries/sdk-agent-identity.ts"
   ],
   "tsconfig": "typedoc.tsconfig.json",
   "out": "docs/api",

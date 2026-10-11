@@ -8,6 +8,7 @@ import {
   type VerificationReportV1,
 } from '@lexaegis/sdk';
 import { verifyReceipt, type FetchLike, type VerifyReceiptFailure } from '@lexaegis/sdk/verify';
+import type { CardTransport } from '@lexaegis/sdk/agent-identity';
 import type { CommonOptions } from './args.js';
 import {
   MAX_SMALL_FILE_BYTES,
@@ -18,6 +19,8 @@ import {
 } from './config.js';
 import { EXIT, type CliErrorCode, type ExitCode } from './exit.js';
 import { readBoundedFile } from './files.js';
+import { createPinnedNodeCardTransport } from './card-transport.js';
+import { runIdentitySidecar } from './identity-sidecar.js';
 import { projectReport, type CliFailure, type CliResult } from './output.js';
 
 /** The largest package accepted: the protocol's 48 MiB bundle limit. */
@@ -30,6 +33,8 @@ export interface Environment {
   /** Test seam for the network. Production uses the platform fetch. */
   readonly fetch?: FetchLike;
   readonly now?: () => Date;
+  /** Test seam for the agent-card transport. Production uses the DNS-pinning Node transport. */
+  readonly cardTransport?: CardTransport | null;
 }
 
 const cliFailure = (code: CliErrorCode, subject?: string): CliFailure => ({
@@ -233,7 +238,33 @@ export async function runVerify(
       },
     });
   }
-  return finishVerify(offline.data, trust.trust, parsed, environment, notes);
+  const core = await finishVerify(offline.data, trust.trust, parsed, environment, notes);
+  if (!parsed.agentIdentity) return core;
+  // Opt-in sidecar. It never changes the core outcome or exit code.
+  const roles = new Map(
+    decoded.data.opening.manifest.artifacts.map((artifact) => [artifact.id, artifact.role]),
+  );
+  const agentConfigs = [...decoded.data.artifacts.entries()]
+    .filter(([id]) => roles.get(id) === 'agent-config')
+    .map(([, bytes]) => bytes);
+  const origin = parsed.values['agent-card-origin'];
+  const agentIdentity = await runIdentitySidecar({
+    agentConfigs,
+    coreIntact:
+      offline.data.manifestIntegrity === 'match' && offline.data.artifactIntegrity === 'match',
+    rpc: trust.trust.rpc,
+    allowLoopbackHttp: parsed.allowLoopbackHttp,
+    policyPath: parsed.values['agent-policy'],
+    fetchCard: parsed.fetchAgentCard,
+    cardOrigins: origin === undefined ? [] : [origin],
+    cardTransport:
+      environment.cardTransport === undefined
+        ? createPinnedNodeCardTransport()
+        : environment.cardTransport,
+    signal: environment.signal,
+    ...(environment.fetch !== undefined && { fetch: environment.fetch }),
+  });
+  return { ...core, agentIdentity };
 }
 
 async function finishVerify(
