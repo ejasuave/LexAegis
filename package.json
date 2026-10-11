@@ -61,7 +61,11 @@
     "test:indexer:rollback": "pnpm --filter @lexaegis/contracts test:indexer-rollback",
     "test:hud:browser": "tsx tooling/scripts/hud-browser-check.ts",
     "verifier:policy": "tsx tooling/scripts/verifier-policy.ts",
-    "verifier:policy:check": "tsx tooling/scripts/verifier-policy.ts --check"
+    "verifier:policy:check": "tsx tooling/scripts/verifier-policy.ts --check",
+    "sdk:generate": "pnpm --filter @lexaegis/sdk generate",
+    "sdk:check": "pnpm --filter @lexaegis/sdk generate:check",
+    "packages:build": "tsx tooling/scripts/build-packages.ts",
+    "packages:check": "tsx tooling/scripts/package-check.ts"
   },
   "devDependencies": {
     "@eslint/js": "10.0.1",

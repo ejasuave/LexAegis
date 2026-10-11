@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { reviewExportSchema } from '../portable/review-export';
 import { PROTOCOL_DESCRIPTOR_V1 } from './descriptor';
 import {
   artifactRefV1Schema,
@@ -40,6 +41,14 @@ const DEFINITIONS = [
     title: 'CommitmentOpeningV1',
     schema: commitmentOpeningV1Schema,
     comment: `PRIVATE opening material. ${PACKAGE_RULES}`,
+  },
+  {
+    file: 'review-export.schema.json',
+    id: 'urn:lexaegis:protocol:v1:review-export',
+    title: 'ReviewExportV1',
+    schema: reviewExportSchema,
+    comment:
+      'PRIVATE, DISCLOSING readable bundle: the opening, the blinding nonce and the original artifact bytes (canonical unpadded base64url, in manifest order). It carries no signature, status or trust policy. Runtime rules not expressible here: artifacts exactly equal the manifest artifacts in order; each decoded artifact <= 10485760 bytes and combined <= 33554432; the whole input <= 50331648 bytes; the manifest and opening <= 1048576 bytes; JSON nesting <= 32.',
   },
 ] as const;
 

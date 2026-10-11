@@ -6,7 +6,7 @@ import {
 } from '@lexaegis/protocol/v1';
 import { parseReviewExport } from '@lexaegis/sdk/portable';
 import { buildIssueAction, buildTypedData } from '@lexaegis/sdk/registry';
-import { buildSyntheticPackage, type ExampleContext } from './profile';
+import { buildSyntheticPackage, type ExampleContext } from './profile.js';
 
 export interface PrepareOptions extends ExampleContext {
   /** Supplying both prints the typed signing data for the caller's own signer. Neither is guessed. */

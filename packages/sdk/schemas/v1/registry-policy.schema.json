@@ -1,0 +1,68 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:lexaegis:sdk:v1:registry-policy",
+  "title": "RegistryPolicy",
+  "$comment": "Trusted caller configuration for live checks. A package can never supply or change it. Public fields only.",
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9._-]{0,79}$"
+    },
+    "chainId": {
+      "type": "string",
+      "maxLength": 78,
+      "pattern": "^[1-9][0-9]*$"
+    },
+    "genesisHash": {
+      "type": "string",
+      "pattern": "^0x[0-9a-f]{64}$"
+    },
+    "registryAddress": {
+      "type": "string",
+      "pattern": "^0x[0-9a-f]{40}$",
+      "not": {
+        "const": "0x0000000000000000000000000000000000000000"
+      }
+    },
+    "protocolVersion": {
+      "type": "string",
+      "pattern": "^[1-9][0-9]*$"
+    },
+    "deploymentBlock": {
+      "type": "string",
+      "pattern": "^(?:0|[1-9][0-9]*)$"
+    },
+    "deploymentTransactionHash": {
+      "type": "string",
+      "pattern": "^0x[0-9a-f]{64}$"
+    },
+    "runtimeCodeKeccak256": {
+      "type": "string",
+      "pattern": "^0x[0-9a-f]{64}$"
+    },
+    "executionDelayBlocks": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 64
+    },
+    "executionDelayRevision": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 200
+    }
+  },
+  "required": [
+    "id",
+    "chainId",
+    "genesisHash",
+    "registryAddress",
+    "protocolVersion",
+    "deploymentBlock",
+    "deploymentTransactionHash",
+    "runtimeCodeKeccak256",
+    "executionDelayBlocks",
+    "executionDelayRevision"
+  ],
+  "additionalProperties": false
+}

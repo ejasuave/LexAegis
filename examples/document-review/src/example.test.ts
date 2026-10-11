@@ -2,9 +2,9 @@ import { readdirSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { describe, expect, it } from 'vitest';
-import { prepareExample } from './prepare';
-import { PROFILE } from './profile';
-import { verifyExample } from './verify';
+import { prepareExample } from './prepare.js';
+import { PROFILE } from './profile.js';
+import { verifyExample } from './verify.js';
 
 const context = {
   chainId: '10143',

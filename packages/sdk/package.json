@@ -1,9 +1,9 @@
 {
   "name": "@lexaegis/sdk",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "private": true,
   "type": "module",
-  "description": "Framework-neutral receipt client and verification interfaces.",
+  "description": "Framework-neutral Proof of Review SDK: portable bundle decoding, offline and live receipt verification, and registry action data. It signs and submits nothing.",
   "exports": {
     ".": "./src/index.ts",
     "./registry": "./src/registry/index.ts",
@@ -13,11 +13,50 @@
     "./verify": "./src/verification/live.ts"
   },
   "scripts": {
-    "typecheck": "tsc --noEmit -p tsconfig.json"
+    "typecheck": "tsc --noEmit -p tsconfig.json",
+    "generate": "tsx scripts/generate-artifacts.ts",
+    "generate:check": "tsx scripts/generate-artifacts.ts --check"
   },
   "dependencies": {
     "@lexaegis/protocol": "workspace:*",
     "viem": "2.57.3",
     "zod": "4.6.5"
+  },
+  "sideEffects": false,
+  "engines": {
+    "node": ">=24.0.0"
+  },
+  "files": [
+    "dist",
+    "schemas"
+  ],
+  "publishConfig": {
+    "exports": {
+      ".": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      },
+      "./registry": {
+        "types": "./dist/registry/index.d.ts",
+        "default": "./dist/registry/index.js"
+      },
+      "./transactions": {
+        "types": "./dist/transactions/index.d.ts",
+        "default": "./dist/transactions/index.js"
+      },
+      "./portable": {
+        "types": "./dist/portable/index.d.ts",
+        "default": "./dist/portable/index.js"
+      },
+      "./offline": {
+        "types": "./dist/verification/index.d.ts",
+        "default": "./dist/verification/index.js"
+      },
+      "./verify": {
+        "types": "./dist/verification/live.d.ts",
+        "default": "./dist/verification/live.js"
+      },
+      "./schemas/v1/*": "./schemas/v1/*"
+    }
   }
 }

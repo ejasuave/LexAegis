@@ -1,10 +1,10 @@
 {
   "name": "@lexaegis/protocol",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "private": true,
   "type": "module",
   "sideEffects": false,
-  "description": "Framework-neutral Proof of Review schemas and domain types.",
+  "description": "Proof of Review protocol v1: schemas, strict parsing, canonical hashing, private commitments, offline package verification and the portable review bundle decoder.",
   "exports": {
     ".": "./src/index.ts",
     "./v1": "./src/v1/index.ts",
@@ -21,5 +21,29 @@
     "canonicalize": "5.1.0",
     "jsonc-parser": "3.3.1",
     "zod": "4.6.5"
+  },
+  "engines": {
+    "node": ">=24.0.0"
+  },
+  "files": [
+    "dist",
+    "schemas"
+  ],
+  "publishConfig": {
+    "exports": {
+      ".": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      },
+      "./v1": {
+        "types": "./dist/v1/index.d.ts",
+        "default": "./dist/v1/index.js"
+      },
+      "./portable": {
+        "types": "./dist/portable/index.d.ts",
+        "default": "./dist/portable/index.js"
+      },
+      "./schemas/v1/*": "./schemas/v1/*"
+    }
   }
 }

@@ -1,0 +1,354 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:lexaegis:sdk:v1:verification-report",
+  "title": "VerificationReportV1",
+  "$comment": "An observation, not a certificate. There is no combined valid field. Integrity checks are match, mismatch or unknown; a report says nothing about evidence truth, human conduct or legal correctness (profileSemantics is not_evaluated).",
+  "type": "object",
+  "properties": {
+    "schema": {
+      "type": "string",
+      "const": "lexaegis.verification-report.v1"
+    },
+    "mode": {
+      "type": "string",
+      "enum": ["reference-only", "manifest-only", "full-package"]
+    },
+    "expectedReference": {
+      "type": "object",
+      "properties": {
+        "schema": {
+          "type": "string",
+          "const": "lexaegis.receipt-ref.v1"
+        },
+        "chainId": {
+          "type": "string",
+          "maxLength": 78,
+          "pattern": "^[1-9][0-9]*$"
+        },
+        "registryAddress": {
+          "type": "string",
+          "pattern": "^0x[0-9a-f]{40}$",
+          "not": {
+            "const": "0x0000000000000000000000000000000000000000"
+          }
+        },
+        "reviewerAddress": {
+          "type": "string",
+          "pattern": "^0x[0-9a-f]{40}$",
+          "not": {
+            "const": "0x0000000000000000000000000000000000000000"
+          }
+        },
+        "commitment": {
+          "type": "string",
+          "pattern": "^0x[0-9a-f]{64}$"
+        }
+      },
+      "required": ["schema", "chainId", "registryAddress", "reviewerAddress", "commitment"],
+      "additionalProperties": false
+    },
+    "referenceOrigin": {
+      "type": "string",
+      "enum": ["independent", "file-declared"]
+    },
+    "manifestIntegrity": {
+      "type": "string",
+      "enum": ["match", "mismatch", "unknown"]
+    },
+    "artifactIntegrity": {
+      "type": "string",
+      "enum": ["match", "mismatch", "unknown"]
+    },
+    "registryIdentity": {
+      "type": "string",
+      "enum": ["match", "mismatch", "unknown"]
+    },
+    "receiptBinding": {
+      "type": "string",
+      "enum": ["match", "mismatch", "unknown"]
+    },
+    "chainStatus": {
+      "type": "string",
+      "enum": ["unknown", "not_found", "active", "revoked", "superseded"]
+    },
+    "signerAcceptance": {
+      "type": "string",
+      "enum": ["accepted", "rejected", "unknown"]
+    },
+    "checkpoint": {
+      "anyOf": [
+        {
+          "type": "object",
+          "properties": {
+            "chainId": {
+              "type": "string",
+              "maxLength": 78,
+              "pattern": "^[1-9][0-9]*$"
+            },
+            "finalizedHeight": {
+              "type": "string",
+              "pattern": "^(?:0|[1-9][0-9]*)$"
+            },
+            "blockNumber": {
+              "type": "string",
+              "pattern": "^(?:0|[1-9][0-9]*)$"
+            },
+            "blockHash": {
+              "type": "string",
+              "pattern": "^0x[0-9a-f]{64}$"
+            },
+            "blockTimestamp": {
+              "type": "string",
+              "pattern": "^(?:0|[1-9][0-9]*)$"
+            },
+            "executionDelayBlocks": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 64
+            },
+            "executionDelayRevision": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 200
+            },
+            "pinning": {
+              "type": "string",
+              "enum": ["block_number_with_hash_recheck"]
+            },
+            "observedAt": {
+              "type": "string",
+              "format": "date-time",
+              "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z))$"
+            }
+          },
+          "required": [
+            "chainId",
+            "finalizedHeight",
+            "blockNumber",
+            "blockHash",
+            "blockTimestamp",
+            "executionDelayBlocks",
+            "executionDelayRevision",
+            "pinning",
+            "observedAt"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "registryPolicyId": {
+      "anyOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 80
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "signerPolicyId": {
+      "anyOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 80
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "profile": {
+      "anyOf": [
+        {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "maxLength": 80
+            },
+            "version": {
+              "type": "string",
+              "maxLength": 10
+            }
+          },
+          "required": ["id", "version"],
+          "additionalProperties": false
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "profileSemantics": {
+      "type": "string",
+      "const": "not_evaluated"
+    },
+    "history": {
+      "anyOf": [
+        {
+          "type": "object",
+          "properties": {
+            "complete": {
+              "type": "boolean"
+            },
+            "successors": {
+              "maxItems": 8,
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "reference": {
+                    "type": "object",
+                    "properties": {
+                      "schema": {
+                        "type": "string",
+                        "const": "lexaegis.receipt-ref.v1"
+                      },
+                      "chainId": {
+                        "type": "string",
+                        "maxLength": 78,
+                        "pattern": "^[1-9][0-9]*$"
+                      },
+                      "registryAddress": {
+                        "type": "string",
+                        "pattern": "^0x[0-9a-f]{40}$",
+                        "not": {
+                          "const": "0x0000000000000000000000000000000000000000"
+                        }
+                      },
+                      "reviewerAddress": {
+                        "type": "string",
+                        "pattern": "^0x[0-9a-f]{40}$",
+                        "not": {
+                          "const": "0x0000000000000000000000000000000000000000"
+                        }
+                      },
+                      "commitment": {
+                        "type": "string",
+                        "pattern": "^0x[0-9a-f]{64}$"
+                      }
+                    },
+                    "required": [
+                      "schema",
+                      "chainId",
+                      "registryAddress",
+                      "reviewerAddress",
+                      "commitment"
+                    ],
+                    "additionalProperties": false
+                  },
+                  "chainStatus": {
+                    "type": "string",
+                    "enum": ["unknown", "not_found", "active", "revoked", "superseded"]
+                  },
+                  "packageIntegrity": {
+                    "type": "string",
+                    "const": "unknown"
+                  }
+                },
+                "required": ["reference", "chainStatus", "packageIntegrity"],
+                "additionalProperties": false
+              }
+            }
+          },
+          "required": ["complete", "successors"],
+          "additionalProperties": false
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "observedAt": {
+      "type": "string",
+      "format": "date-time",
+      "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z))$"
+    },
+    "issues": {
+      "maxItems": 300,
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "string",
+            "enum": [
+              "EXPECTATION_FROM_FILE",
+              "MANIFEST_NOT_SUPPLIED",
+              "ARTIFACTS_NOT_SUPPLIED",
+              "ARTIFACTS_NOT_EVALUATED",
+              "DECLARED_REFERENCE_CONFLICT",
+              "CONTEXT_MISMATCH",
+              "COMMITMENT_MISMATCH",
+              "ARTIFACT_MISSING",
+              "ARTIFACT_LENGTH_MISMATCH",
+              "ARTIFACT_DIGEST_MISMATCH",
+              "ARTIFACT_NOT_IN_MANIFEST",
+              "NETWORK_NOT_REQUESTED",
+              "REGISTRY_POLICY_MISSING",
+              "REGISTRY_POLICY_INVALID",
+              "REGISTRY_POLICY_MISMATCH",
+              "LIVE_RPC_UNAVAILABLE",
+              "LIVE_WRONG_CHAIN",
+              "LIVE_GENESIS_MISMATCH",
+              "LIVE_FINALIZED_UNAVAILABLE",
+              "LIVE_BELOW_DEPLOYMENT",
+              "LIVE_CODE_MISMATCH",
+              "LIVE_PROTOCOL_MISMATCH",
+              "LIVE_BLOCK_CHANGED",
+              "LIVE_RESPONSE_INVALID",
+              "LIVE_DEADLINE",
+              "LIVE_ATTEMPTS_EXHAUSTED",
+              "LIVE_TIMEOUT",
+              "LIVE_ABORTED",
+              "BINDING_NOT_EVALUATED",
+              "OPENING_CONTEXT_MISMATCH",
+              "RECEIPT_TUPLE_MISMATCH",
+              "PREDECESSOR_MISMATCH",
+              "IMPOSSIBLE_RECORD",
+              "SUCCESSOR_LIMIT_EXHAUSTED",
+              "SUCCESSOR_CYCLE",
+              "SUCCESSOR_LINK_INVALID",
+              "SUCCESSOR_UNREADABLE",
+              "SIGNER_POLICY_ABSENT",
+              "SIGNER_POLICY_ERROR"
+            ]
+          },
+          "artifactId": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+          }
+        },
+        "required": ["code"],
+        "additionalProperties": false
+      }
+    }
+  },
+  "required": [
+    "schema",
+    "mode",
+    "expectedReference",
+    "referenceOrigin",
+    "manifestIntegrity",
+    "artifactIntegrity",
+    "registryIdentity",
+    "receiptBinding",
+    "chainStatus",
+    "signerAcceptance",
+    "checkpoint",
+    "registryPolicyId",
+    "signerPolicyId",
+    "profile",
+    "profileSemantics",
+    "history",
+    "observedAt",
+    "issues"
+  ],
+  "additionalProperties": false
+}

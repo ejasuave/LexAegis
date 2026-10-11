@@ -4409,6 +4409,38 @@
       "outcome": "pass",
       "reasonCodes": [],
       "evidenceRefs": []
+    },
+    {
+      "id": "packages-check-20261011102101",
+      "subject": "packaged-consumer-check",
+      "sourceRevision": {
+        "commit": "054c75da1a08e7a8867818520da4723533348d72",
+        "dirtyWorktree": true,
+        "contentFingerprint": "e63019522661941b25fdaeab20ae07440346f6060c91ee40fc70957a6745448f"
+      },
+      "checkedAt": "2026-10-11T10:21:02.332Z",
+      "command": "pnpm packages:check",
+      "environment": {
+        "node": "v24.21.0",
+        "os": "linux-x64",
+        "pnpm": "11.11.0"
+      },
+      "evidenceClass": "local_scripted",
+      "outcome": "pass",
+      "reasonCodes": ["LOCAL_TARBALLS_NOT_PUBLISHED", "AUTHORED_EXAMPLE_NOT_ADOPTION"],
+      "evidenceRefs": [],
+      "facts": {
+        "checksPassed": "20",
+        "checksTotal": "20",
+        "protocolTarballBytes": "40970",
+        "sdkTarballBytes": "52235",
+        "protocolTarballSha256": "68f83210e617b57bd3f5314ace793e441e94270a09e9c53d9f2240834fc0c5a1",
+        "sdkTarballSha256": "a835e1eeb5f72dda5b6910edf57c5f0d1732344636732ba8393c02967f92acbe",
+        "protocolFiles": "61",
+        "sdkFiles": "53",
+        "browser": "chromium (playwright)",
+        "published": false
+      }
     }
   ],
   "appliedCuts": [],
@@ -5988,6 +6020,17 @@
           "eslint.config.mjs"
         ]
       },
+      "17": {
+        "status": "complete",
+        "summary": "Gates run and recorded in chapter10.checks: lint, format, typecheck, builds, 1,233 tests, fixtures/baselines/exclusion/state/scope checks, the 69-check HUD browser journey and re-run earlier browser checks; client bundles scanned for credentials; docs updated within their word limits; Chapter 11 handoff written. secrets:check and readiness fail only as before (operator .env; live evidence not yet obtained).",
+        "files": [
+          "docs/build-state.json",
+          "CLAUDE.md",
+          "docs/assistant-ui-contract.md",
+          ".github/workflows/ci.yml",
+          "tooling/scripts/assistant-browser-check.ts"
+        ]
+      },
       "01": {
         "status": "complete",
         "summary": "Boundaries validated: baseline pnpm typecheck passed on all projects before any edit; Chapter 4-9 controllers read (review-signing gate shut, vault RecoverableCapture, chain preflight, assistant snapshot).",
@@ -6086,17 +6129,6 @@
           "apps/web/src/components/review/PackagePanel.tsx",
           "apps/web/src/components/review/package-context.tsx",
           "apps/web/src/components/account/account-context.tsx"
-        ]
-      },
-      "17": {
-        "status": "complete",
-        "summary": "Gates run and recorded in chapter10.checks: lint, format, typecheck, builds, 1,233 tests, fixtures/baselines/exclusion/state/scope checks, the 69-check HUD browser journey and re-run earlier browser checks; client bundles scanned for credentials; docs updated within their word limits; Chapter 11 handoff written. secrets:check and readiness fail only as before (operator .env; live evidence not yet obtained).",
-        "files": [
-          "docs/build-state.json",
-          "CLAUDE.md",
-          "docs/assistant-ui-contract.md",
-          ".github/workflows/ci.yml",
-          "tooling/scripts/assistant-browser-check.ts"
         ]
       }
     },
@@ -6324,6 +6356,18 @@
         "status": "complete",
         "summary": "examples/document-review (@lexaegis/example-document-review): executable prepare and verify commands over public entry points only, a non-legal profile (example.document-review v1) with synthetic source and decision-log bytes, fresh random opening each run, explicitly unapproved output, required independent expected-reference file, optional live check only with operator-set REVIEW_RPC_URL plus --policy (credentials never in arguments; URLs with userinfo or query are refused), typed issue signing data from explicit nonce and deadline with no key, signer or broadcast path, bounded file reads from explicit CLI paths, README with actual commands and trust requirements. Demonstrates reuse; not an external customer integration. Run against the live source in the monorepo here; the packaged-consumer run is Task 13.",
         "files": ["examples", "pnpm-workspace.yaml", "vitest.config.mts"]
+      },
+      "13": {
+        "status": "complete",
+        "summary": "@lexaegis/protocol and @lexaegis/sdk are buildable (pnpm packages:build: tsc ESM + declarations to git-ignored dist, relative specifiers rewritten for Node ESM), version 0.1.0, engines node>=24, explicit exports via publishConfig.exports (source exports kept for the monorepo), files limited to dist and schemas, generated versioned JSON schemas (protocol: review-export added; sdk: verification-report, registry-policy via pnpm sdk:generate/sdk:check), compact descriptor, READMEs. Still private; nothing published, no licence or release ownership invented. pnpm packages:check (20 checks, local_scripted evidence) packs real tarballs, inspects contents (no source, tests, fixtures, keys, env), installs them into a clean temp consumer (own node_modules, tarball override for the transitive protocol dependency), compiles and runs the example there (NodeNext, skipLibCheck off), and bundles and runs a browser consumer in real Chromium Web Crypto with no non-origin requests.",
+        "files": [
+          "packages/protocol",
+          "packages/sdk",
+          "tooling/scripts/build-packages.ts",
+          "tooling/scripts/package-check.ts",
+          "examples",
+          "package.json"
+        ]
       }
     }
   }

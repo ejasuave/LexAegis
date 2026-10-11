@@ -1,8 +1,8 @@
 import { mkdirSync, readFileSync, statSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { parseArgs } from 'node:util';
-import { prepareExample } from './prepare';
-import { verifyExample } from './verify';
+import { prepareExample } from './prepare.js';
+import { verifyExample } from './verify.js';
 
 /** The largest file the example will read (the protocol's 48 MiB bundle limit). */
 const MAX_FILE_BYTES = 48 * 1024 * 1024;
