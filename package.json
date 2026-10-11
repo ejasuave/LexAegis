@@ -75,7 +75,8 @@
     "test:python": "python3 -I -m unittest discover -s examples/python-verify -p 'test_*.py'",
     "cli": "tsx packages/cli/src/bin.ts",
     "contracts:reference": "pnpm --filter @lexaegis/contracts reference",
-    "contracts:reference:check": "pnpm --filter @lexaegis/contracts reference:check"
+    "contracts:reference:check": "pnpm --filter @lexaegis/contracts reference:check",
+    "quickstart:check": "tsx tooling/scripts/quickstart-check.ts"
   },
   "devDependencies": {
     "@eslint/js": "10.0.1",

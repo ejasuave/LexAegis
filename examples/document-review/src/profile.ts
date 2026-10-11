@@ -1,4 +1,9 @@
-import { describeArtifact, type ArtifactRefV1, type ReviewPackageV1 } from '@lexaegis/protocol/v1';
+import {
+  describeArtifact,
+  type ArtifactRefV1,
+  type ReceiptReferenceV1,
+  type ReviewPackageV1,
+} from '@lexaegis/protocol/v1';
 
 /*
  * A generic, non-legal application profile. The protocol does not interpret it: the profile id and
@@ -24,12 +29,21 @@ const encoder = new TextEncoder();
  * log is a generic record of what the reviewer decided; it satisfies the protocol's role and scope
  * rules (exactly one decision-log artifact, every artifact in scope exactly once).
  */
+export interface PackageOptions {
+  /** The receipt this package replaces. Its manifest then names exactly that predecessor. */
+  readonly supersedes?: ReceiptReferenceV1 | null;
+  /** The actual source bytes of this version. A replacement carries its own revised text. */
+  readonly sourceText?: string;
+}
+
 export async function buildSyntheticPackage(
   context: ExampleContext,
   now: Date = new Date(),
+  options: PackageOptions = {},
 ): Promise<SyntheticPackage> {
   const source = encoder.encode(
-    'Synthetic example document.\nThis text is made up for a demonstration and is not a real document.\n',
+    options.sourceText ??
+      'Synthetic example document.\nThis text is made up for a demonstration and is not a real document.\n',
   );
   const decisionLog = encoder.encode(
     JSON.stringify({
@@ -55,7 +69,7 @@ export async function buildSyntheticPackage(
     preparedAt: now.toISOString(),
     profile: PROFILE,
     context,
-    supersedes: null,
+    supersedes: options.supersedes ?? null,
     artifacts: refs,
     approval: {
       intent: 'approve-review-package',

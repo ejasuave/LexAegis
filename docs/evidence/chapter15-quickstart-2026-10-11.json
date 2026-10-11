@@ -1,0 +1,48 @@
+{
+  "schema": "lexaegis.quickstart-evidence.v1",
+  "date": "2026-10-11",
+  "evidenceClass": "local_scripted",
+  "command": "pnpm quickstart:check",
+  "outcome": "pass",
+  "sourceRevision": "06ecbf00156cde52f2545895c5ca5e8052dcfcb8",
+  "workingTreeDirty": true,
+  "environment": {
+    "os": "linux 7.0.0-38-generic",
+    "arch": "x64",
+    "node": "v24.21.0",
+    "pnpm": "11.11.0",
+    "packageStore": "offline (the repository store)"
+  },
+  "paths": {
+    "sdk": {
+      "id": "path1",
+      "phase": "execute",
+      "status": "pass",
+      "durationMs": 457
+    },
+    "cli": {
+      "id": "path2",
+      "phase": "execute",
+      "status": "pass",
+      "durationMs": 976
+    },
+    "lifecycleLocal": {
+      "id": "path3",
+      "phase": "execute",
+      "status": "pass",
+      "durationMs": 6333
+    }
+  },
+  "timingsMs": {
+    "installation": 8686,
+    "localExecution": 1433,
+    "lifecycleLocalExecution": 6333,
+    "liveStepsPerformedManually": 0,
+    "wallClockOfThisCheck": 17699
+  },
+  "notRun": [],
+  "liveSteps": "not performed: no check contacts a public network",
+  "outsiderAcceptance": "NOT YET: no one other than the author has followed the guide",
+  "widget": "NOT YET (Chapter 18)",
+  "note": "Author-run, automated, offline-store evidence. It is not an outsider following the guide, not independent adoption and not a claim about time for anyone else."
+}

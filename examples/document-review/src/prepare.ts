@@ -6,7 +6,7 @@ import {
 } from '@lexaegis/protocol/v1';
 import { parseReviewExport } from '@lexaegis/sdk/portable';
 import { buildIssueAction, buildTypedData } from '@lexaegis/sdk/registry';
-import { buildSyntheticPackage, type ExampleContext } from './profile.js';
+import { buildSyntheticPackage, type ExampleContext, type PackageOptions } from './profile.js';
 
 export interface PrepareOptions extends ExampleContext {
   /** Supplying both prints the typed signing data for the caller's own signer. Neither is guessed. */
@@ -28,9 +28,12 @@ export interface PrepareResult {
  * Prepares a synthetic package with a FRESH production-style random blinding nonce, and shapes the
  * readable export from the immutable snapshot. Fixed nonces exist only inside the SDK's tests.
  */
-export async function prepareExample(options: PrepareOptions): Promise<PrepareResult> {
+export async function prepareExample(
+  options: PrepareOptions,
+  packageOptions: PackageOptions = {},
+): Promise<PrepareResult> {
   const { nonce, deadline, ...context } = options;
-  const synthetic = await buildSyntheticPackage(context);
+  const synthetic = await buildSyntheticPackage(context, new Date(), packageOptions);
   const prepared = await prepareReviewPackage(synthetic.manifest, synthetic.artifacts);
   if (!prepared.ok) throw new Error(`could not prepare the package: ${prepared.error.code}`);
   const snapshot = prepared.data;
@@ -60,4 +63,17 @@ export async function prepareExample(options: PrepareOptions): Promise<PrepareRe
     typedData = data.data;
   }
   return { prepared: snapshot, exportBytes, reference: snapshot.reference, typedData };
+}
+
+/**
+ * Prepares a REPLACEMENT: new source bytes, a fresh opening, new identifiers, and a manifest that
+ * names exactly the predecessor receipt. It is as unapproved as any other preparation; whether it
+ * replaces anything on a chain is decided only by a later, explicitly approved SUPERSEDE.
+ */
+export function prepareReplacement(
+  context: ExampleContext,
+  predecessor: ReceiptReferenceV1,
+  revisedSourceText: string,
+): Promise<PrepareResult> {
+  return prepareExample(context, { supersedes: predecessor, sourceText: revisedSourceText });
 }

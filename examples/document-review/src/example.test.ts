@@ -62,7 +62,7 @@ describe('document-review example', () => {
     await expect(prepareExample({ ...context, nonce: '7' })).rejects.toThrow();
   });
 
-  it('uses only public entry points and no employment, model, wallet or app code', () => {
+  it('uses only public entry points (and the caller-side viem types) and holds no key', () => {
     const dir = fileURLToPath(new URL('.', import.meta.url));
     for (const name of readdirSync(dir).filter(
       (file) => /\.ts$/.test(file) && !/test/.test(file),
@@ -71,7 +71,7 @@ describe('document-review example', () => {
       for (const match of text.matchAll(/from\s+'([^']+)'/g)) {
         const specifier = match[1] ?? '';
         expect(specifier, `${name} imports ${specifier}`).toMatch(
-          /^(?:\.\/|node:|@lexaegis\/(?:protocol(?:\/v1|\/portable)?|sdk(?:\/(?:portable|registry|offline|verify))?)$)/,
+          /^(?:\.\/|node:|viem$|@lexaegis\/(?:protocol(?:\/v1|\/portable)?|sdk(?:\/(?:portable|registry|offline|verify|transactions))?)$)/,
         );
       }
       expect(text).not.toMatch(/employment|qwen|mera|privateKey|process\.argv.*key/i);

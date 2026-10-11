@@ -5412,6 +5412,41 @@
         "browser": "chromium (playwright)",
         "published": false
       }
+    },
+    {
+      "id": "packages-check-20261011121846",
+      "subject": "packaged-consumer-check",
+      "sourceRevision": {
+        "commit": "06ecbf00156cde52f2545895c5ca5e8052dcfcb8",
+        "dirtyWorktree": true,
+        "contentFingerprint": "c885ab4eaf7d2e1c860b8c1700b3792fce437003aff683ca94895dbe1852cbeb"
+      },
+      "checkedAt": "2026-10-11T12:18:47.345Z",
+      "command": "pnpm packages:check",
+      "environment": {
+        "node": "v24.21.0",
+        "os": "linux-x64",
+        "pnpm": "11.11.0"
+      },
+      "evidenceClass": "local_scripted",
+      "outcome": "pass",
+      "reasonCodes": ["LOCAL_TARBALLS_NOT_PUBLISHED", "AUTHORED_EXAMPLE_NOT_ADOPTION"],
+      "evidenceRefs": [],
+      "facts": {
+        "checksPassed": "40",
+        "checksTotal": "40",
+        "protocolTarballBytes": "67609",
+        "sdkTarballBytes": "69859",
+        "cliTarballBytes": "17006",
+        "protocolTarballSha256": "719cfc4143acd9bf98b97d8c5861b00b009ae6a1c8217c5c4e1ec570e6954e89",
+        "sdkTarballSha256": "72c04a4f31727455c479441c9b9841002c86e808f2c9b4f9a9a51f734f22900b",
+        "cliTarballSha256": "92dbc0517614ee5bca9a4930c99f2071bfdc0cdcbc817c4175bbbc25f9f7194a",
+        "protocolFiles": "66",
+        "sdkFiles": "59",
+        "cliFiles": "24",
+        "browser": "chromium (playwright)",
+        "published": false
+      }
     }
   ],
   "appliedCuts": [],
@@ -7549,6 +7584,19 @@
           "packages/sdk/src/registry/index.ts",
           "package.json",
           ".prettierignore"
+        ]
+      },
+      "9": {
+        "status": "complete",
+        "summary": "docs/QUICKSTART.md with three paths, executable end to end. pnpm quickstart:check (tooling/scripts/quickstart-check.ts) parses the guide's tagged fences and runs them in one shell from a clean directory outside the repository (tarballs of protocol, sdk and cli installed with explicit file: overrides from the offline store), then requires each block's output to contain the lines its quickstart:expect block lists (a deliberately altered expectation fails the check) and that quoted files appear verbatim: path 1 SDK (verifyReviewExport: matching package match/match with chain and signer unknown and no request; a different internally consistent package caught only by the independent reference), path 2 installed binary (exit 20 with local integrity kept for an unpinned placeholder registry, exit 10 for a substitution, JSON and text, exit codes shown without being swallowed), path 3 lifecycle. A live-registry variant of paths 1 and 2 is shown but marked not run; the widget subsection is NOT YET with no snippet or URL. Path 3: examples/document-review gained lifecycle.ts (issueReview, supersedeReview), viem-access.ts and signer-adapter.ts, and prepareReplacement (actual revised bytes, fresh opening, exact predecessor): opening stored before anything is sent, reconcile with a verified read (a retry after a lost response sends nothing), reviewer counter and chain time read, bounded deadline from defaultActionDeadline, fee ceiling checked, a required approve callback (no default), success read back through the SDK with bounded verified-checkpoint polling, predecessor Superseded/new Active, a revoked successor never reactivates the predecessor; no key anywhere in the example. contracts/integration/quickstart.anvil.test.ts runs it on isolated Anvil with an injected test-only signer (8 tests: issue order store>approve>send, retry, refused approval consumes no nonce, opening-not-stored/signer-mismatch/fee-above-ceiling refuse before sending, supersede, non-active predecessor). Evidence docs/evidence/chapter15-quickstart-2026-10-11.json records date, versions, environment, source revision, outcome and SEPARATE installation / local-execution / lifecycle timings; live steps: not performed; outsider following the guide: NOT YET; no speed claim is made. The packaged-consumer check (40/40) compiles the extended example against the packed declarations with viem as the caller's wallet library.",
+        "files": [
+          "docs/QUICKSTART.md",
+          "docs/evidence/chapter15-quickstart-2026-10-11.json",
+          "examples/document-review",
+          "tooling",
+          "contracts/integration",
+          "package.json",
+          "pnpm-lock.yaml"
         ]
       }
     }

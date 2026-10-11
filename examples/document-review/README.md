@@ -33,6 +33,15 @@ REVIEW_RPC_URL=https://testnet-rpc.monad.xyz/ pnpm --filter @lexaegis/example-do
   --policy ./registry-policy.json --reviewers ./accepted-reviewers.txt
 ```
 
+## Issue and supersede (a signer you supply)
+
+`src/lifecycle.ts` adds `issueReview` and `supersedeReview`, with `src/viem-access.ts` (chain access
+over viem clients) and `src/signer-adapter.ts` (wrap your own wallet account). They store the opening
+before anything is sent, reconcile with a verified registry read, ask your required `approve` callback
+with the exact action and fee ceiling, send, and read the result back through the SDK: success is never
+inferred from a transaction hash. They hold no key. `docs/QUICKSTART.md` path 3 runs them against a
+throwaway local chain with a test-only signer; any public-network run is manual and opt-in.
+
 ## Public API used
 
 | Need                                         | Entry point                                                     |

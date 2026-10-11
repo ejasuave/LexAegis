@@ -12,7 +12,8 @@
   },
   "dependencies": {
     "@lexaegis/protocol": "workspace:*",
-    "@lexaegis/sdk": "workspace:*"
+    "@lexaegis/sdk": "workspace:*",
+    "viem": "2.57.3"
   },
   "devDependencies": {
     "tsx": "4.23.15"

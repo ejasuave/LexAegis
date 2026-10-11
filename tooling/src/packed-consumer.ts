@@ -79,9 +79,13 @@ export function installConsumer(
 ): void {
   const files = Object.values(packed).map((item) => item.file);
   if (files.length === 0) throw new Error('nothing to install');
-  const dependencies = Object.fromEntries(
-    Object.values(packed).map((item) => [`@lexaegis/${item.name}`, `file:${item.file}`]),
-  );
+  const dependencies = {
+    ...Object.fromEntries(
+      Object.values(packed).map((item) => [`@lexaegis/${item.name}`, `file:${item.file}`]),
+    ),
+    // The wallet library a caller brings: the lifecycle example is written against viem clients.
+    viem: '2.57.3',
+  };
   writeFileSync(
     join(consumer, 'package.json'),
     JSON.stringify(
