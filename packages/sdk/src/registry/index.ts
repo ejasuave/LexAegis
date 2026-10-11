@@ -35,7 +35,13 @@ export {
   buildSupersedeAction,
   defaultActionDeadline,
 } from './action-builders';
+import type { proofOfReviewRegistryAbi as abi } from './generated/registry-abi';
 export { proofOfReviewRegistryAbi } from './generated/registry-abi';
+/**
+ * The generated registry ABI as a literal type, for typed viem and ethers-style calls.
+ * `contracts/integration/interface-abi.test.ts` proves the constant equals the compiler's output.
+ */
+export type ProofOfReviewRegistryAbi = typeof abi;
 export {
   decodeReceipt,
   decodeRegistryError,

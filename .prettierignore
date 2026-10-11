@@ -40,3 +40,4 @@ packages/protocol/test-vectors/protocol-v1.json
 packages/sdk/RESULT_CODES.md
 .doc-snippets-test/
 packages/cli/src/known-deployments.generated.ts
+contracts/REGISTRY_REFERENCE.md

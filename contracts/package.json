@@ -16,7 +16,9 @@
     "deploy:local": "tsx scripts/deploy-local.ts",
     "deploy:testnet": "tsx scripts/deploy-testnet.ts",
     "test:live": "vitest run --config vitest.live.config.ts",
-    "test:indexer-rollback": "tsx scripts/foundry.ts forge build && vitest run --config vitest.config.ts integration/indexer-rollback.anvil.test.ts"
+    "test:indexer-rollback": "tsx scripts/foundry.ts forge build && vitest run --config vitest.config.ts integration/indexer-rollback.anvil.test.ts",
+    "reference": "tsx scripts/generate-reference.ts",
+    "reference:check": "tsx scripts/generate-reference.ts --check"
   },
   "devDependencies": {
     "@lexaegis/protocol": "workspace:*",

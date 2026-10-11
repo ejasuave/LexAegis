@@ -73,7 +73,9 @@
     "vectors:check": "pnpm --filter @lexaegis/protocol vectors:check",
     "interop:python": "tsx tooling/scripts/interop-python.ts",
     "test:python": "python3 -I -m unittest discover -s examples/python-verify -p 'test_*.py'",
-    "cli": "tsx packages/cli/src/bin.ts"
+    "cli": "tsx packages/cli/src/bin.ts",
+    "contracts:reference": "pnpm --filter @lexaegis/contracts reference",
+    "contracts:reference:check": "pnpm --filter @lexaegis/contracts reference:check"
   },
   "devDependencies": {
     "@eslint/js": "10.0.1",
