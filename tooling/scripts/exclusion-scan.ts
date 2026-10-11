@@ -40,7 +40,7 @@ findings.push(
   ...scanImportGraph({ root: ROOT, entries: [join(ROOT, 'apps/verifier/src/main.tsx')] }),
 );
 
-for (const pkg of ['protocol', 'sdk', 'vault', 'agent']) {
+for (const pkg of ['protocol', 'sdk', 'cli', 'vault', 'agent']) {
   const manifest = JSON.parse(
     readFileSync(join(ROOT, 'packages', pkg, 'package.json'), 'utf8'),
   ) as { exports: Record<string, unknown> };
@@ -51,6 +51,8 @@ for (const pkg of ['protocol', 'sdk', 'vault', 'agent']) {
     .map(([, v]) => v)
     .filter((v): v is string => typeof v === 'string' && v.endsWith('.ts'))
     .map((v) => join(ROOT, 'packages', pkg, v));
+  // The command's own entry point is not an export; it is a production entry all the same.
+  if (pkg === 'cli') entries.push(join(ROOT, 'packages', 'cli', 'src', 'bin.ts'));
   findings.push(...scanImportGraph({ root: ROOT, entries }));
 }
 

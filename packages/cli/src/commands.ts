@@ -288,6 +288,7 @@ async function finishVerify(
     report: projectReport(live.data.report),
     rpcSource: trust.rpc.source,
     notes,
+    ...(environment.signal.aborted && { error: cliFailure('INTERRUPTED') }),
   });
 }
 
@@ -365,5 +366,6 @@ export async function runStatus(
     notes: [
       '--reviewer selects a record; it does not certify the account, and no package files were checked',
     ],
+    ...(environment.signal.aborted && { error: cliFailure('INTERRUPTED') }),
   });
 }

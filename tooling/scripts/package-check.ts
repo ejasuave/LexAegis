@@ -1,13 +1,12 @@
 /**
  * pnpm packages:check: proves the packages are distributable, not just importable inside the
- * monorepo. It builds @lexaegis/protocol and @lexaegis/sdk, packs real tarballs, inspects their
+ * monorepo. It builds @lexaegis/protocol, @lexaegis/sdk and @lexaegis/cli, packs real tarballs, inspects their
  * contents, installs them into a clean temporary consumer (no workspace aliases, no repository
  * source imports, no inherited TypeScript paths), compiles and runs the developer example there,
  * and bundles and runs a minimal browser consumer in real Chromium. Nothing is published.
  * Imports no workspace package.
  */
 import { execFileSync } from 'node:child_process';
-import { createHash } from 'node:crypto';
 import {
   cpSync,
   existsSync,
@@ -16,14 +15,21 @@ import {
   readFileSync,
   readdirSync,
   rmSync,
-  statSync,
   writeFileSync,
 } from 'node:fs';
 import { createServer } from 'node:http';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { chromium } from 'playwright';
+import {
+  consumerBinary,
+  installConsumer,
+  packPackages,
+  type PackableName,
+  type PackedPackage,
+} from '../src/packed-consumer';
 import { recordEvidence } from '../src/evidence-writer';
+import { scanArtifacts } from '../src/exclusion';
 import { ROOT, stamp } from './lib';
 
 interface Check {
@@ -39,12 +45,6 @@ function check(name: string, ok: boolean, detail = ''): void {
 
 const run = (command: string, args: string[], cwd: string, env: NodeJS.ProcessEnv = process.env) =>
   execFileSync(command, args, { cwd, env, encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'] });
-
-function list(tarball: string): string[] {
-  return run('tar', ['-tzf', tarball], ROOT)
-    .split('\n')
-    .filter((line) => line !== '');
-}
 
 const FORBIDDEN_IN_TARBALL = [
   /(^|\/)\.env/,
@@ -69,18 +69,10 @@ try {
   run('pnpm', ['packages:build'], ROOT);
   check('packages build (tsc, ESM, declarations)', true);
 
-  const packed: Record<string, { file: string; bytes: number; sha256: string; entries: string[] }> =
-    {};
-  for (const name of ['protocol', 'sdk'] as const) {
-    run('pnpm', ['pack', '--pack-destination', tarballs], join(ROOT, 'packages', name));
-    const file = join(tarballs, `lexaegis-${name}-0.1.0.tgz`);
-    const entries = list(file);
-    packed[name] = {
-      file,
-      bytes: statSync(file).size,
-      sha256: createHash('sha256').update(readFileSync(file)).digest('hex'),
-      entries,
-    };
+  const packedAll = packPackages(ROOT, tarballs, ['protocol', 'sdk', 'cli'], false);
+  const packed = packedAll as Record<PackableName, PackedPackage>;
+  for (const name of ['protocol', 'sdk', 'cli'] as const) {
+    const { file, entries } = packed[name];
     check(
       `${name}: tarball contains dist, declarations and package.json`,
       ['package/package.json', 'package/dist/index.js', 'package/dist/index.d.ts'].every((entry) =>
@@ -114,7 +106,7 @@ try {
       Object.keys(manifest.dependencies).join(','),
     );
   }
-  const schemas = (packed.protocol?.entries ?? []).filter((entry) => entry.includes('schemas/v1/'));
+  const schemas = packed.protocol.entries.filter((entry) => entry.includes('schemas/v1/'));
   check(
     'protocol: generated schemas and the compact descriptor are packed',
     ['review-export.schema.json', 'review-package.schema.json', 'protocol-descriptor.json'].every(
@@ -122,43 +114,75 @@ try {
     ),
   );
   check(
-    'sdk: generated verification-report and registry-policy schemas are packed',
-    (packed.sdk?.entries ?? []).filter((entry) => /verification-report|registry-policy/.test(entry))
-      .length === 2,
-  );
-
-  // Clean consumer: only the two tarballs, resolved from the offline store.
-  writeFileSync(
-    join(consumer, 'package.json'),
-    JSON.stringify(
-      {
-        name: 'clean-consumer',
-        private: true,
-        type: 'module',
-        dependencies: {
-          '@lexaegis/protocol': `file:${packed.protocol?.file ?? ''}`,
-          '@lexaegis/sdk': `file:${packed.sdk?.file ?? ''}`,
-        },
-      },
-      null,
-      2,
+    'protocol: the public synthetic test vectors and their README are packed, nothing else test-like',
+    ['package/test-vectors/protocol-v1.json', 'package/test-vectors/README.md'].every((entry) =>
+      packed.protocol.entries.includes(entry),
     ),
   );
-  // The consumer is its own root: the tarball's concrete dependency on the protocol resolves to the
-  // packed protocol tarball, not to a registry and not to this repository.
-  writeFileSync(
-    join(consumer, 'pnpm-workspace.yaml'),
-    `overrides:\n  '@lexaegis/protocol': file:${packed.protocol?.file ?? ''}\n`,
+  check(
+    'sdk: generated verification-report and registry-policy schemas are packed',
+    packed.sdk.entries.filter((entry) => /verification-report|registry-policy/.test(entry))
+      .length === 2,
   );
-  // The repository's own package store supplies third-party packages offline; the consumer still
-  // gets its own node_modules, so an undeclared dependency would fail to resolve.
-  const store = run('pnpm', ['store', 'path'], ROOT).trim();
-  run('pnpm', ['install', '--offline', '--no-frozen-lockfile', '--store-dir', store], consumer);
+  check(
+    'sdk: the result-code table is packed',
+    packed.sdk.entries.includes('package/RESULT_CODES.md'),
+  );
+
+  // Chapter 14's production-exclusion guards, applied to what a user would actually install. The
+  // labelled public protocol vectors are allowed; test signers, replays and development keys are not.
+  const registryVectors = JSON.parse(
+    readFileSync(join(ROOT, 'fixtures/registry-v1/vectors.json'), 'utf8'),
+  ) as { signer: { privateKey: string } };
+  for (const name of ['protocol', 'sdk', 'cli'] as const) {
+    const extracted = join(scratch, 'extracted', name);
+    mkdirSync(extracted, { recursive: true });
+    run('tar', ['-xzf', packed[name].file, '-C', extracted], ROOT);
+    const findings = scanArtifacts([join(extracted, 'package')], {
+      extraSecrets: [registryVectors.signer.privateKey],
+    });
+    check(
+      `${name}: the packed output passes the production-exclusion scan`,
+      findings.length === 0,
+      findings
+        .slice(0, 3)
+        .map((finding) => `${finding.rule}:${finding.file}`)
+        .join(', '),
+    );
+  }
+
+  // The command: shebang, executable bit and a bin entry that points at the built file.
+  const cliManifest = JSON.parse(
+    run('tar', ['-xzOf', packed.cli.file, 'package/package.json'], ROOT),
+  ) as { bin: Record<string, string>; dependencies: Record<string, string> };
+  check(
+    'cli: bin proof-of-review points at dist/bin.js and the only dependency is the sdk',
+    cliManifest.bin['proof-of-review'] === './dist/bin.js' &&
+      Object.keys(cliManifest.dependencies).join(',') === '@lexaegis/sdk',
+  );
+  const binLine = run('tar', ['-tvzf', packed.cli.file, 'package/dist/bin.js'], ROOT);
+  check(
+    'cli: dist/bin.js is executable in the tarball',
+    /^-rwx/.test(binLine),
+    binLine.slice(0, 10),
+  );
+  check(
+    'cli: dist/bin.js starts with a node shebang',
+    run('tar', ['-xzOf', packed.cli.file, 'package/dist/bin.js'], ROOT).startsWith(
+      '#!/usr/bin/env node\n',
+    ),
+  );
+
+  // Clean consumer: only the three tarballs, resolved from the offline store.
+  installConsumer(ROOT, consumer, packed);
   const installed = join(consumer, 'node_modules', '@lexaegis');
   check(
-    'consumer installed both packages from tarballs (real directories, no workspace link)',
-    ['protocol', 'sdk'].every((name) => existsSync(join(installed, name, 'dist', 'index.js'))) &&
-      !existsSync(join(installed, 'sdk', 'src')),
+    'consumer installed protocol, sdk and cli from tarballs (real directories, no workspace link)',
+    ['protocol', 'sdk', 'cli'].every((name) =>
+      existsSync(join(installed, name, 'dist', 'index.js')),
+    ) &&
+      !existsSync(join(installed, 'sdk', 'src')) &&
+      existsSync(consumerBinary(consumer)),
   );
 
   // The developer example, compiled in the consumer against the packed declarations.
@@ -291,6 +315,125 @@ try {
     swapped.manifestIntegrity === 'mismatch',
   );
 
+  // The installed command, offline: a registry with no built-in deployment and no --deployment
+  // has no pin, so no request is made and the live part exits 20 with the local result intact.
+  const bin = consumerBinary(consumer);
+  const UNPINNED_REGISTRY = `0x${'55'.repeat(20)}`;
+  const outCli = join(consumer, 'review-cli');
+  run(
+    'node',
+    [
+      'out/cli.js',
+      'prepare',
+      '--out',
+      outCli,
+      '--chain-id',
+      '10143',
+      '--registry',
+      UNPINNED_REGISTRY,
+      '--reviewer',
+      REVIEWER,
+    ],
+    consumer,
+  );
+  const cli = (args: string[]): { status: number; stdout: string; stderr: string } => {
+    try {
+      return {
+        status: 0,
+        stdout: run(bin, args, consumer, { ...process.env, PROOF_OF_REVIEW_RPC_URL: '' }),
+        stderr: '',
+      };
+    } catch (error) {
+      const failure = error as { status?: number; stdout?: string; stderr?: string };
+      return {
+        status: failure.status ?? -1,
+        stdout: failure.stdout ?? '',
+        stderr: failure.stderr ?? '',
+      };
+    }
+  };
+  check('installed binary prints its version', cli(['--version']).stdout.trim() === '0.1.0');
+  check(
+    'installed binary documents every exit code in --help',
+    ['2', '10', '20', '11', '12', '13', '130'].every((code) =>
+      new RegExp(`^\\s+${code}\\s`, 'm').test(cli(['--help']).stdout),
+    ),
+  );
+  const verifyPackage = [
+    'verify',
+    join(outCli, 'review-export.json'),
+    '--chain-id',
+    '10143',
+    '--registry',
+    UNPINNED_REGISTRY,
+    '--json',
+  ];
+  const unpinned = cli(verifyPackage);
+  const unpinnedJson = JSON.parse(unpinned.stdout) as {
+    exit: { code: number };
+    report: Record<string, unknown>;
+    error: { code: string };
+  };
+  check(
+    'installed verify: matching package, no deployment pin, exit 20 with local integrity kept',
+    unpinned.status === 20 &&
+      unpinnedJson.report.manifestIntegrity === 'match' &&
+      unpinnedJson.report.artifactIntegrity === 'match' &&
+      unpinnedJson.report.chainStatus === 'unknown' &&
+      unpinnedJson.report.referenceOrigin === 'file-declared' &&
+      unpinnedJson.error.code === 'DEPLOYMENT_PINS_MISSING',
+  );
+  check(
+    'installed verify: no valid field, no opening, no artifact ID and no private hash in the output',
+    !/"valid"|blindingNonce|artifactId|d0000000|sha256/.test(unpinned.stdout),
+  );
+  const independent = cli([
+    ...verifyPackage,
+    '--expected-reference',
+    join(outCli, 'receipt-reference.json'),
+  ]);
+  check(
+    'installed verify: an independent expected reference is labelled independent',
+    (JSON.parse(independent.stdout) as { report: { referenceOrigin: string } }).report
+      .referenceOrigin === 'independent',
+  );
+  const wrongReference = cli([
+    ...verifyPackage,
+    '--expected-reference',
+    join(outDir, 'receipt-reference.json'),
+  ]);
+  check(
+    'installed verify: a reference for another package is a usage error before any check (exit 2)',
+    wrongReference.status === 2,
+  );
+  const mismatch = cli([
+    'verify',
+    join(outTwo, 'review-export.json'),
+    '--chain-id',
+    '10143',
+    '--registry',
+    UNPINNED_REGISTRY,
+    '--expected-reference',
+    join(outCli, 'receipt-reference.json'),
+    '--json',
+  ]);
+  check(
+    'installed verify: a substituted package fails integrity (exit 10), not a chain result',
+    mismatch.status === 10 &&
+      (JSON.parse(mismatch.stdout) as { report: { manifestIntegrity: string } }).report
+        .manifestIntegrity === 'mismatch',
+  );
+  const usage = cli(['verify', '--json']);
+  check(
+    'installed binary: a usage error is exit 2 and its JSON stays parseable',
+    usage.status === 2 && (JSON.parse(usage.stdout) as { exit: { code: number } }).exit.code === 2,
+  );
+  check(
+    'installed binary has no command or option that signs, sends or issues',
+    ['issue', 'revoke', 'supersede', 'sign'].every((command) => cli([command]).status === 2) &&
+      cli([...verifyPackage, '--private-key', 'x']).status === 2,
+  );
+
   // Minimal browser consumer: bundled from the packed packages and run with real Web Crypto.
   const web = join(consumer, 'browser');
   mkdirSync(web);
@@ -421,12 +564,15 @@ document.body.dataset.result = JSON.stringify({
         facts: {
           checksPassed: String(checks.filter((item) => item.ok).length),
           checksTotal: String(checks.length),
-          protocolTarballBytes: String(packed.protocol?.bytes ?? 0),
-          sdkTarballBytes: String(packed.sdk?.bytes ?? 0),
-          protocolTarballSha256: packed.protocol?.sha256 ?? '',
-          sdkTarballSha256: packed.sdk?.sha256 ?? '',
-          protocolFiles: String(packed.protocol?.entries.length ?? 0),
-          sdkFiles: String(packed.sdk?.entries.length ?? 0),
+          protocolTarballBytes: String(packed.protocol.bytes),
+          sdkTarballBytes: String(packed.sdk.bytes),
+          cliTarballBytes: String(packed.cli.bytes),
+          protocolTarballSha256: packed.protocol.sha256,
+          sdkTarballSha256: packed.sdk.sha256,
+          cliTarballSha256: packed.cli.sha256,
+          protocolFiles: String(packed.protocol.entries.length),
+          sdkFiles: String(packed.sdk.entries.length),
+          cliFiles: String(packed.cli.entries.length),
           browser: 'chromium (playwright)',
           published: false,
         },
