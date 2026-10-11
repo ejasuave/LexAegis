@@ -1,0 +1,39 @@
+{
+  "observedOn": "2026-10-11",
+  "evidenceClass": "live_testnet",
+  "engine": "envio 3.13.0 (HyperIndex) via `envio dev`: Envio-managed PostgreSQL and Hasura in Docker",
+  "sourceMode": "HyperSync https://10143.hypersync.xyz (_is_hyper_sync true), ENVIO_API_TOKEN set server-side, not recorded",
+  "network": "Monad Testnet 10143",
+  "registry": "0x453bfd1602d8a8666f55bf9a8d87b127cb94048f",
+  "startBlock": "69534196",
+  "configFingerprint": "0xc9320a65d58d42061c881c2e0fc064865e1ef5ba00cb1fd36392070d436afd93",
+  "generation": "gen-d42ea206-2fba-4612-b8ca-eb1130120e5c (unchanged across an engine restart)",
+  "graphql": {
+    "operationsAgainstGeneratedSchema": ["HistoryMeta", "ReviewerSummary", "ReviewerActions", "ActionAnchors", "ReceiptDetail", "ReceiptLink"],
+    "result": "all six returned data with no errors",
+    "schemaFinding": "_meta is a list with one entry per chain, with numeric fields; the client had assumed an object and was corrected, with a test for the real shape"
+  },
+  "projection": {
+    "reviewer": "0x076815e4c5fa1048db77d533c2e05f18a5ca89d5",
+    "actions": [
+      { "kind": "ISSUE", "nonce": "0", "block": "69534635", "rawEvents": 1 },
+      { "kind": "SUPERSEDE", "nonce": "1", "block": "69534650", "rawEvents": 2 },
+      { "kind": "REVOKE", "nonce": "2", "block": "69534662", "rawEvents": 1 }
+    ],
+    "receipts": ["SUPERSEDED", "REVOKED"],
+    "summary": { "nextNonce": "3", "totalReceipts": 2, "activeReceipts": 0, "revokedReceipts": 1, "supersededReceipts": 1 },
+    "routes": "GET /api/history/status, reviewers/<address>, receipts/<address>/<commitment> served real data through the production build; a malformed cursor returned 409",
+    "liveAgreement": "Live registry reads: superseded and revoked, matching the index lifecycle text. The index was a few blocks ahead of the confirmed checkpoint, so the routes reported different_checkpoints and provisionalNewerThanLive true; no same-block comparison occurred in this run (that was shown in the earlier RPC-source run)."
+  },
+  "outage": {
+    "kind": "controlled: the engine process was stopped, Hasura and PostgreSQL left running",
+    "observed": [
+      { "t": "00:53:13", "freshness": "caught_up", "confirmedLag": "0" },
+      { "t": "00:53:22", "freshness": "catching_up", "sourceLag": "0", "confirmedLag": "24" },
+      { "t": "00:53:47", "freshness": "catching_up", "sourceLag": "0", "confirmedLag": "108" },
+      { "t": "00:54:12", "freshness": "catching_up", "sourceLag": "0", "confirmedLag": "192" }
+    ],
+    "meaning": "stale stored source progress was not read as fresh; lag came from the live confirmed checkpoint",
+    "recovery": "engine restarted: caught_up and consistent within about 45 seconds, same generation"
+  }
+}

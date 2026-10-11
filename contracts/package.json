@@ -15,7 +15,8 @@
     "artifacts:check": "tsx scripts/generate-artifacts.ts --check",
     "deploy:local": "tsx scripts/deploy-local.ts",
     "deploy:testnet": "tsx scripts/deploy-testnet.ts",
-    "test:live": "vitest run --config vitest.live.config.ts"
+    "test:live": "vitest run --config vitest.live.config.ts",
+    "test:indexer-rollback": "tsx scripts/foundry.ts forge build && vitest run --config vitest.config.ts integration/indexer-rollback.anvil.test.ts"
   },
   "devDependencies": {
     "@lexaegis/protocol": "workspace:*",

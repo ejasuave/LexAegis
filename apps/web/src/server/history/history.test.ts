@@ -336,21 +336,39 @@ describe('Envio client', () => {
     const bad = { ...stateRow(), rawEventCount: 2 ** 60 };
     const r = await client(() =>
       ok({
-        data: { _meta: metaRow(), RegistryState: [bad] },
+        data: { _meta: [metaRow()], RegistryState: [bad] },
       }),
     ).readMeta();
     expect(r).toEqual({ ok: false, failure: 'RESPONSE_INVALID' });
     const frac = await client(() =>
       ok({
-        data: { _meta: metaRow({ progressBlock: 1.5 }), RegistryState: [] },
+        data: { _meta: [metaRow({ progressBlock: 1.5 })], RegistryState: [] },
       }),
     ).readMeta();
     expect(frac.ok).toBe(false);
   });
+  it('reads the real Hasura shape: _meta as a one-entry list with numeric fields', async () => {
+    const live = {
+      chainId: 10143,
+      startBlock: 100,
+      progressBlock: 130,
+      sourceBlock: 130,
+      isReady: true,
+      eventsProcessed: 4,
+    };
+    const r = await client(() =>
+      ok({
+        data: { _meta: [live], RegistryState: [stateRow()] },
+      }),
+    ).readMeta();
+    expect(r.ok).toBe(true);
+    const bare = await client(() => ok({ data: { _meta: live, RegistryState: [] } })).readMeta();
+    expect(bare.ok).toBe(false);
+  });
   it('treats more than one registry row as a mismatch', async () => {
     const r = await client(() =>
       ok({
-        data: { _meta: metaRow(), RegistryState: [stateRow(), stateRow()] },
+        data: { _meta: [metaRow()], RegistryState: [stateRow(), stateRow()] },
       }),
     ).readMeta();
     expect(r.ok).toBe(false);

@@ -40,6 +40,8 @@ export interface EnvioConfig {
   readonly url: string;
   /** Sent only as a header to the configured endpoint. Never logged or returned. */
   readonly token?: string;
+  /** Hasura admin secret for a local or private service. Header only; never logged or returned. */
+  readonly adminSecret?: string;
   readonly fetchFn?: typeof fetch;
 }
 
@@ -126,6 +128,9 @@ export function createEnvioClient(config: EnvioConfig): EnvioClient | null {
           'content-type': 'application/json',
           accept: 'application/json',
           ...(config.token === undefined ? {} : { authorization: `Bearer ${config.token}` }),
+          ...(config.adminSecret === undefined
+            ? {}
+            : { 'x-hasura-admin-secret': config.adminSecret }),
         },
         body: JSON.stringify({ operationName: name, query: OPERATIONS[name], variables }),
       });
@@ -186,7 +191,10 @@ export function createEnvioClient(config: EnvioConfig): EnvioClient | null {
         (data) => {
           const r = root.safeParse(data);
           if (!r.success) return null;
-          const meta = wireMetaSchema.safeParse(r.data['_meta']);
+          // Hasura returns _meta as a list with one entry per indexed chain; exactly one is expected.
+          const metaRows = z.array(z.unknown()).max(2).safeParse(r.data['_meta']);
+          if (!metaRows.success || metaRows.data.length !== 1) return null;
+          const meta = wireMetaSchema.safeParse(metaRows.data[0]);
           const states = rows(wireRegistryStateSchema, 2).safeParse(r.data['RegistryState']);
           // More than one registry row means this index is not the one that was configured.
           if (!meta.success || !states.success || states.data.length > 1) return null;

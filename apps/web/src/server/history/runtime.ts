@@ -32,7 +32,9 @@ export function getHistoryRuntime(): HistoryRuntime {
       ? null
       : createEnvioClient({
           url: envioConfig.graphqlUrl,
-          ...(envioConfig.apiToken === undefined ? {} : { token: envioConfig.apiToken }),
+          ...(envioConfig.adminSecret === undefined
+            ? {}
+            : { adminSecret: envioConfig.adminSecret }),
         });
   if (envio === null && envioConfig.graphqlUrl === undefined) {
     // Still ready for live reads; health reports INDEX_NOT_CONFIGURED.

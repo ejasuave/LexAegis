@@ -60,6 +60,7 @@ export const serverEnvShape = {
   ALCHEMY_MONAD_RPC_URL: endpointSchema,
   ENVIO_GRAPHQL_URL: endpointSchema,
   ENVIO_API_TOKEN: secretSchema,
+  ENVIO_GRAPHQL_ADMIN_SECRET: z.string().min(1).max(4096),
   DATABASE_URL: databaseUrlSchema,
   S3_ENDPOINT: endpointSchema,
   S3_BUCKET: nameSchema,
@@ -92,7 +93,7 @@ export interface ServerConfig {
     testProviderUrl?: string;
   };
   readonly alchemy: { rpcUrl?: string };
-  readonly envio: { graphqlUrl?: string; apiToken?: string };
+  readonly envio: { graphqlUrl?: string; apiToken?: string; adminSecret?: string };
   readonly database: { url?: string };
   readonly storage: {
     endpoint?: string;
@@ -171,6 +172,7 @@ export function loadServerConfig(env: EnvRecord): ServerConfigResult {
       envio: defined({
         graphqlUrl: pick(env, 'ENVIO_GRAPHQL_URL'),
         apiToken: pick(env, 'ENVIO_API_TOKEN'),
+        adminSecret: pick(env, 'ENVIO_GRAPHQL_ADMIN_SECRET'),
       }),
       database: defined({ url: pick(env, 'DATABASE_URL') }),
       storage: defined({

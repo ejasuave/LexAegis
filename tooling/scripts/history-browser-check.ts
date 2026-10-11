@@ -102,14 +102,16 @@ function answer(operation: string, variables: Record<string, unknown>): unknown 
   switch (operation) {
     case 'HistoryMeta':
       return {
-        _meta: {
-          chainId: '10143',
-          startBlock: String(START),
-          progressBlock: String(START + BigInt(TOTAL)),
-          sourceBlock: String(START + BigInt(TOTAL)),
-          isReady: true,
-          eventsProcessed: String(TOTAL + 1),
-        },
+        _meta: [
+          {
+            chainId: '10143',
+            startBlock: String(START),
+            progressBlock: String(START + BigInt(TOTAL)),
+            sourceBlock: String(START + BigInt(TOTAL)),
+            isReady: true,
+            eventsProcessed: String(TOTAL + 1),
+          },
+        ],
         RegistryState: [state()],
       };
     case 'ReviewerSummary':

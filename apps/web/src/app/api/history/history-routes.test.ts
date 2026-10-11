@@ -63,7 +63,7 @@ const respond = (data: unknown) =>
       new Response(JSON.stringify({ data }), { status: 200 }),
     )) as unknown as typeof fetch;
 const emptyIndex = respond({
-  _meta: meta,
+  _meta: [meta],
   RegistryState: [],
   ReviewerSummary_by_pk: null,
   IndexedAction: [],
