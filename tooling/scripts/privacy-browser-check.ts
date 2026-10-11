@@ -472,18 +472,21 @@ try {
       `web server bundle (${journey.dist}/server): ${String(server.length)} files, ${String(serverFindings.length)} literal-secret finding(s)`,
     );
   }
-  // Packed browser entry points and the standalone verifier, when they have been built.
-  for (const [scope, root] of [
-    [
-      'packed entry points: @lexaegis/protocol (packages/protocol/dist)',
-      join(ROOT, 'packages', 'protocol', 'dist'),
-    ],
-    [
-      'packed entry points: @lexaegis/sdk (packages/sdk/dist)',
-      join(ROOT, 'packages', 'sdk', 'dist'),
-    ],
-    ['standalone verifier (apps/verifier/dist)', join(ROOT, 'apps', 'verifier', 'dist')],
-  ] as const) {
+  // Packed browser entry points and the standalone verifier. They belong to the full run: a
+  // single-journey run checks that journey and the assets it built, nothing else.
+  for (const [scope, root] of onlyJourney !== undefined
+    ? []
+    : ([
+        [
+          'packed entry points: @lexaegis/protocol (packages/protocol/dist)',
+          join(ROOT, 'packages', 'protocol', 'dist'),
+        ],
+        [
+          'packed entry points: @lexaegis/sdk (packages/sdk/dist)',
+          join(ROOT, 'packages', 'sdk', 'dist'),
+        ],
+        ['standalone verifier (apps/verifier/dist)', join(ROOT, 'apps', 'verifier', 'dist')],
+      ] as const)) {
     scanBrowser(scope, root, ['.js', '.mjs', '.css', '.map', '.html', '.json']);
   }
   for (const finding of assetFindings)

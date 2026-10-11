@@ -1,0 +1,570 @@
+{
+  "schema": "lexaegis.evidence.privacy-boundaries.v1",
+  "note": "Local synthetic journeys only: virtual authenticator, scripted provider, scripted chain, throwaway database and object store. Bounded detection of planted canaries in a fixed set of encodings. Not evidence about a real provider, host or device, not Chapter 12, and not proof that no leak exists.",
+  "command": "pnpm test:privacy:browser",
+  "checkedAt": "2026-10-11T20:38:22.444Z",
+  "durationSeconds": 111,
+  "commit": "821a23b460a4d7c09380a49f67a526db22f3441f",
+  "dirtyWorktree": true,
+  "outcome": "pass",
+  "scope": "both journeys and every asset scope",
+  "failures": [],
+  "journeys": [
+    {
+      "journey": "hud",
+      "journeyExit": 0,
+      "journeySummary": "69 of 69 checks passed (virtual authenticator; scripted chain and provider; mock speech; synthetic documents).",
+      "consentedDisclosure": true,
+      "canaryClasses": [
+        "artifact_hash",
+        "database_credential",
+        "filename",
+        "matter_title",
+        "money_field",
+        "opening_nonce",
+        "prf_output",
+        "reviewer_note",
+        "session_cookie",
+        "signing_key",
+        "storage_credential",
+        "unselected_text"
+      ],
+      "canaries": [
+        {
+          "id": "matter-title",
+          "class": "matter_title",
+          "kind": "text"
+        },
+        {
+          "id": "pdf-file-name",
+          "class": "filename",
+          "kind": "text"
+        },
+        {
+          "id": "source-file-sha256",
+          "class": "artifact_hash",
+          "kind": "bytes"
+        },
+        {
+          "id": "pdf-employer",
+          "class": "unselected_text",
+          "kind": "text"
+        },
+        {
+          "id": "pdf-heading",
+          "class": "unselected_text",
+          "kind": "text"
+        },
+        {
+          "id": "pdf-total-line",
+          "class": "unselected_text",
+          "kind": "text"
+        },
+        {
+          "id": "pdf-total-amount",
+          "class": "unselected_text",
+          "kind": "text"
+        },
+        {
+          "id": "fact-total-pence",
+          "class": "money_field",
+          "kind": "token"
+        },
+        {
+          "id": "fact-instalment-pence",
+          "class": "money_field",
+          "kind": "token"
+        },
+        {
+          "id": "reviewer-reason",
+          "class": "reviewer_note",
+          "kind": "text"
+        },
+        {
+          "id": "storage-secret",
+          "class": "storage_credential",
+          "kind": "text"
+        },
+        {
+          "id": "storage-access-key",
+          "class": "storage_credential",
+          "kind": "text"
+        },
+        {
+          "id": "database-url",
+          "class": "database_credential",
+          "kind": "text"
+        },
+        {
+          "id": "prf-output-1",
+          "class": "prf_output",
+          "kind": "bytes"
+        },
+        {
+          "id": "signing-key-from-prf-1",
+          "class": "signing_key",
+          "kind": "bytes"
+        },
+        {
+          "id": "prf-output-2",
+          "class": "prf_output",
+          "kind": "bytes"
+        },
+        {
+          "id": "signing-key-from-prf-2",
+          "class": "signing_key",
+          "kind": "bytes"
+        },
+        {
+          "id": "session-cookie-lexaegis_session",
+          "class": "session_cookie",
+          "kind": "text"
+        },
+        {
+          "id": "opening-blinding-nonce",
+          "class": "opening_nonce",
+          "kind": "bytes"
+        },
+        {
+          "id": "artifact-sha256-1",
+          "class": "artifact_hash",
+          "kind": "bytes"
+        },
+        {
+          "id": "artifact-sha256-2",
+          "class": "artifact_hash",
+          "kind": "bytes"
+        },
+        {
+          "id": "artifact-sha256-3",
+          "class": "artifact_hash",
+          "kind": "bytes"
+        },
+        {
+          "id": "artifact-sha256-4",
+          "class": "artifact_hash",
+          "kind": "bytes"
+        },
+        {
+          "id": "artifact-sha256-5",
+          "class": "artifact_hash",
+          "kind": "bytes"
+        },
+        {
+          "id": "artifact-sha256-6",
+          "class": "artifact_hash",
+          "kind": "bytes"
+        },
+        {
+          "id": "artifact-sha256-7",
+          "class": "artifact_hash",
+          "kind": "bytes"
+        },
+        {
+          "id": "artifact-sha256-8",
+          "class": "artifact_hash",
+          "kind": "bytes"
+        }
+      ],
+      "phases": [
+        "before-account",
+        "after-unlock-save-and-facts",
+        "after-freeze-and-save",
+        "after-approval-signed",
+        "after-transaction-stage-failed",
+        "after-lock",
+        "after-reload"
+      ],
+      "coverage": {
+        "canaries": 27,
+        "storageWrites": 2,
+        "snapshots": 7,
+        "requests": 177,
+        "responses": 90,
+        "providerRequestBytes": 17079,
+        "serverLogBytes": 250,
+        "databaseBytes": 9748,
+        "storedObjects": 43,
+        "consoleMessages": 17,
+        "serverEgressDestinations": 3
+      },
+      "layersBelowMinimum": [],
+      "unobserved": [
+        "session expiry (idle and absolute limits are covered by unit tests, not by this browser run)",
+        "a broadcast transaction (the chain is scripted and no network is configured)",
+        "storage writes made inside a worker (snapshots still see what persisted)",
+        "response body of GET /api/auth/me: the request had not finished when the journey ended (3 responses)",
+        "response body of GET /api/chain/account: the request had not finished when the journey ended (2 responses)",
+        "response body of POST /api/assistant/runs: the request was cut off before its body was complete (1 response)"
+      ],
+      "allowedHits": [
+        {
+          "destination": "browser.cookie",
+          "canaryClass": "session_cookie",
+          "count": 6
+        },
+        {
+          "destination": "request.assistant",
+          "canaryClass": "artifact_hash",
+          "count": 3
+        }
+      ],
+      "violations": [],
+      "storageKeysWritten": [
+        "localStorage:lexaegis.account-profile.v1",
+        "localStorage:lexaegis.voice.preference.v1"
+      ],
+      "cookieNames": [
+        "lexaegis_session (HttpOnly)"
+      ],
+      "routesRequested": [
+        "GET /_next/static/chunks/08prdklv-99tz.js",
+        "GET /_next/static/chunks/0bohg4tbc8b1r.js",
+        "GET /_next/static/chunks/0lbxjvbnsctat.js",
+        "GET /_next/static/chunks/0m50gz8so2b7s.js",
+        "GET /_next/static/chunks/0na1fvsoa69y5.js",
+        "GET /_next/static/chunks/0o-7ameln1is6.js",
+        "GET /_next/static/chunks/0ppv1a8sz6-gz.js",
+        "GET /_next/static/chunks/1-_alqvy9w0k1.js",
+        "GET /_next/static/chunks/11m-zmkfvfh29.js",
+        "GET /_next/static/chunks/139cb_4zvjlcl.js",
+        "GET /_next/static/chunks/1_n4zdovrskox.css",
+        "GET /_next/static/chunks/2-bus9g7a6dg_.js",
+        "GET /_next/static/chunks/20easatnlzfl3.js",
+        "GET /_next/static/chunks/2kb0y3289vqsh.js",
+        "GET /_next/static/chunks/2rzw39im0-s5l.js",
+        "GET /_next/static/chunks/2y_iqp85m2pqs.js",
+        "GET /_next/static/chunks/3hem3_tgfgnls.js",
+        "GET /_next/static/chunks/3uw50bsoc624t.js",
+        "GET /_next/static/chunks/turbopack-2c3mg3r-05n1w.js",
+        "GET /_next/static/chunks/turbopack-30as-olyiwlsf.js",
+        "GET /_next/static/chunks/turbopack-worker-1hrsqshz0gfey.js",
+        "GET /_next/static/media/pdf.worker.2c80n3p27u3ep.mjs",
+        "GET /api/assistant",
+        "GET /api/auth/me",
+        "GET /api/chain/account",
+        "GET /api/chain/state/0x…/0x…",
+        "GET /api/chain/status",
+        "GET /api/history/reviewers/0x…",
+        "GET /api/history/status",
+        "GET /api/readiness",
+        "GET /api/vault",
+        "GET /api/vault/<id>/head",
+        "GET /api/vault/<id>/objects/<id>",
+        "GET /history",
+        "GET /review",
+        "GET /vault",
+        "GET /verify",
+        "POST /api/assistant/runs",
+        "POST /api/auth/challenge",
+        "POST /api/auth/verify",
+        "POST /api/chain/operations",
+        "POST /api/vault",
+        "PUT /api/vault/<id>/head",
+        "PUT /api/vault/<id>/objects/<id>"
+      ]
+    },
+    {
+      "journey": "assistant",
+      "journeyExit": 0,
+      "journeySummary": "61 of 61 checks passed (virtual authenticator; scripted provider, not Qwen; synthetic documents).",
+      "consentedDisclosure": true,
+      "canaryClasses": [
+        "artifact_hash",
+        "database_credential",
+        "filename",
+        "matter_title",
+        "money_field",
+        "prf_output",
+        "selected_text",
+        "session_cookie",
+        "signing_key",
+        "storage_credential",
+        "unselected_text"
+      ],
+      "canaries": [
+        {
+          "id": "matter-title",
+          "class": "matter_title",
+          "kind": "text"
+        },
+        {
+          "id": "pdf-file-name",
+          "class": "filename",
+          "kind": "text"
+        },
+        {
+          "id": "source-file-sha256",
+          "class": "artifact_hash",
+          "kind": "bytes"
+        },
+        {
+          "id": "pdf-employer",
+          "class": "unselected_text",
+          "kind": "text"
+        },
+        {
+          "id": "pdf-heading",
+          "class": "unselected_text",
+          "kind": "text"
+        },
+        {
+          "id": "pdf-employee",
+          "class": "unselected_text",
+          "kind": "text"
+        },
+        {
+          "id": "pdf-total-line",
+          "class": "selected_text",
+          "kind": "text"
+        },
+        {
+          "id": "fact-total-pence",
+          "class": "money_field",
+          "kind": "token"
+        },
+        {
+          "id": "storage-secret",
+          "class": "storage_credential",
+          "kind": "text"
+        },
+        {
+          "id": "storage-access-key",
+          "class": "storage_credential",
+          "kind": "text"
+        },
+        {
+          "id": "database-url",
+          "class": "database_credential",
+          "kind": "text"
+        },
+        {
+          "id": "prf-output-1",
+          "class": "prf_output",
+          "kind": "bytes"
+        },
+        {
+          "id": "signing-key-from-prf-1",
+          "class": "signing_key",
+          "kind": "bytes"
+        },
+        {
+          "id": "prf-output-2",
+          "class": "prf_output",
+          "kind": "bytes"
+        },
+        {
+          "id": "signing-key-from-prf-2",
+          "class": "signing_key",
+          "kind": "bytes"
+        },
+        {
+          "id": "session-cookie-lexaegis_session",
+          "class": "session_cookie",
+          "kind": "text"
+        }
+      ],
+      "phases": [
+        "before-account",
+        "after-unlock-save-and-facts",
+        "after-consented-run",
+        "after-stop-during-provider-wait",
+        "after-encrypted-save-outcome",
+        "after-lock",
+        "after-reload"
+      ],
+      "coverage": {
+        "canaries": 16,
+        "storageWrites": 1,
+        "snapshots": 7,
+        "requests": 116,
+        "responses": 53,
+        "providerRequestBytes": 81808,
+        "serverLogBytes": 768,
+        "databaseBytes": 11007,
+        "storedObjects": 35,
+        "consoleMessages": 12,
+        "serverEgressDestinations": 3
+      },
+      "layersBelowMinimum": [],
+      "unobserved": [
+        "the real model provider (this provider is a scripted loopback server; its own logs and retention are outside this repository)",
+        "storage writes made inside a worker (snapshots still see what persisted)",
+        "response body of GET /api/auth/me: the request had not finished when the journey ended (2 responses)",
+        "response body of GET /api/chain/account: the request had not finished when the journey ended (2 responses)",
+        "response body of POST /api/assistant/runs: the request was cut off before its body was complete (1 response)"
+      ],
+      "allowedHits": [
+        {
+          "destination": "browser.cookie",
+          "canaryClass": "session_cookie",
+          "count": 6
+        },
+        {
+          "destination": "request.assistant",
+          "canaryClass": "artifact_hash",
+          "count": 5
+        },
+        {
+          "destination": "request.assistant",
+          "canaryClass": "money_field",
+          "count": 1
+        },
+        {
+          "destination": "provider.request",
+          "canaryClass": "money_field",
+          "count": 1
+        }
+      ],
+      "violations": [],
+      "storageKeysWritten": [
+        "localStorage:lexaegis.account-profile.v1"
+      ],
+      "cookieNames": [
+        "lexaegis_session (HttpOnly)"
+      ],
+      "routesRequested": [
+        "GET /_next/static/chunks/08prdklv-99tz.js",
+        "GET /_next/static/chunks/0bohg4tbc8b1r.js",
+        "GET /_next/static/chunks/0lbxjvbnsctat.js",
+        "GET /_next/static/chunks/0m50gz8so2b7s.js",
+        "GET /_next/static/chunks/0na1fvsoa69y5.js",
+        "GET /_next/static/chunks/0o-7ameln1is6.js",
+        "GET /_next/static/chunks/0ppv1a8sz6-gz.js",
+        "GET /_next/static/chunks/1-_alqvy9w0k1.js",
+        "GET /_next/static/chunks/11m-zmkfvfh29.js",
+        "GET /_next/static/chunks/139cb_4zvjlcl.js",
+        "GET /_next/static/chunks/1_n4zdovrskox.css",
+        "GET /_next/static/chunks/2-bus9g7a6dg_.js",
+        "GET /_next/static/chunks/20easatnlzfl3.js",
+        "GET /_next/static/chunks/2kb0y3289vqsh.js",
+        "GET /_next/static/chunks/2rzw39im0-s5l.js",
+        "GET /_next/static/chunks/2y_iqp85m2pqs.js",
+        "GET /_next/static/chunks/3hem3_tgfgnls.js",
+        "GET /_next/static/chunks/3uw50bsoc624t.js",
+        "GET /_next/static/chunks/turbopack-2c3mg3r-05n1w.js",
+        "GET /_next/static/chunks/turbopack-30as-olyiwlsf.js",
+        "GET /_next/static/chunks/turbopack-worker-1hrsqshz0gfey.js",
+        "GET /_next/static/media/pdf.worker.2c80n3p27u3ep.mjs",
+        "GET /api/agent-identity",
+        "GET /api/assistant",
+        "GET /api/auth/me",
+        "GET /api/chain/account",
+        "GET /api/chain/status",
+        "GET /api/history/reviewers/0x…",
+        "GET /api/history/status",
+        "GET /api/readiness",
+        "GET /api/vault",
+        "GET /api/vault/<id>/objects/<id>",
+        "GET /history",
+        "GET /review",
+        "GET /vault",
+        "GET /verify",
+        "POST /api/assistant/runs",
+        "POST /api/assistant/runs/<id>/cancel",
+        "POST /api/auth/challenge",
+        "POST /api/auth/verify",
+        "POST /api/vault",
+        "PUT /api/vault/<id>/head",
+        "PUT /api/vault/<id>/objects/<id>"
+      ]
+    }
+  ],
+  "assets": [
+    {
+      "scope": "web client assets (.next-hud-check/static)",
+      "files": 32,
+      "bytes": 4129430,
+      "sourceMaps": [
+        "chunks/2z3sh82dl8glu.js.map"
+      ],
+      "keyShapedClassified": {
+        "not_key_material: decimal digits only": 1,
+        "public: public dependency @noble/curves": 13,
+        "not_key_material: low-entropy pattern": 5,
+        "public: apps/web/src/features/account/derivation-profile.ts": 2
+      },
+      "findings": 0
+    },
+    {
+      "scope": "web emitted HTML and payloads (.next-hud-check/server/app)",
+      "files": 8,
+      "bytes": 23480,
+      "sourceMaps": [],
+      "keyShapedClassified": {
+        "public: Next.js route-cache key in prerender metadata": 2
+      },
+      "findings": 0
+    },
+    {
+      "scope": "web server bundle (.next-hud-check/server)",
+      "files": 437,
+      "findings": 0,
+      "rule": "literal secret values only; reading configuration at run time is not a client leak",
+      "notCanaryHere": "provider-placeholder: the documented non-secret placeholder for the scripted provider (still rejected in browser assets)"
+    },
+    {
+      "scope": "web client assets (.next-assistant-check/static)",
+      "files": 32,
+      "bytes": 4129430,
+      "sourceMaps": [
+        "chunks/2z3sh82dl8glu.js.map"
+      ],
+      "keyShapedClassified": {
+        "not_key_material: decimal digits only": 1,
+        "public: public dependency @noble/curves": 13,
+        "not_key_material: low-entropy pattern": 5,
+        "public: apps/web/src/features/account/derivation-profile.ts": 2
+      },
+      "findings": 0
+    },
+    {
+      "scope": "web emitted HTML and payloads (.next-assistant-check/server/app)",
+      "files": 8,
+      "bytes": 23480,
+      "sourceMaps": [],
+      "keyShapedClassified": {
+        "public: Next.js route-cache key in prerender metadata": 2
+      },
+      "findings": 0
+    },
+    {
+      "scope": "web server bundle (.next-assistant-check/server)",
+      "files": 437,
+      "findings": 0,
+      "rule": "literal secret values only; reading configuration at run time is not a client leak",
+      "notCanaryHere": "provider-placeholder: the documented non-secret placeholder for the scripted provider (still rejected in browser assets)"
+    },
+    {
+      "scope": "packed entry points: @lexaegis/protocol (packages/protocol/dist)",
+      "files": 29,
+      "bytes": 87150,
+      "sourceMaps": [],
+      "keyShapedClassified": {},
+      "findings": 0
+    },
+    {
+      "scope": "packed entry points: @lexaegis/sdk (packages/sdk/dist)",
+      "files": 33,
+      "bytes": 191517,
+      "sourceMaps": [],
+      "keyShapedClassified": {
+        "public: EIP-1967 implementation storage slot (public standard constant)": 1
+      },
+      "findings": 0
+    },
+    {
+      "scope": "standalone verifier (apps/verifier/dist)",
+      "files": 4,
+      "bytes": 603071,
+      "sourceMaps": [],
+      "keyShapedClassified": {
+        "public: contracts/deployments/monad-testnet.json": 3,
+        "public: EIP-1967 implementation storage slot (public standard constant)": 1
+      },
+      "findings": 0
+    }
+  ],
+  "assetFindings": [],
+  "serverEnvNamesChecked": 41
+}

@@ -5,7 +5,7 @@
  * FAILS when the fault it exists for is present, names the right boundary, and passes again when
  * the fault is removed.
  *
- * Everything happens in a DISPOSABLE git worktree of the current commit, in a temporary directory.
+ * Everything happens in a DISPOSABLE git worktree of the current commit, in the user's cache directory.
  * The working tree is never edited. One fault at a time is written into the module that owns the
  * boundary (tooling/src/privacy/faults.ts), the owning check runs there, the fault is reverted with
  * git, and the check runs again. Markers are synthetic; the only "forbidden receiver" is a loopback
@@ -21,10 +21,18 @@
  *   --keep-worktree    leave the worktree in place (debugging only)
  */
 import { spawnSync } from 'node:child_process';
-import { cpSync, existsSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
+import {
+  cpSync,
+  existsSync,
+  mkdirSync,
+  mkdtempSync,
+  readFileSync,
+  rmSync,
+  writeFileSync,
+} from 'node:fs';
 import { createServer } from 'node:http';
 import type { AddressInfo } from 'node:net';
-import { tmpdir } from 'node:os';
+import { homedir, tmpdir } from 'node:os';
 import { join, relative } from 'node:path';
 import { recordEvidence } from '../src/evidence-writer';
 import {
@@ -68,7 +76,14 @@ const git = (cwd: string, gitArgs: string[]): { status: number | null; stdout: s
 const revision = gitRevision();
 const startedAt = new Date();
 const work = mkdtempSync(join(tmpdir(), 'lexaegis-negative-controls-'));
-const worktree = join(work, 'source');
+// The copy lives on the same disk as the package store (the user's cache directory), so its
+// dependencies install offline from that store. A temporary directory on another filesystem has no
+// store of its own and cannot install without the network.
+const cacheHome =
+  process.env.LEXAEGIS_CONTROLS_DIR ?? process.env.XDG_CACHE_HOME ?? join(homedir(), '.cache');
+mkdirSync(join(cacheHome, 'lexaegis'), { recursive: true });
+const worktreeParent = mkdtempSync(join(cacheHome, 'lexaegis', 'negative-controls-'));
+const worktree = join(worktreeParent, 'source');
 const canariesFile = join(work, 'canaries.json');
 writeFileSync(canariesFile, JSON.stringify(ALL_FAULT_CANARIES));
 
@@ -129,7 +144,7 @@ async function ownedCheck(label: string): Promise<CheckReport | null> {
 
 try {
   // ---- A disposable copy of the tested source state ------------------------------------------
-  console.log(`worktree of ${revision.commit ?? 'unknown commit'} in a temporary directory`);
+  console.log(`worktree of ${revision.commit ?? 'unknown commit'} in ${worktreeParent}`);
   if (git(ROOT, ['worktree', 'add', '--detach', worktree, 'HEAD']).status !== 0) {
     setupFailure = 'WORKTREE_NOT_CREATED';
   } else {
@@ -138,7 +153,10 @@ try {
       encoding: 'utf8',
       timeout: 15 * 60_000,
     });
-    if (install.status !== 0) setupFailure = 'DEPENDENCIES_NOT_INSTALLED_OFFLINE';
+    if (install.status !== 0) {
+      setupFailure = 'DEPENDENCIES_NOT_INSTALLED_OFFLINE';
+      console.log(`${install.stdout}${install.stderr}`.trim().split('\n').slice(-3).join('\n'));
+    }
     // Local-only tools and generated assets that are not tracked: the pinned S3-compatible server
     // and the pdf.js files the application copies before a build.
     const tools = join(ROOT, '.tools', 'versitygw');
@@ -165,7 +183,11 @@ try {
         ? 'baseline: NO REPORT'
         : `baseline: ${baseline.outcome.toUpperCase()} (${String(baseline.failures.length)} failure(s))`,
     );
-    if (baseline?.outcome !== 'pass') setupFailure = 'BASELINE_NOT_CLEAN';
+    if (baseline?.outcome !== 'pass') {
+      setupFailure = 'BASELINE_NOT_CLEAN';
+      // Failure lines name rules, scopes, IDs and classes: never a value.
+      for (const failure of baseline?.failures ?? []) console.log(`  baseline: ${failure}`);
+    }
   }
 
   for (const fault of setupFailure === null ? selected : []) {
@@ -178,6 +200,7 @@ try {
       `${fault.id}: ${result.outcome.toUpperCase()}${result.reason === null ? '' : ` (${result.reason})`}; restored: ${result.restored.toUpperCase()}`,
     );
     for (const line of result.observedFailure) console.log(`  detected by: ${line}`);
+    for (const line of result.restoredFailures) console.log(`  after restore: ${line}`);
     if (result.restored !== 'pass') {
       // A copy that is not clean again cannot serve as the starting point of the next control.
       setupFailure = `RESTORE_FAILED after ${fault.id}`;
@@ -191,6 +214,7 @@ try {
   } else {
     git(ROOT, ['worktree', 'remove', '--force', worktree]);
     git(ROOT, ['worktree', 'prune']);
+    rmSync(worktreeParent, { recursive: true, force: true });
     rmSync(work, { recursive: true, force: true });
   }
 }

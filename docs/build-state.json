@@ -5400,6 +5400,33 @@
         "seed": "0x4c657841656769732e50726f6f664f665265766965772e7631",
         "contractSourcesSha256": "2001781f576486f58f8e1dace5bd3110f542f2b08ff62e9028477481aa6ffc5b"
       }
+    },
+    {
+      "id": "privacy-boundaries-20261011203822",
+      "subject": "privacy-boundaries",
+      "sourceRevision": {
+        "commit": "821a23b460a4d7c09380a49f67a526db22f3441f",
+        "dirtyWorktree": true,
+        "contentFingerprint": "2f5450aa3d0c38db2684be7ee0a810bab3ee63cd2271712fa9d71f1c8012f551"
+      },
+      "checkedAt": "2026-10-11T20:38:22.444Z",
+      "command": "pnpm test:privacy:browser",
+      "environment": { "node": "v24.21.0", "os": "linux-x64", "pnpm": "11.11.0" },
+      "evidenceClass": "virtual_authenticator",
+      "outcome": "pass",
+      "reasonCodes": [
+        "SYNTHETIC_DOCUMENTS_ONLY",
+        "AUTHENTICATOR_MODE_VIRTUAL",
+        "SCRIPTED_PROVIDER_AND_CHAIN"
+      ],
+      "evidenceRefs": [
+        { "type": "path", "value": "docs/evidence/chapter17-privacy-boundaries-2026-10-11.json" }
+      ],
+      "facts": {
+        "journeys": "hud,assistant",
+        "failures": "0",
+        "chapter12": "not run; this reuses the Chapter 9 and 10 journeys"
+      }
     }
   ],
   "appliedCuts": [],
@@ -7896,6 +7923,30 @@
           "tooling/src/explorer-verify.ts",
           "tooling/src/explorer-verify.test.ts",
           "tooling/src/deployment-verify/verify.ts",
+          "package.json"
+        ]
+      },
+      "9": {
+        "status": "complete",
+        "summary": "pnpm test:privacy:browser (tooling/scripts/privacy-browser-check.ts; library tooling/src/privacy: canary.ts, analyse.ts, assets.ts, observe.ts, run-bounded.ts; 34 unit tests incl. faults). Chapter 12 has not run: this reuses the Chapter 10 HUD and Chapter 9 assistant scripted journeys through rendered controls with an observation layer, and does not mark Chapter 12 complete. Canaries in 16 classes (selected/unselected text, file name, matter title, reviewer note, money as whole tokens, opening nonce, artifact hashes incl. the uploaded file's SHA-256, both PRF results of the VIRTUAL authenticator and the signing key re-derived from each, session cookie, storage/database/provider credentials; vault_key and signing_session_secret have no extractable value in a real journey and are exercised by the negative controls and the stored-CryptoKey rule), searched as plain, JSON-escaped, URL/form-encoded, hex, base64/base64url at three alignments and decimal arrays. Layers: intercepted storage writes (localStorage, sessionStorage, IndexedDB put/add, Cache.put with body, document.cookie) so write-then-delete is seen, snapshots at 7 phases with CryptoKey described, every request body and URL, API response bodies once the request finished, browser console, provider requests, server stdout/stderr, every database row, every stored object, server egress (host:port of every outbound socket via a preloaded recorder), and built assets (client chunks, source maps, emitted HTML/payloads, server bundle separately, packed protocol/sdk entry points, verifier). Matrix: selected excerpt and confirmed amounts on the analysis route, provider and result only after Send; source-reference digests on the analysis route and its result only, never the provider; session value only in the HttpOnly jar; a 65-byte signature only in transit on auth and chain routes; everything else nowhere; any request outside the origin, a policy-blocked request, any server connection off its allowlist, Cache storage or a service worker is a violation; a persisted CryptoKey is a violation even when non-extractable. Every 64-hex value in a browser asset must be classified against a named public source. HANG FIXED: the first observed run never ended because the observer asked for every API response body at response time and awaited all of them, and a request interrupted by a navigation never reports that it finished; bodies are now read only after requestfinished for at most 5 s, unread ones are listed as unobserved, snapshots are bounded at 15 s, a blocked IndexedDB open is an error, each journey has an 8-minute limit after which its whole process tree is stopped and the check fails JOURNEY_TIMED_OUT (run-bounded.ts with regression tests), and a journey that stops early still hands over its observations. While observed, the journeys write screenshots to scratch and record no journey evidence. First complete run: 10 findings, each resolved by cause: (1) REAL, by design: each excerpt's lexaegis.source-ref.v1 carries the SHA-256 of the source file and of its extraction to the analysis route (covered by the consent digest, not sent to the provider) and the preview did not say so; fixed in the consent module by a new DISCLOSURE_FACTS statement with a regression test (selected-context.test.ts), no wire format changed; (2) the HUD journey presses Send once, so its declaration was corrected and two never-selected PDF lines became unselected_text; (3) the scripted provider placeholder is a documented non-secret literal, kept as a canary for browser assets only; (4) Next.js route-cache keys and (5) the EIP-1967 implementation slot classified by named source. Observed 2026-10-11T20:38:22Z on commit 821a23b (two unrelated documentation files uncommitted, so recorded dirty), Chromium 153, 111 s: PASS, 0 violations, 0 asset findings; HUD 69/69 checks, 27 canaries in 12 classes, 2 storage writes, 7 snapshots, 177 requests, 90 API responses read; assistant 61/61, 16 canaries in 11 classes, 1 write, 7 snapshots, 116 requests, 53 responses read incl. 4 complete result streams. NOT OBSERVED (kept in evidence): response bodies of requests cut off by navigation, lock or Stop (HUD: 3 auth/me, 2 chain/account, 1 assistant run stream, which is that journey's only consented result; assistant: 2, 2, 1), the real provider, browser session expiry, a broadcast transaction, storage writes inside a worker, memory. Bounded detection only: not proof of the absence of every encoding, side channel or same-origin compromise. Report: docs/security/privacy-checks.md.",
+        "files": [
+          "tooling/scripts/privacy-browser-check.ts",
+          "tooling/src/privacy/canary.ts",
+          "tooling/src/privacy/analyse.ts",
+          "tooling/src/privacy/assets.ts",
+          "tooling/src/privacy/observe.ts",
+          "tooling/src/privacy/run-bounded.ts",
+          "tooling/src/privacy/run-bounded.test.ts",
+          "tooling/src/privacy/privacy.test.ts",
+          "tooling/src/privacy/assets.test.ts",
+          "tooling/src/privacy/test-observations.ts",
+          "tooling/scripts/hud-browser-check.ts",
+          "tooling/scripts/assistant-browser-check.ts",
+          "apps/web/src/test-support/local-s3.ts",
+          "apps/web/src/features/assistant/disclosure.ts",
+          "apps/web/src/features/assistant/selected-context.test.ts",
+          "docs/security/privacy-checks.md",
+          "docs/evidence/chapter17-privacy-boundaries-2026-10-11.json",
           "package.json"
         ]
       }

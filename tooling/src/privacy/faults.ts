@@ -342,7 +342,7 @@ export const FAULTS: readonly Fault[] = [
     file: 'apps/web/src/features/assistant/selected-context.ts',
     find: '      history: [...input.history],',
     replace: () =>
-      `      history: [...input.history, { role: 'user', text: '${FAULT_CANARIES.extraField.value}' }],`,
+      `      history: [...input.history, { role: 'user' as const, text: '${FAULT_CANARIES.extraField.value}' }],`,
     expect: [canaryIn('request.assistant', FAULT_CANARIES.extraField)],
   },
 ];
