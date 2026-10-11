@@ -5,6 +5,7 @@ export default defineConfig({
     projects: [
       'packages/protocol',
       'packages/sdk',
+      'packages/cli',
       'packages/vault',
       'packages/agent',
       'apps/web',

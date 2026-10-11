@@ -5,11 +5,19 @@
  * the output runs under Node's ESM resolution. Imports no workspace package.
  */
 import { execFileSync } from 'node:child_process';
-import { existsSync, readdirSync, readFileSync, rmSync, statSync, writeFileSync } from 'node:fs';
+import {
+  chmodSync,
+  existsSync,
+  readdirSync,
+  readFileSync,
+  rmSync,
+  statSync,
+  writeFileSync,
+} from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 import { ROOT } from './lib';
 
-export const BUILT_PACKAGES = ['protocol', 'sdk'] as const;
+export const BUILT_PACKAGES = ['protocol', 'sdk', 'cli'] as const;
 
 function files(dir: string): string[] {
   return readdirSync(dir).flatMap((name) => {
@@ -21,7 +29,8 @@ function files(dir: string): string[] {
 /** Rewrites `./x` and `../x/y` to `./x.js` or `./x/index.js` using the emitted files. */
 export function rewriteSpecifiers(text: string, file: string, extension: '.js' | '.d.ts'): string {
   const rewrite = (specifier: string): string => {
-    if (!specifier.startsWith('.')) return specifier;
+    // Bare specifiers and explicit `.js` / `.json` files already resolve under Node.
+    if (!specifier.startsWith('.') || /\.(?:js|json)$/.test(specifier)) return specifier;
     const base = resolve(dirname(file), specifier);
     if (existsSync(`${base}${extension}`)) return `${specifier}.js`;
     if (existsSync(join(base, `index${extension}`)))
@@ -48,6 +57,9 @@ export function buildPackage(name: (typeof BUILT_PACKAGES)[number]): void {
     else if (file.endsWith('.js'))
       writeFileSync(file, rewriteSpecifiers(readFileSync(file, 'utf8'), file, '.js'));
   }
+  // The command's entry point must be executable once installed from a tarball.
+  const bin = join(dir, 'dist', 'bin.js');
+  if (name === 'cli') chmodSync(bin, 0o755);
 }
 
 if (process.argv[1]?.endsWith('build-packages.ts')) {

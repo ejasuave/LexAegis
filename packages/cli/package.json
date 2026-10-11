@@ -1,0 +1,35 @@
+{
+  "name": "@lexaegis/cli",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Read-only Proof of Review command-line verifier: check an exported review package and read a receipt's registry status. It never signs, submits or asks for a key.",
+  "bin": {
+    "proof-of-review": "./dist/bin.js"
+  },
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit -p tsconfig.json"
+  },
+  "dependencies": {
+    "@lexaegis/sdk": "workspace:*"
+  },
+  "sideEffects": false,
+  "engines": {
+    "node": ">=24.0.0"
+  },
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "publishConfig": {
+    "exports": {
+      ".": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      }
+    }
+  }
+}
