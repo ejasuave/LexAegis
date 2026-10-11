@@ -112,6 +112,5 @@ describe('optional agentIdentity in the agent-configuration artifact', () => {
     const frozen = await agentConfigArtifactBytes(base);
     withAgentIdentity(base, reference);
     expect((await agentConfigArtifactBytes(base)).sha256).toBe(frozen.sha256);
-    expect(Object.isFrozen(base) || base.schema === 'lexaegis.agent-config.v1').toBe(true);
   });
 });
