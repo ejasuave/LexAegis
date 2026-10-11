@@ -6319,6 +6319,11 @@
           "apps/web/src/app/verify/page.tsx",
           "apps/verifier/src/independence.test.ts"
         ]
+      },
+      "12": {
+        "status": "complete",
+        "summary": "examples/document-review (@lexaegis/example-document-review): executable prepare and verify commands over public entry points only, a non-legal profile (example.document-review v1) with synthetic source and decision-log bytes, fresh random opening each run, explicitly unapproved output, required independent expected-reference file, optional live check only with operator-set REVIEW_RPC_URL plus --policy (credentials never in arguments; URLs with userinfo or query are refused), typed issue signing data from explicit nonce and deadline with no key, signer or broadcast path, bounded file reads from explicit CLI paths, README with actual commands and trust requirements. Demonstrates reuse; not an external customer integration. Run against the live source in the monorepo here; the packaged-consumer run is Task 13.",
+        "files": ["examples", "pnpm-workspace.yaml", "vitest.config.mts"]
       }
     }
   }

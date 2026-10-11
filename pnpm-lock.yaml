@@ -194,6 +194,19 @@ importers:
         specifier: 4.6.5
         version: 4.6.5
 
+  examples/document-review:
+    dependencies:
+      '@lexaegis/protocol':
+        specifier: workspace:*
+        version: link:../../packages/protocol
+      '@lexaegis/sdk':
+        specifier: workspace:*
+        version: link:../../packages/sdk
+    devDependencies:
+      tsx:
+        specifier: 4.23.15
+        version: 4.23.15
+
   indexer:
     dependencies:
       envio:

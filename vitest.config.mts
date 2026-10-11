@@ -9,6 +9,7 @@ export default defineConfig({
       'packages/agent',
       'apps/web',
       'apps/verifier',
+      'examples/document-review',
       'tooling',
       'indexer',
     ],
