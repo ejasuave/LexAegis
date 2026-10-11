@@ -4,6 +4,7 @@ import { describe, expect, it } from 'vitest';
 import { ALL_FLAGS_OFF } from '@/config/flags';
 import { CommandDock, SLASH_COMMANDS } from './CommandDock';
 import { FeatureFlagsProvider } from './feature-flags-context';
+import { StopProvider } from './stop-context';
 import { WorkspaceProvider } from './workspace-context';
 
 function render(flags = ALL_FLAGS_OFF): string {
@@ -11,7 +12,12 @@ function render(flags = ALL_FLAGS_OFF): string {
     createElement(
       WorkspaceProvider,
       null,
-      createElement(FeatureFlagsProvider, { flags, children: createElement(CommandDock) }),
+      createElement(StopProvider, {
+        children: createElement(FeatureFlagsProvider, {
+          flags,
+          children: createElement(CommandDock),
+        }),
+      }),
     ),
   );
 }

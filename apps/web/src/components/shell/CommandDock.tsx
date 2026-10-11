@@ -5,6 +5,7 @@ import { useAssistant } from '@/components/assistant/assistant-context';
 import { useReview } from '@/components/review/review-context';
 import { decideEnter } from './command-input';
 import { useFeatureFlag } from './feature-flags-context';
+import { useStop } from './stop-context';
 import { Icon } from './icons';
 import { useWorkspace } from './workspace-context';
 
@@ -39,6 +40,8 @@ export function CommandDock() {
     useWorkspace();
   const review = useReview().snapshot;
   const { controller, snapshot } = useAssistant();
+  const stopper = useStop();
+  const [stopNote, setStopNote] = useState('');
   const [menuOpen, setMenuOpen] = useState(false);
   const voiceEnabled = useFeatureFlag('voice');
   const briefing = useFeatureFlag('matterBriefing');
@@ -46,7 +49,10 @@ export function CommandDock() {
   const noticeId = useId();
   const scopeId = useId();
   const stoppable =
-    snapshot.phase === 'running' || snapshot.phase === 'stopping' || snapshot.phase === 'preview';
+    snapshot.phase === 'running' ||
+    snapshot.phase === 'stopping' ||
+    snapshot.phase === 'preview' ||
+    stopper.canStop();
   const commands = briefing ? [...SLASH_COMMANDS.slice(0, 6), '/brief', '/stop'] : SLASH_COMMANDS;
 
   const onSubmit = (event: SyntheticEvent<HTMLFormElement>) => {
@@ -163,7 +169,10 @@ export function CommandDock() {
           className={`${button} ${stoppable ? '' : 'text-lj-muted'}`}
           data-testid="aegis-stop"
           onClick={() => {
-            if (stoppable) void controller?.stop();
+            if (!stoppable) return;
+            // /stop in the text box takes the assistant path; this button stops every part.
+            const report = stopper.stop();
+            setStopNote(report.notes.join(' '));
           }}
         >
           <Icon name="stop" /> {snapshot.phase === 'stopping' ? 'Stopping' : 'Stop'}
@@ -206,6 +215,7 @@ export function CommandDock() {
         data-testid="aegis-notice"
         className="m-0 mt-1 min-h-5 text-[0.8125rem] text-lj-secondary"
       >
+        {stopNote !== '' ? `${stopNote} ` : ''}
         {notice}
       </p>
     </section>

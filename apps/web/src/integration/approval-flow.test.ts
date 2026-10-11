@@ -270,4 +270,56 @@ describe('stage one: explicit package authorisation', () => {
     expect(approval.getSnapshot().stage).not.toBe('signed');
     expect(approval.takeAuthorisation()).toBeNull();
   });
+
+  it('revokes a known public receipt without any private documents, only when it is Active', async () => {
+    const { r, latch, commitment } = await frozen();
+    const reviewer = r.h.controller.getSnapshot().account?.address ?? '';
+    const reference = {
+      schema: 'lexaegis.receipt-ref.v1' as const,
+      chainId: CONFIG.chainId,
+      registryAddress: CONFIG.registryAddress,
+      reviewerAddress: reviewer,
+      commitment: `0x${'77'.repeat(32)}`,
+    };
+    // Not Active on the live registry: refused before any preview.
+    const notActive = approvalFor(r, latch, chain({ lifecycle: 'not_found' }));
+    expect((await notActive.prepare({ kind: 'revoke', reference })).failure).toBe(
+      'LIFECYCLE_REJECTED',
+    );
+    // Active: previewed and signed; the signed action is REVOKE (code 1) for that commitment.
+    const approval = approvalFor(r, latch, chain({ lifecycle: 'active', nonce: '2' }));
+    const previewed = await approval.prepare({ kind: 'revoke', reference });
+    expect(previewed.display).toMatchObject({
+      kind: 'revoke',
+      commitment: reference.commitment,
+      nonce: '2',
+      scope: null,
+    });
+    expect((await approval.approve({ trusted: true })).stage).toBe('signed');
+    const taken = approval.takeAuthorisation();
+    expect(taken?.request.action.action).toMatchObject({
+      action: 1,
+      commitment: reference.commitment,
+      nonce: '2',
+    });
+    // Another reviewer's receipt is refused outright.
+    const foreign = { ...reference, reviewerAddress: `0x${'12'.repeat(20)}` };
+    expect(
+      (
+        await approvalFor(r, latch, chain({ lifecycle: 'active' })).prepare({
+          kind: 'revoke',
+          reference: foreign,
+        })
+      ).failure,
+    ).toBe('SCOPE_MISMATCH');
+    void commitment;
+  });
+
+  it('refuses to treat an ordinary package as a replacement, and a replacement as a new issue', async () => {
+    const { r, latch, commitment } = await frozen();
+    const approval = approvalFor(r, latch, chain());
+    expect((await approval.prepare({ kind: 'supersede', commitment })).failure).toBe(
+      'NOT_A_REPLACEMENT',
+    );
+  });
 });

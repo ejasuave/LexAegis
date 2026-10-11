@@ -5197,6 +5197,19 @@
           "apps/web/src/components/chain/transaction-context.tsx",
           "apps/web/src/components/chain/explorer.ts"
         ]
+      },
+      "12": {
+        "status": "complete",
+        "summary": "Receipt lifecycle actions: Revoke a known public receipt (live Active check, no private documents), Replace via a package preview that declares the Active predecessor and approves as SUPERSEDE, Cancel outstanding authorisation through the existing invalidate_nonce transaction with the exact nonce shown. Coordinated Stop (assistant, voice, read-aloud ports, unsent approval preview and unsent transaction) with honest per-part reports; Stop never sends anything and says when a transaction may already be sent.",
+        "files": [
+          "apps/web/src/features/workspace/stop.ts",
+          "apps/web/src/features/workspace/stop.test.ts",
+          "apps/web/src/components/shell/stop-context.tsx",
+          "apps/web/src/components/shell/CommandDock.tsx",
+          "apps/web/src/components/shell/AppShell.tsx",
+          "apps/web/src/components/review/ReceiptActions.tsx",
+          "apps/web/src/integration/approval-flow.test.ts"
+        ]
       }
     }
   }

@@ -19,6 +19,7 @@ import { TransactionPanel } from '@/components/chain/TransactionPanel';
 import { ReviewActionPreview } from './ReviewActionPreview';
 import { DecisionsPanel } from './DecisionsPanel';
 import { PackagePanel as ReviewPackageSection } from './PackagePanel';
+import { ReceiptActions } from './ReceiptActions';
 import { ReviewDocuments, ReviewEvidence } from './DocumentWorkspace';
 
 const MODES: { id: PresentationMode; label: string }[] = [
@@ -212,6 +213,7 @@ function PackagePanel() {
       <ReviewPackageSection />
       <ReviewActionPreview />
       <TransactionPanel />
+      <ReceiptActions />
       <ReadinessPanel />
     </div>
   );
