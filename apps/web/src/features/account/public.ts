@@ -6,7 +6,7 @@ import { forgetProfileHint, loadProfileHint, saveProfileHint } from './derivatio
 import type { AccountErrorCode, AccountResult } from './errors';
 import { PasskeyCeremonies, defaultPasskeyFunctions } from './mera-passkeys';
 import type { RegistryTransactionSigning } from './registry-transaction-signing';
-import { productionReviewGate } from './review-signing';
+import { createReviewGateLatch, type ReviewGate, type ReviewSigning } from './review-signing';
 import {
   SessionController,
   type AccountSnapshot,
@@ -37,7 +37,13 @@ export type {
   TransactionPreview,
   TransactionTicket,
 } from './registry-transaction-signing';
-export type { SignedReviewAction } from './review-signing';
+export type {
+  PreviewTicket,
+  ReviewGate,
+  ReviewRequest,
+  ReviewSigning,
+  SignedReviewAction,
+} from './review-signing';
 export type { AccountErrorCode } from './errors';
 
 export interface AccountCommands {
@@ -71,6 +77,13 @@ export interface AccountHandle {
    * are opaque, single-use and die on lock, account switch or expiry.
    */
   readonly transactions: RegistryTransactionSigning;
+  /**
+   * Stage one: a one-use preview ticket and the confirmation that signs one exact registry
+   * action. It refuses unless the review gate, bound by the approval controller, is open.
+   */
+  readonly review: ReviewSigning;
+  /** Installs the live review gate check; see ReviewGateLatch. Returns its remover. */
+  bindReviewGate(check: ReviewGate): () => void;
   /** Fires on every loss of local signing authority, so the vault can clear its own material. */
   onLock(listener: (reason: LockReason) => void): () => void;
   dispose(): void;
@@ -127,6 +140,13 @@ function inert(availability: AccountAvailability): AccountHandle {
       confirm: () => Promise.resolve({ ok: false, code: 'UNSUPPORTED' }),
       invalidateAll: () => undefined,
     },
+    review: {
+      preview: () => ({ ok: false, code: 'UNSUPPORTED' }),
+      confirm: () => Promise.resolve({ ok: false, code: 'UNSUPPORTED' }),
+      owns: () => false,
+      invalidateAll: () => undefined,
+    },
+    bindReviewGate: () => () => undefined,
     onLock: () => () => undefined,
     dispose: () => undefined,
   };
@@ -157,6 +177,7 @@ export function createBrowserAccount(
     typeof BroadcastChannel === 'function'
       ? (new BroadcastChannel('lexaegis.account') as unknown as TabChannel)
       : null;
+  const latch = createReviewGateLatch();
   const controller = new SessionController({
     config: config.data,
     ceremonies: new PasskeyCeremonies(config.data, {
@@ -172,7 +193,7 @@ export function createBrowserAccount(
       forget: () => forgetProfileHint(window.localStorage),
     },
     channel,
-    reviewGate: productionReviewGate,
+    reviewGate: latch.gate,
     vaultConsumer: options.vaultConsumer ?? null,
   });
 
@@ -202,6 +223,8 @@ export function createBrowserAccount(
       unlockVault: () => controller.unlockVault(),
     },
     transactions: controller.transactions,
+    review: controller.review,
+    bindReviewGate: (check) => latch.bind(check),
     onLock: (listener) => controller.onLock(listener),
     dispose: () => {
       window.clearInterval(timer);

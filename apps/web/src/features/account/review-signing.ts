@@ -39,6 +39,32 @@ export interface ReviewSigningPort {
 export type ReviewGate = () => AccountResult<null>;
 export const productionReviewGate: ReviewGate = () => failWith('UNAVAILABLE');
 
+/**
+ * The gate the browser account is built with. It stays shut until the review-approval controller
+ * binds its own live check (recoverable capture verified in this unlock, recorded human decisions
+ * on the current snapshot, fresh live chain state). The check runs at every preview and every
+ * confirmation, so nothing cached or caller-supplied can open it. This is application code in
+ * the same page: it limits mistakes and stale state, not a compromised page.
+ */
+export interface ReviewGateLatch {
+  readonly gate: ReviewGate;
+  /** Installs the live check. Returns a function that removes it again. */
+  bind(check: ReviewGate): () => void;
+}
+
+export function createReviewGateLatch(): ReviewGateLatch {
+  let current: ReviewGate | null = null;
+  return {
+    gate: () => (current === null ? failWith('UNAVAILABLE') : current()),
+    bind(check) {
+      current = check;
+      return () => {
+        if (current === check) current = null;
+      };
+    },
+  };
+}
+
 const TICKET_TTL_MS = 120_000;
 
 /** Immutable preview of exactly one action. Holding it is not approval; confirming it is. */

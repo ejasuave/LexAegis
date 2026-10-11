@@ -7,7 +7,12 @@ import { extractPdf, type ExtractIdentity, type PdfjsLike } from '@/features/doc
 import { PdfIntake, type WorkerLike } from '@/features/documents/pdf-intake';
 import { ReviewController, type ReviewDeps } from '@/features/review/controller';
 import type { VaultOutcome } from '@/features/vault/vault-controller';
-import { createVaultHarness, withVault, type VaultHarness } from './vault-harness';
+import {
+  createVaultHarness,
+  withVault,
+  type VaultHarness,
+  type VaultHarnessOptions,
+} from './vault-harness';
 
 /*
  * lexaegis-test-only
@@ -63,8 +68,10 @@ export interface Rig {
   readonly matterId: string;
 }
 
-export async function rig(options: { holdWorkers?: boolean } = {}): Promise<Rig> {
-  const h = await withVault(createVaultHarness());
+export async function rig(
+  options: { holdWorkers?: boolean; harness?: VaultHarnessOptions } = {},
+): Promise<Rig> {
+  const h = await withVault(createVaultHarness(options.harness));
   const matterId = must(await h.vault.createMatter('Synthetic review matter'));
   const workers: InlineWorker[] = [];
   const intake = new PdfIntake({

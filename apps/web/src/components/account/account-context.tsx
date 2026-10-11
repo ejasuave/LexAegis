@@ -13,6 +13,7 @@ import { VaultContext } from '@/components/vault/vault-context';
 import {
   EMPTY_SNAPSHOT,
   type AccountAvailability,
+  type AccountHandle,
   type AccountCommands,
   type AccountSnapshot,
 } from '@/features/account/public';
@@ -29,6 +30,8 @@ interface AccountContextValue {
   readonly commands: AccountCommands | null;
   /** Public values only (chain and registry); never a key or a credential. */
   readonly publicConfig: PublicConfig;
+  /** The restricted account handle: public status, commands and the two registry signing stages. */
+  readonly handle: AccountHandle | null;
 }
 
 const AccountContext = createContext<AccountContextValue>({
@@ -36,6 +39,7 @@ const AccountContext = createContext<AccountContextValue>({
   snapshot: EMPTY_SNAPSHOT,
   commands: null,
   publicConfig: {},
+  handle: null,
 });
 
 const noSubscription = () => () => undefined;
@@ -95,6 +99,7 @@ export function AccountProvider({
         snapshot,
         commands: account?.commands ?? null,
         publicConfig: config,
+        handle: account,
       }}
     >
       <VaultContext.Provider

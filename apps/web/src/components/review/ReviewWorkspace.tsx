@@ -15,7 +15,7 @@ import {
   type MobileTab,
   type PresentationMode,
 } from '@/components/shell/workspace-context';
-import { ActionPreview } from './ActionPreview';
+import { ReviewActionPreview } from './ReviewActionPreview';
 import { DecisionsPanel } from './DecisionsPanel';
 import { PackagePanel as ReviewPackageSection } from './PackagePanel';
 import { ReviewDocuments, ReviewEvidence } from './DocumentWorkspace';
@@ -209,7 +209,7 @@ function PackagePanel() {
     <div>
       <DecisionsPanel />
       <ReviewPackageSection />
-      <ActionPreview />
+      <ReviewActionPreview />
       <ReadinessPanel />
     </div>
   );

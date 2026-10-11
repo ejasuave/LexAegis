@@ -63,3 +63,13 @@ export type {
   PackageStatus,
   PreviewArtifact,
 } from './package';
+
+export { ApprovalController, EMPTY_APPROVAL_SNAPSHOT, PREFLIGHT_FRESHNESS_MS } from './approval';
+export type {
+  ApprovalDisplay,
+  ApprovalFailure,
+  ApprovalSnapshot,
+  ApprovalStage,
+  ApprovalTarget,
+  Authorisation,
+} from './approval';

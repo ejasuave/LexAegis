@@ -5169,6 +5169,20 @@
           "apps/web/src/components/review/package-context.tsx",
           "apps/web/src/components/account/account-context.tsx"
         ]
+      },
+      "10": {
+        "status": "complete",
+        "summary": "ApprovalController binds the review gate (live check of a capture verified in this unlock, the decision log read from inside the verified package, a live registry read no older than 15 s, same account/vault generations); ISSUE, REVOKE and SUPERSEDE targets; approve() needs a trusted activation, re-reads live state, consumes the one-use ticket, rechecks identity after signing and hands the signature once to takeAuthorisation(). New read-only /api/chain/state route. Account handle exposes review and bindReviewGate; Approval panel shows the exact action, scope, concerns and consequences.",
+        "files": [
+          "apps/web/src/features/review/approval.ts",
+          "apps/web/src/features/transactions/live-state.ts",
+          "apps/web/src/app/api/chain/state/[reviewer]/[commitment]/route.ts",
+          "apps/web/src/features/account/public.ts",
+          "apps/web/src/features/account/review-signing.ts",
+          "apps/web/src/components/review/ReviewActionPreview.tsx",
+          "apps/web/src/components/review/approval-context.tsx",
+          "apps/web/src/integration/approval-flow.test.ts"
+        ]
       }
     }
   }

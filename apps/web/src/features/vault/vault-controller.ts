@@ -397,7 +397,17 @@ export class VaultController {
   }
   readonly #packageIds = new Map<string, string>();
   /** Public reference of each capture verified in this unlock, from the verified manifest context. */
-  readonly #references = new Map<string, ReceiptReferenceV1>();
+  readonly #references = new Map<
+    string,
+    {
+      reference: ReceiptReferenceV1;
+      supersedes: ReceiptReferenceV1 | null;
+      /** Roles and sizes of the verified manifest, and the exact decision-log bytes it commits to. */
+      artifacts: readonly { id: string; role: string; byteLength: string }[];
+      scopeArtifactIds: readonly string[];
+      decisionLogBytes: Uint8Array | null;
+    }
+  >();
 
   #publish(): void {
     this.#snapshot = this.#build();
@@ -1343,7 +1353,19 @@ export class VaultController {
     const { capture } = verified.data.data;
     if (capture.commitment !== commitment) return bad('INTEGRITY_FAILED');
     this.#captures.set(commitment, capture);
-    this.#references.set(commitment, verified.data.data.review.reference);
+    this.#references.set(commitment, {
+      reference: verified.data.data.review.reference,
+      supersedes: verified.data.data.review.opening.manifest.supersedes,
+      artifacts: verified.data.data.review.opening.manifest.artifacts.map((a) => ({
+        id: a.id,
+        role: a.role,
+        byteLength: a.byteLength,
+      })),
+      scopeArtifactIds: verified.data.data.review.opening.manifest.approval.scopeArtifactIds,
+      decisionLogBytes: verified.data.data.review.artifactBytes(
+        verified.data.data.review.opening.manifest.approval.decisionLogArtifactId,
+      ),
+    });
     this.#packageIds.set(commitment, entry.packageId);
     this.#publish();
     return good(null);
@@ -1367,12 +1389,23 @@ export class VaultController {
    * A capture verified in this unlock with its public reference, for the review-approval gate.
    * Null for anything else: a persisted flag, an import or a capture from an earlier unlock.
    */
-  recoverableSubject(
-    commitment: string,
-  ): { capture: RecoverableCapture; reference: ReceiptReferenceV1 } | null {
+  recoverableSubject(commitment: string): {
+    capture: RecoverableCapture;
+    reference: ReceiptReferenceV1;
+    supersedes: ReceiptReferenceV1 | null;
+    artifacts: readonly { id: string; role: string; byteLength: string }[];
+    scopeArtifactIds: readonly string[];
+    decisionLogBytes: Uint8Array | null;
+  } | null {
     const capture = this.recoverableCapture(commitment);
-    const reference = this.#references.get(commitment);
-    return capture === null || reference === undefined ? null : { capture, reference };
+    const known = this.#references.get(commitment);
+    return capture === null || known === undefined
+      ? null
+      : {
+          capture,
+          ...known,
+          decisionLogBytes: known.decisionLogBytes?.slice() ?? null,
+        };
   }
 
   // ---- Export -------------------------------------------------------------------------------------

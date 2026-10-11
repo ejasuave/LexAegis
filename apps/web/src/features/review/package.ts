@@ -135,9 +135,11 @@ export interface PackageVaultPort {
     retryPendingCapture(commitment: string): Promise<SaveOutcome>;
     verifyStoredCapture(matterId: string, commitment: string): Promise<SaveOutcome>;
   };
-  recoverableSubject(
-    commitment: string,
-  ): { capture: RecoverableCapture; reference: ReceiptReferenceV1 } | null;
+  recoverableSubject(commitment: string): {
+    capture: RecoverableCapture;
+    reference: ReceiptReferenceV1;
+    supersedes: ReceiptReferenceV1 | null;
+  } | null;
 }
 
 export interface PackageDeps {

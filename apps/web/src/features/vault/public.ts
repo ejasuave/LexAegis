@@ -143,9 +143,14 @@ export interface VaultHandle {
   /** Whether this capture was read back and verified in the current unlock. Not an approval or a receipt. */
   hasVerifiedCapture(commitment: string): boolean;
   /** The verified capture and its public reference, only for the approval gate. Null unless verified in this unlock. */
-  recoverableSubject(
-    commitment: string,
-  ): { capture: RecoverableCapture; reference: ReceiptReferenceV1 } | null;
+  recoverableSubject(commitment: string): {
+    capture: RecoverableCapture;
+    reference: ReceiptReferenceV1;
+    supersedes: ReceiptReferenceV1 | null;
+    artifacts: readonly { id: string; role: string; byteLength: string }[];
+    scopeArtifactIds: readonly string[];
+    decisionLogBytes: Uint8Array | null;
+  } | null;
   /** For the Aegis runtime (Chapter 9), after its own disclosure step. Confirmed entries only; never truncated. */
   selectContext: ReturnType<typeof contextFor>;
   dispose(): void;
