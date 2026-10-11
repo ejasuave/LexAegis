@@ -5097,6 +5097,17 @@
           "apps/web/src/components/shell/workspace-context.tsx",
           "apps/web/src/components/review/ReviewWorkspace.tsx"
         ]
+      },
+      "04": {
+        "status": "complete",
+        "summary": "Orb adapted to real controller state (listening, tool running, awaiting input, stopping, completed with the operation named, unavailable, error); no invented progress. Command centre gains contextual actions routed through Chapter 9 handlers with specific disabled reasons.",
+        "files": [
+          "apps/web/src/components/assistant/AssistantOrb.tsx",
+          "apps/web/src/components/assistant/orb-state.ts",
+          "apps/web/src/components/assistant/orb-state.test.ts",
+          "apps/web/src/components/assistant/CommandActions.tsx",
+          "apps/web/src/components/review/ReviewWorkspace.tsx"
+        ]
       }
     }
   }

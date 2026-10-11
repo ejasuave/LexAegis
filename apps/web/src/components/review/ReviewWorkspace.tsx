@@ -1,6 +1,8 @@
 'use client';
 
 import { AssistantOrb, orbLabel } from '@/components/assistant/AssistantOrb';
+import { CommandActions } from '@/components/assistant/CommandActions';
+import { deriveOrb } from '@/components/assistant/orb-state';
 import { useAssistant } from '@/components/assistant/assistant-context';
 import { ConversationPanel } from '@/components/assistant/ConversationPanel';
 import { describeContextEntry } from '@/features/assistant/public';
@@ -120,18 +122,22 @@ function orbCaption(
 
 function CommandCentre() {
   const { snapshot } = useAssistant();
+  const orb = deriveOrb(snapshot);
   const vault = useVault();
   const active = snapshot.conversation.find(
     (item) => item.run?.id === snapshot.activeRunViewId,
   )?.run;
   return (
     <div className="flex flex-col items-center text-center">
-      <AssistantOrb state={snapshot.orb} size="expanded" />
+      <AssistantOrb state={orb.state} size="expanded" completedLabel={orb.completedLabel} />
       <p role="status" aria-live="polite" className="m-0 mt-4 text-lg" data-testid="orb-caption">
         {vault.snapshot.selectedMatterId === null
           ? 'Open a matter to begin.'
-          : orbCaption(snapshot.orb, snapshot.availability)}
+          : orb.state === 'completed' || orb.state === 'tool_running' || orb.state === 'listening'
+            ? orbLabel(orb.state, orb.completedLabel)
+            : orbCaption(snapshot.orb, snapshot.availability)}
       </p>
+      <CommandActions />
       <VaultStatusLine />
       <section aria-label="Task steps" className="mt-6 w-full max-w-xl text-left">
         <h2 className={panelTitle}>Task steps</h2>
@@ -158,6 +164,7 @@ function CommandCentre() {
 
 function ReviewView({ tab }: { tab: MobileTab }) {
   const { snapshot } = useAssistant();
+  const orb = deriveOrb(snapshot);
   return (
     <div className="grid gap-4 xl:grid-cols-[minmax(0,1fr)_minmax(16rem,20rem)]">
       <section
@@ -166,7 +173,7 @@ function ReviewView({ tab }: { tab: MobileTab }) {
       >
         <div className="flex items-center justify-between border-b border-lj-divider pb-2">
           <h2 className={panelTitle}>Document</h2>
-          <AssistantOrb state={snapshot.orb} size="compact" />
+          <AssistantOrb state={orb.state} size="compact" completedLabel={orb.completedLabel} />
         </div>
         <VaultStatusLine />
         <ReviewDocuments />

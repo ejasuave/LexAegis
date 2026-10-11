@@ -1,9 +1,15 @@
 import type { AssistantRunState } from '@lexaegis/agent/contracts';
 
-/** Run states, plus the two idle readings: no usable assistant, or ready with nothing running. */
-export type OrbState = AssistantRunState | 'unavailable' | 'ready';
+/**
+ * Run states, plus the idle readings (no usable assistant, or ready with nothing running) and the
+ * two device/tool readings the Command centre adds: the local microphone, and a tool that is
+ * actually executing. Every one has a text label; the graphic never carries meaning alone.
+ */
+export type OrbState = AssistantRunState | 'unavailable' | 'ready' | 'listening' | 'tool_running';
 
 const LABELS: Record<OrbState, string> = {
+  listening: 'Listening on this device',
+  tool_running: 'Running a check',
   unavailable: 'Assistant unavailable',
   ready: 'Ready',
   queued: 'Queued',
@@ -16,9 +22,11 @@ const LABELS: Record<OrbState, string> = {
   interrupted: 'Interrupted: outcome unknown',
 };
 
-const ACTIVE: ReadonlySet<OrbState> = new Set(['running', 'stopping']);
+const ACTIVE: ReadonlySet<OrbState> = new Set(['running', 'stopping', 'listening', 'tool_running']);
 
 const COLORS: Record<OrbState, string> = {
+  listening: 'var(--lj-cyan)',
+  tool_running: 'var(--lj-violet-text)',
   unavailable: 'var(--lj-text-muted)',
   ready: 'var(--lj-cyan)',
   queued: 'var(--lj-text-muted)',
@@ -31,8 +39,8 @@ const COLORS: Record<OrbState, string> = {
   interrupted: 'var(--lj-amber)',
 };
 
-export function orbLabel(state: OrbState): string {
-  return LABELS[state];
+export function orbLabel(state: OrbState, completedLabel?: string): string {
+  return state === 'completed' && completedLabel !== undefined ? completedLabel : LABELS[state];
 }
 
 /**
@@ -42,9 +50,12 @@ export function orbLabel(state: OrbState): string {
 export function AssistantOrb({
   state,
   size = 'expanded',
+  completedLabel,
 }: {
   state: OrbState;
   size?: 'expanded' | 'compact';
+  /** Names exactly which operation finished, when the state is completed. */
+  completedLabel?: string;
 }) {
   const px = size === 'expanded' ? 160 : 32;
   const color = COLORS[state];
@@ -83,7 +94,7 @@ export function AssistantOrb({
         />
       </svg>
       {size === 'compact' ? (
-        <span className="text-sm text-lj-secondary">{LABELS[state]}</span>
+        <span className="text-sm text-lj-secondary">{orbLabel(state, completedLabel)}</span>
       ) : null}
     </div>
   );
