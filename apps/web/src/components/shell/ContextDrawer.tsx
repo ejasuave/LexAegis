@@ -1,6 +1,7 @@
 'use client';
 
-import { useState } from 'react';
+import { useRef, useState } from 'react';
+import { useDrawerFocus } from './drawer-focus';
 import { describeVaultFailure, type VaultOutcome } from '@/features/vault/public';
 import { useVault } from '@/components/vault/vault-context';
 import { EntryRow, NoticeContext, download } from '@/components/vault/VaultPanel';
@@ -29,6 +30,8 @@ const button = 'min-h-11 rounded border border-lj-edge px-4 text-[0.875rem]';
 export function ContextDrawer({ open, onClose }: { open: boolean; onClose: () => void }) {
   const { snapshot, commands } = useVault();
   const [notice, setNotice] = useState('');
+  const drawer = useRef<HTMLElement | null>(null);
+  useDrawerFocus(open, onClose, drawer);
   const matter = snapshot.selectedMatter;
   const unlocked = snapshot.state === 'unlocked' || snapshot.state === 'saving';
   const preview = snapshot.exportPreview;
@@ -53,6 +56,7 @@ export function ContextDrawer({ open, onClose }: { open: boolean; onClose: () =>
 
   return (
     <aside
+      ref={drawer}
       id="context-drawer"
       aria-label="Saved context"
       hidden={!open}

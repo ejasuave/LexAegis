@@ -54,22 +54,34 @@ export function SystemStrip({ networkLabel }: { networkLabel: string }) {
     { label: 'Transaction', value: 'None', icon: 'tx' },
     { label: 'Indexer', value: <IndexerStatusIndicator health={history.health} />, icon: 'index' },
   ];
+  // Narrow screens show the matter and the two readings that decide what can be done; every
+  // other reading is one tap away. Wide screens show them all.
+  const essential = readings.filter((r) =>
+    ['Matter', 'Passkey session', 'Vault'].includes(r.label),
+  );
+  const renderReading = (reading: Reading) => (
+    <div key={reading.label} className="flex min-w-0 items-center gap-2">
+      <Icon name={reading.icon} className="shrink-0 text-lj-muted" />
+      <dt className="text-lj-muted">{reading.label}</dt>
+      <dd className="m-0 min-w-0 break-words text-lj-text">{reading.value}</dd>
+    </div>
+  );
   return (
     <header
       className="lj-safe-x min-h-16 border-b border-lj-divider py-2"
       aria-label="System status"
     >
-      <dl className="m-0 flex flex-wrap gap-x-6 gap-y-1 text-[0.8125rem] leading-5">
-        {readings.map((reading) => (
-          <div key={reading.label} className="flex items-center gap-2">
-            <Icon name={reading.icon} className="text-lj-muted" />
-            <dt className="text-lj-muted">{reading.label}</dt>
-            <dd className="m-0 text-lj-text">{reading.value}</dd>
-          </div>
-        ))}
+      <dl className="m-0 hidden flex-wrap gap-x-6 gap-y-1 text-[0.8125rem] leading-5 lg:flex">
+        {readings.map(renderReading)}
+      </dl>
+      <dl className="m-0 grid gap-y-1 text-[0.8125rem] leading-5 lg:hidden">
+        {essential.map(renderReading)}
       </dl>
       <details className="mt-1 text-[0.8125rem] text-lj-secondary">
         <summary className="min-h-6 cursor-pointer">Diagnostics</summary>
+        <dl className="m-0 mt-1 grid gap-y-1 lg:hidden">
+          {readings.filter((r) => !essential.includes(r)).map(renderReading)}
+        </dl>
         <p className="m-0 mt-1">
           Readings are separate: a usable passkey session does not mean the vault is unlocked,
           server sign-in does not approve anything, and indexed history never replaces a live

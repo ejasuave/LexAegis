@@ -1,4 +1,5 @@
 import { formatGbp } from '@lexaegis/agent/review';
+import { describeWorkingEntry } from '@/features/matters/describe-entry';
 import type { RunView } from './controller';
 import { OUTCOME_PREFIX } from './selected-context';
 
@@ -70,5 +71,6 @@ export function decodeOutcome(text: string): StoredOutcome | null {
 /** How a context entry reads in a list. A saved outcome is shown as an observation, never raw JSON. */
 export function describeContextEntry(text: string): string {
   const outcome = decodeOutcome(text);
-  return outcome === null ? text : `Assistant observation: ${outcome.summary}`;
+  if (outcome !== null) return `Assistant observation: ${outcome.summary}`;
+  return describeWorkingEntry(text) ?? text;
 }

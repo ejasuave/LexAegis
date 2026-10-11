@@ -3584,6 +3584,401 @@
       "outcome": "pass",
       "reasonCodes": [],
       "evidenceRefs": []
+    },
+    {
+      "id": "hud-browser-20261011020050",
+      "subject": "hud-browser-check",
+      "sourceRevision": {
+        "commit": "3b7709102f75d8bb4dc239811856e82275f074bd",
+        "dirtyWorktree": true,
+        "contentFingerprint": "bad79b52d0e5ea9d10c13700428563024f711f37a548db524843a24b13983c7c"
+      },
+      "checkedAt": "2026-10-11T02:00:50.749Z",
+      "command": "pnpm test:hud:browser",
+      "environment": {
+        "node": "v24.21.0",
+        "os": "linux-x64",
+        "pnpm": "11.11.0"
+      },
+      "evidenceClass": "virtual_authenticator",
+      "outcome": "pass",
+      "reasonCodes": [
+        "AUTHENTICATOR_MODE_VIRTUAL",
+        "SYNTHETIC_DOCUMENTS_ONLY",
+        "SCRIPTED_CHAIN_STATE",
+        "MOCK_SPEECH_ADAPTERS"
+      ],
+      "evidenceRefs": [
+        {
+          "type": "path",
+          "value": "docs/evidence/chapter10/01-command-centre-empty-1440x900.png"
+        },
+        {
+          "type": "path",
+          "value": "docs/evidence/chapter10/02-review-1440x900.png"
+        },
+        {
+          "type": "path",
+          "value": "docs/evidence/chapter10/03-approval-preview-1440x900.png"
+        },
+        {
+          "type": "path",
+          "value": "docs/evidence/chapter10/04-transaction-unavailable-1440x900.png"
+        },
+        {
+          "type": "path",
+          "value": "docs/evidence/chapter10/05-review-after-approval-1440x900.png"
+        },
+        {
+          "type": "path",
+          "value": "docs/evidence/chapter10/06-command-centre-1440x900.png"
+        },
+        {
+          "type": "path",
+          "value": "docs/evidence/chapter10/07-command-centre-1024x768.png"
+        },
+        {
+          "type": "path",
+          "value": "docs/evidence/chapter10/08-review-package-390x844.png"
+        },
+        {
+          "type": "path",
+          "value": "docs/evidence/chapter10/09-review-320x640.png"
+        },
+        {
+          "type": "path",
+          "value": "docs/evidence/chapter10/10-locked-1440x900.png"
+        }
+      ],
+      "facts": {
+        "browser": "chromium 153.0.8010.12",
+        "checksPassed": "64",
+        "checksTotal": "64",
+        "provider": "scripted-test (loopback, no model)",
+        "chain": "scripted live state, fixture registry address, no network",
+        "speech": "mock adapters, not a real device",
+        "storage": "postgresql + versitygw",
+        "authenticatorMode": "virtual",
+        "realDeviceEvidence": false,
+        "liveProviderEvidence": false,
+        "screenshotCount": "10"
+      }
+    },
+    {
+      "id": "hud-browser-20261011020214",
+      "subject": "hud-browser-check",
+      "sourceRevision": {
+        "commit": "3b7709102f75d8bb4dc239811856e82275f074bd",
+        "dirtyWorktree": true,
+        "contentFingerprint": "c8173ce072e15bf7503f8dda980997d99e1b15268c4c5aa8be774aa04ec81333"
+      },
+      "checkedAt": "2026-10-11T02:02:15.072Z",
+      "command": "pnpm test:hud:browser",
+      "environment": {
+        "node": "v24.21.0",
+        "os": "linux-x64",
+        "pnpm": "11.11.0"
+      },
+      "evidenceClass": "virtual_authenticator",
+      "outcome": "pass",
+      "reasonCodes": [
+        "AUTHENTICATOR_MODE_VIRTUAL",
+        "SYNTHETIC_DOCUMENTS_ONLY",
+        "SCRIPTED_CHAIN_STATE",
+        "MOCK_SPEECH_ADAPTERS"
+      ],
+      "evidenceRefs": [
+        {
+          "type": "path",
+          "value": "docs/evidence/chapter10/01-command-centre-empty-1440x900.png"
+        },
+        {
+          "type": "path",
+          "value": "docs/evidence/chapter10/02-review-1440x900.png"
+        },
+        {
+          "type": "path",
+          "value": "docs/evidence/chapter10/03-approval-preview-1440x900.png"
+        },
+        {
+          "type": "path",
+          "value": "docs/evidence/chapter10/04-transaction-unavailable-1440x900.png"
+        },
+        {
+          "type": "path",
+          "value": "docs/evidence/chapter10/05-review-after-approval-1440x900.png"
+        },
+        {
+          "type": "path",
+          "value": "docs/evidence/chapter10/06-command-centre-1440x900.png"
+        },
+        {
+          "type": "path",
+          "value": "docs/evidence/chapter10/07-command-centre-1024x768.png"
+        },
+        {
+          "type": "path",
+          "value": "docs/evidence/chapter10/08-review-package-390x844.png"
+        },
+        {
+          "type": "path",
+          "value": "docs/evidence/chapter10/09-review-320x640.png"
+        },
+        {
+          "type": "path",
+          "value": "docs/evidence/chapter10/10-locked-1440x900.png"
+        }
+      ],
+      "facts": {
+        "browser": "chromium 153.0.8010.12",
+        "checksPassed": "64",
+        "checksTotal": "64",
+        "provider": "scripted-test (loopback, no model)",
+        "chain": "scripted live state, fixture registry address, no network",
+        "speech": "mock adapters, not a real device",
+        "storage": "postgresql + versitygw",
+        "authenticatorMode": "virtual",
+        "realDeviceEvidence": false,
+        "liveProviderEvidence": false,
+        "screenshotCount": "10"
+      }
+    },
+    {
+      "id": "hud-browser-20261011020313",
+      "subject": "hud-browser-check",
+      "sourceRevision": {
+        "commit": "3b7709102f75d8bb4dc239811856e82275f074bd",
+        "dirtyWorktree": true,
+        "contentFingerprint": "d2d4997fecff2eee36ef8cf33de3123a0791a483397000cd4a28d845610f1c32"
+      },
+      "checkedAt": "2026-10-11T02:03:13.793Z",
+      "command": "pnpm test:hud:browser",
+      "environment": {
+        "node": "v24.21.0",
+        "os": "linux-x64",
+        "pnpm": "11.11.0"
+      },
+      "evidenceClass": "virtual_authenticator",
+      "outcome": "pass",
+      "reasonCodes": [
+        "AUTHENTICATOR_MODE_VIRTUAL",
+        "SYNTHETIC_DOCUMENTS_ONLY",
+        "SCRIPTED_CHAIN_STATE",
+        "MOCK_SPEECH_ADAPTERS"
+      ],
+      "evidenceRefs": [
+        {
+          "type": "path",
+          "value": "docs/evidence/chapter10/01-command-centre-empty-1440x900.png"
+        },
+        {
+          "type": "path",
+          "value": "docs/evidence/chapter10/02-review-1440x900.png"
+        },
+        {
+          "type": "path",
+          "value": "docs/evidence/chapter10/03-approval-preview-1440x900.png"
+        },
+        {
+          "type": "path",
+          "value": "docs/evidence/chapter10/04-transaction-unavailable-1440x900.png"
+        },
+        {
+          "type": "path",
+          "value": "docs/evidence/chapter10/05-review-after-approval-1440x900.png"
+        },
+        {
+          "type": "path",
+          "value": "docs/evidence/chapter10/06-command-centre-1440x900.png"
+        },
+        {
+          "type": "path",
+          "value": "docs/evidence/chapter10/07-command-centre-1024x768.png"
+        },
+        {
+          "type": "path",
+          "value": "docs/evidence/chapter10/08-review-package-390x844.png"
+        },
+        {
+          "type": "path",
+          "value": "docs/evidence/chapter10/09-review-320x640.png"
+        },
+        {
+          "type": "path",
+          "value": "docs/evidence/chapter10/10-locked-1440x900.png"
+        }
+      ],
+      "facts": {
+        "browser": "chromium 153.0.8010.12",
+        "checksPassed": "64",
+        "checksTotal": "64",
+        "provider": "scripted-test (loopback, no model)",
+        "chain": "scripted live state, fixture registry address, no network",
+        "speech": "mock adapters, not a real device",
+        "storage": "postgresql + versitygw",
+        "authenticatorMode": "virtual",
+        "realDeviceEvidence": false,
+        "liveProviderEvidence": false,
+        "screenshotCount": "10"
+      }
+    },
+    {
+      "id": "hud-browser-20261011020516",
+      "subject": "hud-browser-check",
+      "sourceRevision": {
+        "commit": "3b7709102f75d8bb4dc239811856e82275f074bd",
+        "dirtyWorktree": true,
+        "contentFingerprint": "8d0bfa338d9dcdfe31063218c725c6ddbdbb4078893b2ee472a7579918738ee6"
+      },
+      "checkedAt": "2026-10-11T02:05:16.578Z",
+      "command": "pnpm test:hud:browser",
+      "environment": {
+        "node": "v24.21.0",
+        "os": "linux-x64",
+        "pnpm": "11.11.0"
+      },
+      "evidenceClass": "virtual_authenticator",
+      "outcome": "pass",
+      "reasonCodes": [
+        "AUTHENTICATOR_MODE_VIRTUAL",
+        "SYNTHETIC_DOCUMENTS_ONLY",
+        "SCRIPTED_CHAIN_STATE",
+        "MOCK_SPEECH_ADAPTERS"
+      ],
+      "evidenceRefs": [
+        {
+          "type": "path",
+          "value": "docs/evidence/chapter10/01-command-centre-empty-1440x900.png"
+        },
+        {
+          "type": "path",
+          "value": "docs/evidence/chapter10/02-review-1440x900.png"
+        },
+        {
+          "type": "path",
+          "value": "docs/evidence/chapter10/03-approval-preview-1440x900.png"
+        },
+        {
+          "type": "path",
+          "value": "docs/evidence/chapter10/04-transaction-unavailable-1440x900.png"
+        },
+        {
+          "type": "path",
+          "value": "docs/evidence/chapter10/05-review-after-approval-1440x900.png"
+        },
+        {
+          "type": "path",
+          "value": "docs/evidence/chapter10/06-command-centre-1440x900.png"
+        },
+        {
+          "type": "path",
+          "value": "docs/evidence/chapter10/07-command-centre-1024x768.png"
+        },
+        {
+          "type": "path",
+          "value": "docs/evidence/chapter10/08-review-package-390x844.png"
+        },
+        {
+          "type": "path",
+          "value": "docs/evidence/chapter10/09-review-320x640.png"
+        },
+        {
+          "type": "path",
+          "value": "docs/evidence/chapter10/10-locked-1440x900.png"
+        }
+      ],
+      "facts": {
+        "browser": "chromium 153.0.8010.12",
+        "checksPassed": "66",
+        "checksTotal": "66",
+        "provider": "scripted-test (loopback, no model)",
+        "chain": "scripted live state, fixture registry address, no network",
+        "speech": "mock adapters, not a real device",
+        "storage": "postgresql + versitygw",
+        "authenticatorMode": "virtual",
+        "realDeviceEvidence": false,
+        "liveProviderEvidence": false,
+        "screenshotCount": "10"
+      }
+    },
+    {
+      "id": "hud-browser-20261011020609",
+      "subject": "hud-browser-check",
+      "sourceRevision": {
+        "commit": "3b7709102f75d8bb4dc239811856e82275f074bd",
+        "dirtyWorktree": true,
+        "contentFingerprint": "a02094299f77d1c8cd1d40b9bb3d0ee7274b02b9065bc60c54d39810c2b9f010"
+      },
+      "checkedAt": "2026-10-11T02:06:09.621Z",
+      "command": "pnpm test:hud:browser",
+      "environment": {
+        "node": "v24.21.0",
+        "os": "linux-x64",
+        "pnpm": "11.11.0"
+      },
+      "evidenceClass": "virtual_authenticator",
+      "outcome": "pass",
+      "reasonCodes": [
+        "AUTHENTICATOR_MODE_VIRTUAL",
+        "SYNTHETIC_DOCUMENTS_ONLY",
+        "SCRIPTED_CHAIN_STATE",
+        "MOCK_SPEECH_ADAPTERS"
+      ],
+      "evidenceRefs": [
+        {
+          "type": "path",
+          "value": "docs/evidence/chapter10/01-command-centre-empty-1440x900.png"
+        },
+        {
+          "type": "path",
+          "value": "docs/evidence/chapter10/02-review-1440x900.png"
+        },
+        {
+          "type": "path",
+          "value": "docs/evidence/chapter10/03-approval-preview-1440x900.png"
+        },
+        {
+          "type": "path",
+          "value": "docs/evidence/chapter10/04-transaction-unavailable-1440x900.png"
+        },
+        {
+          "type": "path",
+          "value": "docs/evidence/chapter10/05-review-after-approval-1440x900.png"
+        },
+        {
+          "type": "path",
+          "value": "docs/evidence/chapter10/06-command-centre-1440x900.png"
+        },
+        {
+          "type": "path",
+          "value": "docs/evidence/chapter10/07-command-centre-1024x768.png"
+        },
+        {
+          "type": "path",
+          "value": "docs/evidence/chapter10/08-review-package-390x844.png"
+        },
+        {
+          "type": "path",
+          "value": "docs/evidence/chapter10/09-review-320x640.png"
+        },
+        {
+          "type": "path",
+          "value": "docs/evidence/chapter10/10-locked-1440x900.png"
+        }
+      ],
+      "facts": {
+        "browser": "chromium 153.0.8010.12",
+        "checksPassed": "69",
+        "checksTotal": "69",
+        "provider": "scripted-test (loopback, no model)",
+        "chain": "scripted live state, fixture registry address, no network",
+        "speech": "mock adapters, not a real device",
+        "storage": "postgresql + versitygw",
+        "authenticatorMode": "virtual",
+        "realDeviceEvidence": false,
+        "liveProviderEvidence": false,
+        "screenshotCount": "10"
+      }
     }
   ],
   "appliedCuts": [],
@@ -5070,6 +5465,80 @@
     "startedOn": "2026-10-11",
     "state": "in-progress",
     "tasks": {
+      "10": {
+        "status": "complete",
+        "summary": "ApprovalController binds the review gate (live check of a capture verified in this unlock, the decision log read from inside the verified package, a live registry read no older than 15 s, same account/vault generations); ISSUE, REVOKE and SUPERSEDE targets; approve() needs a trusted activation, re-reads live state, consumes the one-use ticket, rechecks identity after signing and hands the signature once to takeAuthorisation(). New read-only /api/chain/state route. Account handle exposes review and bindReviewGate; Approval panel shows the exact action, scope, concerns and consequences.",
+        "files": [
+          "apps/web/src/features/review/approval.ts",
+          "apps/web/src/features/transactions/live-state.ts",
+          "apps/web/src/app/api/chain/state/[reviewer]/[commitment]/route.ts",
+          "apps/web/src/features/account/public.ts",
+          "apps/web/src/features/account/review-signing.ts",
+          "apps/web/src/components/review/ReviewActionPreview.tsx",
+          "apps/web/src/components/review/approval-context.tsx",
+          "apps/web/src/integration/approval-flow.test.ts"
+        ]
+      },
+      "11": {
+        "status": "complete",
+        "summary": "Transaction stage on the existing Chapter 6 controller: quote view with expected and maximum fee in MON from the exact signed-calldata quote, 30 s validity with Renew quote (no re-sign), separate Send transaction ticket, duplicate-send guard, outcome states, hash only when observed, external execution shown separately, receipt lifecycle read separately with its as-of block, indexer shown independently, Stop cannot cancel a sent transaction, refresh and explorer link. The signed approval reaches the controller only through takeAuthorisation().",
+        "files": [
+          "apps/web/src/features/transactions/controller.ts",
+          "apps/web/src/features/transactions/live-state.ts",
+          "apps/web/src/features/transactions/public.ts",
+          "apps/web/src/features/transactions/controller.test.ts",
+          "apps/web/src/features/transactions/live-state.test.ts",
+          "apps/web/src/components/chain/TransactionPanel.tsx",
+          "apps/web/src/components/chain/transaction-context.tsx",
+          "apps/web/src/components/chain/explorer.ts"
+        ]
+      },
+      "12": {
+        "status": "complete",
+        "summary": "Receipt lifecycle actions: Revoke a known public receipt (live Active check, no private documents), Replace via a package preview that declares the Active predecessor and approves as SUPERSEDE, Cancel outstanding authorisation through the existing invalidate_nonce transaction with the exact nonce shown. Coordinated Stop (assistant, voice, read-aloud ports, unsent approval preview and unsent transaction) with honest per-part reports; Stop never sends anything and says when a transaction may already be sent.",
+        "files": [
+          "apps/web/src/features/workspace/stop.ts",
+          "apps/web/src/features/workspace/stop.test.ts",
+          "apps/web/src/components/shell/stop-context.tsx",
+          "apps/web/src/components/shell/CommandDock.tsx",
+          "apps/web/src/components/shell/AppShell.tsx",
+          "apps/web/src/components/review/ReceiptActions.tsx",
+          "apps/web/src/integration/approval-flow.test.ts"
+        ]
+      },
+      "13": {
+        "status": "complete",
+        "summary": "Activity drawer has three separate views (assistant work; human decisions with unsigned local decisions apart from signed authorisations; public receipts with observed indexed events and indexer state). Saved reviews open read-only after verification in this unlock, copy the public reference without the opening, reuse the Chapter 5 export/import controls with their disclosure previews, and state the verifier's actual availability without fabricated success.",
+        "files": [
+          "apps/web/src/components/shell/ActivityDrawer.tsx",
+          "apps/web/src/components/review/SavedReviews.tsx",
+          "apps/web/src/components/vault/VaultPanel.tsx",
+          "apps/web/src/features/review/public.ts"
+        ]
+      },
+      "14": {
+        "status": "complete",
+        "summary": "On-device dictation behind a typed capability adapter: real SpeechRecognition detected without inference (secure context, available(), install(), processLocally); en-GB; available({langs,processLocally:true}) gates capture; explicit language-pack download; processLocally always true (no cloud fallback); push-to-talk with keyboard equivalent; 30 s limit; one recognizer; Finish uses stop(), Stop/lock/hidden/switch use abort() and late results are rejected by capture generation; final text appended to the latest draft, never sent. Voice flag readiness flipped (implemented, verified by injected-adapter tests); Permissions-Policy microphone=(self). Real-device recognition NOT verified.",
+        "files": [
+          "apps/web/src/features/voice/adapter.ts",
+          "apps/web/src/features/voice/recognition.ts",
+          "apps/web/src/features/voice/public.ts",
+          "apps/web/src/features/voice/voice.test.ts",
+          "apps/web/src/components/voice/voice-context.tsx",
+          "apps/web/src/components/voice/VoiceControls.tsx",
+          "apps/web/src/server/flags.ts",
+          "apps/web/next.config.ts"
+        ]
+      },
+      "15": {
+        "status": "complete",
+        "summary": "Opt-in read-aloud over SpeechSynthesis: explicitly selected voice with localService===true, rechecked immediately before playback, voiceschanged handled, plain text only (markup stripped), 4,000-character bound with a narrowing message, play/pause/resume/stop, preference stores only the voice identifier, mutual exclusion with dictation, cancelled on lock/hidden/switch/unmount with generation-guarded callbacks; per-answer Read aloud control on validated assistant blocks; unsupported state keeps text complete.",
+        "files": [
+          "apps/web/src/features/voice/read-aloud.ts",
+          "apps/web/src/components/voice/ReadAloud.tsx",
+          "apps/web/src/components/assistant/RunCard.tsx"
+        ]
+      },
       "01": {
         "status": "complete",
         "summary": "Boundaries validated: baseline pnpm typecheck passed on all projects before any edit; Chapter 4-9 controllers read (review-signing gate shut, vault RecoverableCapture, chain preflight, assistant snapshot).",
@@ -5170,78 +5639,23 @@
           "apps/web/src/components/account/account-context.tsx"
         ]
       },
-      "10": {
+      "16": {
         "status": "complete",
-        "summary": "ApprovalController binds the review gate (live check of a capture verified in this unlock, the decision log read from inside the verified package, a live registry read no older than 15 s, same account/vault generations); ISSUE, REVOKE and SUPERSEDE targets; approve() needs a trusted activation, re-reads live state, consumes the one-use ticket, rechecks identity after signing and hands the signature once to takeAuthorisation(). New read-only /api/chain/state route. Account handle exposes review and bindReviewGate; Approval panel shows the exact action, scope, concerns and consequences.",
+        "summary": "Production-build browser check (pnpm test:hud:browser, 69 checks) in headless Chromium with a virtual authenticator, real PostgreSQL/S3, scripted provider and scripted registry state: decisions, freeze/save/read-back, approval preview, untrusted-click refusal, nonce-change discard, Stop, trusted approval, lock clearing private DOM, export disclosure, mock-speech voice and read-aloud, Escape/focus restoration, 44 px targets, 390/320 px reflow, reduced motion. Screenshot inspection found and fixed a crushed mobile layout (dock covering the page, overlapping header at 320 px) and raw JSON in the saved-context rail. Unit/integration: boundaries, approval, package, decisions, voice, transaction, stop, tokens.",
         "files": [
-          "apps/web/src/features/review/approval.ts",
-          "apps/web/src/features/transactions/live-state.ts",
-          "apps/web/src/app/api/chain/state/[reviewer]/[commitment]/route.ts",
-          "apps/web/src/features/account/public.ts",
-          "apps/web/src/features/account/review-signing.ts",
-          "apps/web/src/components/review/ReviewActionPreview.tsx",
-          "apps/web/src/components/review/approval-context.tsx",
-          "apps/web/src/integration/approval-flow.test.ts"
-        ]
-      },
-      "11": {
-        "status": "complete",
-        "summary": "Transaction stage on the existing Chapter 6 controller: quote view with expected and maximum fee in MON from the exact signed-calldata quote, 30 s validity with Renew quote (no re-sign), separate Send transaction ticket, duplicate-send guard, outcome states, hash only when observed, external execution shown separately, receipt lifecycle read separately with its as-of block, indexer shown independently, Stop cannot cancel a sent transaction, refresh and explorer link. The signed approval reaches the controller only through takeAuthorisation().",
-        "files": [
-          "apps/web/src/features/transactions/controller.ts",
-          "apps/web/src/features/transactions/live-state.ts",
-          "apps/web/src/features/transactions/public.ts",
-          "apps/web/src/features/transactions/controller.test.ts",
-          "apps/web/src/features/transactions/live-state.test.ts",
-          "apps/web/src/components/chain/TransactionPanel.tsx",
-          "apps/web/src/components/chain/transaction-context.tsx",
-          "apps/web/src/components/chain/explorer.ts"
-        ]
-      },
-      "12": {
-        "status": "complete",
-        "summary": "Receipt lifecycle actions: Revoke a known public receipt (live Active check, no private documents), Replace via a package preview that declares the Active predecessor and approves as SUPERSEDE, Cancel outstanding authorisation through the existing invalidate_nonce transaction with the exact nonce shown. Coordinated Stop (assistant, voice, read-aloud ports, unsent approval preview and unsent transaction) with honest per-part reports; Stop never sends anything and says when a transaction may already be sent.",
-        "files": [
-          "apps/web/src/features/workspace/stop.ts",
-          "apps/web/src/features/workspace/stop.test.ts",
-          "apps/web/src/components/shell/stop-context.tsx",
-          "apps/web/src/components/shell/CommandDock.tsx",
+          "tooling/scripts/hud-browser-check.ts",
+          "docs/evidence/chapter10",
+          "apps/web/src/components/shell/drawer-focus.ts",
+          "apps/web/src/components/shell/SystemStrip.tsx",
           "apps/web/src/components/shell/AppShell.tsx",
-          "apps/web/src/components/review/ReceiptActions.tsx",
-          "apps/web/src/integration/approval-flow.test.ts"
-        ]
-      },
-      "13": {
-        "status": "complete",
-        "summary": "Activity drawer has three separate views (assistant work; human decisions with unsigned local decisions apart from signed authorisations; public receipts with observed indexed events and indexer state). Saved reviews open read-only after verification in this unlock, copy the public reference without the opening, reuse the Chapter 5 export/import controls with their disclosure previews, and state the verifier's actual availability without fabricated success.",
-        "files": [
-          "apps/web/src/components/shell/ActivityDrawer.tsx",
-          "apps/web/src/components/review/SavedReviews.tsx",
-          "apps/web/src/components/vault/VaultPanel.tsx",
-          "apps/web/src/features/review/public.ts"
-        ]
-      },
-      "14": {
-        "status": "complete",
-        "summary": "On-device dictation behind a typed capability adapter: real SpeechRecognition detected without inference (secure context, available(), install(), processLocally); en-GB; available({langs,processLocally:true}) gates capture; explicit language-pack download; processLocally always true (no cloud fallback); push-to-talk with keyboard equivalent; 30 s limit; one recognizer; Finish uses stop(), Stop/lock/hidden/switch use abort() and late results are rejected by capture generation; final text appended to the latest draft, never sent. Voice flag readiness flipped (implemented, verified by injected-adapter tests); Permissions-Policy microphone=(self). Real-device recognition NOT verified.",
-        "files": [
-          "apps/web/src/features/voice/adapter.ts",
-          "apps/web/src/features/voice/recognition.ts",
-          "apps/web/src/features/voice/public.ts",
-          "apps/web/src/features/voice/voice.test.ts",
-          "apps/web/src/components/voice/voice-context.tsx",
-          "apps/web/src/components/voice/VoiceControls.tsx",
-          "apps/web/src/server/flags.ts",
-          "apps/web/next.config.ts"
-        ]
-      },
-      "15": {
-        "status": "complete",
-        "summary": "Opt-in read-aloud over SpeechSynthesis: explicitly selected voice with localService===true, rechecked immediately before playback, voiceschanged handled, plain text only (markup stripped), 4,000-character bound with a narrowing message, play/pause/resume/stop, preference stores only the voice identifier, mutual exclusion with dictation, cancelled on lock/hidden/switch/unmount with generation-guarded callbacks; per-answer Read aloud control on validated assistant blocks; unsupported state keeps text complete.",
-        "files": [
-          "apps/web/src/features/voice/read-aloud.ts",
-          "apps/web/src/components/voice/ReadAloud.tsx",
-          "apps/web/src/components/assistant/RunCard.tsx"
+          "apps/web/src/components/shell/CommandDock.tsx",
+          "apps/web/src/components/voice",
+          "apps/web/src/features/matters/describe-entry.ts",
+          "apps/web/src/features/assistant/boundaries.test.ts",
+          "package.json",
+          ".gitignore",
+          ".prettierignore",
+          "eslint.config.mjs"
         ]
       }
     }

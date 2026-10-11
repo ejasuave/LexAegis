@@ -20,10 +20,10 @@ export function AppShell({
     <WorkspaceProvider>
       <StopProvider>
         <VoiceProvider>
-          <div className="grid h-dvh grid-rows-[auto_auto_minmax(0,1fr)_auto]">
+          <div className="grid min-h-dvh grid-rows-[auto_auto_minmax(0,1fr)_auto] lg:h-dvh">
             <SystemStrip networkLabel={networkLabel} />
             <NavBar />
-            <main id="main" className="lj-safe-x min-h-0 min-w-0 overflow-y-auto py-3 lg:py-5">
+            <main id="main" className="lj-safe-x min-h-0 min-w-0 py-3 lg:overflow-y-auto lg:py-5">
               {children}
             </main>
             <CommandDock />

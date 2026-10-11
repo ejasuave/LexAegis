@@ -6,6 +6,9 @@ import { useReview } from '@/components/review/review-context';
 import { decideEnter } from './command-input';
 import { useFeatureFlag } from './feature-flags-context';
 import { useStop } from './stop-context';
+import { useApproval } from '@/components/review/approval-context';
+import { useTransaction } from '@/components/chain/transaction-context';
+import { useVoice } from '@/components/voice/voice-context';
 import { VoiceControls } from '@/components/voice/VoiceControls';
 import { Icon } from './icons';
 import { useWorkspace } from './workspace-context';
@@ -42,6 +45,10 @@ export function CommandDock() {
   const review = useReview().snapshot;
   const { controller, snapshot } = useAssistant();
   const stopper = useStop();
+  // Re-render when any stoppable part changes state, so Stop reflects what can really be stopped.
+  useApproval();
+  useTransaction();
+  useVoice();
   const [stopNote, setStopNote] = useState('');
   const [menuOpen, setMenuOpen] = useState(false);
   const voiceEnabled = useFeatureFlag('voice');
@@ -142,7 +149,7 @@ export function CommandDock() {
           placeholder="Ask Aegis or type / for commands"
           aria-describedby={`${noticeId} ${scopeId}`}
           data-testid="aegis-input"
-          className="min-h-11 min-w-0 flex-1 basis-64 resize-y rounded border border-lj-edge bg-lj-soft px-3 py-2 font-mono text-base text-lj-text placeholder:text-lj-muted"
+          className="min-h-11 min-w-0 flex-1 basis-40 resize-y sm:basis-64 rounded border border-lj-edge bg-lj-soft px-3 py-2 font-mono text-base text-lj-text placeholder:text-lj-muted"
         />
 
         <button
@@ -151,7 +158,7 @@ export function CommandDock() {
           aria-disabled={controller === null}
           data-testid="aegis-send"
         >
-          <Icon name="send" /> Send
+          <Icon name="send" /> <span className="sr-only sm:not-sr-only">Send</span>
         </button>
         {voiceEnabled ? <VoiceControls /> : null}
         <button
@@ -167,7 +174,10 @@ export function CommandDock() {
             setStopNote(report.notes.join(' '));
           }}
         >
-          <Icon name="stop" /> {snapshot.phase === 'stopping' ? 'Stopping' : 'Stop'}
+          <Icon name="stop" />{' '}
+          <span className="sr-only sm:not-sr-only">
+            {snapshot.phase === 'stopping' ? 'Stopping' : 'Stop'}
+          </span>
         </button>
         <button
           type="button"
@@ -176,7 +186,7 @@ export function CommandDock() {
           aria-controls="context-drawer"
           onClick={() => setContextOpen(!contextOpen)}
         >
-          Saved context
+          <Icon name="file" /> <span className="sr-only sm:not-sr-only">Saved context</span>
         </button>
         <button
           type="button"
@@ -185,12 +195,12 @@ export function CommandDock() {
           aria-controls="activity-drawer"
           onClick={() => setActivityOpen(!activityOpen)}
         >
-          <Icon name="activity" /> Activity
+          <Icon name="activity" /> <span className="sr-only sm:not-sr-only">Activity</span>
         </button>
       </form>
       <p
         id={scopeId}
-        className="m-0 mt-1 text-[0.8125rem] text-lj-secondary"
+        className="m-0 mt-1 line-clamp-1 text-[0.8125rem] text-lj-secondary lg:line-clamp-none"
         data-testid="aegis-scope"
       >
         Scope:{' '}
@@ -205,7 +215,7 @@ export function CommandDock() {
         role="status"
         aria-live="polite"
         data-testid="aegis-notice"
-        className="m-0 mt-1 min-h-5 text-[0.8125rem] text-lj-secondary"
+        className="m-0 mt-1 min-h-5 line-clamp-1 text-[0.8125rem] text-lj-secondary lg:line-clamp-none"
       >
         {stopNote !== '' ? `${stopNote} ` : ''}
         {notice}

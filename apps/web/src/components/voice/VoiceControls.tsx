@@ -1,6 +1,7 @@
 'use client';
 
 import { useId, type KeyboardEvent } from 'react';
+import { Icon } from '@/components/shell/icons';
 import { useVoice } from './voice-context';
 
 const btn =
@@ -62,11 +63,14 @@ export function VoiceControls() {
         onKeyDown={onKey}
         onClick={(event) => event.preventDefault()}
       >
-        {phase === 'finishing'
-          ? 'Finishing…'
-          : active
-            ? 'Listening: release or press to finish'
-            : 'Hold to talk'}
+        <Icon name="mic" />
+        <span className="sr-only sm:not-sr-only">
+          {phase === 'finishing'
+            ? 'Finishing…'
+            : active
+              ? 'Listening: release or press to finish'
+              : 'Hold to talk'}
+        </span>
       </button>
       {capability === 'downloadable' ? (
         <button type="button" className={btn} onClick={() => void voice.downloadLanguagePack()}>
@@ -77,7 +81,7 @@ export function VoiceControls() {
         id={statusId}
         role="status"
         aria-live="polite"
-        className="text-[0.8125rem] text-lj-secondary"
+        className={`text-[0.8125rem] text-lj-secondary ${ready && !active ? 'sr-only sm:not-sr-only' : ''}`}
         data-testid="voice-status"
       >
         {phase === 'listening'

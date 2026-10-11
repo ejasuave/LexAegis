@@ -1,6 +1,7 @@
 'use client';
 
-import { useId, useState } from 'react';
+import { useId, useRef, useState } from 'react';
+import { useDrawerFocus } from './drawer-focus';
 import { useAssistant } from '@/components/assistant/assistant-context';
 import { useTransaction } from '@/components/chain/transaction-context';
 import { IndexerStatusIndicator } from '@/components/history/IndexerStatusIndicator';
@@ -55,6 +56,8 @@ export function ActivityDrawer() {
   const { activityOpen, setActivityOpen } = useWorkspace();
   const [view, setView] = useState<View>('assistant');
   const tabsId = useId();
+  const drawer = useRef<HTMLElement | null>(null);
+  useDrawerFocus(activityOpen, () => setActivityOpen(false), drawer);
   const { snapshot } = useReview();
   const assistant = useAssistant().snapshot;
   const decisions = useDecisions().snapshot;
@@ -123,6 +126,7 @@ export function ActivityDrawer() {
 
   return (
     <aside
+      ref={drawer}
       id="activity-drawer"
       aria-label="Activity"
       hidden={!activityOpen}

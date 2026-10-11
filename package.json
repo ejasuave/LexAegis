@@ -58,7 +58,8 @@
     "indexer:codegen": "pnpm --filter @lexaegis/indexer codegen",
     "indexer:check": "pnpm --filter @lexaegis/indexer config:check",
     "indexer:verify-binding": "pnpm --filter @lexaegis/indexer verify:binding",
-    "test:indexer:rollback": "pnpm --filter @lexaegis/contracts test:indexer-rollback"
+    "test:indexer:rollback": "pnpm --filter @lexaegis/contracts test:indexer-rollback",
+    "test:hud:browser": "tsx tooling/scripts/hud-browser-check.ts"
   },
   "devDependencies": {
     "@eslint/js": "10.0.1",
