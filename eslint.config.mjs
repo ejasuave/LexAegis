@@ -347,6 +347,11 @@ export default tseslint.config(
     ]),
   },
   {
+    // Static boundary tests read source files from disk in Node.
+    files: ['packages/*/src/**/boundaries.test.ts'],
+    rules: { 'no-restricted-imports': 'off' },
+  },
+  {
     // verifier: standalone. No legal workspace, Aegis runtime, backend, account or model code.
     files: ['apps/verifier/src/**/*.{ts,tsx}'],
     rules: restrict([
