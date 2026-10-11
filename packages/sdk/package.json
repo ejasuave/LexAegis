@@ -15,7 +15,8 @@
   "scripts": {
     "typecheck": "tsc --noEmit -p tsconfig.json",
     "generate": "tsx scripts/generate-artifacts.ts",
-    "generate:check": "tsx scripts/generate-artifacts.ts --check"
+    "generate:check": "tsx scripts/generate-artifacts.ts --check",
+    "test:browser": "vitest run --config vitest.browser.config.ts"
   },
   "dependencies": {
     "@lexaegis/protocol": "workspace:*",

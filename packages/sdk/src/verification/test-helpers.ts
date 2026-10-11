@@ -39,9 +39,18 @@ export function scriptedRegistry(
     readonly finalized?: bigint | null;
     readonly fail?: boolean;
     readonly delayMs?: number;
+    /** What protocolVersion() reports. */
+    readonly protocolVersion?: bigint;
+    /** The block at a given number answers with a different hash on its second read (reorganisation). */
+    readonly reorganise?: boolean;
+    /** Historical state reads (getCode / call at an explicit block) are refused, as on a pruned node. */
+    readonly refuseHistorical?: boolean;
+    /** A raw status word the registry returns instead of a valid enum value. */
+    readonly rawStatus?: bigint;
   } = {},
 ): Scripted {
   const calls: string[] = [];
+  const reads = new Map<bigint, number>();
   const finalized = options.finalized === undefined ? 100n : options.finalized;
   const wait = <T>(value: T): Promise<T> =>
     options.fail === true
@@ -60,7 +69,12 @@ export function scriptedRegistry(
         return wait(finalized === null ? null : block(finalized));
       }
       calls.push(`block:${selector.blockNumber}`);
-      const found = block(selector.blockNumber);
+      const seen = (reads.get(selector.blockNumber) ?? 0) + 1;
+      reads.set(selector.blockNumber, seen);
+      const found =
+        options.reorganise === true && seen > 1 && selector.blockNumber !== 0n
+          ? { ...block(selector.blockNumber), hash: hashOf(0xdeadn) }
+          : block(selector.blockNumber);
       return wait(
         selector.blockNumber === 0n && options.genesis !== undefined
           ? { ...found, hash: options.genesis }
@@ -69,13 +83,15 @@ export function scriptedRegistry(
     },
     getCode: () => {
       calls.push('code');
+      if (options.refuseHistorical === true) return Promise.reject(new Error('missing trie node'));
       return wait(options.code ?? SCRIPT_CODE);
     },
     call: ({ data }) => {
       const decoded = decodeFunctionData({ abi: proofOfReviewRegistryAbi, data });
       calls.push(decoded.functionName);
+      if (options.refuseHistorical === true) return Promise.reject(new Error('missing trie node'));
       if (decoded.functionName === 'protocolVersion')
-        return wait(encodeAbiParameters([{ type: 'uint256' }], [1n]));
+        return wait(encodeAbiParameters([{ type: 'uint256' }], [options.protocolVersion ?? 1n]));
       if (decoded.functionName === 'nonceOf')
         return wait(encodeAbiParameters([{ type: 'uint256' }], [3n]));
       const [, commitment] = decoded.args as readonly [Hex, Hex];
@@ -90,7 +106,9 @@ export function scriptedRegistry(
             { type: 'uint256' },
           ],
           [
-            record.status,
+            options.rawStatus === undefined
+              ? record.status
+              : (options.rawStatus as unknown as number),
             (record.predecessor ?? ZERO) as Hex,
             (record.successor ?? ZERO) as Hex,
             record.status === 0 ? 0n : (record.issuedAt ?? 1_800_000_001n),

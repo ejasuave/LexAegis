@@ -1,4 +1,8 @@
 import { describe, expect, it } from 'vitest';
+import {
+  decodeReviewExport,
+  reviewExportSchema as portableSchema,
+} from '@lexaegis/protocol/portable';
 import { VaultKeys } from './crypto/browser-crypto';
 import { emptyCatalog, isRegression, nextCatalog, openCatalog, sealCatalog } from './catalog';
 import {
@@ -6,6 +10,7 @@ import {
   buildEncryptedReviewExport,
   buildReadableReviewExport,
   exportFileName,
+  reviewExportSchema,
 } from './export';
 import {
   RecoverableCapture,
@@ -466,6 +471,23 @@ describe('exports and imports', () => {
     const text = new TextDecoder().decode(bytes);
     expect(text).not.toMatch(/prfOutput|hkdfSalt|privateKey|vaultKey/i);
     expect(k.unlocked).toBe(true);
+  });
+
+  it('writes a readable export the portable decoder reads back byte for byte', async () => {
+    const { prepared, verified } = await exports();
+    const bytes = must(buildReadableReviewExport(verified.review));
+    const decoded = decodeReviewExport(bytes);
+    expect(decoded.ok).toBe(true);
+    if (!decoded.ok) return;
+    expect(decoded.data.declaredReference).toEqual(prepared.reference);
+    expect([...decoded.data.artifacts.keys()]).toEqual([...prepared.artifactIds]);
+    for (const id of prepared.artifactIds) {
+      expect(Array.from(decoded.data.artifacts.get(id) ?? [])).toEqual(
+        Array.from(prepared.artifactBytes(id)),
+      );
+    }
+    // The vault's own schema is the portable schema, not a second copy that could drift.
+    expect(reviewExportSchema).toBe(portableSchema);
   });
 
   it('distinguishes consistency with the claimed reference from agreement with an expected one', async () => {

@@ -6368,6 +6368,11 @@
           "examples",
           "package.json"
         ]
+      },
+      "14": {
+        "status": "complete",
+        "summary": "Adversarial and interoperability tests. Node and real Chromium: protocol portable decoder (duplicate and escaped keys, BOM, malformed UTF-8, trailing content, unsafe numbers, depth, unknown fields and versions, wrong formats, size limits, noncanonical base64url, missing/extra/duplicate/reordered artifacts; pnpm test:protocol:browser 193 tests) and SDK registry and verification suites (pnpm sdk:browser 183 tests) against the Chapter 2 literal vectors, with array reordering, whole-bundle substitution (rewritten consistent manifest caught only by the independent reference), mode over-claim checks, wrong/missing code, protocol version, chain/genesis, changing block hashes, refused historical reads, unknown status words, budget deadline and abort, stale generations, no artifact content in errors. Vault output decodes through the portable decoder byte for byte. Local Anvil (contracts/integration/chapter11.anvil.test.ts, 6 tests, real compiled registry, local_anvil only): not_found only after a verified read; EOA issue by an unrelated executor judged by reviewer not sender; supersede, revoke of the successor never reactivating the predecessor; real predecessor mismatch via a hand-built SUPERSEDE; a real ten-link chain bounded at eight; ERC-1271 account whose owner changes after issuance keeps its recorded lifecycle while a new action fails; reports compared with the contract's own records through both a viem client and the SDK JSON-RPC client. Note: Anvil's finalized tag trails latest by about 64 blocks, so the tests mine 100 blocks; it says nothing about Monad finality.",
+        "files": ["packages", "contracts/integration/chapter11.anvil.test.ts", "package.json"]
       }
     }
   }
