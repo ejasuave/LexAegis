@@ -78,7 +78,8 @@
     "contracts:reference:check": "pnpm --filter @lexaegis/contracts reference:check",
     "quickstart:check": "tsx tooling/scripts/quickstart-check.ts",
     "docs:api": "typedoc",
-    "docs:check": "tsx tooling/scripts/docs-check.ts"
+    "docs:check": "tsx tooling/scripts/docs-check.ts",
+    "probe:erc8004": "tsx tooling/scripts/probe-erc8004.ts"
   },
   "devDependencies": {
     "@eslint/js": "10.0.1",

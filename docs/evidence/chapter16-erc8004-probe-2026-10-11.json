@@ -1,0 +1,222 @@
+{
+  "schema": "lexaegis.erc8004-probe.v1",
+  "date": "2026-10-11",
+  "sources": {
+    "checkedOn": "2026-10-11",
+    "documents": [
+      {
+        "url": "https://docs.monad.xyz/guides/erc-8004",
+        "note": "lists Identity 0x8004A169FB4a3325136EB29fA0ceB6D2e539a432 and Reputation 0x8004BAa17C55a88189AE136b182e5fdA19dE9b63 without naming a network or chain ID; Validation Registry \"coming soon\"; no registration signature shown"
+      },
+      {
+        "url": "https://eips.ethereum.org/EIPS/eip-8004",
+        "note": "Status Draft (Standards Track: ERC), created 2025-08-13; register overloads, giveFeedback, getIdentityRegistry and the registration-file format"
+      },
+      {
+        "url": "https://github.com/erc-8004/erc-8004-contracts",
+        "note": "README deployment tables list Monad Mainnet and Monad Testnet addresses; the Identity Registry is described as an upgradeable ERC-721; no chain IDs, proxy or implementation addresses"
+      },
+      {
+        "url": "https://docs.monad.xyz/developer-essentials/network-information",
+        "note": "mainnet chain ID 143 and public RPC endpoints (including https://rpc.monad.xyz); no testnet entry on that page"
+      }
+    ],
+    "repository": {
+      "commit": "b9e466c250744a7e06b13dff9d3c2844ed64f825",
+      "committedAt": "2026-08-15T16:26:49Z",
+      "abiSha256": {
+        "abis/IdentityRegistry.json": "cdb8e30f41a56ed53421126dab87551ff2a178b8463646f69f75bc5dc9620564",
+        "abis/ReputationRegistry.json": "867b7975a5f2f9fee38c4a148a84471b141f4de91409ccc0c6bebe3df4f04001"
+      }
+    }
+  },
+  "availableOnTestnet": true,
+  "report": {
+    "networks": [
+      {
+        "network": "monad-testnet",
+        "chainId": 10143,
+        "endpoint": "https://testnet-rpc.monad.xyz",
+        "identity": {
+          "registry": "identity",
+          "address": "0x8004A818BFB912233c491871b3d84c89A494BD9e",
+          "codeKeccak256": "0xd0e45b1d89fa9b6cc7e97c1f155d64180e5c232aaccf9900ef9d4fd738c02b41",
+          "implementation": {
+            "address": "0x7274e874ca62410a93bd8bf61c69d8045e399c02",
+            "codeKeccak256": "0xa5f9624ea85e45b3f4b8558581f03bfb3e6cefab278d7bf0500ec9bd065dc16f"
+          },
+          "version": "2.0.0",
+          "linkedIdentityRegistry": null,
+          "status": "verified",
+          "reasons": [
+            "CODE_ABI_AND_NONEXISTENT_TOKEN_VERIFIED"
+          ],
+          "observations": [
+            {
+              "name": "eth_getCode",
+              "outcome": "ok",
+              "detail": "130 bytes"
+            },
+            {
+              "name": "eip1967-implementation",
+              "outcome": "ok",
+              "detail": "0x7274e874ca62410a93bd8bf61c69d8045e399c02"
+            },
+            {
+              "name": "getVersion",
+              "outcome": "ok",
+              "detail": "2.0.0"
+            },
+            {
+              "name": "supportsInterface(ERC721)",
+              "outcome": "ok",
+              "detail": "true"
+            },
+            {
+              "name": "ownerOf(nonexistent)",
+              "outcome": "revert",
+              "detail": "ERC721NonexistentToken"
+            }
+          ]
+        },
+        "reputation": {
+          "registry": "reputation",
+          "address": "0x8004B663056A597Dffe9eCcC1965A193B7388713",
+          "codeKeccak256": "0xd0e45b1d89fa9b6cc7e97c1f155d64180e5c232aaccf9900ef9d4fd738c02b41",
+          "implementation": {
+            "address": "0x16e0fa7f7c56b9a767e34b192b51f921be31da34",
+            "codeKeccak256": "0x38602de97f1bd86f0a4729f7f3c0a78b1d27892e6eb581272cce5504a68fd00b"
+          },
+          "version": "2.0.0",
+          "linkedIdentityRegistry": "0x8004a818bfb912233c491871b3d84c89a494bd9e",
+          "status": "verified",
+          "reasons": [
+            "CODE_ABI_AND_IDENTITY_LINK_VERIFIED"
+          ],
+          "observations": [
+            {
+              "name": "eth_getCode",
+              "outcome": "ok",
+              "detail": "130 bytes"
+            },
+            {
+              "name": "eip1967-implementation",
+              "outcome": "ok",
+              "detail": "0x16e0fa7f7c56b9a767e34b192b51f921be31da34"
+            },
+            {
+              "name": "getVersion",
+              "outcome": "ok",
+              "detail": "2.0.0"
+            },
+            {
+              "name": "getIdentityRegistry",
+              "outcome": "ok",
+              "detail": "0x8004a818bfb912233c491871b3d84c89a494bd9e"
+            }
+          ]
+        },
+        "status": "checked",
+        "reasons": [],
+        "checkpoint": {
+          "blockNumber": "70121948",
+          "blockHash": "0x7fa416ddbc48931f7e63e7e0baaced93452499b783579911bdfa45d8da9c0d77"
+        },
+        "full": true
+      },
+      {
+        "network": "monad-mainnet",
+        "chainId": 143,
+        "endpoint": "https://rpc.monad.xyz",
+        "identity": {
+          "registry": "identity",
+          "address": "0x8004A169FB4a3325136EB29fA0ceB6D2e539a432",
+          "codeKeccak256": "0xd0e45b1d89fa9b6cc7e97c1f155d64180e5c232aaccf9900ef9d4fd738c02b41",
+          "implementation": {
+            "address": "0x7274e874ca62410a93bd8bf61c69d8045e399c02",
+            "codeKeccak256": "0xa5f9624ea85e45b3f4b8558581f03bfb3e6cefab278d7bf0500ec9bd065dc16f"
+          },
+          "version": "2.0.0",
+          "linkedIdentityRegistry": null,
+          "status": "verified",
+          "reasons": [
+            "CODE_ABI_AND_NONEXISTENT_TOKEN_VERIFIED"
+          ],
+          "observations": [
+            {
+              "name": "eth_getCode",
+              "outcome": "ok",
+              "detail": "130 bytes"
+            },
+            {
+              "name": "eip1967-implementation",
+              "outcome": "ok",
+              "detail": "0x7274e874ca62410a93bd8bf61c69d8045e399c02"
+            },
+            {
+              "name": "getVersion",
+              "outcome": "ok",
+              "detail": "2.0.0"
+            },
+            {
+              "name": "supportsInterface(ERC721)",
+              "outcome": "ok",
+              "detail": "true"
+            },
+            {
+              "name": "ownerOf(nonexistent)",
+              "outcome": "revert",
+              "detail": "ERC721NonexistentToken"
+            }
+          ]
+        },
+        "reputation": {
+          "registry": "reputation",
+          "address": "0x8004BAa17C55a88189AE136b182e5fdA19dE9b63",
+          "codeKeccak256": "0xd0e45b1d89fa9b6cc7e97c1f155d64180e5c232aaccf9900ef9d4fd738c02b41",
+          "implementation": {
+            "address": "0x16e0fa7f7c56b9a767e34b192b51f921be31da34",
+            "codeKeccak256": "0x38602de97f1bd86f0a4729f7f3c0a78b1d27892e6eb581272cce5504a68fd00b"
+          },
+          "version": "2.0.0",
+          "linkedIdentityRegistry": "0x8004a169fb4a3325136eb29fa0ceb6d2e539a432",
+          "status": "verified",
+          "reasons": [
+            "CODE_ABI_AND_IDENTITY_LINK_VERIFIED"
+          ],
+          "observations": [
+            {
+              "name": "eth_getCode",
+              "outcome": "ok",
+              "detail": "130 bytes"
+            },
+            {
+              "name": "eip1967-implementation",
+              "outcome": "ok",
+              "detail": "0x16e0fa7f7c56b9a767e34b192b51f921be31da34"
+            },
+            {
+              "name": "getVersion",
+              "outcome": "ok",
+              "detail": "2.0.0"
+            },
+            {
+              "name": "getIdentityRegistry",
+              "outcome": "ok",
+              "detail": "0x8004a169fb4a3325136eb29fa0ceb6d2e539a432"
+            }
+          ]
+        },
+        "status": "checked",
+        "reasons": [],
+        "checkpoint": {
+          "blockNumber": "112479192",
+          "blockHash": "0x67bc44bf47032dbafa18b84c5270615028bae0c51dd28d78f0c6b3c628763753"
+        },
+        "full": true
+      }
+    ],
+    "durationMs": 1033,
+    "attempts": 30
+  }
+}
