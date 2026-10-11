@@ -396,6 +396,8 @@ export class VaultController {
     });
   }
   readonly #packageIds = new Map<string, string>();
+  /** Public reference of each capture verified in this unlock, from the verified manifest context. */
+  readonly #references = new Map<string, ReceiptReferenceV1>();
 
   #publish(): void {
     this.#snapshot = this.#build();
@@ -464,6 +466,7 @@ export class VaultController {
     this.#pendingCaptures = new Map();
     this.#captures = new Map();
     this.#packageIds.clear();
+    this.#references.clear();
     this.#selected = null;
     if (this.#export !== null) this.#export.bytes.fill(0);
     this.#export = null;
@@ -1340,6 +1343,7 @@ export class VaultController {
     const { capture } = verified.data.data;
     if (capture.commitment !== commitment) return bad('INTEGRITY_FAILED');
     this.#captures.set(commitment, capture);
+    this.#references.set(commitment, verified.data.data.review.reference);
     this.#packageIds.set(commitment, entry.packageId);
     this.#publish();
     return good(null);
@@ -1357,6 +1361,18 @@ export class VaultController {
     return capture.matches(binding.ownerAddress, binding.vaultId, this.#generation)
       ? capture
       : null;
+  }
+
+  /**
+   * A capture verified in this unlock with its public reference, for the review-approval gate.
+   * Null for anything else: a persisted flag, an import or a capture from an earlier unlock.
+   */
+  recoverableSubject(
+    commitment: string,
+  ): { capture: RecoverableCapture; reference: ReceiptReferenceV1 } | null {
+    const capture = this.recoverableCapture(commitment);
+    const reference = this.#references.get(commitment);
+    return capture === null || reference === undefined ? null : { capture, reference };
   }
 
   // ---- Export -------------------------------------------------------------------------------------

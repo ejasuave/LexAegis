@@ -27,12 +27,15 @@ interface AccountContextValue {
   readonly availability: AccountAvailability | 'loading';
   readonly snapshot: AccountSnapshot;
   readonly commands: AccountCommands | null;
+  /** Public values only (chain and registry); never a key or a credential. */
+  readonly publicConfig: PublicConfig;
 }
 
 const AccountContext = createContext<AccountContextValue>({
   availability: 'loading',
   snapshot: EMPTY_SNAPSHOT,
   commands: null,
+  publicConfig: {},
 });
 
 const noSubscription = () => () => undefined;
@@ -91,6 +94,7 @@ export function AccountProvider({
         availability: account?.availability ?? 'loading',
         snapshot,
         commands: account?.commands ?? null,
+        publicConfig: config,
       }}
     >
       <VaultContext.Provider

@@ -17,6 +17,7 @@ import {
 } from '@/components/shell/workspace-context';
 import { ActionPreview } from './ActionPreview';
 import { DecisionsPanel } from './DecisionsPanel';
+import { PackagePanel as ReviewPackageSection } from './PackagePanel';
 import { ReviewDocuments, ReviewEvidence } from './DocumentWorkspace';
 
 const MODES: { id: PresentationMode; label: string }[] = [
@@ -207,6 +208,7 @@ function PackagePanel() {
   return (
     <div>
       <DecisionsPanel />
+      <ReviewPackageSection />
       <ActionPreview />
       <ReadinessPanel />
     </div>

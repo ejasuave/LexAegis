@@ -5156,6 +5156,19 @@
           "apps/web/src/app/layout.tsx",
           "apps/web/src/features/workspace/readiness.ts"
         ]
+      },
+      "09": {
+        "status": "complete",
+        "summary": "PackageController: preview (memo view of exact contents, one decision-log artifact, full scope, modelExecution none for code-only work via the existing localAgentConfig), explicit Freeze through Chapter 2 prepareReviewPackage and the Chapter 5 save/read-back gate, retry reuses the same capture, preview discarded on working changes, all private state dropped on lock/matter change. Vault handle gains saveFrozenReview and recoverableSubject (capture plus public reference verified in this unlock). Integration-tested on the real rig.",
+        "files": [
+          "apps/web/src/features/review/package.ts",
+          "apps/web/src/features/vault/public.ts",
+          "apps/web/src/features/vault/vault-controller.ts",
+          "apps/web/src/integration/package-flow.test.ts",
+          "apps/web/src/components/review/PackagePanel.tsx",
+          "apps/web/src/components/review/package-context.tsx",
+          "apps/web/src/components/account/account-context.tsx"
+        ]
       }
     }
   }

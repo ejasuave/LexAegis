@@ -4,6 +4,7 @@ import { AccountProvider } from '@/components/account/account-context';
 import { AssistantProvider } from '@/components/assistant/assistant-context';
 import { HistoryProvider } from '@/components/history/history-context';
 import { DecisionProvider } from '@/components/review/decision-context';
+import { PackageProvider } from '@/components/review/package-context';
 import { ReviewProvider } from '@/components/review/review-context';
 import { AppShell } from '@/components/shell/AppShell';
 import { FeatureFlagsProvider } from '@/components/shell/feature-flags-context';
@@ -46,9 +47,11 @@ export default function RootLayout({ children }: { children: ReactNode }) {
             <ReviewProvider>
               <HistoryProvider>
                 <DecisionProvider>
-                  <AssistantProvider>
-                    <AppShell networkLabel={networkLabel(publicConfig)}>{children}</AppShell>
-                  </AssistantProvider>
+                  <PackageProvider>
+                    <AssistantProvider>
+                      <AppShell networkLabel={networkLabel(publicConfig)}>{children}</AppShell>
+                    </AssistantProvider>
+                  </PackageProvider>
                 </DecisionProvider>
               </HistoryProvider>
             </ReviewProvider>

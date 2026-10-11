@@ -4,6 +4,8 @@ import {
   type AccountSnapshot,
 } from '@/features/account/public';
 import type { PublicConfig } from '@/config/public';
+import type { ReceiptReferenceV1 } from '@lexaegis/protocol/v1';
+import type { FrozenCaptureSource, RecoverableCapture } from '@lexaegis/vault';
 import { selectMatterContext } from '@/features/matters/context-selector';
 import { KeySink } from './key-sink';
 import {
@@ -123,6 +125,11 @@ export interface VaultCommands {
     entryIds: readonly string[],
   ): VaultOutcome;
   cancelImport(): void;
+  /** Seals, stores, reads back and verifies one prepared package. A save is not an approval or a receipt. */
+  saveFrozenReview(
+    matterId: string,
+    source: FrozenCaptureSource,
+  ): Promise<VaultOutcome<{ commitment: string }>>;
   retryPendingCapture(commitment: string): Promise<VaultOutcome<{ commitment: string }>>;
   verifyStoredCapture(matterId: string, commitment: string): Promise<VaultOutcome>;
   noteInteraction(): void;
@@ -135,6 +142,10 @@ export interface VaultHandle {
   readonly commands: VaultCommands;
   /** Whether this capture was read back and verified in the current unlock. Not an approval or a receipt. */
   hasVerifiedCapture(commitment: string): boolean;
+  /** The verified capture and its public reference, only for the approval gate. Null unless verified in this unlock. */
+  recoverableSubject(
+    commitment: string,
+  ): { capture: RecoverableCapture; reference: ReceiptReferenceV1 } | null;
   /** For the Aegis runtime (Chapter 9), after its own disclosure step. Confirmed entries only; never truncated. */
   selectContext: ReturnType<typeof contextFor>;
   dispose(): void;
@@ -178,11 +189,13 @@ function inertVault(): VaultHandle {
       confirmReviewImport: unavailable,
       confirmContextImport: () => none,
       cancelImport: () => undefined,
+      saveFrozenReview: unavailable,
       retryPendingCapture: unavailable,
       verifyStoredCapture: unavailable,
       noteInteraction: () => undefined,
     },
     hasVerifiedCapture: () => false,
+    recoverableSubject: () => null,
     selectContext: () => ({ ok: false, code: 'KEY_UNAVAILABLE' }),
     dispose: () => undefined,
   };
@@ -277,12 +290,14 @@ export function createBrowserWorkspace(publicConfig: PublicConfig): Workspace {
       confirmContextImport: (importId, matterId, ids) =>
         controller.confirmContextImport(importId, matterId, ids),
       cancelImport: () => controller.cancelImport(),
+      saveFrozenReview: (matterId, source) => controller.saveFrozenReview(matterId, source),
       retryPendingCapture: (commitment) => controller.retryPendingCapture(commitment),
       verifyStoredCapture: (matterId, commitment) =>
         controller.verifyStoredCapture(matterId, commitment),
       noteInteraction: () => controller.noteInteraction(),
     },
     hasVerifiedCapture: (commitment) => controller.recoverableCapture(commitment) !== null,
+    recoverableSubject: (commitment) => controller.recoverableSubject(commitment),
     selectContext: contextFor(controller),
     dispose: () => {
       window.clearInterval(timer);
