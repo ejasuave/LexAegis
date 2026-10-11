@@ -102,7 +102,9 @@ function rig() {
         },
       })
     ),
-    invalidateAll: () => void invalidated++,
+    invalidateAll: () => {
+      invalidated++;
+    },
   };
   const controller = new TransactionController({ api, signing, newIdempotencyKey: () => 'k' });
   return { controller, calls, invalidated: () => invalidated };
