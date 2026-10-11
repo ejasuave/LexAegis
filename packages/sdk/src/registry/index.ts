@@ -55,6 +55,7 @@ export {
 export {
   BINDING_ISSUE_CODES,
   receiptBindingSchema,
+  observedRecordIssues,
   validateReceiptBinding,
   type ReceiptBinding,
 } from './binding';
@@ -77,6 +78,7 @@ export {
   liveClientFromViem,
   readChainCheckpoint,
   readLiveReceipt,
+  readReceiptAtCheckpoint,
   readProvisionalState,
   type ChainCheckpoint,
   type ChainPolicy,

@@ -4,10 +4,15 @@ export * from './ports';
  * Protocol v1 package preparation, hashing and offline verification, re-exported unchanged from
  * @lexaegis/protocol. The SDK adds no hashing logic of its own.
  *
- * Registry action data, the generated registry ABI and strict decoding live at the
- * `@lexaegis/sdk/registry` subpath, so this entry point stays free of chain libraries. Signing,
- * submission and live contract reads are not implemented anywhere in the SDK yet.
+ * This entry point is offline: importing it makes no network request, reads no environment or
+ * storage, connects no wallet and signs nothing. Action builders return signing data only; the
+ * caller supplies the approval interface, a supported signer and a transport. Network-enabled
+ * checks are at `@lexaegis/sdk/verify`; action builders, typed data, the generated registry ABI and
+ * binding are at `@lexaegis/sdk/registry`.
  */
+export * from './portable';
+export * from './verification';
+
 export {
   PROTOCOL_DESCRIPTOR_V1,
   PreparedReviewPackage,

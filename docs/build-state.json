@@ -6246,6 +6246,45 @@
           "packages/protocol/vitest.browser.config.ts",
           "docs/build-state.json"
         ]
+      },
+      "3": {
+        "status": "complete",
+        "summary": "@lexaegis/sdk entry points: root (portable + offline verification, no acting operations), ./portable (parseReviewExport), ./offline (verifyOffline, VerificationReportV1 schema, policies), ./verify (network-enabled verifyReceipt, LiveBudget, JSON-RPC client), ./registry (existing builders, typed data, ABI, live reader plus readReceiptAtCheckpoint and observedRecordIssues). Importing performs no request, env or storage access (boundaries test). ports.test now forbids acting functions rather than any export containing 'issue' or 'sign'.",
+        "files": ["packages/sdk", "docs/build-state.json"]
+      },
+      "4": {
+        "status": "complete",
+        "summary": "verifyOffline composes the protocol verifiers into reference-only, manifest-only and full-package modes; the expected reference is required and never replaced by the bundle's; declared-reference conflicts are mismatches; missing artifacts are unknown, altered are mismatch; malformed input is a typed failure; profile semantics are not evaluated; tests include whole-bundle substitution caught only by the independent reference.",
+        "files": [
+          "packages/sdk/src/verification/offline.ts",
+          "packages/sdk/src/verification/verification.test.ts"
+        ]
+      },
+      "5": {
+        "status": "complete",
+        "summary": "VerificationReportV1 (closed schema, no valid flag; manifestIntegrity, artifactIntegrity, registryIdentity, receiptBinding, chainStatus, signerAcceptance, mode, expected reference and origin, checkpoint, policy ids, observedAt, typed issue codes, profileSemantics not_evaluated). RegistryPolicy is trusted caller configuration; signer policy is caller-owned (expected-reviewers policy; absent policy is unknown; exceptions and malformed answers are unknown).",
+        "files": [
+          "packages/sdk/src/verification/report.ts",
+          "packages/sdk/src/verification/signer-policy.ts"
+        ]
+      },
+      "6": {
+        "status": "complete",
+        "summary": "Framework-neutral JSON-RPC live client (eth_chainId, eth_getBlockByNumber, eth_getCode, eth_call only) with credentials omitted, redirects refused, no referrer, https-only endpoints without userinfo/query/fragment, bounded responses, no CCIP-read or multicall; verifyReceipt additionally pins genesis. Default policy generated from contracts/deployments/monad-testnet.json (pnpm verifier:policy, --check). Observed with curl on 2026-10-11: public testnet RPC answers eth_chainId 0x279f, serves finalized blocks, block 0 hash equals the pinned genesis, and echoes the request Origin for CORS. Reads stay pinned by block number with a hash recheck; EIP-1898 block-hash pinning was not adopted because its support on Monad was not verified.",
+        "files": [
+          "packages/sdk/src/registry",
+          "tooling/scripts/verifier-policy.ts",
+          "apps/verifier/src/generated/default-policy.json",
+          "package.json"
+        ]
+      },
+      "7": {
+        "status": "complete",
+        "summary": "verifyReceipt: offline checks first and always kept; live reads only when the caller passes live options; manifest mismatch is never overwritten by an on-chain receipt; predecessor must equal manifest.supersedes (or none); optional bounded successor inspection at the same checkpoint (8 links, cycle detection, reciprocal check, incomplete on exhaustion), original Superseded is never relabelled; 20 s / 64 attempts / four concurrent reads / 5 s per read / one transient retry; AbortSignal and generation tag. 40 SDK tests.",
+        "files": [
+          "packages/sdk/src/verification/verify-receipt.ts",
+          "packages/sdk/src/registry/budget.ts"
+        ]
       }
     }
   }

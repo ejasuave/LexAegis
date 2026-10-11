@@ -222,9 +222,71 @@ async function readRegistryGroup(
 }
 
 /**
- * Confirmed live verification of one receipt at the execution checkpoint. The block's hash is
- * rechecked after the read group; any change returns unknown. `not_found` is returned only for a
- * successful, validated NotFound record at the verified deployment.
+ * Reads one receipt at an already-verified checkpoint. The block's hash is rechecked after the
+ * read group; any change returns unknown. Several receipts (for example a bounded successor
+ * chain) can be read at the same checkpoint by calling this repeatedly.
+ */
+export async function readReceiptAtCheckpoint(
+  client: LiveChainClient,
+  policyInput: ChainPolicy,
+  checkpoint: ChainCheckpoint,
+  input: {
+    readonly reference: ReceiptReferenceV1;
+    readonly opening?: unknown;
+  },
+): Promise<LiveResult<LiveReceiptRead>> {
+  const policy = parsePolicy(policyInput);
+  if (policy === null) return unknownResult('POLICY_INVALID');
+  if (
+    input.reference.chainId !== policy.chainId ||
+    input.reference.registryAddress !== policy.registryAddress ||
+    checkpoint.chainId !== policy.chainId
+  ) {
+    return unknownResult('POLICY_INVALID');
+  }
+  const blockNumber = BigInt(checkpoint.blockNumber);
+  try {
+    const group = await readRegistryGroup(
+      client,
+      policy,
+      blockNumber,
+      input.reference.reviewerAddress as Hex,
+      input.reference.commitment as Hex,
+    );
+    if (group.status !== 'ok') return group;
+    const after = await client.getBlock({ blockNumber });
+    if (after === null || toHex32(after.hash) !== checkpoint.blockHash) {
+      return unknownResult('BLOCK_CHANGED');
+    }
+    const receipt = decodeReceipt(input.reference, group.data.receiptData);
+    if (!receipt.ok) return unknownResult('RESPONSE_INVALID');
+    let binding: ReceiptBinding | null = null;
+    if (input.opening !== undefined) {
+      const bound = validateReceiptBinding({
+        opening: input.opening,
+        reference: input.reference,
+        observed: receipt.data,
+      });
+      if (!bound.ok) return unknownResult('RESPONSE_INVALID');
+      binding = bound.data;
+    }
+    return {
+      status: 'ok',
+      data: {
+        checkpoint,
+        receipt: receipt.data,
+        registryNonce: group.data.nonce.toString(),
+        binding,
+      },
+    };
+  } catch {
+    return unknownResult('RPC_UNAVAILABLE');
+  }
+}
+
+/**
+ * Confirmed live verification of one receipt at the execution checkpoint. `not_found` is returned
+ * only for a successful, validated NotFound record at the verified deployment.
  */
 export async function readLiveReceipt(
   client: LiveChainClient,
@@ -246,44 +308,7 @@ export async function readLiveReceipt(
   }
   const checkpoint = await readChainCheckpoint(client, policy, now);
   if (checkpoint.status !== 'ok') return checkpoint;
-  const blockNumber = BigInt(checkpoint.data.blockNumber);
-  try {
-    const group = await readRegistryGroup(
-      client,
-      policy,
-      blockNumber,
-      input.reference.reviewerAddress as Hex,
-      input.reference.commitment as Hex,
-    );
-    if (group.status !== 'ok') return group;
-    const after = await client.getBlock({ blockNumber });
-    if (after === null || toHex32(after.hash) !== checkpoint.data.blockHash) {
-      return unknownResult('BLOCK_CHANGED');
-    }
-    const receipt = decodeReceipt(input.reference, group.data.receiptData);
-    if (!receipt.ok) return unknownResult('RESPONSE_INVALID');
-    let binding: ReceiptBinding | null = null;
-    if (input.opening !== undefined) {
-      const bound = validateReceiptBinding({
-        opening: input.opening,
-        reference: input.reference,
-        observed: receipt.data,
-      });
-      if (!bound.ok) return unknownResult('RESPONSE_INVALID');
-      binding = bound.data;
-    }
-    return {
-      status: 'ok',
-      data: {
-        checkpoint: checkpoint.data,
-        receipt: receipt.data,
-        registryNonce: group.data.nonce.toString(),
-        binding,
-      },
-    };
-  } catch {
-    return unknownResult('RPC_UNAVAILABLE');
-  }
+  return readReceiptAtCheckpoint(client, policy, checkpoint.data, input);
 }
 
 export interface ProvisionalState {

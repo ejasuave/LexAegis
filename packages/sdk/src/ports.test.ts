@@ -56,9 +56,12 @@ describe('SDK re-exports', () => {
     expect(sdk.canonicalizeReviewPackage).toBe(v1.canonicalizeReviewPackage);
   });
 
-  it('does not export signing, submission or lifecycle operations', () => {
-    for (const name of Object.keys(sdk)) {
-      expect(name).not.toMatch(/sign|submit|broadcast|revoke|supersede|issue/i);
+  it('does not export signing, submission or lifecycle operations from the offline entry point', () => {
+    // Data identifiers (issue codes, signer policies) are fine; operations that act are not.
+    const operation =
+      /^(?:sign(?!er)|submit|broadcast|revoke|supersede|issue|build(?:Issue|Revoke|Supersede))/i;
+    for (const [name, value] of Object.entries(sdk)) {
+      if (typeof value === 'function') expect(name).not.toMatch(operation);
     }
   });
 });

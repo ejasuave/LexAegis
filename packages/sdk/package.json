@@ -7,7 +7,10 @@
   "exports": {
     ".": "./src/index.ts",
     "./registry": "./src/registry/index.ts",
-    "./transactions": "./src/transactions/index.ts"
+    "./transactions": "./src/transactions/index.ts",
+    "./portable": "./src/portable/index.ts",
+    "./offline": "./src/verification/index.ts",
+    "./verify": "./src/verification/live.ts"
   },
   "scripts": {
     "typecheck": "tsc --noEmit -p tsconfig.json"

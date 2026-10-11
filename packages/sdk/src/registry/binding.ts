@@ -1,5 +1,9 @@
 import { z } from 'zod';
-import { parseCommitmentOpening, parseReceiptReference } from '@lexaegis/protocol/v1';
+import {
+  parseCommitmentOpening,
+  parseReceiptReference,
+  type ReceiptReferenceV1,
+} from '@lexaegis/protocol/v1';
 import { receiptLifecycleSchema } from '@lexaegis/protocol';
 import { failWith, succeed, type RegistryResult } from './errors';
 import { observedReceiptSchema, type ObservedReceipt } from './decode';
@@ -52,6 +56,28 @@ function isPossibleRecord(record: ObservedReceipt): boolean {
   if (successor !== null) return false;
   // An Active receipt has not changed since it was issued.
   return receiptLifecycle === 'revoked' || updatedAt === issuedAt;
+}
+
+/**
+ * Opening-free checks of an observed record against the reference it was read for: the tuple
+ * matches and the registry's own rules could have produced the record. Used when no verified
+ * opening is available (reference-only checks and successor links).
+ */
+export function observedRecordIssues(
+  reference: ReceiptReferenceV1,
+  record: ObservedReceipt,
+): BindingIssue[] {
+  const issues: BindingIssue[] = [];
+  if (
+    record.chainId !== reference.chainId ||
+    record.registryAddress !== reference.registryAddress ||
+    record.reviewerAddress !== reference.reviewerAddress ||
+    record.commitment !== reference.commitment
+  ) {
+    issues.push('RECEIPT_TUPLE_MISMATCH');
+  }
+  if (!isPossibleRecord(record)) issues.push('IMPOSSIBLE_RECORD');
+  return issues;
 }
 
 /**
