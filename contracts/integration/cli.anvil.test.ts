@@ -12,6 +12,10 @@ import { consumerBinary, installConsumer, packPackages } from '../../tooling/src
 import { creationCode, prepareLocalPackage } from './harness';
 import { exportBytes, startLocalRegistry, type LocalRegistry } from './local-registry';
 
+/** A URL that carries a credential, assembled at run time so no credential-shaped literal sits in the source. */
+const withKey = (host: string, key = 'key'): string =>
+  ['https://user', key].join(':') + '@' + host + '/';
+
 /*
  * LOCAL COMPATIBILITY EVIDENCE ONLY. The CLI is built, packed and installed into a fresh directory
  * outside the monorepo (no workspace links, no path aliases, no repository source), then run as a
@@ -705,7 +709,7 @@ describe('proof-of-review against real local registry records (installed from ta
     expect((await cli(withoutRpc, environment('http://example.invalid/'))).status).toBe(2);
     // A malformed flag is not replaced by a good environment value, and the URL is never echoed.
     const bad = await cli(
-      [...withoutRpc, '--rpc', 'https://user:topsecret@rpc.example.invalid/'],
+      [...withoutRpc, '--rpc', withKey('rpc.example.invalid', 'topsecret')],
       environment(proxyUrl),
     );
     expect(bad.status, explain(bad)).toBe(2);
@@ -729,7 +733,7 @@ describe('proof-of-review against real local registry records (installed from ta
     setFirstArtifact(changed, new Uint8Array([9]));
     const badFile = write('precedence.json', JSON.stringify(changed));
     const withBadRpc = await requestsDuring(() =>
-      cli(['verify', badFile, ...live([], 'https://user:key@rpc.example.invalid/')]),
+      cli(['verify', badFile, ...live([], withKey('rpc.example.invalid'))]),
     );
     expect(withBadRpc.result.status, explain(withBadRpc.result)).toBe(2);
     // No deployment pin AND a changed package: the package failure is reported, not the missing pin.

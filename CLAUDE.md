@@ -5,8 +5,8 @@
 Status: `docs/build-state.json` (5 real-device recovery, 6 testnet credentials, 9 live Qwen run). Node 24+, pnpm 11.
 
 - `pnpm install --frozen-lockfile`, `lint`, `typecheck`, `test`, `build`
-- Gates: `fixtures:check`, `baselines:check`, `exclusion:check`, `secrets:check`, `packages:check`, `state:validate`, `readiness`
-- Others (`contracts:*`, `test:*:browser`, `db:dev`): see `package.json`. Copy `.env.example`. TypeScript below 6.1.
+- Gates: `fixtures:check`, `baselines:check`, `exclusion:check`, `secrets:check`, `packages:check`, `spec:check`, `vectors:check`, `docs:check`, `state:validate`, `readiness`
+- Others: see `package.json`. TypeScript below 6.1.
 
 ## Workflow
 
@@ -26,7 +26,7 @@ Status: `docs/build-state.json` (5 real-device recovery, 6 testnet credentials, 
 
 ## Boundaries
 
-- `protocol` (`/v1`), `sdk` (no hashing), `vault` (Web Crypto only, `/v1` frozen), `agent` (server-only).
+- `protocol` (`/v1`), `sdk` (no hashing), `vault` (Web Crypto only, `/v1` frozen), `cli` (read-only), `agent` (server-only).
 - Web UI imports only `@/features/*/public`; server code never imports them, Mera or `@scure/bip32`. Test-only: `src/test-support`, `@lexaegis/agent/testing`.
 - `apps/verifier` is standalone; `contracts`, `tooling`, `fixtures/*` never import `packages/`.
 

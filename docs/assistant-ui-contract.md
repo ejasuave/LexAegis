@@ -62,9 +62,9 @@ Create (after an absence check), unlock, recover, lock, matters, source files (1
 
 `/review`: text-PDF intake (10 MiB, 80 pages, one job, 30-second worker), source viewer with the exact passage highlighted, findings, checklist, SIMULATED what-if, and (flag, off by default) two-version comparison. Absence findings name the searched documents. Only the reviewer confirms facts. Any change to sources, facts, evidence or rules marks results stale. Findings are plain statements: no validity verdict or risk score. The rule pack is `demo_draft`, unreviewed.
 
-## Independent verifier (Chapter 11)
+## Independent verification (Chapters 11, 15)
 
-`apps/verifier` checks an exported bundle locally against a separately supplied public reference; the registry check is an explicit, read-only RPC action. Panels never combine into "valid"; signer acceptance needs a caller policy. A receipt does not prove legal correctness or professional identity.
+`apps/verifier`, the SDK and the read-only `proof-of-review` command check an export locally against a separately supplied public reference; registry reads are explicit and read-only. Results never combine into "valid"; signer acceptance needs a caller policy. A receipt does not prove legal correctness or professional identity.
 
 ## Requirements still open
 

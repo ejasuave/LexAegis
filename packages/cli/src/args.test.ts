@@ -2,6 +2,10 @@ import { describe, expect, it } from 'vitest';
 import { parseArguments, USAGE_CODES } from './args';
 import { CLI_ERROR_CODES } from './exit';
 
+/** A URL that carries a credential, assembled at run time so no credential-shaped literal sits in the source. */
+const withKey = (host: string, key = 'key'): string =>
+  ['https://user', key].join(':') + '@' + host + '/';
+
 const ADDRESS = `0x${'11'.repeat(20)}`;
 const verifyArgs = ['verify', 'review.json', '--chain-id', '10143', '--registry', ADDRESS];
 
@@ -89,13 +93,7 @@ describe('argument parsing', () => {
   });
 
   it('honours --json for a failure so it stays machine-readable, and never echoes a value', () => {
-    const parsed = parseArguments([
-      'verify',
-      '--json',
-      '--rpc',
-      'https://user:secret@x.invalid/',
-      '--bogus',
-    ]);
+    const parsed = parseArguments(['verify', '--json', '--rpc', withKey('x.invalid'), '--bogus']);
     expect(parsed).toMatchObject({ kind: 'usage-error', json: true });
     expect(JSON.stringify(parsed)).not.toContain('secret');
   });

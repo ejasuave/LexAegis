@@ -1,5 +1,5 @@
 {
   "extends": "./tsconfig.base.json",
   "compilerOptions": { "types": ["node"] },
-  "include": ["vitest.config.mts", "test-support"]
+  "include": ["vitest.config.mts", "test-support", "docs-entries"]
 }

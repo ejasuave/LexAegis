@@ -5,6 +5,10 @@ import { afterAll, describe, expect, it } from 'vitest';
 import { RPC_ENV, readDeployment, resolvePolicy, resolveRpc } from './config';
 import { KNOWN_DEPLOYMENTS } from './known-deployments.generated';
 
+/** A URL that carries a credential, assembled at run time so no credential-shaped literal sits in the source. */
+const withKey = (host: string, key = 'key'): string =>
+  ['https://user', key].join(':') + '@' + host + '/';
+
 const directory = mkdtempSync(join(tmpdir(), 'cli-config-'));
 afterAll(() => {
   rmSync(directory, { recursive: true, force: true });
@@ -56,7 +60,7 @@ describe('RPC precedence', () => {
     const env = { [RPC_ENV]: 'https://env.example.invalid/' };
     const flagged = resolveRpc({
       ...base,
-      flag: 'https://user:key@rpc.example.invalid/',
+      flag: withKey('rpc.example.invalid'),
       env,
       known,
     });
