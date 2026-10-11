@@ -66,6 +66,12 @@ Create (after an absence check), unlock, recover, lock, matters, source files (1
 
 `apps/verifier`, the SDK and the read-only `proof-of-review` command check an export locally against a separately supplied public reference; registry reads are explicit and read-only. Results never combine into "valid"; signer acceptance needs a caller policy. The agent-identity sidecar is explicit, separate, and changes no result. A receipt proves neither legal correctness nor professional identity.
 
+## Security (Chapter 17)
+
+- The disclosure preview states that each excerpt goes to the server with its source reference (identifiers, page, position, SHA-256 of the file and of its extraction) and that those digests do not go to the provider.
+- No badge or label says audited, secure, legally correct or professionally verified. "Verified" source on an explorer is code correspondence only.
+- Observed: registry runtime equals the source build (2026-10-11); Sourcify match; two full invariant campaigns; 72 static findings triaged; disclosure checks pass with 13 negative controls. None is an audit. Blockers: no deployable signer, no hosted deployment, Monadscan and a private reporting contact NOT YET.
+
 ## Requirements still open
 
 Chapters 12 and 13 validation (cited output, cancellation, isolation, approval binding, injection, accessibility) and the real-transaction demo.

@@ -214,9 +214,7 @@
         "localStorage:lexaegis.account-profile.v1",
         "localStorage:lexaegis.voice.preference.v1"
       ],
-      "cookieNames": [
-        "lexaegis_session (HttpOnly)"
-      ],
+      "cookieNames": ["lexaegis_session (HttpOnly)"],
       "routesRequested": [
         "GET /_next/static/chunks/08prdklv-99tz.js",
         "GET /_next/static/chunks/0bohg4tbc8b1r.js",
@@ -417,12 +415,8 @@
         }
       ],
       "violations": [],
-      "storageKeysWritten": [
-        "localStorage:lexaegis.account-profile.v1"
-      ],
-      "cookieNames": [
-        "lexaegis_session (HttpOnly)"
-      ],
+      "storageKeysWritten": ["localStorage:lexaegis.account-profile.v1"],
+      "cookieNames": ["lexaegis_session (HttpOnly)"],
       "routesRequested": [
         "GET /_next/static/chunks/08prdklv-99tz.js",
         "GET /_next/static/chunks/0bohg4tbc8b1r.js",
@@ -475,9 +469,7 @@
       "scope": "web client assets (.next-hud-check/static)",
       "files": 32,
       "bytes": 4129430,
-      "sourceMaps": [
-        "chunks/2z3sh82dl8glu.js.map"
-      ],
+      "sourceMaps": ["chunks/2z3sh82dl8glu.js.map"],
       "keyShapedClassified": {
         "not_key_material: decimal digits only": 1,
         "public: public dependency @noble/curves": 13,
@@ -507,9 +499,7 @@
       "scope": "web client assets (.next-assistant-check/static)",
       "files": 32,
       "bytes": 4129430,
-      "sourceMaps": [
-        "chunks/2z3sh82dl8glu.js.map"
-      ],
+      "sourceMaps": ["chunks/2z3sh82dl8glu.js.map"],
       "keyShapedClassified": {
         "not_key_material: decimal digits only": 1,
         "public: public dependency @noble/curves": 13,

@@ -39,7 +39,7 @@ import { tmpdir } from 'node:os';
 import { join, relative } from 'node:path';
 import { keccak256, toBytes } from 'viem';
 import { z } from 'zod';
-import { recordEvidence } from '../src/evidence-writer';
+import { recordEvidence, writeAtomic } from '../src/evidence-writer';
 import {
   analyse,
   canarySchema,
@@ -521,7 +521,8 @@ try {
   );
   if (reportOut !== undefined) writeFileSync(reportOut, `${JSON.stringify(report, null, 2)}\n`);
   if (!skipRecord) {
-    writeFileSync(path, `${JSON.stringify(report, null, 2)}\n`);
+    // Through the repository's writer, so the evidence file is formatted like every other one.
+    await writeAtomic(path, JSON.stringify(report));
     await recordEvidence({
       root: ROOT,
       results: [

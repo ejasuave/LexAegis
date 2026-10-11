@@ -303,6 +303,24 @@ describe('analysis', () => {
     // A 32-byte hash is not a signature.
     expect(rules(cleanObservations({ serverLog: `commitment=0x${'cd'.repeat(32)}` }))).toEqual([]);
   });
+  it('a canary in a URL is a violation on every route, encoded or not', () => {
+    const title = canary('title').value;
+    for (const url of [
+      `${ORIGIN}/api/vault/objects/1?title=${encodeURIComponent(title)}`,
+      `${ORIGIN}/review/${title}`,
+      // Even the analysis route after consent: a URL reaches history, referrers and access logs.
+      `${ORIGIN}/api/assistant/runs?q=${encodeURIComponent(canary('doc-selected').value)}`,
+    ]) {
+      const found = rules(
+        cleanObservations({
+          consentedDisclosure: true,
+          requests: [{ method: 'GET', url, body: '' }],
+        }),
+      );
+      expect(found.length, url).toBe(1);
+      expect(found[0], url).toMatch(/^CANARY_IN_FORBIDDEN_DESTINATION:request\.url:/);
+    }
+  });
   it('a request outside the origin, a cache write and a service worker are violations', () => {
     expect(
       rules(

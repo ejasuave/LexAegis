@@ -34,7 +34,7 @@ import { createServer } from 'node:http';
 import type { AddressInfo } from 'node:net';
 import { homedir, tmpdir } from 'node:os';
 import { join, relative } from 'node:path';
-import { recordEvidence } from '../src/evidence-writer';
+import { recordEvidence, writeAtomic } from '../src/evidence-writer';
 import {
   ALL_FAULT_CANARIES,
   FAULTS,
@@ -330,7 +330,7 @@ const path = join(
   `chapter17-privacy-negative-controls-${finishedAt.toISOString().slice(0, 10)}.json`,
 );
 if (!skipRecord) {
-  writeFileSync(path, `${JSON.stringify(report, null, 2)}\n`);
+  await writeAtomic(path, JSON.stringify(report));
   await recordEvidence({
     root: ROOT,
     results: [

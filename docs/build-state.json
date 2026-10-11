@@ -5427,6 +5427,36 @@
         "failures": "0",
         "chapter12": "not run; this reuses the Chapter 9 and 10 journeys"
       }
+    },
+    {
+      "id": "privacy-negative-controls-20261011210317",
+      "subject": "privacy-negative-controls",
+      "sourceRevision": {
+        "commit": "841c3472d17b9e309dfd3f98b001838f3275ca4c",
+        "dirtyWorktree": true,
+        "contentFingerprint": "2beff05e900e9418abf5af974977486edaf42e0da07f10152cacaf72b41910e9"
+      },
+      "checkedAt": "2026-10-11T21:03:17.364Z",
+      "command": "pnpm test:privacy:controls",
+      "environment": { "node": "v24.21.0", "os": "linux-x64", "pnpm": "11.11.0" },
+      "evidenceClass": "virtual_authenticator",
+      "outcome": "pass",
+      "reasonCodes": [
+        "SYNTHETIC_FAULTS_IN_A_DISPOSABLE_WORKTREE",
+        "AUTHENTICATOR_MODE_VIRTUAL",
+        "SCRIPTED_PROVIDER_AND_CHAIN"
+      ],
+      "evidenceRefs": [
+        {
+          "type": "path",
+          "value": "docs/evidence/chapter17-privacy-negative-controls-2026-10-11.json"
+        }
+      ],
+      "facts": {
+        "faults": "13",
+        "detectedAndRestored": "13",
+        "testedCommit": "841c3472d17b9e309dfd3f98b001838f3275ca4c"
+      }
     }
   ],
   "appliedCuts": [],
@@ -7950,10 +7980,149 @@
           "package.json"
         ]
       },
+      "10": {
+        "status": "complete",
+        "summary": "pnpm test:privacy:controls (tooling/scripts/privacy-negative-controls.ts; faults and judgement in tooling/src/privacy/faults.ts with unit tests that every fault anchor still exists exactly once in its owning module and that only the fault's own rule, boundary and canary count as detection). One fault at a time is written into a DISPOSABLE git worktree of the tested commit (in the user's cache directory on the same disk as the package store; the working tree is never edited), the owning check (observed HUD journey plus the scan of its built assets) must fail for that boundary and canary, the file is reverted with git, the copy is checked clean, and the owning check must pass again. Markers are synthetic and derived from labels; the only forbidden receiver is a loopback server started by the run. A crash, compile error or missing observation file is not a detection. Observed 2026-10-11T21:03:17Z on commit 841c347 (clean working tree), 1,070 s: baseline with every fault canary registered PASS; 13 of 13 faults detected by their intended check and passing again when restored: A1 server-only name and secret in a client module (SERVER_ENV_NAME and CANARY_VALUE in the client assets); S1 signing key in localStorage; S2 PRF output in sessionStorage; S3 vault key bytes in IndexedDB; S4 signing-session secret in a script cookie; S5 secret in Cache storage (CACHE_OR_SERVICE_WORKER_USED and the canary in the cached body); S6 PRF output written to localStorage then deleted (seen only by the intercepted write; the control fails if a snapshot saw it); S7 a non-extractable CryptoKey in IndexedDB (CRYPTOKEY_PERSISTED); L1 document text and a file name through the application logger; L2 an amount and a credential on the error path with a stack; N1 browser posting unselected text to the receiver with no consent (BROWSER_REQUEST_BLOCKED_BY_POLICY; receiver saw 0 requests); N2 a server route posting to the receiver with no consent (SERVER_EGRESS_NOT_ALLOWED; receiver saw 4 requests, all loopback); N3 a consented request carrying text the reviewer never selected (unselected_text at request.assistant). Two earlier attempts stopped before any fault was applied and are not evidence: offline dependency install failed in a worktree on tmpfs (the copy now lives in the cache directory), then a baseline expected package builds a fresh copy lacks (a single-journey run now checks that journey's assets only); a manual pre-flight then confirmed setup and all 13 detections before the recorded run. No fault switch, modified runtime source or key literal is committed to a shipped entry point. CI (.github/workflows/ci.yml): new job security (threat:check, contracts:test:ci as the reduced ci campaign, contracts:static with pinned Slither 0.11.6 in its own environment where an unavailable tool fails the job, test:privacy:browser --no-record) and a separate read-only job deployment-read-only (verify:deployment --public-rpc; a failed, unavailable or skipped run is not a verified deployment; continue-on-error only keeps an endpoint outage from blocking unrelated changes). NOT YET: neither job has been observed running on GitHub; every command in them was run locally. The full campaigns and the negative controls are not CI jobs. Evidence written through the repository's writer. Report: docs/security/privacy-checks.md.",
+        "files": [
+          "tooling/scripts/privacy-negative-controls.ts",
+          "tooling/src/privacy/faults.ts",
+          "tooling/src/privacy/faults.test.ts",
+          "tooling/scripts/privacy-browser-check.ts",
+          "tooling/src/privacy/privacy.test.ts",
+          ".github/workflows/ci.yml",
+          "docs/security/privacy-checks.md",
+          "docs/evidence/chapter17-privacy-negative-controls-2026-10-11.json",
+          "package.json"
+        ]
+      },
       "11": {
         "status": "complete",
         "summary": "SECURITY.md created from implemented behaviour, docs/SPEC.md, docs/THREAT-MODEL.md and docs/DEPLOYMENTS.md. States that the testnet demonstration is unaudited, uses synthetic matters and is not for client data, and that local tests, invariant/fuzz campaigns, static analysis, deployment (source) verification and the disclosure-boundary checks are five different evidence types, none an independent audit or legal certification. Versions named separately: protocol v1 (frozen); the one Monad testnet registry 0x453bfd16…048f on chain 10143 (no mainnet); packages protocol/sdk/cli 0.1.0 built from this repository and not published; the reference application and verifier on main, run locally, with a hosted reference deployment NOT YET. No tagged release exists and none is invented; forks and older commits are not maintained. Scope by actual component (registry, protocol/SDK, verifier/CLI, account and vault, analysis and approval boundary, reference application); optional ERC-8004 identity is discovery only and no agent is registered. Ten stated limits: public account/timing/history linkability, full-package disclosure to a verification recipient, selected plaintext visible to the server and Qwen incl. the source-reference digests that reach the server only, hashes bind bytes, approval by a signing account, same-origin compromise, passkey origin and recovery limits, RPC trust and unknown on failure, irreversible external disclosures, replay of old encrypted snapshots. Known unresolved: no deployable signer, hosted deployment NOT YET, real-device evidence incomplete (one operator-reported account check passed; the real-device vault check is recorded as failed), Monadscan verification NOT YET, unread response bodies in the disclosure checks, NO TEST YET cases. Reporting: the repository (private, github.com/ejasuave/LexAegis) has no security policy URL and private vulnerability reporting returned 404 on 2026-10-11, so the private reporting contact is marked NOT YET and reporters are asked not to put sensitive details in a public issue; no email address, response time, reward or safe harbour is invented. Reports should carry version, environment, impact and a minimal synthetic reproduction, and never client documents, openings, keys, session tokens or usable signatures.",
         "files": ["SECURITY.md"]
+      },
+      "12": {
+        "status": "in-progress",
+        "summary": "Handoff started, NOT complete. Done: THREAT-MODEL.md refreshed (43 cases, 194 test references, all resolving; new contract, comparator and privacy tests cited; NO TEST YET kept on TM-W01 and TM-X01; residual risks updated), SPEC.md discrepancy table D7-D12 (lifecycle actions use execute; exactly-one-Active holds only immediately after supersession; valid third-party execution is permitted; nonce invalidation is a separate reviewer-owned call; deployment immutables need explicit resolution; leak checks follow the implemented narrow exceptions because Chapter 12's matrix has not run), CLAUDE.md and docs/assistant-ui-contract.md updated with security commands, deployment status and blockers; no HUD badge added. Checks observed on the final source (see chapter17.checks). STOPPED: the batch running the five browser suites was killed by the session host because the machine was critically low on memory (not a test failure; the account suite was interrupted mid-build and recorded nothing). Not yet run on the final state: pnpm lint, typecheck, test, build, exclusion:check, packages:check, docs:check, the five browser suites (account, vault, assistant, hud as the T0 smoke path, verifier) and pnpm readiness. The chapter cannot be marked complete until they run.",
+        "files": [
+          "docs/THREAT-MODEL.md",
+          "docs/SPEC.md",
+          "CLAUDE.md",
+          "docs/assistant-ui-contract.md",
+          "docs/build-state.json"
+        ]
+      }
+    },
+    "decisions": [
+      "Lifecycle actions use execute(ReviewAction,bytes) carrying ISSUE/REVOKE/SUPERSEDE; no separate methods exist or were invented (SPEC D7).",
+      "Supersession's exactly-one-Active condition applies immediately after the transition, for that pair only (SPEC D8).",
+      "An unrelated executor submitting an unchanged valid action is permitted and is not a forgery (SPEC D9).",
+      "invalidateNonce is a separate reviewer-owned action without an EIP-712 signature (SPEC D10).",
+      "Deployment immutables are resolved from the deployment context, never copied from observed bytes or masked (SPEC D11).",
+      "Leak checks follow the implemented narrow disclosure exceptions rather than rejecting all legitimate plaintext or authentication traffic; Chapter 12's matrix has not run (SPEC D12).",
+      "contracts/foundry.toml is a protected baseline, so the security profile is supplied as FOUNDRY_* environment overrides by a script.",
+      "The disclosure preview now states that each excerpt carries the SHA-256 of its source file and extraction to the server; no wire format changed.",
+      "Negative controls run in a disposable git worktree in the user's cache directory, never in the working tree."
+    ],
+    "checks": {
+      "note": "Observed 2026-10-11 on commit 841c347 plus uncommitted documentation and two evidence-formatting edits to the privacy scripts (dirty worktree). Contract inputs unchanged (sha256 2001781f576486f5…).",
+      "contracts": {
+        "command": "pnpm contracts:fmt:check; contracts:build; contracts:test; contracts:artifacts:check; contracts:reference:check",
+        "outcome": "pass",
+        "evidenceClass": "local_scripted",
+        "observedAt": "2026-10-11T21:04:06Z",
+        "notes": "forge test 105 of 105 across 11 suites at the default profile; artifact and reference unchanged."
+      },
+      "sdkSolidityCompatibility": {
+        "command": "pnpm test:contracts:integration",
+        "outcome": "pass",
+        "evidenceClass": "local_scripted",
+        "observedAt": "2026-10-11T21:05:07Z",
+        "notes": "89 of 89 in 11 files on local Anvil, unchanged tests."
+      },
+      "staticAnalysis": {
+        "command": "pnpm contracts:static",
+        "outcome": "pass",
+        "evidenceClass": "local_scripted",
+        "observedAt": "2026-10-11T21:05:11Z",
+        "notes": "forge lint 0 diagnostics (5 suppressed inline, triaged); Slither 0.11.6: 72 findings (3 in src, 69 in dependencies), every one triaged, 0 unresolved, 0 requiring a redeploy decision. Not an audit."
+      },
+      "deploymentReadOnly": {
+        "command": "pnpm verify:deployment --public-rpc",
+        "outcome": "pass",
+        "evidenceClass": "live_testnet",
+        "observedAt": "2026-10-11T21:05:13Z",
+        "notes": "MATCH, exit 0, policy exact: 4,118 of 4,118 bytes, 7 immutables resolved, checkpoint block 70214061 re-checked, code pin equal, deployment transaction consistent. Fresh observation; the recorded evidence files of 16:17Z are unchanged."
+      },
+      "explorer": {
+        "command": "pnpm verify:explorer -- --submit (2026-10-11T16:19Z)",
+        "outcome": "pass",
+        "evidenceClass": "live_testnet",
+        "notes": "Reused: Sourcify match for chain 10143. Monadscan NOT YET (no API key). The rendered explorer page was not checked by tooling."
+      },
+      "fullCampaigns": {
+        "command": "pnpm contracts:campaign --profile full (two seeds)",
+        "outcome": "pass",
+        "evidenceClass": "offline_unit",
+        "notes": "Reused for unchanged contract inputs: 105/105, 150,000 fuzz cases and 512,000 invariant calls per seed."
+      },
+      "ciCampaign": {
+        "command": "pnpm contracts:test:ci",
+        "outcome": "pass",
+        "evidenceClass": "offline_unit",
+        "notes": "Reduced campaign: 15,000 fuzz cases, 65,536 invariant calls, 198 s. Recorded as ci, not full."
+      },
+      "specVectorsBaselines": {
+        "command": "pnpm spec:check; vectors:check; fixtures:check; protocol:check; sdk:check; baselines:check; scope:docs:check; threat:check; state:validate",
+        "outcome": "pass",
+        "evidenceClass": "local_scripted",
+        "notes": "Protected baselines unchanged (43 files, compiled registry); Chapter 2 vectors unchanged; 43 threat cases, 194 references."
+      },
+      "privacyBoundaries": {
+        "command": "pnpm test:privacy:browser",
+        "outcome": "pass",
+        "evidenceClass": "virtual_authenticator",
+        "notes": "0 violations, 0 asset findings; unread response bodies listed as unobserved."
+      },
+      "privacyNegativeControls": {
+        "command": "pnpm test:privacy:controls",
+        "outcome": "pass",
+        "evidenceClass": "virtual_authenticator",
+        "notes": "13 of 13 detected and restored in a disposable worktree."
+      },
+      "secrets": {
+        "command": "pnpm secrets:check",
+        "outcome": "fail",
+        "notes": "Only the two pre-existing findings in the local git-ignored .env, carried forward; no finding from Chapter 17 files."
+      },
+      "format": {
+        "command": "pnpm format:check",
+        "outcome": "fail",
+        "notes": "One file: the privacy evidence JSON was not written through the formatting writer. Fixed (both privacy scripts now use the repository writer and the file was reformatted); NOT re-run on the final state."
+      },
+      "static": {
+        "command": "pnpm lint; pnpm typecheck; pnpm build",
+        "outcome": "not_run",
+        "notes": "NOT YET on the final state. Changed files were linted and tooling was type-checked during the tasks."
+      },
+      "unit": {
+        "command": "pnpm test",
+        "outcome": "not_run",
+        "notes": "NOT YET on the final state. tooling/src/privacy: 35 tests passed when last run."
+      },
+      "exclusionPackagesDocs": {
+        "command": "pnpm exclusion:check; pnpm packages:check; pnpm docs:check",
+        "outcome": "not_run",
+        "notes": "NOT YET."
+      },
+      "browser": {
+        "command": "pnpm test:account:browser; test:vault:browser; test:assistant:browser; test:hud:browser; test:verifier:browser",
+        "outcome": "not_run",
+        "notes": "STOPPED by the session host for low system memory during the first suite; not a test failure and nothing was recorded. The HUD and assistant journeys did pass 69/69 and 61/61 under observation in pnpm test:privacy:browser."
+      },
+      "readiness": { "command": "pnpm readiness", "outcome": "not_run", "notes": "NOT YET." },
+      "ci": {
+        "outcome": "unverified",
+        "notes": "The security and deployment-read-only jobs were added; neither has been observed running on GitHub."
       }
     }
   }

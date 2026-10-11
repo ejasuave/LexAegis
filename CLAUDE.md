@@ -6,6 +6,7 @@ Status: `docs/build-state.json` (5 real-device recovery, 6 testnet credentials, 
 
 - `pnpm install --frozen-lockfile`, `lint`, `typecheck`, `test`, `build`
 - Gates: `fixtures:check`, `baselines:check`, `exclusion:check`, `secrets:check`, `packages:check`, `spec:check`, `vectors:check`, `docs:check`, `state:validate`, `readiness`
+- Security: `contracts:test:ci`, `contracts:static`, `verify:deployment`, `threat:check`, `test:privacy:browser`, `test:privacy:controls` (`SECURITY.md`).
 - Others: see `package.json`. TypeScript below 6.1.
 
 ## Workflow
@@ -42,3 +43,4 @@ Status: `docs/build-state.json` (5 real-device recovery, 6 testnet credentials, 
 - Money is GBP minor units as decimal strings.
 - ERC-8004 identity: optional, inside hashed `agent-config` v2; never a manifest field; read-only.
 - Only real_device/live_testnet evidence passes live gates; gates are computed. Failed Gate B withdraws Mera bounty claims.
+- Registry code matched source 2026-10-11 (`docs/DEPLOYMENTS.md`); unaudited. Monadscan and a private reporting contact: NOT YET. `contracts/foundry.toml` is protected: campaign sizes via `FOUNDRY_*` only.

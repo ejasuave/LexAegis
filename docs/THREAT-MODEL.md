@@ -68,6 +68,8 @@ check (virtual authenticator, scripted provider and chain).
   - `contracts/test/Authorization.t.sol` :: test_replayFailsAfterASuccessfulOperation [F]
   - `contracts/test/Invariants.t.sol` :: invariant_eachSuccessConsumesExactlyOneNonce [F]
   - `contracts/integration/chapter6.anvil.test.ts` :: replaying the signed action is rejected before any signature or fee [A]
+  - `contracts/test/Authorization.t.sol` :: test_replayFailsAfterIssueRevokeSupersedeAndInvalidation [F]
+  - `contracts/test/RegistryInvariants.t.sol` :: invariant_noncesAreExactlyAccountedFor [F]
 - Result: pass.
 - Residual risk: none known for the same registry. A signature is public once broadcast.
 
@@ -80,6 +82,7 @@ check (virtual authenticator, scripted provider and chain).
 - Tests:
   - `contracts/test/Authorization.t.sol` :: test_changingAnySignedFieldInvalidatesTheAuthorization [F]
   - `contracts/integration/chapter6.anvil.test.ts` :: rejects a changed destination, calldata, fee ceiling, gas limit, digest and an expired quote [A]
+  - `contracts/test/Authorization.t.sol` :: testFuzz_eachIndividuallyAlteredFieldInvalidatesTheSignature [F]
 - Result: pass.
 - Residual risk: none known.
 
@@ -95,6 +98,10 @@ check (virtual authenticator, scripted provider and chain).
   - `contracts/test/Authorization.t.sol` :: test_signatureForAnotherRegistryIsNotAccepted [F]
   - `contracts/test/Authorization.t.sol` :: test_domainSeparationFollowsAChainIdChange [F]
   - `apps/web/src/integration/account-flow.test.ts` :: checks review typed data against account, chain, registry and deadline at signing time [U]
+  - `contracts/test/Authorization.t.sol` :: testFuzz_anyOtherKeyIsRejectedForAnEoaAndForAContractAccount [F]
+  - `contracts/test/Authorization.t.sol` :: testFuzz_aSignatureForAnotherChainIsRejected [F]
+  - `contracts/test/Authorization.t.sol` :: testFuzz_aSignatureCannotBeReplayedOnASecondRegistry [F]
+  - `contracts/test/Authorization.t.sol` :: testFuzz_anyOtherDomainNameOrVersionIsRejected [F]
 - Result: pass.
 - Residual risk: none known.
 
@@ -111,6 +118,9 @@ check (virtual authenticator, scripted provider and chain).
   - `contracts/test/Authorization.t.sol` :: test_anExpiredDeadlineDoesNotExpireAnIssuedReceipt [F]
   - `contracts/test/Authorization.t.sol` :: test_staleInvalidationFailsWithoutAffectingNewerState [F]
   - `apps/web/src/integration/review-signing.test.ts` :: enforces a positive, unexpired deadline no further out than 600 seconds [U]
+  - `contracts/test/Authorization.t.sol` :: testFuzz_deadlineBoundaryForEveryActionShape [F]
+  - `contracts/test/Authorization.t.sol` :: testFuzz_zeroDeadlineNeverAuthorizes [F]
+  - `contracts/test/Authorization.t.sol` :: testFuzz_aSignatureOverAnotherNonceDoesNotAuthorizeTheCurrentOne [F]
 - Result: pass.
 - Residual risk: a signature stays usable until its deadline (at most 600 s in the app) unless the
   reviewer invalidates the nonce.
@@ -127,6 +137,8 @@ check (virtual authenticator, scripted provider and chain).
   - `contracts/test/Authorization.t.sol` :: test_invalidOrAdversarialErc1271ValidationFailsWithoutStateChanges [F]
   - `contracts/test/Authorization.t.sol` :: test_reentrantValidationCannotMutateTheRegistry [F]
   - `contracts/test/Authorization.t.sol` :: test_aSignatureMadeBeforeAPolicyChangeStopsWorkingAfterIt [F]
+  - `contracts/test/Authorization.t.sol` :: test_aContractAccountAlsoRefusesMalformedAndHighSSignatures [F]
+  - `contracts/test/Authorization.t.sol` :: test_aSwallowedNestedMutationLetsTheOuterActionSucceedExactlyOnce [F]
 - Result: pass.
 - Residual risk: a contract account authorises whatever its own code accepts; that policy is the
   account's, not the registry's. Local fixtures say nothing about any production wallet.
@@ -143,6 +155,8 @@ check (virtual authenticator, scripted provider and chain).
   - `contracts/test/Authorization.t.sol` :: test_thereIsNoSignatureFreeShortcutForTheReviewer [F]
   - `contracts/test/Authorization.t.sol` :: test_emptyAndMalformedSignaturesAreRejected [F]
   - `contracts/integration/chapter6.anvil.test.ts` :: rejects wrong sender, extra calldata, value, recipient, EIP-7702, fee-cap bypass and wrong nonce [A]
+  - `contracts/test/Authorization.t.sol` :: testFuzz_anUnrelatedExecutorSubmittingFirstGetsExactlyTheAuthorisedResult [F]
+  - `contracts/test/RegistryInvariants.t.sol` :: test_twoSignedActionsRacingForOneNonceHaveExactlyOneWinner [F]
 - Result: pass.
 - Residual risk: an executor chooses **when** (before the deadline) and **whether** to submit.
 
@@ -156,6 +170,8 @@ check (virtual authenticator, scripted provider and chain).
   - `contracts/test/Authorization.t.sol` :: test_aRelayerCannotInvalidateAnotherReviewersNonce [F]
   - `contracts/test/Authorization.t.sol` :: test_invalidateNonceCancelsAnOutstandingSignature [F]
   - `contracts/test/Authorization.t.sol` :: test_nonceExhaustionCannotWrapToZero [F]
+  - `contracts/test/handlers/ReviewRegistryHandler.t.sol` :: test_aStrangerNamingAReviewersNonceActsOnlyForItself [F]
+  - `contracts/test/Authorization.t.sol` :: test_localBoundary_theLastInvalidationWorksOnceThenTheNonceIsExhausted [F]
 - Result: pass.
 - Residual risk: invalidation is a fee-paying transaction from the reviewer's own account.
 
@@ -169,6 +185,7 @@ check (virtual authenticator, scripted provider and chain).
 - Mitigation (implemented): existence is decided by status; a non-`NotFound` record cannot be created.
 - Tests:
   - `contracts/test/Lifecycle.t.sol` :: test_duplicateIssueFailsForActiveRevokedAndSupersededRecords [F]
+  - `contracts/test/RegistryInvariants.t.sol` :: invariant_everyNamespaceEqualsTheModel [F]
 - Result: pass.
 - Residual risk: none known.
 
@@ -182,6 +199,8 @@ check (virtual authenticator, scripted provider and chain).
   - `contracts/test/Lifecycle.t.sol` :: test_revokingAReplacementNeverRestoresTheEarlierApproval [F]
   - `contracts/test/Lifecycle.t.sol` :: test_revokeRequiresAnActiveReceipt [F]
   - `contracts/test/Invariants.t.sol` :: invariant_terminalReceiptsNeverReturnToActive [F]
+  - `contracts/test/RegistryInvariants.t.sol` :: test_issueThenSupersedeThenRevokeTheReplacementKeepsHistory [F]
+  - `contracts/test/RegistryInvariants.t.sol` :: test_negativeControl_aReactivatedTerminalReceiptIsReported [F]
 - Result: pass.
 - Residual risk: none known.
 
@@ -195,6 +214,9 @@ check (virtual authenticator, scripted provider and chain).
   - `contracts/test/Lifecycle.t.sol` :: test_supersedeReplacesAtomicallyWithLinksAndOrderedEvents [F]
   - `contracts/test/Lifecycle.t.sol` :: test_rejectedOperationsRollBackStorageNonceAndLogs [F]
   - `contracts/test/Invariants.t.sol` :: invariant_supersessionLinksAgree [F]
+  - `contracts/test/RegistryInvariants.t.sol` :: test_aRevertedSupersessionCommitsNoLifecycleChangeAndNoLogs [F]
+  - `contracts/test/RegistryInvariants.t.sol` :: test_supersessionByAContractAccountEmitsIssuedThenSupersededWithOneNonce [F]
+  - `contracts/test/RegistryInvariants.t.sol` :: invariant_supersessionLinksAgreeAndChainsTerminate [F]
 - Result: pass.
 - Residual risk: a plain ISSUE of a package that declares a predecessor is accepted by the chain;
   only verification reports `PREDECESSOR_MISMATCH` (SPEC discrepancy D3).
@@ -208,6 +230,7 @@ check (virtual authenticator, scripted provider and chain).
 - Tests:
   - `contracts/test/Lifecycle.t.sol` :: test_anotherReviewerMayUseIdenticalCommitmentBytes [F]
   - `contracts/test/Lifecycle.t.sol` :: testFuzz_reviewerNamespacesAreIsolated [F]
+  - `contracts/test/RegistryInvariants.t.sol` :: test_identicalBytesUnderTwoReviewersEvolveIndependently [F]
 - Result: pass.
 - Residual risk: none known.
 
@@ -331,8 +354,14 @@ check (virtual authenticator, scripted provider and chain).
   - `packages/agent/src/runtime/run-agent.test.ts` :: rejects a request whose consent does not cover its exact content or provider [U]
   - `packages/agent/src/runtime/tools.test.ts` :: read_sources returns only consented catalog excerpts with coverage [U]
   - `tooling/scripts/assistant-browser-check.ts` :: the request carried the selected excerpt and consent, and not the rest of the document [B]
+  - `apps/web/src/features/assistant/selected-context.test.ts` :: says on the preview that an excerpt carries the digests of its source, which it does [U]
+  - `tooling/src/privacy/privacy.test.ts` :: a consented run may carry the selected excerpt to the route and the provider, and nothing unselected [U]
+  - `tooling/src/privacy/privacy.test.ts` :: the digests in an excerpt source reference reach the analysis route only, and only after consent [U]
+  - `tooling/scripts/privacy-browser-check.ts` :: privacy boundaries [B]
 - Result: pass.
-- Residual risk: what was selected and sent **is** disclosed, and Stop cannot recall it.
+- Residual risk: what was selected and sent **is** disclosed, and Stop cannot recall it. Each excerpt
+  also carries the SHA-256 of its source file and of its extraction to the server (not to the
+  provider); the disclosure preview says so.
 
 #### TM-M04 Cross-matter context leakage
 
@@ -452,6 +481,10 @@ check (virtual authenticator, scripted provider and chain).
   - `packages/sdk/src/registry/live-reader.test.ts` :: is unknown, not a fallback, without a finalized block, on the wrong chain or before deployment [U]
   - `packages/sdk/src/verification/adversarial.test.ts` :: a wrong protocol version is an identity mismatch [U]
   - `contracts/integration/interface-abi.test.ts` :: the runtime bytecode and ABI hashes equal both recorded baselines (metadata included) [A]
+  - `tooling/src/deployment-verify/verify.test.ts` :: reports an exact match with a re-checked checkpoint and a consistent deployment transaction [U]
+  - `tooling/src/deployment-verify/verify.test.ts` :: one changed executable byte, immutable byte or code pin is a mismatch (exit 10) [U]
+  - `tooling/src/deployment-verify/verify.test.ts` :: wrong network, wrong genesis and empty code are mismatches, never matches [U]
+  - `tooling/src/deployment-verify/runtime.test.ts` :: has no rule for an unknown immutable: it is unresolved, never guessed [U]
 - Result: pass. Source-to-bytecode comparison of the live registry is recorded in
   [`DEPLOYMENTS.md`](./DEPLOYMENTS.md).
 - Residual risk: as TM-C01.
@@ -577,9 +610,13 @@ check (virtual authenticator, scripted provider and chain).
   - `tooling/src/exclusion.test.ts` :: rejects a production entry that imports the test signer or the replay provider [U]
   - `tooling/src/exclusion.test.ts` :: catches a caller-supplied literal such as the registry fixture key, without echoing it [U]
   - `tooling/scripts/hud-browser-check.ts` :: client bundles hold no provider credential, server secret or injected-wallet code [B]
-- Result: pass. Canary-based checks of the built assets: see Task 9 in
-  [`security/privacy-checks.md`](./security/privacy-checks.md).
-- Residual risk: a secret in an encoding the scans do not look for.
+  - `tooling/src/privacy/assets.test.ts` :: names of server-only configuration, a server-only module and a synthetic credential value are findings [U]
+  - `tooling/src/privacy/assets.test.ts` :: reports an unclassified candidate instead of ignoring it, and never prints it whole [U]
+  - `tooling/scripts/privacy-browser-check.ts` :: web client assets [B]
+- Result: pass. The canary-based scan of the built assets and its negative control (a server secret
+  written into a client module) are in [`security/privacy-checks.md`](./security/privacy-checks.md).
+- Residual risk: a secret in an encoding the scans do not look for; a value added to one of the named
+  public source files would be classified as public.
 
 #### TM-D02 Secrets or plaintext in persistence
 
@@ -593,8 +630,13 @@ check (virtual authenticator, scripted provider and chain).
   - `tooling/scripts/account-browser-check.ts` :: browser storage holds only the public account profile [B]
   - `tooling/scripts/vault-browser-check.ts` :: browser storage holds no matter text [B]
   - `tooling/scripts/assistant-browser-check.ts` :: nothing of the conversation is in localStorage, sessionStorage, IndexedDB, caches or service workers [B]
+  - `tooling/src/privacy/privacy.test.ts` :: reports each secret class in each browser store, including a write that was deleted afterwards [U]
+  - `tooling/src/privacy/privacy.test.ts` :: a CryptoKey in IndexedDB is a violation even when it is non-extractable [U]
+  - `tooling/src/privacy/privacy.test.ts` :: a session value outside the cookie jar, or readable by script, is a violation [U]
+  - `tooling/scripts/privacy-browser-check.ts` :: privacy boundaries [B]
 - Result: pass.
-- Residual risk: memory inspection on a compromised device; browser crash dumps.
+- Residual risk: memory inspection on a compromised device; browser crash dumps; storage writes made
+  inside a worker are seen only if they persist.
 
 #### TM-D03 Plaintext or secrets in logs and telemetry
 
@@ -607,6 +649,9 @@ check (virtual authenticator, scripted provider and chain).
   - `apps/web/src/server/assistant/routes.test.ts` :: logs event names and codes only, never request or response content [U]
   - `apps/web/src/server/chain/chain.test.ts` :: redacts the path and query that carry the API key [U]
   - `apps/web/src/server/env.test.ts` :: rejects malformed supplied values and reports names only [U]
+  - `tooling/src/privacy/privacy.test.ts` :: document text, file names, amounts and secrets in the log, database, object store or provider are violations [U]
+  - `tooling/src/privacy/privacy.test.ts` :: a signature may travel on the sign-in and chain routes, and nowhere else or at rest [U]
+  - `tooling/scripts/privacy-browser-check.ts` :: privacy boundaries [B]
 - Result: pass.
 - Residual risk: **provider, hosting and infrastructure logs are outside this repository and are
   unverified.**
@@ -623,6 +668,7 @@ check (virtual authenticator, scripted provider and chain).
   - `apps/web/src/features/history/controller.test.ts` :: puts only public values in URLs [U]
   - `packages/sdk/src/registry/rpc-client.test.ts` :: accepts a public HTTPS endpoint and nothing that could carry a credential [U]
   - `tooling/scripts/assistant-browser-check.ts` :: private data never travels in a URL [B]
+  - `tooling/src/privacy/privacy.test.ts` :: a canary in a URL is a violation on every route, encoded or not [U]
 - Result: pass.
 - Residual risk: none known.
 
@@ -651,9 +697,14 @@ check (virtual authenticator, scripted provider and chain).
   - `tooling/scripts/verifier-browser-check.ts` :: every attempted request went only to the verifier origin or the selected RPC [B]
   - `tooling/scripts/verifier-browser-check.ts` :: a malicious URL in the file never triggered a request [B]
   - `tooling/scripts/vault-browser-check.ts` :: requests to the vault carry no plaintext [B]
+  - `tooling/src/privacy/privacy.test.ts` :: a request outside the origin, a cache write and a service worker are violations [U]
+  - `tooling/src/privacy/privacy.test.ts` :: a server connection to anything but its own database, object store and provider is a violation [U]
+  - `tooling/src/privacy/privacy.test.ts` :: a browser request blocked by the policy, and private text in the console, are violations [U]
+  - `tooling/scripts/privacy-browser-check.ts` :: privacy boundaries [B]
 - Result: pass.
 - Residual risk: what the **server** sends to Qwen is asserted against a scripted provider, not
-  observed at the real one.
+  observed at the real one. The server's outbound destinations are observed by socket in a test
+  server only.
 
 ### Public linkability
 

@@ -143,6 +143,8 @@ Stated by the run itself and kept in the evidence:
 - A broadcast transaction (the chain is scripted).
 - Storage **writes** made inside a worker (snapshots still see what persisted).
 - Memory, and anything outside this machine.
+- A key-shaped value added to one of the named public sources (for example the public
+  account-derivation profile) would be classified as public. A registered canary is still found.
 
 ### The run that did not end, and its fix
 
@@ -158,3 +160,82 @@ that it finished, so that wait never ended, and nothing bounded the journey. Fix
   (`tooling/src/privacy/run-bounded.ts`, with regression tests in `run-bounded.test.ts`).
 
 A journey that stops early still hands over what it observed, so its failure is analysed.
+
+## Negative controls
+
+A check that has only ever passed has not been shown to detect anything. `pnpm test:privacy:controls`
+(`tooling/scripts/privacy-negative-controls.ts`, faults in `tooling/src/privacy/faults.ts`) introduces
+**one fault at a time** into the module that owns a boundary and requires the owning check to fail
+**for that boundary and that canary**. A crash, a compile error or a missing observation file is not
+a detection.
+
+- The faults are applied to a **disposable git worktree** of the tested commit, outside the working
+  tree, which is never edited. The worktree, its build output and its services are removed at the end.
+- Markers are synthetic and derived from labels; no fault, switch or marker is compiled into a
+  shipped entry point (`pnpm exclusion:check`).
+- The only "forbidden receiver" is a loopback server started by the control run. The browser's
+  request to it is stopped by the Content Security Policy before it leaves the page; the server's
+  request reaches that loopback receiver and nothing else.
+- After each fault the file is reverted with git, the copy is checked to be clean, and the owning
+  check is run again and must pass.
+- Owning check: the observed HUD journey and the scan of the assets it built
+  (`pnpm test:privacy:browser --journey hud`). A baseline run of the unchanged copy with every fault
+  canary registered must pass first.
+
+Observed 2026-10-11T21:03:17Z on commit `841c347` (clean working tree), 1070 s: baseline
+**pass**; **13 of 13 faults detected by their intended check and passing again when
+restored**. Evidence:
+[`chapter17-privacy-negative-controls-2026-10-11.json`](../evidence/chapter17-privacy-negative-controls-2026-10-11.json).
+
+| Fault                                                 | Mistake introduced                                                              | Owning module             | Observed failure                                                                                                                                        | Restored |
+| ----------------------------------------------------- | ------------------------------------------------------------------------------- | ------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- | -------- |
+| `A1-server-secret-in-browser-module`                  | A server-only configuration name and its value are written into a client module | `derivation-profile.ts`   | `SERVER_ENV_NAME` in the client assets (`QWEN_API_KEY`); `CANARY_VALUE` in the client assets (`provider_credential`).                                   | pass     |
+| `S1-signing-key-in-localStorage`                      | A signing key is cached next to the public account hint                         | `derivation-profile.ts`   | `CANARY_IN_FORBIDDEN_DESTINATION` at `browser.localStorage`, class `signing_key`.                                                                       | pass     |
+| `S2-prf-output-in-sessionStorage`                     | A PRF output is kept for the tab session                                        | `derivation-profile.ts`   | `CANARY_IN_FORBIDDEN_DESTINATION` at `browser.sessionStorage`, class `prf_output`.                                                                      | pass     |
+| `S3-vault-key-bytes-in-IndexedDB`                     | Unwrapped vault key bytes are stored in IndexedDB                               | `derivation-profile.ts`   | `CANARY_IN_FORBIDDEN_DESTINATION` at `browser.indexedDB`, class `vault_key`.                                                                            | pass     |
+| `S4-session-secret-in-a-script-cookie`                | A signing-session secret is written to a cookie by page script                  | `derivation-profile.ts`   | `CANARY_IN_FORBIDDEN_DESTINATION` at `browser.cookie`, class `signing_session_secret`.                                                                  | pass     |
+| `S5-secret-in-the-Cache-API`                          | A response holding a session secret is put into Cache storage                   | `derivation-profile.ts`   | `CACHE_OR_SERVICE_WORKER_USED` at `browser.cache`; `CANARY_IN_FORBIDDEN_DESTINATION` at `browser.cache`, class `signing_session_secret`.                | pass     |
+| `S6-secret-written-then-deleted`                      | A PRF output is written to localStorage and removed again at once               | `derivation-profile.ts`   | `CANARY_IN_FORBIDDEN_DESTINATION` at `browser.localStorage`, class `prf_output`.                                                                        | pass     |
+| `S7-CryptoKey-in-IndexedDB`                           | A non-extractable CryptoKey is stored in IndexedDB                              | `derivation-profile.ts`   | `CRYPTOKEY_PERSISTED` at `browser.indexedDB`.                                                                                                           | pass     |
+| `L1-document-text-through-the-logger`                 | Document text and a file name are passed to the logger as a code                | `assistant/runs/route.ts` | `CANARY_IN_FORBIDDEN_DESTINATION` at `server.log`, class `unselected_text`; `CANARY_IN_FORBIDDEN_DESTINATION` at `server.log`, class `filename`.        | pass     |
+| `L2-amount-and-secret-on-the-error-path`              | An error carrying an amount and a credential is printed with its stack          | `assistant/runs/route.ts` | `CANARY_IN_FORBIDDEN_DESTINATION` at `server.log`, class `money_field`; `CANARY_IN_FORBIDDEN_DESTINATION` at `server.log`, class `provider_credential`. | pass     |
+| `N1-browser-sends-to-a-forbidden-receiver`            | Client code posts unselected text to another host                               | `derivation-profile.ts`   | `BROWSER_REQUEST_BLOCKED_BY_POLICY` at `request.outside`. Receiver: 0 request(s).                                                                       | pass     |
+| `N2-server-sends-to-a-forbidden-receiver`             | A route posts unselected text to another host                                   | `auth/me/route.ts`        | `SERVER_EGRESS_NOT_ALLOWED` at `server.egress`. Receiver: 4 request(s).                                                                                 | pass     |
+| `N3-consented-request-with-an-extra-unselected-field` | The request builder adds text that the reviewer never selected                  | `selected-context.ts`     | `CANARY_IN_FORBIDDEN_DESTINATION` at `request.assistant`, class `unselected_text`.                                                                      | pass     |
+
+Notes on what these show:
+
+- **S6** is detected only by the intercepted write. The control fails if a later snapshot is what saw
+  the value, so it shows that a write-then-delete is not missed.
+- **S5** and **S7** are violations whatever is stored: the application uses no Cache storage, and a
+  persisted `CryptoKey` breaks the memory-only rule even when it is non-extractable.
+- **N1** is reported as a request the policy blocked: the attempt is the finding. The receiver saw
+  nothing from the browser.
+- **N2** needs no consent to be detected: `/api/auth/me` is called before any Send.
+- **N3** is a request the reviewer did consent to, carrying text they did not select.
+- Each fault also made other checks fail (the journey's own checks, the asset scan finding the
+  marker in the bundle). Those are not counted as the detection.
+
+Two earlier attempts of the control run stopped before any fault was applied and are not evidence:
+the first could not install dependencies offline in a worktree on a temporary filesystem (the copy
+now lives on the same disk as the package store), and the second had a baseline that expected
+package builds a fresh copy does not have (a single-journey run now checks that journey's assets
+only).
+
+## CI and evidence
+
+`.github/workflows/ci.yml` has two jobs for this chapter, in addition to the existing `check` job
+(which already runs the unit tests, including the comparator, detector and fault-anchor tests, and
+the contract suite):
+
+| Job                    | Runs                                                                                                                                    | Notes                                                                                                                                             |
+| ---------------------- | --------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `security`             | `pnpm threat:check`, `pnpm contracts:test:ci`, `pnpm contracts:static` (pinned Slither 0.11.6), `pnpm test:privacy:browser --no-record` | Bounded, local, synthetic. The contract campaign is the **reduced** `ci` profile, never the full campaign. A tool that did not run fails the job. |
+| `deployment-read-only` | `pnpm verify:deployment --public-rpc`                                                                                                   | A separate read-only gate. A failed, unavailable or skipped run is **not** a verified deployment. It does not block other changes.                |
+
+**These jobs have not been observed running on GitHub: NOT YET.** They were added in this chapter and
+every command in them was run locally. The negative controls and the full campaigns are not CI jobs.
+
+Recorded results in `docs/build-state.json`: `privacy-boundaries`, `privacy-negative-controls`,
+`contract-campaign-full` (two seeds), `contract-campaign-ci`, `deployment-verification`,
+`explorer-verification`.
