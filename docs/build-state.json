@@ -146,8 +146,8 @@
       "id": "17",
       "title": "Security Hardening and Verified Deployment",
       "additive": true,
-      "state": "pending",
-      "evidence": [],
+      "state": "in-progress",
+      "evidence": ["chapter17.checks"],
       "chapterPromptPath": "build_instructions/prompt_library/LexAegis_Prompt_Library_Chapter_17_Targeted_Build_Tasks_v1_0.md"
     },
     {
@@ -9037,5 +9037,17 @@
       "Chapter 14 remains in-progress; smoke:local still blocked by the browser driver; the .env secret-scan findings are carried forward."
     ],
     "handoff": "Chapter 17 can rely on: the identity reference living inside agent-config v2 bytes (extractAgentIdentity), the read-only resolver/card reader in @lexaegis/sdk/agent-identity, the DNS-pinned CLI transport, the identity-off and identity-unavailable T0 smoke runs, and the guard test proving no feedback or registration path ships. Registration must stay a separate explicit operator action."
+  },
+  "chapter17": {
+    "startedOn": "2026-10-11",
+    "state": "in-progress",
+    "ruleWaiver": "Chapter 16 is complete. Chapter 14 remains in-progress (owner decision) and Chapter 12 has not run: its validation plan exists only as a prompt, so no Chapter 12 result is reused or claimed.",
+    "tasks": {
+      "1": {
+        "status": "complete",
+        "summary": "Compatibility contract. Source-to-task mapping: #2=17.1 threat model; #3-5=17.2 invariants/authorisation; #6=17.3 static analysis; #7-8=17.4 deployment verification; #9-10=17.5 leak checks; #11=17.6 SECURITY.md. Confirmed v1 boundary in source: execute(ReviewAction,bytes) carries ISSUE(0)/REVOKE(1)/SUPERSEDE(2); invalidateNonce(uint256 expectedNonce) acts for msg.sender; no other mutation entry point. Protected inputs (docs/protected-baselines.json, 43 files + compiled registry): registry and authorization source, interface, contracts/foundry.toml, toolchain.json, registry artifact, Chapter 2 and registry vectors, protocol v1 sources, generated SDK ABI. Consequence: the security profile cannot be a new foundry.toml profile (that file is a protected baseline); the campaign sizes are supplied through FOUNDRY_* environment overrides by a script, which changes no build setting. Existing coverage found: Authorization.t.sol (36 tests: domain, wrong signer/chain/registry/domain, exact deadline, zero deadline, replay, nonce isolation, invalidation, exhaustion, ERC-1271 owned/wrong-magic/reverting/malformed/reentrant, policy change), Lifecycle.t.sol (23), Vectors.t.sol (3), InterfaceSelectors.t.sol (6), Invariants.t.sol (Chapter 3 handler: 3 EOA reviewers, ghost model, 6 invariants, 64 runs x depth 64). Baseline before edits at commit 342b491: forge test 69 passed, 0 failed. Gaps to cover: ERC-1271 reviewer and >=4 EOAs in the stateful model, identical commitments across reviewers, per-operation attempted/success/rejected counts, namespace snapshots around rejected calls, deadline-1, wrong-registry replay via a second registry, executor races, campaign-scale runs. Dependencies: Chapter 12 has not run (pending), so Task 9 reuses the Chapter 10/11/14 browser harnesses and says so. No protected change, deployment, funding or transaction is made by this chapter.",
+        "files": ["docs/build-state.json"]
+      }
+    }
   }
 }
