@@ -14,3 +14,10 @@ network, storage, environment or signing.
 A match shows that supplied bytes are the ones a receipt reference commits to. It does not show
 that the content is correct or who the reviewer is. See `@lexaegis/sdk` for registry checks and
 `examples/document-review` for a runnable integration.
+
+## More
+
+- Specification: [`docs/SPEC.md`](../../docs/SPEC.md). Test vectors: [`test-vectors/`](./test-vectors/README.md)
+  (`pnpm vectors:check`), checked independently by [`examples/python-verify`](../../examples/python-verify/README.md).
+- Using it: [`docs/QUICKSTART.md`](../../docs/QUICKSTART.md), [`packages/sdk`](../sdk/README.md),
+  [`packages/cli`](../cli/README.md). API reference: `pnpm docs:api`.

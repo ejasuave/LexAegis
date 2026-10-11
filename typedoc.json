@@ -1,0 +1,33 @@
+{
+  "$schema": "https://typedoc.org/schema.json",
+  "name": "Proof of Review: protocol and SDK",
+  "entryPoints": [
+    "docs-entries/protocol.ts",
+    "docs-entries/protocol-v1.ts",
+    "docs-entries/protocol-portable.ts",
+    "docs-entries/sdk.ts",
+    "docs-entries/sdk-portable.ts",
+    "docs-entries/sdk-offline.ts",
+    "docs-entries/sdk-verify.ts",
+    "docs-entries/sdk-registry.ts",
+    "docs-entries/sdk-transactions.ts"
+  ],
+  "tsconfig": "typedoc.tsconfig.json",
+  "out": "docs/api",
+  "readme": "none",
+  "disableSources": true,
+  "excludePrivate": true,
+  "excludeProtected": true,
+  "excludeInternal": true,
+  "excludeExternals": true,
+  "hideGenerator": true,
+  "includeVersion": false,
+  "gitRevision": "main",
+  "sort": ["source-order"],
+  "validation": {
+    "notExported": false,
+    "invalidLink": true,
+    "notDocumented": false
+  },
+  "treatWarningsAsErrors": false
+}

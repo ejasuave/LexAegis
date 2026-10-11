@@ -7603,6 +7603,21 @@
         "status": "complete",
         "summary": "docs/WHY.md: a factual, dated comparison of Proof of Review with hash-and-timestamp services, generic on-chain attestations, e-signature audit trails and C2PA content credentials, in a table (what is bound, interpretation, lifecycle, recipient verification, disclosure, integration effort, what each does better) plus what the primitive actually provides (each point traced to SPEC.md and its checks) and what it does not do. External claims were fetched on 2026-10-11 from primary documents and appear in an evidence appendix with URL, version, supported claim and uncertainty: RFC 3161 (sections 1, 2.1, 2.2), OpenTimestamps home page, the EAS contracts README, and C2PA specification 2.2 (sections 1.2, 1.3.2, 2.1-2.3, 9.1, 15.7). Left NOT YET rather than filled from memory: the e-signature audit-trail row (the DocuSign support page returned only an error notice, a DocuSign legality page does not describe the audit trail, the Adobe help page returned HTTP 403), EAS revocation/expiry/off-chain behaviour (docs.attest.org returned only a page title; the README does not cover it) and C2PA section 14 (not read). No uniqueness, adoption, benchmark, market, legal-enforceability, compliance or certification claim is made.",
         "files": ["docs/WHY.md"]
+      },
+      "11": {
+        "status": "complete",
+        "summary": "API reference and navigation. TypeDoc 0.28.19 (pinned root devDependency, released April 2026) via typedoc.json generates docs/api (pnpm docs:api; git-ignored, never committed, outside every app bundle) from the actual public entry points through nine thin docs-entries facades that name each module by its import path (@lexaegis/protocol, /v1, /portable, @lexaegis/sdk, /portable, /offline, /verify, /registry, /transactions); private, protected, @internal and external symbols are excluded, source links are disabled and no repository path is emitted. pnpm docs:check (tooling/scripts/docs-check.ts, 14 checks): two builds are byte-identical; no private filesystem path or secret pattern in the output; no test-support/replay/application module path; every entry point has a module page and verifyReviewExport/verifyReceipt are documented; every documented import path and named import (80 imports across the READMEs, SPEC, QUICKSTART, WHY and TSDoc examples) exists in the BUILT package exports (publishConfig.exports resolved to dist); the CLI README exit-code table equals the source constants and every exit code the quickstart documents exists; 39 relative links and heading anchors resolve; the root README (new) links the specification, vectors, Python checker, quickstart, WHY, SDK, CLI and the API command and marks the widget NOT YET; no web or verifier build artifact mentions the documentation tool; typedoc is a root dependency only. Negative controls (a nonexistent export and a dead link) fail the check. Executable snippets: the 50+ TSDoc examples and README fences are type-checked by the sdk doc-snippets test and the SPEC snippets by spec:check; samples compile against the packed declarations in packages:check. Navigation added to the root, protocol, sdk and cli READMEs.",
+        "files": [
+          "typedoc.json",
+          "typedoc.tsconfig.json",
+          "docs-entries",
+          "tooling/scripts/docs-check.ts",
+          "README.md",
+          "packages",
+          "package.json",
+          "pnpm-lock.yaml",
+          ".gitignore"
+        ]
       }
     }
   }

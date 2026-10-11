@@ -76,7 +76,9 @@
     "cli": "tsx packages/cli/src/bin.ts",
     "contracts:reference": "pnpm --filter @lexaegis/contracts reference",
     "contracts:reference:check": "pnpm --filter @lexaegis/contracts reference:check",
-    "quickstart:check": "tsx tooling/scripts/quickstart-check.ts"
+    "quickstart:check": "tsx tooling/scripts/quickstart-check.ts",
+    "docs:api": "typedoc",
+    "docs:check": "tsx tooling/scripts/docs-check.ts"
   },
   "devDependencies": {
     "@eslint/js": "10.0.1",
@@ -92,6 +94,7 @@
     "playwright": "1.63.0",
     "prettier": "3.9.9",
     "tsx": "4.23.15",
+    "typedoc": "0.28.19",
     "typescript": "6.0.3",
     "typescript-eslint": "8.71.1",
     "vitest": "5.0.3"

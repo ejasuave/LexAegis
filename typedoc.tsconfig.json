@@ -1,0 +1,10 @@
+{
+  "extends": "./tsconfig.base.json",
+  "compilerOptions": {
+    "lib": ["ES2023", "DOM"],
+    "types": ["node"],
+    "skipLibCheck": true
+  },
+  "include": ["docs-entries", "packages/protocol/src", "packages/sdk/src"],
+  "exclude": ["**/*.test.ts", "**/test-helpers.ts"]
+}

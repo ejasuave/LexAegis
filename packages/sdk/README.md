@@ -112,3 +112,6 @@ Offline and network operations are separate: nothing is requested unless you pas
 
 Runnable usage: [`examples/document-review`](../../examples/document-review). Schemas:
 `schemas/v1/verification-report.schema.json` and `registry-policy.schema.json`.
+
+More: [`docs/SPEC.md`](../../docs/SPEC.md), [`docs/QUICKSTART.md`](../../docs/QUICKSTART.md),
+[`docs/WHY.md`](../../docs/WHY.md), the [CLI](../cli/README.md), and the API reference (`pnpm docs:api`).

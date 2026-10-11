@@ -105,3 +105,6 @@ echo "exit=$?"   # do not swallow a nonzero exit: 11, 12, 13, 10 and 20 are resu
 # Status only
 proof-of-review status --chain-id 10143 --registry 0x453b... --reviewer 0x... --commitment 0x...
 ```
+
+See also: [`docs/QUICKSTART.md`](../../docs/QUICKSTART.md) path 2, [`docs/SPEC.md`](../../docs/SPEC.md) section 9
+(what each verification field means) and the [SDK result codes](../sdk/RESULT_CODES.md).
