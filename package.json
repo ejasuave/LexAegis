@@ -80,6 +80,7 @@
     "docs:api": "typedoc",
     "docs:check": "tsx tooling/scripts/docs-check.ts",
     "verify:deployment": "tsx tooling/scripts/verify-deployment.ts",
+    "verify:explorer": "tsx tooling/scripts/explorer-verify.ts",
     "contracts:static": "tsx tooling/scripts/static-analysis.ts",
     "contracts:campaign": "tsx tooling/scripts/security-campaign.ts",
     "contracts:test:ci": "tsx tooling/scripts/security-campaign.ts --profile ci",

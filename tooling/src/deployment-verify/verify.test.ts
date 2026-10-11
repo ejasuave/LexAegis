@@ -65,6 +65,7 @@ describe('deployment verification (stubbed network)', () => {
       'EIP712._cachedThis',
     ]);
     expect(Object.values(report.deploymentTransaction?.checks ?? {}).every(Boolean)).toBe(true);
+    expect(report.deploymentTransaction?.blockTimestamp).toBe('2026-10-09T00:00:00.000Z');
   });
 
   it('only ever reads: no signing, sending or estimating method is called', async () => {

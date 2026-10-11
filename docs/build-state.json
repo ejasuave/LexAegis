@@ -6544,6 +6544,102 @@
       "outcome": "pass",
       "reasonCodes": [],
       "evidenceRefs": []
+    },
+    {
+      "id": "deployment-verify-alchemy-20261011161707",
+      "subject": "deployment-verification",
+      "sourceRevision": {
+        "commit": "14c6f2965d7b224427541e835d39264b2954d88c",
+        "dirtyWorktree": true,
+        "contentFingerprint": "80d6272da80a7e56bdd031a0e307ba84159b19d5cb69887f25b8a36e1ef33596"
+      },
+      "checkedAt": "2026-10-11T16:17:07.412Z",
+      "command": "pnpm verify:deployment",
+      "environment": {
+        "node": "v24.21.0",
+        "os": "linux-x64",
+        "pnpm": "11.11.0"
+      },
+      "evidenceClass": "live_testnet",
+      "outcome": "pass",
+      "reasonCodes": ["CODE_EXACT_MATCH"],
+      "evidenceRefs": [
+        {
+          "type": "path",
+          "value": "docs/evidence/chapter17-deployment-verify-alchemy-2026-10-11.json"
+        }
+      ],
+      "facts": {
+        "codeMatch": "exact_match",
+        "endpoint": "https://monad-testnet.g.alchemy.com",
+        "checkpointBlock": "70156819",
+        "registryAddress": "0x453bfd1602d8a8666f55bf9a8d87b127cb94048f"
+      }
+    },
+    {
+      "id": "deployment-verify-public-20261011161714",
+      "subject": "deployment-verification",
+      "sourceRevision": {
+        "commit": "14c6f2965d7b224427541e835d39264b2954d88c",
+        "dirtyWorktree": true,
+        "contentFingerprint": "80d6272da80a7e56bdd031a0e307ba84159b19d5cb69887f25b8a36e1ef33596"
+      },
+      "checkedAt": "2026-10-11T16:17:14.905Z",
+      "command": "pnpm verify:deployment -- --public-rpc",
+      "environment": {
+        "node": "v24.21.0",
+        "os": "linux-x64",
+        "pnpm": "11.11.0"
+      },
+      "evidenceClass": "live_testnet",
+      "outcome": "pass",
+      "reasonCodes": ["CODE_EXACT_MATCH"],
+      "evidenceRefs": [
+        {
+          "type": "path",
+          "value": "docs/evidence/chapter17-deployment-verify-public-2026-10-11.json"
+        }
+      ],
+      "facts": {
+        "codeMatch": "exact_match",
+        "endpoint": "https://testnet-rpc.monad.xyz",
+        "checkpointBlock": "70156845",
+        "registryAddress": "0x453bfd1602d8a8666f55bf9a8d87b127cb94048f"
+      }
+    },
+    {
+      "id": "explorer-verification-20261011161936",
+      "subject": "explorer-verification",
+      "sourceRevision": {
+        "commit": "14c6f2965d7b224427541e835d39264b2954d88c",
+        "dirtyWorktree": true,
+        "contentFingerprint": "7ed72c35020515d4cb86ed91843eda2efa57b32d3accd38ec059d672945c9b02"
+      },
+      "checkedAt": "2026-10-11T16:19:36.597Z",
+      "command": "pnpm verify:explorer -- --submit",
+      "environment": {
+        "node": "v24.21.0",
+        "os": "linux-x64",
+        "pnpm": "11.11.0"
+      },
+      "evidenceClass": "live_testnet",
+      "outcome": "pass",
+      "reasonCodes": ["EXPLORER_VERIFIED"],
+      "evidenceRefs": [
+        {
+          "type": "path",
+          "value": "docs/evidence/chapter17-explorer-verification-2026-10-11.json"
+        },
+        {
+          "type": "url",
+          "value": "https://testnet.monadvision.com/address/0x453bfd1602d8a8666f55bf9a8d87b127cb94048f"
+        }
+      ],
+      "facts": {
+        "verifier": "sourcify",
+        "matchLevel": "match",
+        "address": "0x453bfd1602d8a8666f55bf9a8d87b127cb94048f"
+      }
     }
   ],
   "appliedCuts": [],
@@ -9097,6 +9193,21 @@
           "tooling/src/deployment-verify",
           "tooling/scripts/verify-deployment.ts",
           "contracts/integration/verify-deployment.anvil.test.ts",
+          "package.json"
+        ]
+      },
+      "8": {
+        "status": "complete",
+        "summary": "docs/DEPLOYMENTS.md created with five separate records: (1) the Chapter 6 registry deployment, unchanged, with every field evidence-backed and the chain values read back on 2026-10-11 (chain 10143, genesis, registry 0x453bfd16…048f, transaction 0xe6d0be40…a04a, sender 0xcaef8dd2…7d18 at nonce 0, plain CREATE by an externally owned transaction with the address equal to the CREATE address for that sender and nonce, block 69534196 hash 0x9f9a11f3…e0a8 canonical, block time 2026-10-09T12:01:18Z, creation code 5,033 bytes, runtime 4,118 bytes, solc 0.8.37+commit.f401782d, osaka, optimizer 200, viaIR false, bytecodeHash none, OpenZeppelin 5.6.1 with lockfile integrity, Foundry 1.8.5, source sha256 values); deployment source commit is NOT YET and not recoverable as a commit because the deployment block predates the repository's first commit (496c655, 2026-10-09T23:45:35Z), while the first-commit sources, unchanged since, compile to exactly the deployed creation code; the current verification commit is identified separately. (2) Read-only bytecode comparison: pnpm verify:deployment on the real Monad testnet registry returned MATCH, exit 0, exact_match of 4,118 bytes under the exact policy, on the configured Alchemy endpoint (checkpoint block 70156819, finalized minus 3, re-checked) and corroborated on the public endpoint https://testnet-rpc.monad.xyz (block 70156845); the recorded code pin equals the observed hash; all seven EIP-712 immutables were derived from context and listed; no links; deployment transaction consistent in 7 of 7 checks; five read methods, 9 requests each. Evidence: docs/evidence/chapter17-deployment-verify-{alchemy,public}-2026-10-11.json, both recorded as live_testnet results. (3) Explorer source verification, separate from (2): Monad's guide re-read on 2026-10-11 documents the Sourcify route for testnet (chain 10143, no API key, verifier https://sourcify-api-monad.blockvision.org/) and a Monadscan route that needs an API key. pnpm verify:explorer (tooling/scripts/explorer-verify.ts, tooling/src/explorer-verify.ts with 4 tests) builds the payload in an isolated copy holding only sources and build settings, checks the allowlist (18 Solidity sources: 3 registry, 15 pinned OpenZeppelin; settings keys) and scans for credentials before sending, then runs the pinned forge verify-contract with the recorded settings (no flattening, no metadata change, no key, no transaction). Submitted once; job bbb479c7-1513-4da3-8873-bff3924d9a3c completed 2026-10-11T16:19:21Z; the service's status endpoint reports match=match, runtimeMatch=match, creationMatch=null for chain 10143 and this address: VERIFIED at Sourcify's non-exact level (exact_match is unavailable because the build appends no metadata hash). The rendered MonadVision page could not be checked by tooling (bot challenge, HTTP 403) and is recorded as unchecked; Monadscan verification is NOT YET (no API key configured, not attempted). (4) Optional agent registration: none. (5) Local chains, mainnet and replacement deployments: none. No replacement was deployed, no account funded, no transaction sent. Source verification is described as code correspondence, never as an audit.",
+        "files": [
+          "docs/DEPLOYMENTS.md",
+          "docs/evidence/chapter17-deployment-verify-alchemy-2026-10-11.json",
+          "docs/evidence/chapter17-deployment-verify-public-2026-10-11.json",
+          "docs/evidence/chapter17-explorer-verification-2026-10-11.json",
+          "tooling/scripts/explorer-verify.ts",
+          "tooling/src/explorer-verify.ts",
+          "tooling/src/explorer-verify.test.ts",
+          "tooling/src/deployment-verify/verify.ts",
           "package.json"
         ]
       }

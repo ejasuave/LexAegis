@@ -139,6 +139,8 @@ export interface DeploymentReport {
     creation: 'CREATE by an externally owned transaction (to = null)' | 'not established';
     blockNumber: string | null;
     blockHash: string | null;
+    /** The deployment block's own timestamp (UTC), as the endpoint reported it. */
+    blockTimestamp: string | null;
     canonical: boolean | null;
     checks: Record<string, boolean>;
   } | null;
@@ -167,7 +169,14 @@ function finish(
   return { schema: 'lexaegis.deployment-verification.v1', outcome, exitCode, ...partial };
 }
 
-const blockSchema = z.looseObject({ number: z.string().regex(/^0x[0-9a-f]+$/), hash: hex32 });
+const blockSchema = z.looseObject({
+  number: z.string().regex(/^0x[0-9a-f]+$/),
+  hash: hex32,
+  timestamp: z
+    .string()
+    .regex(/^0x[0-9a-f]+$/)
+    .optional(),
+});
 const codeSchema = z.string().regex(/^0x(?:[0-9a-f]{2})*$/);
 const transactionSchema = z.looseObject({
   from: address,
@@ -368,6 +377,7 @@ export async function verifyDeployment(input: {
         creation: 'not established',
         blockNumber: null,
         blockHash: null,
+        blockTimestamp: null,
         canonical: null,
         checks: {},
       };
@@ -402,6 +412,10 @@ export async function verifyDeployment(input: {
           : 'not established',
         blockNumber: BigInt(receipt.blockNumber).toString(),
         blockHash: receipt.blockHash,
+        blockTimestamp:
+          deploymentBlock?.timestamp === undefined
+            ? null
+            : new Date(Number(BigInt(deploymentBlock.timestamp)) * 1000).toISOString(),
         canonical,
         checks,
       };

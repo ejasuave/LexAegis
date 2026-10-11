@@ -1,0 +1,173 @@
+{
+  "schema": "lexaegis.evidence.deployment-verification.v1",
+  "note": "Read-only comparison of deployed runtime code with the pinned source. An RPC observation depends on the endpoint that answered; it is not a consensus proof, and a match is code correspondence, not a security audit.",
+  "command": "pnpm verify:deployment -- --public-rpc",
+  "checkedAt": "2026-10-11T16:17:14.905Z",
+  "durationSeconds": 1,
+  "verificationCommit": "14c6f2965d7b224427541e835d39264b2954d88c",
+  "dirtyWorktree": true,
+  "toolchain": {
+    "forge": "1.8.5",
+    "node": "v24.21.0"
+  },
+  "contractSources": {
+    "sha256": "3549e558a62f444e37c7d7516daeb34daf5bff8262ae730909b35ea768fc7c07",
+    "files": 5
+  },
+  "rebuild": "rebuilt from the pinned source",
+  "limits": {
+    "callMs": 10000,
+    "transientRetries": 1,
+    "totalMs": 60000
+  },
+  "endpointSource": "public Monad testnet endpoint",
+  "report": {
+    "schema": "lexaegis.deployment-verification.v1",
+    "outcome": "match",
+    "exitCode": 0,
+    "policy": "exact",
+    "record": {
+      "network": "monad-testnet",
+      "chainId": "10143",
+      "registryAddress": "0x453bfd1602d8a8666f55bf9a8d87b127cb94048f",
+      "deploymentBlock": "69534196"
+    },
+    "endpoint": "https://testnet-rpc.monad.xyz",
+    "methods": [
+      "eth_chainId",
+      "eth_getBlockByNumber",
+      "eth_getBlockByNumber",
+      "eth_getBlockByNumber",
+      "eth_getCode",
+      "eth_getTransactionByHash",
+      "eth_getTransactionReceipt",
+      "eth_getBlockByNumber",
+      "eth_getBlockByNumber"
+    ],
+    "network": {
+      "chainId": "10143",
+      "genesisHash": "0x298034669ee44327d2da9744b9b2782848e2f2a6959756b7b0471b09a404f5c9"
+    },
+    "checkpoint": {
+      "blockNumber": "70156845",
+      "blockHash": "0x355b3e12910c18e5a1192f18e46d6370d74f347978f1e94cc070a4bf241ceecc",
+      "finalizedBlock": "70156848",
+      "rechecked": true
+    },
+    "build": {
+      "compiler": "0.8.37+commit.f401782d",
+      "creationCodeKeccak256": "0x38a7a70bfb716f8d6d10c20ae206ac49add2be6a5c34a367dd5a51d5edf875f2",
+      "reproducesRecordedCreationCode": true,
+      "metadataAppended": true,
+      "immutables": [
+        {
+          "label": "EIP712._cachedDomainSeparator",
+          "value": "0x8e77c97c32bb647fb1873287ec6363a0537600b08c2da583a011ae33bdbd0d95",
+          "occurrences": 1
+        },
+        {
+          "label": "EIP712._cachedChainId",
+          "value": "0x000000000000000000000000000000000000000000000000000000000000279f",
+          "occurrences": 1
+        },
+        {
+          "label": "EIP712._cachedThis",
+          "value": "0x000000000000000000000000453bfd1602d8a8666f55bf9a8d87b127cb94048f",
+          "occurrences": 1
+        },
+        {
+          "label": "EIP712._hashedName",
+          "value": "0x23fc53c9b8f985477ec4b07c306b22871152719d5bd349e04a48b0e3bc2e05a9",
+          "occurrences": 1
+        },
+        {
+          "label": "EIP712._hashedVersion",
+          "value": "0xc89efdaa54c0f20c7adf612882df0950f5a951637e0307cdcb4c672f298b8bc6",
+          "occurrences": 1
+        },
+        {
+          "label": "EIP712._name",
+          "value": "0x4c6578416567697350726f6f664f665265766965770000000000000000000015",
+          "occurrences": 1
+        },
+        {
+          "label": "EIP712._version",
+          "value": "0x3100000000000000000000000000000000000000000000000000000000000001",
+          "occurrences": 1
+        }
+      ],
+      "links": 0
+    },
+    "comparison": {
+      "status": "exact_match",
+      "full": {
+        "observed": {
+          "bytes": 4118,
+          "keccak256": "0x2389a742aa78c6aad56162f42e300cf0fb8cee571c1e822cd3d8a7cffd00ed71",
+          "sha256": "0xbcb38d3200bda22852aa45f900054c79e60a18797221f11115eaa25e31928696"
+        },
+        "expected": {
+          "bytes": 4118,
+          "keccak256": "0x2389a742aa78c6aad56162f42e300cf0fb8cee571c1e822cd3d8a7cffd00ed71",
+          "sha256": "0xbcb38d3200bda22852aa45f900054c79e60a18797221f11115eaa25e31928696"
+        }
+      },
+      "normalised": null,
+      "trailer": {
+        "expected": {
+          "totalBytes": 12,
+          "entries": {
+            "solc": {
+              "kind": "bytes",
+              "value": "000825"
+            }
+          },
+          "solcVersion": "0.8.37"
+        },
+        "observed": {
+          "totalBytes": 12,
+          "entries": {
+            "solc": {
+              "kind": "bytes",
+              "value": "000825"
+            }
+          },
+          "solcVersion": "0.8.37"
+        }
+      },
+      "differences": {
+        "lengthDiffers": false,
+        "executableBytes": 0,
+        "immutables": [],
+        "links": [],
+        "firstOffset": null
+      }
+    },
+    "codeMatch": "exact_match",
+    "codePin": {
+      "recorded": "0x2389a742aa78c6aad56162f42e300cf0fb8cee571c1e822cd3d8a7cffd00ed71",
+      "observed": "0x2389a742aa78c6aad56162f42e300cf0fb8cee571c1e822cd3d8a7cffd00ed71",
+      "equal": true
+    },
+    "deploymentTransaction": {
+      "status": "consistent",
+      "sender": "0xcaef8dd2419b3f5a43dffaec4bbeb28d5f537d18",
+      "senderNonce": "0",
+      "creation": "CREATE by an externally owned transaction (to = null)",
+      "blockNumber": "69534196",
+      "blockHash": "0x9f9a11f3234202e24d6f0c50fe85301cf09fa97652dfa236c97aa5bd22cde0a8",
+      "blockTimestamp": "2026-10-09T12:01:18.000Z",
+      "canonical": true,
+      "checks": {
+        "executionSucceeded": true,
+        "isContractCreation": true,
+        "createdAddressIsTheRegistry": true,
+        "addressFollowsFromSenderAndNonce": true,
+        "blockNumberEqualsTheRecord": true,
+        "blockIsCanonicalAtTheCheckpoint": true,
+        "inputIsTheRecordedCreationCode": true
+      }
+    },
+    "issues": []
+  }
+}

@@ -1,0 +1,139 @@
+{
+  "schema": "lexaegis.evidence.explorer-verification.v1",
+  "note": "Explorer source verification is code correspondence reported by a third-party service. It is separate from the bytecode comparison (pnpm verify:deployment), cannot override it, and is not a security audit.",
+  "command": "pnpm verify:explorer -- --submit",
+  "checkedAt": "2026-10-11T16:19:36.597Z",
+  "startedAt": "2026-10-11T16:19:18.916Z",
+  "verificationCommit": "14c6f2965d7b224427541e835d39264b2954d88c",
+  "dirtyWorktree": true,
+  "guide": {
+    "url": "https://docs.monad.xyz/guides/verify-smart-contract/foundry",
+    "readOn": "2026-10-11",
+    "route": "Foundry with the Sourcify verifier; no API key; chain 10143"
+  },
+  "verifier": "Sourcify (MonadVision / BlockVision instance)",
+  "verifierUrl": "https://sourcify-api-monad.blockvision.org/",
+  "explorerPage": "https://testnet.monadvision.com/address/0x453bfd1602d8a8666f55bf9a8d87b127cb94048f",
+  "chainId": "10143",
+  "address": "0x453bfd1602d8a8666f55bf9a8d87b127cb94048f",
+  "compiler": "0.8.37+commit.f401782d",
+  "tool": {
+    "forge": "1.8.5"
+  },
+  "outgoing": {
+    "sha256": "02a8c18d4f2fc7fb1eb614b90c5b610079350a13fba1884d835e2a391132f714",
+    "sources": [
+      {
+        "path": "src/ProofOfReviewRegistry.sol",
+        "bytes": 4103
+      },
+      {
+        "path": "src/ReviewAuthorization.sol",
+        "bytes": 3567
+      },
+      {
+        "path": "src/interfaces/IProofOfReviewRegistry.sol",
+        "bytes": 4199
+      },
+      {
+        "path": "node_modules/@openzeppelin/contracts/utils/cryptography/EIP712.sol",
+        "bytes": 6695
+      },
+      {
+        "path": "node_modules/@openzeppelin/contracts/utils/cryptography/SignatureChecker.sol",
+        "bytes": 8202
+      },
+      {
+        "path": "node_modules/@openzeppelin/contracts/utils/cryptography/MessageHashUtils.sol",
+        "bytes": 8631
+      },
+      {
+        "path": "node_modules/@openzeppelin/contracts/utils/ShortStrings.sol",
+        "bytes": 4310
+      },
+      {
+        "path": "node_modules/@openzeppelin/contracts/interfaces/IERC5267.sol",
+        "bytes": 740
+      },
+      {
+        "path": "node_modules/@openzeppelin/contracts/utils/cryptography/ECDSA.sol",
+        "bytes": 12152
+      },
+      {
+        "path": "node_modules/@openzeppelin/contracts/interfaces/IERC1271.sol",
+        "bytes": 656
+      },
+      {
+        "path": "node_modules/@openzeppelin/contracts/interfaces/IERC7913.sol",
+        "bytes": 674
+      },
+      {
+        "path": "node_modules/@openzeppelin/contracts/utils/Bytes.sol",
+        "bytes": 14737
+      },
+      {
+        "path": "node_modules/@openzeppelin/contracts/utils/Strings.sol",
+        "bytes": 21538
+      },
+      {
+        "path": "node_modules/@openzeppelin/contracts/utils/StorageSlot.sol",
+        "bytes": 4182
+      },
+      {
+        "path": "node_modules/@openzeppelin/contracts/utils/math/Math.sol",
+        "bytes": 32664
+      },
+      {
+        "path": "node_modules/@openzeppelin/contracts/utils/math/SafeCast.sol",
+        "bytes": 34940
+      },
+      {
+        "path": "node_modules/@openzeppelin/contracts/utils/math/SignedMath.sol",
+        "bytes": 2613
+      },
+      {
+        "path": "node_modules/@openzeppelin/contracts/utils/Panic.sol",
+        "bytes": 1973
+      }
+    ],
+    "settings": {
+      "remappings": [
+        "@openzeppelin/contracts/=node_modules/@openzeppelin/contracts/",
+        "forge-std/=node_modules/forge-std/src/"
+      ],
+      "optimizer": {
+        "enabled": true,
+        "runs": 200
+      },
+      "metadata": {
+        "useLiteralContent": true,
+        "bytecodeHash": "none",
+        "appendCBOR": true
+      },
+      "evmVersion": "osaka",
+      "viaIR": false,
+      "viaSSACFG": false,
+      "experimental": false,
+      "libraries": {}
+    },
+    "allowlistIssues": []
+  },
+  "submission": {
+    "exitCode": 0,
+    "summary": "Start verifying contract `0x453BFd1602d8A8666F55bF9A8D87B127cB94048f` deployed on monad-testnet | Verifying on sourcify... | Submitting verification for [ProofOfReviewRegistry] 0x453BFd1602d8A8666F55bF9A8D87B127cB94048f. | Submitted contract for verification: | Verification Job ID: `bbb479c7-1513-4da3-8873-bff3924d9a3c` | URL: https://sourcify-api-monad.blockvision.org/verify-ui/jobs/bbb479c7-1513-4da3-8873-bff3924d9a3c"
+  },
+  "polling": {
+    "everySeconds": 15,
+    "limitSeconds": 300
+  },
+  "outcome": "verified",
+  "serviceStatus": {
+    "match": "match",
+    "creationMatch": null,
+    "runtimeMatch": "match",
+    "chainId": "10143",
+    "address": "0x453BFd1602d8A8666F55bF9A8D87B127cB94048f",
+    "verifiedAt": "2026-10-11T16:19:21Z",
+    "matchId": "2048018"
+  }
+}

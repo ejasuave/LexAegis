@@ -140,7 +140,11 @@ export function scriptedNode(script: NodeScript = {}): RpcReader {
                 : { number: `0x${finalized.toString(16)}`, hash: `0x${word(finalized)}` },
             );
           }
-          return Promise.resolve({ number: tag, hash: hashOf(BigInt(tag)) });
+          return Promise.resolve({
+            number: tag,
+            hash: hashOf(BigInt(tag)),
+            timestamp: '0x6ac82e80',
+          });
         }
         case 'eth_getCode':
           return Promise.resolve(script.code ?? deployedFixture());
