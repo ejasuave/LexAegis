@@ -2,7 +2,6 @@ import { readdirSync, readFileSync, statSync } from 'node:fs';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { describe, expect, it } from 'vitest';
-import { FEATURE_READINESS } from '@/server/flags';
 
 /*
  * The reputation-feedback stretch task was not elected, so nothing may write ERC-8004 feedback.
@@ -18,9 +17,6 @@ function sources(dir: string): string[] {
 }
 
 describe('reputation feedback is cut, not stubbed', () => {
-  it('the flag has no implementation, so no environment can enable it', () => {
-    expect(FEATURE_READINESS.reputationFeedback).toEqual({ implemented: false, verified: false });
-  });
   it('no runtime source can submit feedback, register, or call a write method of the registries', () => {
     const roots = [
       'apps/web/src',

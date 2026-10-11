@@ -48,9 +48,7 @@
           "version": "2.0.0",
           "linkedIdentityRegistry": null,
           "status": "verified",
-          "reasons": [
-            "CODE_ABI_AND_NONEXISTENT_TOKEN_VERIFIED"
-          ],
+          "reasons": ["CODE_ABI_AND_NONEXISTENT_TOKEN_VERIFIED"],
           "observations": [
             {
               "name": "eth_getCode",
@@ -90,9 +88,7 @@
           "version": "2.0.0",
           "linkedIdentityRegistry": "0x8004a818bfb912233c491871b3d84c89a494bd9e",
           "status": "verified",
-          "reasons": [
-            "CODE_ABI_AND_IDENTITY_LINK_VERIFIED"
-          ],
+          "reasons": ["CODE_ABI_AND_IDENTITY_LINK_VERIFIED"],
           "observations": [
             {
               "name": "eth_getCode",
@@ -139,9 +135,7 @@
           "version": "2.0.0",
           "linkedIdentityRegistry": null,
           "status": "verified",
-          "reasons": [
-            "CODE_ABI_AND_NONEXISTENT_TOKEN_VERIFIED"
-          ],
+          "reasons": ["CODE_ABI_AND_NONEXISTENT_TOKEN_VERIFIED"],
           "observations": [
             {
               "name": "eth_getCode",
@@ -181,9 +175,7 @@
           "version": "2.0.0",
           "linkedIdentityRegistry": "0x8004a169fb4a3325136eb29fa0ceb6d2e539a432",
           "status": "verified",
-          "reasons": [
-            "CODE_ABI_AND_IDENTITY_LINK_VERIFIED"
-          ],
+          "reasons": ["CODE_ABI_AND_IDENTITY_LINK_VERIFIED"],
           "observations": [
             {
               "name": "eth_getCode",

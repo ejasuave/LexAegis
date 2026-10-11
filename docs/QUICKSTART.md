@@ -211,6 +211,12 @@ echo "exit=$?"
 Prefer the environment variable to `--rpc`: a key inside a URL leaks through shell history and
 process listings. The command refuses a URL with a key in it.
 
+### Optional: agent identity (not run by the automated check)
+
+Add `--agent-identity` to `verify` to read the package's ERC-8004 reference (if any) and look it up on
+the registry you trust. A package without one reports "not included", not a failure. Card fetching
+needs `--fetch-agent-card --agent-card-origin <origin>`. See the [CLI README](../packages/cli/README.md).
+
 ### Embeddable widget: NOT YET
 
 There is no embeddable verification widget yet (Chapter 18). No snippet or URL is offered here, because

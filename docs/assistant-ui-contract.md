@@ -1,13 +1,13 @@
 # Assistant and UI contract
 
-Requirements for assistant and UI work; not evidence that a feature exists. Authority: the v3 brief, then `UI_UX_Instructions/UI_UX_BLUEPRINT.md` for visuals only.
+Requirements, not evidence that a feature exists. Authority: v3 brief; `UI_UX_Instructions/UI_UX_BLUEPRINT.md` for visuals only.
 
 ## Shell (Chapters 1, 10)
 
 - `apps/web` shell: status strip (matter and version, network, passkey session, server sign-in, vault, transaction, indexer as separate readings; Diagnostics disclosure), navigation, Command-centre and Review modes, labelled mobile tabs (Document, Aegis, Findings, Review package), command dock, activity drawer, saved-context drawer.
 - View state lives in `WorkspaceProvider`, so mode switches keep selection and draft. A pure readiness selector (`features/workspace`) returns blockers, outstanding decisions and next actions from controller snapshots; there is no combined approved or ready flag.
 - The orb is CSS/SVG with a text label, animated only for real running, tool, listening or stopping states and never under reduced motion; completion names the operation and says it approves nothing.
-- Palette tokens (`--lj-*` in `globals.css`) have a contrast test. The page scrolls on narrow screens and the dock is sticky.
+- Palette tokens (`--lj-*` in `globals.css`) have a contrast test. The page scrolls on narrow screens; the dock is sticky.
 
 ## Allowed assistant intents
 
@@ -16,8 +16,8 @@ Requirements for assistant and UI work; not evidence that a feature exists. Auth
 ## Boundaries
 
 - The model proposes; deterministic code decides. Model output, chat and voice can never approve, sign or confirm a fact.
-- Assistant run state is separate from wallet, vault, review and chain state. A finished run implies no approval, signature or confirmation.
-- Events carry run, matter, version, snapshot and a per-run `seq`; late, stale or gapped streams are discarded.
+- Assistant run state is separate from wallet, vault, review and chain state. A finished run implies no approval, signature, confirmation.
+- Events carry run, matter, version, snapshot and a per-run `seq`; stale or gapped streams are discarded.
 - Stop is one coordinated action (assistant, dictation, read-aloud, unused approval preview, unsent transaction). It never sends anything and never claims to reverse a broadcast or retract a disclosed signature.
 
 ## Human approval (Chapter 10)
@@ -36,19 +36,19 @@ On-device only: dictation requires the browser to report local recognition for e
 
 - Reads `/api/history/{status,reviewers/<address>,receipts/<address>/<commitment>}`: public, read-only. Index state is `availability`, `freshness` and `indexConsistency`, worded in text with block lag. `history_reset_required` (409) means refresh. `not_indexed` is never NotFound. Indexed lifecycle and live registry result are separate readings; newer actions are "provisional". The live read wins.
 - The activity drawer has three views: assistant work; human decisions (unsigned, local) apart from signed authorisations; public receipts. Private matter titles join only in browser memory while unlocked.
-- Saved reviews open read-only after verification in this unlock, copy only the public reference, and export through disclosure previews. Verify links to the separate verifier; nothing here reports verified.
+- Saved reviews open read-only after verification in this unlock, copy only the public reference, export through disclosure previews. Verify links to the separate verifier; nothing here reports verified.
 
 ## Assistant (Chapter 9)
 
 - One Qwen runtime; endpoint, model and output mode are operator settings. Real-matter runs need a passing `pnpm qwen:smoke` for that exact configuration.
 - `/status`, `/check-payments` and `/missing-evidence` run on the device. Anything else opens a disclosure preview; only its Send creates consent for that exact content and provider.
-- The model sees handles and reads excerpts only through `read_sources`. Code prints quotes, totals and status.
-- Limits: 6 provider attempts, 8 tool calls, 120 seconds, one run per account. Interrupted means unknown outcome.
+- The model sees handles; excerpts only via `read_sources`. Code prints quotes, totals and status.
+- Limits: 6 provider attempts, 8 tool calls, 120 s, one run per account. Interrupted means unknown.
 - A proposal needs Confirm, Edit or Dismiss. Save outcome stores an unconfirmed observation, shown saved only after read-back.
 
 ## Optional features (Chapter 14)
 
-Six server-side flags (`FEATURE_*`, exactly `true` or `false`): `voice`, `documentComparison`, `matterBriefing`, `reputationFeedback`, `agentIdentity`, `matterNotes`. An explicit `true` never bypasses a missing implementation or verification. A disabled feature has no navigation, command, button or route. Implemented: `documentComparison`, `voice`. Stop, consent, approval, fee confirmation, citations, the what-if label and verification are never gated.
+Six server flags (`FEATURE_*`, exactly `true` or `false`): `voice`, `documentComparison`, `matterBriefing`, `reputationFeedback`, `agentIdentity`, `matterNotes`. An explicit `true` never bypasses missing implementation or verification. A disabled feature has no navigation, command, button, route. Implemented: `documentComparison`, `voice`, `agentIdentity`. Stop, consent, approval, fees, citations, the what-if label and verification are never gated. `agentIdentity` is read-only; registration and feedback are never assistant actions.
 
 ## Accounts (Chapter 4)
 
@@ -64,8 +64,8 @@ Create (after an absence check), unlock, recover, lock, matters, source files (1
 
 ## Independent verification (Chapters 11, 15)
 
-`apps/verifier`, the SDK and the read-only `proof-of-review` command check an export locally against a separately supplied public reference; registry reads are explicit and read-only. Results never combine into "valid"; signer acceptance needs a caller policy. A receipt does not prove legal correctness or professional identity.
+`apps/verifier`, the SDK and the read-only `proof-of-review` command check an export locally against a separately supplied public reference; registry reads are explicit and read-only. Results never combine into "valid"; signer acceptance needs a caller policy. The agent-identity sidecar is explicit, separate, and changes no result. A receipt proves neither legal correctness nor professional identity.
 
 ## Requirements still open
 
-Chapters 12 and 13 validation (cited output, cancellation, isolation, approval binding, injection, accessibility) and the demo with a real transaction.
+Chapters 12 and 13 validation (cited output, cancellation, isolation, approval binding, injection, accessibility) and the real-transaction demo.

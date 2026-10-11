@@ -102,6 +102,12 @@ proof-of-review verify review-export.json --chain-id 10143 \
   --registry 0x453bfd1602d8a8666f55bf9a8d87b127cb94048f --expected-reference expected.json --json
 echo "exit=$?"   # do not swallow a nonzero exit: 11, 12, 13, 10 and 20 are results
 
+# Optional ERC-8004 agent identity sidecar (off by default; never changes the exit code)
+proof-of-review verify review-export.json --chain-id 10143 --registry 0x453b... --agent-identity --json
+# --agent-policy <file>: the ERC-8004 deployment you trust (built in: documented Monad testnet only)
+# --fetch-agent-card --agent-card-origin https://host: also fetch the card (5 s, 32 KiB, no redirects)
+# JSON becomes lexaegis.cli-result-agent-identity.v1 { core: <unchanged result>, agentIdentity }
+
 # Status only
 proof-of-review status --chain-id 10143 --registry 0x453b... --reviewer 0x... --commitment 0x...
 ```

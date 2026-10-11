@@ -10,15 +10,15 @@ Status: `docs/build-state.json` (5 real-device recovery, 6 testnet credentials, 
 
 ## Workflow
 
-- Session start: read only `docs/build-state.json`.
+- Session start: read `docs/build-state.json` only.
 - "Proceed to chapter N" / "next chapter": chapter N-1 must be `complete` (else stop and say). Read only its file at `chapterPromptPath`; run its `📦 BUILD TASK #n` blocks in order, no plans, without stopping between tasks. "Continue": resume `currentChapter` at its first incomplete task.
-- Strict TypeScript; closed `z.strictObject` schemas at every boundary; no `any`, coercion or non-string bigints.
+- Strict TypeScript; closed `z.strictObject` boundary schemas; no `any`, coercion or non-string bigints.
 - After each task update build-state.json (status, files, interfaces later chapters need). At chapter end run the gate, record observed results, mark complete only if required checks passed, set `currentChapter`/`nextChapter`, summarise, stop.
 
 ## Git
 
-- After each task: `git add -A`, commit `ch<N> task <X>: <summary>`, push. Chapter end: `ch<N> complete`. Messages come from the task just done; no `git diff`/`git log`.
-- Never force-push, commit `.env` or secrets, or rewrite history. If a push fails, report and continue; no retry loop.
+- After each task: `git add -A`, commit `ch<N> task <X>: <summary>`, push. Chapter end: `ch<N> complete`. Messages come from the task; no `git diff`/`git log`.
+- Never force-push, commit `.env`/secrets, or rewrite history. If a push fails, report and continue.
 
 ## What is being built
 
@@ -32,12 +32,13 @@ Status: `docs/build-state.json` (5 real-device recovery, 6 testnet credentials, 
 
 ## Invariants
 
-- v1 is frozen: schema IDs, commitment construction, EIP-712 domain, registry ABI, profiles `lexaegis.evm.bip32-prf.v1` and `lexaegis.vault.hkdf-sha256.aes-256-gcm.v1`. Never regenerate vectors to pass a test.
+- v1 is frozen: schema IDs, commitment construction, EIP-712 domain, registry ABI, profiles `lexaegis.evm.bip32-prf.v1` and `lexaegis.vault.hkdf-sha256.aes-256-gcm.v1`. Never regenerate vectors to pass tests.
 - Only `ReceiptReferenceV1` is public; manifests, hashes, labels, nonces are private.
-- Saved, signed, confirmed, indexed and active differ; no `valid=true`; RPC failure is `unknown`.
-- No simulated success; unavailable integrations return typed failures.
-- Keys, PRF outputs and sessions stay in memory. Vault unlock is not a signing session.
+- Saved, signed, confirmed, indexed, active differ; no `valid=true`; RPC failure: `unknown`.
+- No simulated success; unavailable integrations are typed failures.
+- Keys, PRF outputs, sessions stay in memory. Vault unlock is not a signing session.
 - Model proposes, code decides: no model, chat or voice input approves, signs or confirms.
 - A frozen package is ready only via a `RecoverableCapture` rebuilt by retrieval and verification in this unlock; signing consumes it, never a rebuild. Approval is a trusted click; technical failures are unwaivable.
 - Money is GBP minor units as decimal strings.
-- Only real_device/live_testnet evidence passes live gates; gates are computed. Failed Gate B withdraws the Mera bounty claims.
+- ERC-8004 identity: optional, inside hashed `agent-config` v2; never a manifest field; read-only.
+- Only real_device/live_testnet evidence passes live gates; gates are computed. Failed Gate B withdraws Mera bounty claims.
