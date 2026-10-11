@@ -3,6 +3,8 @@
 import { useId } from 'react';
 import { accountStatusLabel, type AccountErrorCode } from '@/features/account/public';
 import { Icon } from '@/components/shell/icons';
+import { useVault } from '@/components/vault/vault-context';
+import { vaultStatusLabel } from '@/components/vault/status';
 import { useAccount } from './account-context';
 
 const SUPPORT_URL = 'https://mera.category.xyz/authenticator-support/';
@@ -43,6 +45,7 @@ const short = (address: string) => `${address.slice(0, 8)}…${address.slice(-6)
  */
 export function AccountPanel() {
   const { availability, snapshot, commands } = useAccount();
+  const vault = useVault();
   const titleId = useId();
   const scopeId = useId();
   const ready = availability === 'available' && commands !== null;
@@ -91,9 +94,11 @@ export function AccountPanel() {
                   : 'Not checked'}
         </dd>
         <dt className="text-lj-muted">Vault</dt>
-        <dd className="m-0">Unavailable (not built yet)</dd>
+        <dd className="m-0" data-testid="vault-state">
+          {vaultStatusLabel(vault.snapshot, vault.available)}
+        </dd>
         <dt className="text-lj-muted">Chain connection</dt>
-        <dd className="m-0">Unavailable (not built yet)</dd>
+        <dd className="m-0">See Network and test funds below. It is read separately.</dd>
       </dl>
 
       <p id={scopeId} className="mt-4 text-[0.875rem] text-lj-secondary">

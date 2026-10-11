@@ -1,6 +1,7 @@
 'use client';
 
 import { AssistantOrb, orbLabel } from '@/components/assistant/AssistantOrb';
+import { Onboarding } from '@/components/account/Onboarding';
 import { CommandActions } from '@/components/assistant/CommandActions';
 import { deriveOrb } from '@/components/assistant/orb-state';
 import { useAssistant } from '@/components/assistant/assistant-context';
@@ -35,10 +36,12 @@ const muted = 'm-0 mt-2 text-[0.875rem] text-lj-secondary';
 /** Decrypted matters exist only while the vault is unlocked; locking removes them at once. */
 function MatterRail() {
   const { snapshot, available, commands } = useVault();
+  const onboarding = <Onboarding />;
   const unlocked = snapshot.state === 'unlocked' || snapshot.state === 'saving';
   const selected = snapshot.selectedMatter;
   return (
     <div>
+      {onboarding}
       <h2 className={panelTitle}>Matters</h2>
       {!unlocked ? (
         <p className={muted}>

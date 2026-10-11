@@ -55,7 +55,7 @@ describe('account panel before the browser controller exists', () => {
       expect(html).toContain(label);
     }
     expect(html).toContain('Locked');
-    expect(html).toContain('Unavailable (not built yet)');
+    expect(html).toContain('Vault unavailable');
     expect(html).not.toMatch(/confirmed|receipt|decrypted|approved/i);
   });
 

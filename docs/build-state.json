@@ -5131,6 +5131,17 @@
           "apps/web/src/components/shell/workspace-context.tsx",
           "apps/web/src/components/vault/VaultPanel.tsx"
         ]
+      },
+      "07": {
+        "status": "complete",
+        "summary": "Onboarding (Create account / Use existing passkey), AccessGuide separating account access from vault unlocking with transition messages (unsupported, cancelled, expired, backend loss, empty vault, missing ciphertext, integrity failure) and read-only post-recovery reconciliation; stale 'not built yet' account readings replaced with real vault state.",
+        "files": [
+          "apps/web/src/components/account/Onboarding.tsx",
+          "apps/web/src/components/account/AccessGuide.tsx",
+          "apps/web/src/components/account/AccountPanel.tsx",
+          "apps/web/src/app/vault/page.tsx",
+          "apps/web/src/components/review/ReviewWorkspace.tsx"
+        ]
       }
     }
   }
