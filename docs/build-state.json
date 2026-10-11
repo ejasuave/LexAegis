@@ -9058,6 +9058,15 @@
           "tooling/scripts/threat-model-check.ts",
           "package.json"
         ]
+      },
+      "3": {
+        "status": "complete",
+        "summary": "contracts/test/handlers/ReviewRegistryHandler.sol: a bounded stateful model around the unchanged ProofOfReviewRegistry (no stand-in registry or signature checker). 4 synthetic EOA reviewers + 1 locally deployed ERC-1271 reviewer (ERC1271OwnedAccount, owner rotated between two test keys) + 3 distinct executors; senders are an unrelated executor, the reviewer itself or another reviewer. A shared pool of 24 commitment values is offered to every reviewer, so identical bytes occur across namespaces. Valid ISSUE/REVOKE/SUPERSEDE go through execute with hand-computed EIP-712 digests (not hashAction) and the reviewer's direct invalidateNonce; deadlines include exact equality. Rejections: 9 signature faults (wrong key, field altered after signing, wrong chain/registry/name/version domain, empty, high-s, stale contract owner), 7 shapes, 3 deadlines, 6 lifecycle violations incl. another reviewer's Active bytes, replay/stale/future nonce, stranger and stale invalidation. Ghost model keyed by reviewer/commitment (status, predecessor, successor, issuedAt, updatedAt, everTerminal, firstIssuedAt, issuance and supersession event counts) plus a ghost nonce for every account, updated only after the call returned and never from registry reads; action nonces come from the ghost. Valid actions are called without try/catch (an unexpected revert escapes); an expected rejection that succeeds reverts UnexpectedSuccess; a rejection with unmodelled revert data is counted in unexpectedRejected (asserted zero); every rejected call is bracketed by a fingerprint of all tracked nonces and receipts in every namespace and must leave no log. Counts attempted/succeeded/expectedRejected/unexpectedRejected per operation (10 kinds) and per reviewer; skipped and prerequisite issues counted apart. Targeting: 8 handler selectors only (RegistryInvariants.t.sol setUp), fail_on_revert=true unchanged. ReviewRegistryHandler.t.sol: 7 tests incl. the deterministic progression (all 5 reviewers issue the same bytes; issue->supersede->supersede; issue->supersede->revoke; owner rotation; every rejection class) and 3 negative controls (valid action declared invalid escapes; corrupted model makes a valid action's revert escape; wrong reason is counted, not accepted). Campaign coverage (afterInvariant): successful issue, supersede, revoke and invalidation, each refusal class, >=3 namespaces, shared bytes, zero unmodelled reasons; proven live by a temporary impossible threshold that failed the run. Observed: forge test 77 passed, 0 failed (was 69); default campaign 64 runs x depth 64 = 4,096 calls, 0 reverts, also passing under four other seeds. No storage cheatcode is used in the stateful campaign. artifacts:check and baselines:check unchanged.",
+        "files": [
+          "contracts/test/handlers/ReviewRegistryHandler.sol",
+          "contracts/test/handlers/ReviewRegistryHandler.t.sol",
+          "contracts/test/RegistryInvariants.t.sol"
+        ]
       }
     }
   }
