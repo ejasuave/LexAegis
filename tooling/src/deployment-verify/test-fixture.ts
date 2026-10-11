@@ -38,7 +38,7 @@ export const NAMES: ReadonlyMap<string, ImmutableName> = new Map([
   ['11', { contract: 'EIP712', name: '_cachedThis' }],
 ]);
 
-export const DEPLOYER = `0x${'c1'.repeat(20)}`;
+export const DEPLOYER: Hex = `0x${'c1'.repeat(20)}`;
 export const DEPLOYER_NONCE = 5n;
 export const REGISTRY = getContractAddress({
   from: DEPLOYER,

@@ -126,7 +126,7 @@ describe('immutable resolution (from the deployment context, never from observed
     );
   });
   it('links a library only from a supplied address; a missing one is unresolved', () => {
-    const library = `0x${'1b'.repeat(20)}`;
+    const library: Hex = `0x${'1b'.repeat(20)}`;
     expect(
       buildExpectedRuntime({
         compiled: compiledFixture({ link: true }),
@@ -200,7 +200,7 @@ describe('runtime comparison', () => {
       immutables: ['EIP712._cachedChainId'],
     });
 
-    const library = `0x${'1b'.repeat(20)}`;
+    const library: Hex = `0x${'1b'.repeat(20)}`;
     const link = compare(
       flip(deployedFixture({ link: library.slice(2) }), 80),
       compiledFixture({ link: true }),
