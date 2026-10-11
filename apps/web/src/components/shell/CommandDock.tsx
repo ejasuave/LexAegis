@@ -6,6 +6,7 @@ import { useReview } from '@/components/review/review-context';
 import { decideEnter } from './command-input';
 import { useFeatureFlag } from './feature-flags-context';
 import { useStop } from './stop-context';
+import { VoiceControls } from '@/components/voice/VoiceControls';
 import { Icon } from './icons';
 import { useWorkspace } from './workspace-context';
 
@@ -152,16 +153,7 @@ export function CommandDock() {
         >
           <Icon name="send" /> Send
         </button>
-        {voiceEnabled ? (
-          <button
-            type="button"
-            aria-disabled="true"
-            title="Voice input is not available on this device."
-            className={`${button} text-lj-muted`}
-          >
-            <Icon name="mic" /> Voice unavailable
-          </button>
-        ) : null}
+        {voiceEnabled ? <VoiceControls /> : null}
         <button
           type="button"
           aria-disabled={!stoppable}

@@ -5220,6 +5220,29 @@
           "apps/web/src/components/vault/VaultPanel.tsx",
           "apps/web/src/features/review/public.ts"
         ]
+      },
+      "14": {
+        "status": "complete",
+        "summary": "On-device dictation behind a typed capability adapter: real SpeechRecognition detected without inference (secure context, available(), install(), processLocally); en-GB; available({langs,processLocally:true}) gates capture; explicit language-pack download; processLocally always true (no cloud fallback); push-to-talk with keyboard equivalent; 30 s limit; one recognizer; Finish uses stop(), Stop/lock/hidden/switch use abort() and late results are rejected by capture generation; final text appended to the latest draft, never sent. Voice flag readiness flipped (implemented, verified by injected-adapter tests); Permissions-Policy microphone=(self). Real-device recognition NOT verified.",
+        "files": [
+          "apps/web/src/features/voice/adapter.ts",
+          "apps/web/src/features/voice/recognition.ts",
+          "apps/web/src/features/voice/public.ts",
+          "apps/web/src/features/voice/voice.test.ts",
+          "apps/web/src/components/voice/voice-context.tsx",
+          "apps/web/src/components/voice/VoiceControls.tsx",
+          "apps/web/src/server/flags.ts",
+          "apps/web/next.config.ts"
+        ]
+      },
+      "15": {
+        "status": "complete",
+        "summary": "Opt-in read-aloud over SpeechSynthesis: explicitly selected voice with localService===true, rechecked immediately before playback, voiceschanged handled, plain text only (markup stripped), 4,000-character bound with a narrowing message, play/pause/resume/stop, preference stores only the voice identifier, mutual exclusion with dictation, cancelled on lock/hidden/switch/unmount with generation-guarded callbacks; per-answer Read aloud control on validated assistant blocks; unsupported state keeps text complete.",
+        "files": [
+          "apps/web/src/features/voice/read-aloud.ts",
+          "apps/web/src/components/voice/ReadAloud.tsx",
+          "apps/web/src/components/assistant/RunCard.tsx"
+        ]
       }
     }
   }

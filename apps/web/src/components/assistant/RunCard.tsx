@@ -4,6 +4,7 @@ import type { AnswerBlock, StatusReading, ToolResult } from '@lexaegis/agent/con
 import { formatGbp } from '@lexaegis/agent/review';
 import type { LocalStatus, RunView } from '@/features/assistant/public';
 import { Icon } from '@/components/shell/icons';
+import { ReadAloudButton } from '@/components/voice/ReadAloud';
 import { orbLabel } from './AssistantOrb';
 
 /*
@@ -187,6 +188,7 @@ function Block({
       {block.sources.length > 0 ? (
         <div className="mt-1 flex flex-wrap gap-2">{block.sources.map(cite)}</div>
       ) : null}
+      <ReadAloudButton text={block.text} />
     </div>
   );
 }

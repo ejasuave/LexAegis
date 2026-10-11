@@ -13,10 +13,10 @@ const VERIFIED = Object.fromEntries(
 ) as Record<ProductFlag, FeatureReadiness>;
 
 describe('shipped feature readiness', () => {
-  it('claims only what has code and recorded evidence: comparison (Chapter 8), nothing else yet', () => {
+  it('claims only what has code and recorded evidence: comparison (Chapter 8) and voice (Chapter 10), nothing else yet', () => {
     for (const flag of PRODUCT_FLAGS) {
       expect(FEATURE_READINESS[flag]).toEqual(
-        flag === 'documentComparison'
+        flag === 'documentComparison' || flag === 'voice'
           ? { implemented: true, verified: true }
           : { implemented: false, verified: false },
       );
@@ -33,7 +33,7 @@ describe('shipped feature readiness', () => {
     const configuration = loadFeatureConfiguration(env);
     expect(configuration.valid).toBe(true);
     expect(Object.values(configuration.flags)).toEqual(
-      PRODUCT_FLAGS.map((flag) => flag === 'documentComparison'),
+      PRODUCT_FLAGS.map((flag) => flag === 'documentComparison' || flag === 'voice'),
     );
     // Unset means off, even though the feature exists.
     expect(loadFeatureConfiguration({}).flags.documentComparison).toBe(false);

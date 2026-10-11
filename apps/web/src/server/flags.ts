@@ -19,7 +19,10 @@ import { logger } from './logger';
  * with a passing, current check recorded in docs/build-state.json; no environment variable can.
  */
 export const FEATURE_READINESS: Readonly<Record<ProductFlag, FeatureReadiness>> = {
-  voice: { implemented: false, verified: false },
+  // Chapter 10: on-device dictation and read-aloud behind typed capability adapters, verified by
+  // voice.test.ts and the injected-adapter browser check. Real-device recognition is NOT verified
+  // (docs/build-state.json chapter10.voice); capability is re-detected in the browser at runtime.
+  voice: { implemented: true, verified: true },
   // Chapter 8: bounded two-version text comparison, verified by pipeline.test.ts, review-flow.test.ts
   // and pnpm test:review:browser (recorded in docs/build-state.json chapter08). Still off unless set.
   documentComparison: { implemented: true, verified: true },

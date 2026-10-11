@@ -45,6 +45,6 @@ describe('command dock with optional features off', () => {
   });
 
   it('reveals the voice control only when the server enabled the flag', () => {
-    expect(render({ ...ALL_FLAGS_OFF, voice: true })).toContain('Voice unavailable');
+    expect(render({ ...ALL_FLAGS_OFF, voice: true })).toContain('on-device voice input');
   });
 });

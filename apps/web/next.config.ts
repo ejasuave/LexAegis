@@ -20,7 +20,7 @@ const config: NextConfig = {
           {
             key: 'Permissions-Policy',
             value:
-              'publickey-credentials-get=(self), publickey-credentials-create=(self), camera=(), microphone=(), geolocation=(), payment=()',
+              'publickey-credentials-get=(self), publickey-credentials-create=(self), camera=(), microphone=(self), geolocation=(), payment=()',
           },
         ],
       },

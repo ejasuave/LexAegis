@@ -1,6 +1,14 @@
 'use client';
 
-import { createContext, useContext, useMemo, useState, type ReactNode } from 'react';
+import {
+  createContext,
+  useContext,
+  useMemo,
+  useState,
+  type Dispatch,
+  type ReactNode,
+  type SetStateAction,
+} from 'react';
 
 export type PresentationMode = 'command' | 'review';
 export type MobileTab = 'document' | 'aegis' | 'findings' | 'package';
@@ -19,7 +27,7 @@ interface WorkspaceState {
   setMobileTab: (tab: MobileTab) => void;
   /** Unsent command draft; volatile and never persisted. */
   draft: string;
-  setDraft: (draft: string) => void;
+  setDraft: Dispatch<SetStateAction<string>>;
   activityOpen: boolean;
   setActivityOpen: (open: boolean) => void;
   contextOpen: boolean;
