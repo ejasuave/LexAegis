@@ -8,6 +8,7 @@ import { useAssistant } from './assistant-context';
 import { DisclosurePreview } from './DisclosurePreview';
 import { RunCard } from './RunCard';
 import { RunActions } from './RunActions';
+import { AgentIdentityLine } from './AgentIdentityLine';
 
 /**
  * The conversation, shared by both layouts: expanded in the Command centre and docked beside the
@@ -40,6 +41,7 @@ export function ConversationPanel({ compact = false }: { compact?: boolean }) {
 
   return (
     <div className={compact ? 'grid gap-3' : 'grid gap-4'} data-testid="assistant-conversation">
+      <AgentIdentityLine />
       {snapshot.conversation.length === 0 && pending === null ? (
         <p className="m-0 mt-2 text-[0.875rem] text-lj-secondary">
           No conversation. Select text and choose Explain selection, or use the command dock.

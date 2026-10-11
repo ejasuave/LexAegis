@@ -274,6 +274,38 @@ try {
       !/zero retention|UK-only|is end-to-end encrypted/i.test(previewText),
   );
   check('no run request before Send', runPosts().length === 0 && provider.requests.length === 0);
+
+  // Chapter 16: the identity line names the CURRENT assistant, reads only on an explicit Check, and
+  // with no configured registration says so without any network traffic beyond its own route.
+  const identityLine = page.getByTestId('agent-identity-line').first();
+  const identityRequests = () =>
+    requests.filter((r) => r.url.startsWith(`${ORIGIN}/api/agent-identity`));
+  check(
+    'identity line is shown unchecked, with no lookup before a deliberate Check',
+    (await identityLine.isVisible()) &&
+      /not checked/i.test((await identityLine.textContent()) ?? '') &&
+      identityRequests().length === 0,
+  );
+  await identityLine.getByRole('button', { name: 'Check agent identity' }).focus();
+  await page.keyboard.press('Enter');
+  check(
+    'a keyboard Check reads once and reports Not registered when none is configured (not "absent registry")',
+    (await page
+      .waitForFunction(
+        () =>
+          /Not registered/.test(
+            document.querySelector('[data-testid="agent-identity-line"]')?.textContent ?? '',
+          ),
+        undefined,
+        { timeout: 15_000 },
+      )
+      .then(
+        () => true,
+        () => false,
+      )) &&
+      identityRequests().length === 1 &&
+      !/verified|licensed|qualified/i.test((await identityLine.textContent()) ?? ''),
+  );
   await page.getByTestId('disclosure-send').click();
   check('run 1 finished', await runIs(1, 'completed'));
   const first = runCards.nth(0);

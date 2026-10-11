@@ -13,10 +13,10 @@ const VERIFIED = Object.fromEntries(
 ) as Record<ProductFlag, FeatureReadiness>;
 
 describe('shipped feature readiness', () => {
-  it('claims only what has code and recorded evidence: comparison (Chapter 8) and voice (Chapter 10), nothing else yet', () => {
+  it('claims only what has code and recorded evidence: comparison (Chapter 8), voice (Chapter 10) and the read-only agent identity line (Chapter 16), nothing else yet', () => {
     for (const flag of PRODUCT_FLAGS) {
       expect(FEATURE_READINESS[flag]).toEqual(
-        flag === 'documentComparison' || flag === 'voice'
+        flag === 'documentComparison' || flag === 'voice' || flag === 'agentIdentity'
           ? { implemented: true, verified: true }
           : { implemented: false, verified: false },
       );
@@ -33,10 +33,16 @@ describe('shipped feature readiness', () => {
     const configuration = loadFeatureConfiguration(env);
     expect(configuration.valid).toBe(true);
     expect(Object.values(configuration.flags)).toEqual(
-      PRODUCT_FLAGS.map((flag) => flag === 'documentComparison' || flag === 'voice'),
+      PRODUCT_FLAGS.map(
+        (flag) => flag === 'documentComparison' || flag === 'voice' || flag === 'agentIdentity',
+      ),
     );
     // Unset means off, even though the feature exists.
     expect(loadFeatureConfiguration({}).flags.documentComparison).toBe(false);
+    // The identity line is on by default once verified (Chapter 14 rule), but an explicit false removes it.
+    expect(loadFeatureConfiguration({ FEATURE_AGENT_IDENTITY: 'false' }).flags.agentIdentity).toBe(
+      false,
+    );
   });
 });
 

@@ -28,7 +28,10 @@ export const FEATURE_READINESS: Readonly<Record<ProductFlag, FeatureReadiness>> 
   documentComparison: { implemented: true, verified: true },
   matterBriefing: { implemented: false, verified: false },
   reputationFeedback: { implemented: false, verified: false },
-  agentIdentity: { implemented: false, verified: false },
+  // Chapter 16: the read-only identity line, route and card, verified by features/identity and
+  // server/agent-identity tests. Reading needs a configured registration; without one the line says
+  // "Not registered" and makes no request. Registration itself is an operator action not yet performed.
+  agentIdentity: { implemented: true, verified: true },
   matterNotes: { implemented: false, verified: false },
 };
 
