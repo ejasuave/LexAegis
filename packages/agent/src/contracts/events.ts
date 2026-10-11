@@ -1,7 +1,7 @@
 import { z } from 'zod';
 import { applicationErrorSchema, opaqueIdSchema, rfc3339TimestampSchema } from '@lexaegis/protocol';
 import { digestSchema } from '@lexaegis/protocol/v1';
-import { agentConfigSchema } from './agent-config';
+import { agentConfigAnySchema } from './agent-config';
 import {
   agentRunMetadataSchema,
   answerBlockSchema,
@@ -60,7 +60,7 @@ export const assistantEventSchema = z.discriminatedUnion('type', [
     z.strictObject({
       outcome: z.enum(['completed', 'needs_input', 'limited_scope']),
       /** What actually ran, for the provenance artifact. Written from the execution itself. */
-      agentConfig: agentConfigSchema,
+      agentConfig: agentConfigAnySchema,
       ...terminal,
     }),
   ),

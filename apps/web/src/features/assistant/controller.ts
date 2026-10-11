@@ -8,7 +8,7 @@ import {
   toolResultSchema,
   utf8Bytes,
   ASSISTANT_LIMITS,
-  type AgentConfigV1,
+  type AgentConfig,
   type AnswerBlock,
   type AssistantAvailability,
   type AssistantEvent,
@@ -124,7 +124,7 @@ export interface RunView {
   readonly incomplete: 'stream_gap' | 'stream_lost' | 'malformed_event' | 'stopped' | null;
   /** The inputs changed after this result was produced. It stays visible, labelled out of date. */
   readonly stale: boolean;
-  readonly agentConfig: AgentConfigV1 | null;
+  readonly agentConfig: AgentConfig | null;
   readonly matterId: string;
   readonly documentVersionId: string | null;
   readonly snapshot: { readonly digest: string; readonly revision: number };

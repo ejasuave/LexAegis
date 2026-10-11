@@ -7988,6 +7988,11 @@
           "tooling/src/erc8004-probe.ts",
           "tooling/scripts/probe-erc8004.ts"
         ]
+      },
+      "3": {
+        "status": "complete",
+        "summary": "Optional agentIdentity in the agent-configuration artifact. packages/agent/src/contracts/agent-identity.ts (browser-safe) adds agentIdentityRefSchema {standard erc-8004, chainId, identityRegistry (nonzero lowercase address, distinct from the review registry), agentId (decimal string within uint256, zero allowed, never a number), cardUri (normalised https URI, at most 512 chars, no credentials, query or fragment)} and producibleAgentIdentitySchema (configured testnet 10143 only). agent-config.ts keeps lexaegis.agent-config.v1 byte-for-byte compatible (same fields and consistency rules, shared) and adds lexaegis.agent-config.v2 = v1 plus the one optional field; agentConfigAnySchema selects by schema identifier and rejects unknown versions; the events contract accepts either. withAgentIdentity (agent-artifacts.ts) writes v2 only from a validated testnet reference and agentConfigArtifactBytes refuses a non-testnet reference; with no identity the producer still writes v1 and the bytes contain no agentIdentity. run-agent takes an optional deps.agentIdentity (verified operator configuration only; unset in production, so production output is unchanged until an operator registration and a current-session read exist); model output, documents, cards and client payloads have no path to it, and an existing frozen artifact is never rewritten. Tests (6): unchanged v1 bytes and digest, lossless serialisation incl. agentId 0 and 2^256-1, the identity changes the artifact digest, 14 malformed references rejected, v1 stays closed, other networks refused by the producer. No manifest, opening, reference or export schema was touched.",
+        "files": ["packages", "apps"]
       }
     }
   }

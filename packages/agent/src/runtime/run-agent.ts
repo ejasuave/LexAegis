@@ -3,7 +3,9 @@ import {
   REVIEW_PROFILE,
   assistantEventSchema,
   assistantResponseSchema,
+  type AgentConfig,
   type AgentConfigV1,
+  type AgentIdentityRef,
   type AgentRunMetadataV1,
   type AnswerBlock,
   type AssistantAvailability,
@@ -88,6 +90,12 @@ export interface AgentDeps {
   readonly heartbeatMs?: number;
   readonly cancelAckWaitMs?: number;
   readonly rulePack?: () => Promise<LoadedRulePack | null>;
+  /**
+   * An ERC-8004 reference from verified operator configuration (a confirmed registration and a
+   * successful identity read in this session). Unset in production until that exists. Model output,
+   * documents, cards and client payloads can never set it.
+   */
+  readonly agentIdentity?: AgentIdentityRef;
 }
 
 type Capability = { state: 'verified' | 'configured' | 'test'; record: CapabilityRecord | null };
@@ -464,7 +472,7 @@ export function createReviewAgent(deps: AgentDeps): ReviewAgent {
       return result;
     };
 
-    const agentConfig = (outcome: RunOutcome, finishedAt: Date): AgentConfigV1 => {
+    const baseConfig = (outcome: RunOutcome, finishedAt: Date): AgentConfigV1 => {
       const counters = budget.counters();
       const modelRan = counters.providerAttempts > 0;
       const snapshot = returnedModel !== null && /-\d{4}(?:-\d{2}-\d{2})?$/.test(returnedModel);
@@ -511,6 +519,14 @@ export function createReviewAgent(deps: AgentDeps): ReviewAgent {
           outcome,
         },
       };
+    };
+
+    /** The identity comes only from verified operator configuration in `deps`; never from this run. */
+    const agentConfig = (outcome: RunOutcome, finishedAt: Date): AgentConfig => {
+      const config = baseConfig(outcome, finishedAt);
+      if (deps.agentIdentity === undefined) return config;
+      const { schema: _schema, ...rest } = config;
+      return { ...rest, schema: 'lexaegis.agent-config.v2', agentIdentity: deps.agentIdentity };
     };
 
     /** The single terminal transition and its one terminal event. */

@@ -1,5 +1,7 @@
 import type {
+  AgentConfig,
   AgentConfigV1,
+  AgentIdentityRef,
   AnswerBlock,
   AssistantIntent,
   ModelExecution,
@@ -12,7 +14,10 @@ import { z } from 'zod';
 import { digestSchema, timestampSchema, uuidSchema } from '@lexaegis/protocol/v1';
 import {
   REVIEW_ENGINE_VERSION,
+  agentConfigAnySchema,
   agentConfigSchema,
+  agentConfigV2Schema,
+  producibleAgentIdentitySchema,
   answerBlockSchema,
   assistantIntentSchema,
   modelExecutionSchema,
@@ -158,9 +163,32 @@ export async function analysisArtifactBytes(input: AnalysisInput): Promise<Artif
 }
 
 /** The agent configuration exactly as the runtime recorded it. Nothing is filled in or regenerated. */
-export async function agentConfigArtifactBytes(config: AgentConfigV1): Promise<ArtifactBytes> {
-  const bytes = canonicalBytes(agentConfigSchema.parse(config));
+export async function agentConfigArtifactBytes(config: AgentConfig): Promise<ArtifactBytes> {
+  const parsed = agentConfigAnySchema.parse(config);
+  // A producer never writes a reference for another network, whatever the schema could parse.
+  if (parsed.schema === 'lexaegis.agent-config.v2' && parsed.agentIdentity !== undefined) {
+    producibleAgentIdentitySchema.parse(parsed.agentIdentity);
+  }
+  const bytes = canonicalBytes(parsed);
   return { bytes, sha256: await sha256Bytes(bytes) };
+}
+
+/**
+ * Pins an ERC-8004 reference to the exact configuration of one run, producing v2. The reference
+ * must come from verified operator configuration after a successful identity read in this session:
+ * nothing a model, a document, a card or a client supplied may reach this function. A frozen
+ * review is never revisited with it; a new identity means a new run and a new freeze.
+ */
+export function withAgentIdentity(
+  config: AgentConfigV1,
+  identity: AgentIdentityRef,
+): z.infer<typeof agentConfigV2Schema> {
+  const { schema: _schema, ...rest } = agentConfigSchema.parse(config);
+  return agentConfigV2Schema.parse({
+    ...rest,
+    schema: 'lexaegis.agent-config.v2',
+    agentIdentity: producibleAgentIdentitySchema.parse(identity),
+  });
 }
 
 /** Configuration of a check that ran on the device with no model: nothing is invented for it. */
