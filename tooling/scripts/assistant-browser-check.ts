@@ -461,7 +461,7 @@ try {
     `${String(objectsBefore)} -> ${String(objectsAfter)}`,
   );
   await page
-    .getByRole('tab', { name: 'Matter' })
+    .getByRole('tab', { name: 'Document' })
     .click()
     .catch(() => undefined);
   check(
@@ -471,7 +471,7 @@ try {
 
   // ---- 9. Stale inputs: a pending disclosure is dropped, nothing is sent ----------------------------
   await page
-    .getByRole('tab', { name: 'Work' })
+    .getByRole('tab', { name: 'Aegis' })
     .click()
     .catch(() => undefined);
   await selectQuote('24,000');
