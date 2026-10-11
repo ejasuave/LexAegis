@@ -7404,6 +7404,18 @@
           "package.json",
           ".prettierignore"
         ]
+      },
+      "4": {
+        "status": "complete",
+        "summary": "examples/python-verify/verify_vectors.py: standard-library-only, offline checker (no Node, no TypeScript import, no network or process facilities; asserted by test) that reads the published vectors and docs/SPEC.md and independently implements the strict JSON subset (own tokenizer: safe integers only, no fractions/exponents/-0, lone surrogates, duplicate keys also after escape decoding, forbidden names, BOM, UTF-8, 32-container depth, bool kept apart from int), RFC 8785 subset with UTF-16 code-unit member order and minimal escapes, the closed v1 schemas and cross-field rules, SHA-256 artifact/package/commitment (lengths rejected before concatenation) and ordered offline verification. All 125 cases and the 3 goldens agree with the frozen expectations and, via pnpm interop:python, with the TypeScript outcomes produced by a new shared runner (src/interop/run-case.ts, scripts/ts-outcomes.ts); the Vitest runner now uses the same runner. test_verify_vectors.py (20 tests, pnpm test:python) proves an altered digest byte, altered domain, UTF-16 ordering mistake, duplicate-key acceptance, wrong-stage rejection and a TypeScript disagreement are all detected. No interoperability defect was found, so no v1 change or specification defect is recorded; it claims no live registry or signature verification.",
+        "files": [
+          "examples/python-verify",
+          "packages/protocol/src/interop",
+          "packages/protocol/scripts/ts-outcomes.ts",
+          "packages/protocol/package.json",
+          "tooling/scripts/interop-python.ts",
+          "package.json"
+        ]
       }
     }
   }

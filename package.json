@@ -70,7 +70,9 @@
     "test:verifier:browser": "tsx tooling/scripts/verifier-browser-check.ts",
     "spec:check": "pnpm --filter @lexaegis/sdk spec:check",
     "vectors:export": "pnpm --filter @lexaegis/protocol vectors:export",
-    "vectors:check": "pnpm --filter @lexaegis/protocol vectors:check"
+    "vectors:check": "pnpm --filter @lexaegis/protocol vectors:check",
+    "interop:python": "tsx tooling/scripts/interop-python.ts",
+    "test:python": "python3 -I -m unittest discover -s examples/python-verify -p 'test_*.py'"
   },
   "devDependencies": {
     "@eslint/js": "10.0.1",

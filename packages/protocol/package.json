@@ -18,7 +18,8 @@
     "generate:check": "tsx scripts/generate-artifacts.ts --check",
     "test:browser": "vitest run --config vitest.browser.config.ts",
     "vectors:export": "tsx scripts/export-test-vectors.ts",
-    "vectors:check": "tsx scripts/export-test-vectors.ts --check"
+    "vectors:check": "tsx scripts/export-test-vectors.ts --check",
+    "vectors:ts-outcomes": "tsx scripts/ts-outcomes.ts"
   },
   "dependencies": {
     "canonicalize": "5.1.0",
