@@ -44,6 +44,9 @@ jobs:
       # Aegis assistant: scripted loopback provider and synthetic documents only. It never calls
       # Qwen, needs no credential and is not live-provider evidence.
       - run: pnpm test:assistant:browser
+      # HUD and human approval: virtual authenticator, scripted provider and scripted registry state,
+      # mock speech. Not live-chain, real-device or live-provider evidence.
+      - run: pnpm test:hud:browser
       # Registry: the Foundry release pinned in contracts/toolchain.json is downloaded and
       # accepted only if its SHA-256 matches. Everything runs on a local chain; nothing here
       # deploys to, or reads from, a public network.

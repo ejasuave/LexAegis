@@ -508,7 +508,11 @@ try {
   await page.getByRole('button', { name: /Activity/ }).click();
   check(
     'the activity drawer lists assistant runs apart from human decisions and chain events',
-    (await has(/explain: completed; tools: read sources/)) && (await has('No recorded decisions.')),
+    (await has(/explain, completed; tools: read sources/)) &&
+      (await page
+        .getByRole('tab', { name: 'Human decisions' })
+        .click()
+        .then(() => has('No recorded decisions.'))),
   );
   await page.getByRole('button', { name: 'Close' }).click();
 
@@ -538,9 +542,14 @@ try {
   );
   check(
     'private data never travels in a URL',
-    requests.every(
-      (r) => !/[?#]/.test(r.url.replace(ORIGIN, '')) && !/24,000|Northwind/.test(r.url),
-    ),
+    requests.every((r) => {
+      const path = r.url.replace(ORIGIN, '');
+      // The only query the application makes: a page size on the PUBLIC history of a public
+      // address (Chapter 7). Nothing private, no fragment, no other parameter.
+      const publicHistory = /^\/api\/history\/reviewers\/0x[0-9a-f]{40}\?limit=\d{1,3}$/.test(path);
+      return (publicHistory || !/[?#]/.test(path)) && !/24,000|Northwind/.test(r.url);
+    }),
+    requests.find((r) => /[?#]/.test(r.url.replace(ORIGIN, '')))?.url ?? '',
   );
   check(
     'selected text was sent only by the five explicit Sends',

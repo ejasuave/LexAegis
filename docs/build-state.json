@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "currentChapter": "10",
-  "nextChapter": "10",
+  "nextChapter": "11",
   "project": {
     "name": "LexAegis",
     "primitive": "Proof of Review",
@@ -90,8 +90,8 @@
       "id": "10",
       "title": "Aegis HUD, Legal Workspace and Human Approval",
       "additive": false,
-      "state": "in-progress",
-      "evidence": [],
+      "state": "complete",
+      "evidence": ["chapter10.checks"],
       "chapterPromptPath": "build_instructions/prompt_library/LexAegis_Prompt_Library_Chapter_10_Targeted_Build_Tasks_v1_0.md"
     },
     {
@@ -3979,6 +3979,436 @@
         "liveProviderEvidence": false,
         "screenshotCount": "10"
       }
+    },
+    {
+      "id": "account-browser-20261011020804",
+      "subject": "account-browser-check",
+      "sourceRevision": {
+        "commit": "aa78adb43267f25ee33254fd21cec083c30dcd65",
+        "dirtyWorktree": true,
+        "contentFingerprint": "c38c8b7b167d4b62e60212eeddbc67fb544ab7e6574878e9c1d5c9c0406a6109"
+      },
+      "checkedAt": "2026-10-11T02:08:04.347Z",
+      "command": "pnpm test:account:browser",
+      "environment": {
+        "node": "v24.21.0",
+        "os": "linux-x64",
+        "pnpm": "11.11.0"
+      },
+      "evidenceClass": "virtual_authenticator",
+      "outcome": "pass",
+      "reasonCodes": ["AUTHENTICATOR_MODE_VIRTUAL", "PASSKEY_STEP_REQUIRES_REAL_DEVICE_EVIDENCE"],
+      "evidenceRefs": [],
+      "facts": {
+        "browser": "chromium 153.0.8010.12",
+        "checksPassed": "31",
+        "checksTotal": "31",
+        "addressReproducedAfterClearingStorage": true,
+        "credentialsCreatedDuringCreate": "1",
+        "assertionsDuringCreate": "0",
+        "authenticatorMode": "virtual",
+        "realDeviceEvidence": false
+      }
+    },
+    {
+      "id": "vault-browser-20261011020825",
+      "subject": "vault-browser-check",
+      "sourceRevision": {
+        "commit": "aa78adb43267f25ee33254fd21cec083c30dcd65",
+        "dirtyWorktree": true,
+        "contentFingerprint": "07a3c0aa97d2e5c7f0af5651ab2ed7813e9e61da42d6af62e1bc935fe4e813f3"
+      },
+      "checkedAt": "2026-10-11T02:08:25.804Z",
+      "command": "pnpm test:vault:browser",
+      "environment": {
+        "node": "v24.21.0",
+        "os": "linux-x64",
+        "pnpm": "11.11.0"
+      },
+      "evidenceClass": "virtual_authenticator",
+      "outcome": "pass",
+      "reasonCodes": ["AUTHENTICATOR_MODE_VIRTUAL", "PASSKEY_STEP_REQUIRES_REAL_DEVICE_EVIDENCE"],
+      "evidenceRefs": [],
+      "facts": {
+        "browser": "chromium 153.0.8010.12",
+        "checksPassed": "26",
+        "checksTotal": "26",
+        "recoveredAfterClearingStorage": true,
+        "storage": "postgresql + versitygw 1.8.0",
+        "authenticatorMode": "virtual",
+        "realDeviceEvidence": false
+      }
+    },
+    {
+      "id": "review-browser-20261011020845",
+      "subject": "review-browser-check",
+      "sourceRevision": {
+        "commit": "aa78adb43267f25ee33254fd21cec083c30dcd65",
+        "dirtyWorktree": true,
+        "contentFingerprint": "d9bde53e89acd1b6c0649e27e1a6ee80ae2b1415eb5fd4d45ec093c44dd3d3d0"
+      },
+      "checkedAt": "2026-10-11T02:08:45.703Z",
+      "command": "pnpm test:review:browser",
+      "environment": {
+        "node": "v24.21.0",
+        "os": "linux-x64",
+        "pnpm": "11.11.0"
+      },
+      "evidenceClass": "virtual_authenticator",
+      "outcome": "pass",
+      "reasonCodes": ["AUTHENTICATOR_MODE_VIRTUAL", "SYNTHETIC_DOCUMENTS_ONLY"],
+      "evidenceRefs": [],
+      "facts": {
+        "browser": "chromium 153.0.8010.12",
+        "checksPassed": "33",
+        "checksTotal": "33",
+        "storage": "postgresql + versitygw 1.8.0",
+        "authenticatorMode": "virtual",
+        "realDeviceEvidence": false
+      }
+    },
+    {
+      "id": "assistant-browser-20261011021024",
+      "subject": "assistant-browser-check",
+      "sourceRevision": {
+        "commit": "aa78adb43267f25ee33254fd21cec083c30dcd65",
+        "dirtyWorktree": true,
+        "contentFingerprint": "8be4ba2ab5cac1007e5faeb12fb8c8ce94c36a4b7b2a89f1964a97b434176057"
+      },
+      "checkedAt": "2026-10-11T02:10:24.408Z",
+      "command": "pnpm test:assistant:browser",
+      "environment": {
+        "node": "v24.21.0",
+        "os": "linux-x64",
+        "pnpm": "11.11.0"
+      },
+      "evidenceClass": "virtual_authenticator",
+      "outcome": "fail",
+      "reasonCodes": [
+        "AUTHENTICATOR_MODE_VIRTUAL",
+        "SYNTHETIC_DOCUMENTS_ONLY",
+        "SCRIPTED_PROVIDER_NOT_QWEN",
+        "CHECKS_FAILED"
+      ],
+      "evidenceRefs": [],
+      "facts": {
+        "browser": "chromium 153.0.8010.12",
+        "checksPassed": "56",
+        "checksTotal": "59",
+        "provider": "scripted-test (loopback, no model)",
+        "storage": "postgresql + versitygw",
+        "authenticatorMode": "virtual",
+        "realDeviceEvidence": false,
+        "liveProviderEvidence": false
+      }
+    },
+    {
+      "id": "assistant-browser-20261011021208",
+      "subject": "assistant-browser-check",
+      "sourceRevision": {
+        "commit": "aa78adb43267f25ee33254fd21cec083c30dcd65",
+        "dirtyWorktree": true,
+        "contentFingerprint": "9b7806e6698d7b5640ea31769a32dbcd078a71aacd3b236221cbd91d4efc7acc"
+      },
+      "checkedAt": "2026-10-11T02:12:09.074Z",
+      "command": "pnpm test:assistant:browser",
+      "environment": {
+        "node": "v24.21.0",
+        "os": "linux-x64",
+        "pnpm": "11.11.0"
+      },
+      "evidenceClass": "virtual_authenticator",
+      "outcome": "fail",
+      "reasonCodes": [
+        "AUTHENTICATOR_MODE_VIRTUAL",
+        "SYNTHETIC_DOCUMENTS_ONLY",
+        "SCRIPTED_PROVIDER_NOT_QWEN",
+        "CHECKS_FAILED"
+      ],
+      "evidenceRefs": [],
+      "facts": {
+        "browser": "chromium 153.0.8010.12",
+        "checksPassed": "58",
+        "checksTotal": "59",
+        "provider": "scripted-test (loopback, no model)",
+        "storage": "postgresql + versitygw",
+        "authenticatorMode": "virtual",
+        "realDeviceEvidence": false,
+        "liveProviderEvidence": false
+      }
+    },
+    {
+      "id": "assistant-browser-20261011021332",
+      "subject": "assistant-browser-check",
+      "sourceRevision": {
+        "commit": "aa78adb43267f25ee33254fd21cec083c30dcd65",
+        "dirtyWorktree": true,
+        "contentFingerprint": "5bb940ffadc56df2c8491e5a3541de819061d94d04d404eef41b6de0dda9a477"
+      },
+      "checkedAt": "2026-10-11T02:13:32.816Z",
+      "command": "pnpm test:assistant:browser",
+      "environment": {
+        "node": "v24.21.0",
+        "os": "linux-x64",
+        "pnpm": "11.11.0"
+      },
+      "evidenceClass": "virtual_authenticator",
+      "outcome": "pass",
+      "reasonCodes": [
+        "AUTHENTICATOR_MODE_VIRTUAL",
+        "SYNTHETIC_DOCUMENTS_ONLY",
+        "SCRIPTED_PROVIDER_NOT_QWEN"
+      ],
+      "evidenceRefs": [],
+      "facts": {
+        "browser": "chromium 153.0.8010.12",
+        "checksPassed": "59",
+        "checksTotal": "59",
+        "provider": "scripted-test (loopback, no model)",
+        "storage": "postgresql + versitygw",
+        "authenticatorMode": "virtual",
+        "realDeviceEvidence": false,
+        "liveProviderEvidence": false
+      }
+    },
+    {
+      "id": "hud-browser-20261011021408",
+      "subject": "hud-browser-check",
+      "sourceRevision": {
+        "commit": "aa78adb43267f25ee33254fd21cec083c30dcd65",
+        "dirtyWorktree": true,
+        "contentFingerprint": "bd789ee6479f688f9d6ef54bc0016830e712971496071914015c3bb7c010559d"
+      },
+      "checkedAt": "2026-10-11T02:14:08.524Z",
+      "command": "pnpm test:hud:browser",
+      "environment": {
+        "node": "v24.21.0",
+        "os": "linux-x64",
+        "pnpm": "11.11.0"
+      },
+      "evidenceClass": "virtual_authenticator",
+      "outcome": "pass",
+      "reasonCodes": [
+        "AUTHENTICATOR_MODE_VIRTUAL",
+        "SYNTHETIC_DOCUMENTS_ONLY",
+        "SCRIPTED_CHAIN_STATE",
+        "MOCK_SPEECH_ADAPTERS"
+      ],
+      "evidenceRefs": [
+        {
+          "type": "path",
+          "value": "docs/evidence/chapter10/01-command-centre-empty-1440x900.png"
+        },
+        {
+          "type": "path",
+          "value": "docs/evidence/chapter10/02-review-1440x900.png"
+        },
+        {
+          "type": "path",
+          "value": "docs/evidence/chapter10/03-approval-preview-1440x900.png"
+        },
+        {
+          "type": "path",
+          "value": "docs/evidence/chapter10/04-transaction-unavailable-1440x900.png"
+        },
+        {
+          "type": "path",
+          "value": "docs/evidence/chapter10/05-review-after-approval-1440x900.png"
+        },
+        {
+          "type": "path",
+          "value": "docs/evidence/chapter10/06-command-centre-1440x900.png"
+        },
+        {
+          "type": "path",
+          "value": "docs/evidence/chapter10/07-command-centre-1024x768.png"
+        },
+        {
+          "type": "path",
+          "value": "docs/evidence/chapter10/08-review-package-390x844.png"
+        },
+        {
+          "type": "path",
+          "value": "docs/evidence/chapter10/09-review-320x640.png"
+        },
+        {
+          "type": "path",
+          "value": "docs/evidence/chapter10/10-locked-1440x900.png"
+        }
+      ],
+      "facts": {
+        "browser": "chromium 153.0.8010.12",
+        "checksPassed": "69",
+        "checksTotal": "69",
+        "provider": "scripted-test (loopback, no model)",
+        "chain": "scripted live state, fixture registry address, no network",
+        "speech": "mock adapters, not a real device",
+        "storage": "postgresql + versitygw",
+        "authenticatorMode": "virtual",
+        "realDeviceEvidence": false,
+        "liveProviderEvidence": false,
+        "screenshotCount": "10"
+      }
+    },
+    {
+      "id": "rd-20261011021525-8232d6-check-typecheck",
+      "subject": "check-typecheck",
+      "sourceRevision": {
+        "commit": "aa78adb43267f25ee33254fd21cec083c30dcd65",
+        "dirtyWorktree": true,
+        "contentFingerprint": "bd789ee6479f688f9d6ef54bc0016830e712971496071914015c3bb7c010559d"
+      },
+      "checkedAt": "2026-10-11T02:15:25.367Z",
+      "command": "pnpm readiness",
+      "environment": {
+        "node": "v24.21.0",
+        "os": "linux-x64",
+        "pnpm": "11.11.0"
+      },
+      "evidenceClass": "local_scripted",
+      "outcome": "pass",
+      "reasonCodes": [],
+      "evidenceRefs": []
+    },
+    {
+      "id": "rd-20261011021525-8232d6-check-unit-tests",
+      "subject": "check-unit-tests",
+      "sourceRevision": {
+        "commit": "aa78adb43267f25ee33254fd21cec083c30dcd65",
+        "dirtyWorktree": true,
+        "contentFingerprint": "bd789ee6479f688f9d6ef54bc0016830e712971496071914015c3bb7c010559d"
+      },
+      "checkedAt": "2026-10-11T02:15:25.367Z",
+      "command": "pnpm readiness",
+      "environment": {
+        "node": "v24.21.0",
+        "os": "linux-x64",
+        "pnpm": "11.11.0"
+      },
+      "evidenceClass": "local_scripted",
+      "outcome": "pass",
+      "reasonCodes": [],
+      "evidenceRefs": []
+    },
+    {
+      "id": "rd-20261011021525-8232d6-check-forge-test",
+      "subject": "check-forge-test",
+      "sourceRevision": {
+        "commit": "aa78adb43267f25ee33254fd21cec083c30dcd65",
+        "dirtyWorktree": true,
+        "contentFingerprint": "bd789ee6479f688f9d6ef54bc0016830e712971496071914015c3bb7c010559d"
+      },
+      "checkedAt": "2026-10-11T02:15:25.367Z",
+      "command": "pnpm readiness",
+      "environment": {
+        "node": "v24.21.0",
+        "os": "linux-x64",
+        "pnpm": "11.11.0"
+      },
+      "evidenceClass": "local_scripted",
+      "outcome": "pass",
+      "reasonCodes": [],
+      "evidenceRefs": []
+    },
+    {
+      "id": "rd-20261011021525-8232d6-check-secret-scan",
+      "subject": "check-secret-scan",
+      "sourceRevision": {
+        "commit": "aa78adb43267f25ee33254fd21cec083c30dcd65",
+        "dirtyWorktree": true,
+        "contentFingerprint": "bd789ee6479f688f9d6ef54bc0016830e712971496071914015c3bb7c010559d"
+      },
+      "checkedAt": "2026-10-11T02:15:25.367Z",
+      "command": "pnpm readiness",
+      "environment": {
+        "node": "v24.21.0",
+        "os": "linux-x64",
+        "pnpm": "11.11.0"
+      },
+      "evidenceClass": "local_scripted",
+      "outcome": "fail",
+      "reasonCodes": ["EXIT_1"],
+      "evidenceRefs": []
+    },
+    {
+      "id": "rd-20261011021525-8232d6-check-protected-baselines",
+      "subject": "check-protected-baselines",
+      "sourceRevision": {
+        "commit": "aa78adb43267f25ee33254fd21cec083c30dcd65",
+        "dirtyWorktree": true,
+        "contentFingerprint": "bd789ee6479f688f9d6ef54bc0016830e712971496071914015c3bb7c010559d"
+      },
+      "checkedAt": "2026-10-11T02:15:25.367Z",
+      "command": "pnpm readiness",
+      "environment": {
+        "node": "v24.21.0",
+        "os": "linux-x64",
+        "pnpm": "11.11.0"
+      },
+      "evidenceClass": "local_scripted",
+      "outcome": "pass",
+      "reasonCodes": [],
+      "evidenceRefs": []
+    },
+    {
+      "id": "rd-20261011021525-8232d6-check-build",
+      "subject": "check-build",
+      "sourceRevision": {
+        "commit": "aa78adb43267f25ee33254fd21cec083c30dcd65",
+        "dirtyWorktree": true,
+        "contentFingerprint": "bd789ee6479f688f9d6ef54bc0016830e712971496071914015c3bb7c010559d"
+      },
+      "checkedAt": "2026-10-11T02:15:25.367Z",
+      "command": "pnpm readiness",
+      "environment": {
+        "node": "v24.21.0",
+        "os": "linux-x64",
+        "pnpm": "11.11.0"
+      },
+      "evidenceClass": "local_scripted",
+      "outcome": "pass",
+      "reasonCodes": [],
+      "evidenceRefs": []
+    },
+    {
+      "id": "rd-20261011021525-8232d6-check-exclusion",
+      "subject": "check-exclusion",
+      "sourceRevision": {
+        "commit": "aa78adb43267f25ee33254fd21cec083c30dcd65",
+        "dirtyWorktree": true,
+        "contentFingerprint": "bd789ee6479f688f9d6ef54bc0016830e712971496071914015c3bb7c010559d"
+      },
+      "checkedAt": "2026-10-11T02:15:25.367Z",
+      "command": "pnpm readiness",
+      "environment": {
+        "node": "v24.21.0",
+        "os": "linux-x64",
+        "pnpm": "11.11.0"
+      },
+      "evidenceClass": "local_scripted",
+      "outcome": "pass",
+      "reasonCodes": [],
+      "evidenceRefs": []
+    },
+    {
+      "id": "rd-20261011021525-8232d6-chapters-1-3-checks",
+      "subject": "chapters-1-3-checks",
+      "sourceRevision": {
+        "commit": "aa78adb43267f25ee33254fd21cec083c30dcd65",
+        "dirtyWorktree": true,
+        "contentFingerprint": "bd789ee6479f688f9d6ef54bc0016830e712971496071914015c3bb7c010559d"
+      },
+      "checkedAt": "2026-10-11T02:15:25.367Z",
+      "command": "pnpm readiness",
+      "environment": {
+        "node": "v24.21.0",
+        "os": "linux-x64",
+        "pnpm": "11.11.0"
+      },
+      "evidenceClass": "local_scripted",
+      "outcome": "pass",
+      "reasonCodes": [],
+      "evidenceRefs": []
     }
   ],
   "appliedCuts": [],
@@ -4006,7 +4436,7 @@
             "id": "A1",
             "label": "Chapters 1–3 build and tests pass",
             "state": "satisfied",
-            "resultId": "rd-20261010232546-829ded-chapters-1-3-checks"
+            "resultId": "rd-20261011021525-8232d6-chapters-1-3-checks"
           },
           {
             "id": "A2",
@@ -4016,7 +4446,7 @@
           }
         ],
         "reasons": ["MISSING:A2", "UNPROVEN_AT_CUTOFF"],
-        "observedAt": "2026-10-10T23:25:46.728Z"
+        "observedAt": "2026-10-11T02:15:25.367Z"
       },
       {
         "gate": "B",
@@ -4126,7 +4556,7 @@
         "HOSTED_T0_INCOMPLETE: dropping the bounties does not complete the hosted golden path"
       ]
     },
-    "evaluatedAt": "2026-10-10T23:25:46.728Z"
+    "evaluatedAt": "2026-10-11T02:15:25.367Z"
   },
   "cutLadder": {
     "order": [
@@ -4160,11 +4590,11 @@
     }
   },
   "readiness": {
-    "runId": "rd-20261010232546-829ded",
-    "generatedAt": "2026-10-10T23:25:46.728Z",
+    "runId": "rd-20261011021525-8232d6",
+    "generatedAt": "2026-10-11T02:15:25.367Z",
     "live": false,
-    "fingerprint": "720570aa2a98d4151360d67146a240e4e54db575112c616cf3b09de7b87e5fd3",
-    "totalMs": 28322,
+    "fingerprint": "bd789ee6479f688f9d6ef54bc0016830e712971496071914015c3bb7c010559d",
+    "totalMs": 29331,
     "versions": {
       "node": "v24.21.0",
       "pnpm": "11.11.0",
@@ -4175,43 +4605,43 @@
         "id": "typecheck",
         "outcome": "pass",
         "reason": "OK",
-        "durationMs": 18377
+        "durationMs": 18960
       },
       {
         "id": "unit-tests",
         "outcome": "pass",
         "reason": "OK",
-        "durationMs": 10117
+        "durationMs": 10986
       },
       {
         "id": "forge-test",
         "outcome": "pass",
         "reason": "OK",
-        "durationMs": 21022
+        "durationMs": 21423
       },
       {
         "id": "secret-scan",
         "outcome": "fail",
         "reason": "EXIT_1",
-        "durationMs": 609
+        "durationMs": 653
       },
       {
         "id": "protected-baselines",
         "outcome": "pass",
         "reason": "OK",
-        "durationMs": 554
+        "durationMs": 551
       },
       {
         "id": "build",
         "outcome": "pass",
         "reason": "OK",
-        "durationMs": 4750
+        "durationMs": 4474
       },
       {
         "id": "exclusion",
         "outcome": "pass",
         "reason": "OK",
-        "durationMs": 761
+        "durationMs": 798
       }
     ]
   },
@@ -5463,7 +5893,7 @@
   },
   "chapter10": {
     "startedOn": "2026-10-11",
-    "state": "in-progress",
+    "state": "complete",
     "tasks": {
       "10": {
         "status": "complete",
@@ -5537,6 +5967,25 @@
           "apps/web/src/features/voice/read-aloud.ts",
           "apps/web/src/components/voice/ReadAloud.tsx",
           "apps/web/src/components/assistant/RunCard.tsx"
+        ]
+      },
+      "16": {
+        "status": "complete",
+        "summary": "Production-build browser check (pnpm test:hud:browser, 69 checks) in headless Chromium with a virtual authenticator, real PostgreSQL/S3, scripted provider and scripted registry state: decisions, freeze/save/read-back, approval preview, untrusted-click refusal, nonce-change discard, Stop, trusted approval, lock clearing private DOM, export disclosure, mock-speech voice and read-aloud, Escape/focus restoration, 44 px targets, 390/320 px reflow, reduced motion. Screenshot inspection found and fixed a crushed mobile layout (dock covering the page, overlapping header at 320 px) and raw JSON in the saved-context rail. Unit/integration: boundaries, approval, package, decisions, voice, transaction, stop, tokens.",
+        "files": [
+          "tooling/scripts/hud-browser-check.ts",
+          "docs/evidence/chapter10",
+          "apps/web/src/components/shell/drawer-focus.ts",
+          "apps/web/src/components/shell/SystemStrip.tsx",
+          "apps/web/src/components/shell/AppShell.tsx",
+          "apps/web/src/components/shell/CommandDock.tsx",
+          "apps/web/src/components/voice",
+          "apps/web/src/features/matters/describe-entry.ts",
+          "apps/web/src/features/assistant/boundaries.test.ts",
+          "package.json",
+          ".gitignore",
+          ".prettierignore",
+          "eslint.config.mjs"
         ]
       },
       "01": {
@@ -5639,25 +6088,136 @@
           "apps/web/src/components/account/account-context.tsx"
         ]
       },
-      "16": {
+      "17": {
         "status": "complete",
-        "summary": "Production-build browser check (pnpm test:hud:browser, 69 checks) in headless Chromium with a virtual authenticator, real PostgreSQL/S3, scripted provider and scripted registry state: decisions, freeze/save/read-back, approval preview, untrusted-click refusal, nonce-change discard, Stop, trusted approval, lock clearing private DOM, export disclosure, mock-speech voice and read-aloud, Escape/focus restoration, 44 px targets, 390/320 px reflow, reduced motion. Screenshot inspection found and fixed a crushed mobile layout (dock covering the page, overlapping header at 320 px) and raw JSON in the saved-context rail. Unit/integration: boundaries, approval, package, decisions, voice, transaction, stop, tokens.",
+        "summary": "Gates run and recorded in chapter10.checks: lint, format, typecheck, builds, 1,233 tests, fixtures/baselines/exclusion/state/scope checks, the 69-check HUD browser journey and re-run earlier browser checks; client bundles scanned for credentials; docs updated within their word limits; Chapter 11 handoff written. secrets:check and readiness fail only as before (operator .env; live evidence not yet obtained).",
         "files": [
-          "tooling/scripts/hud-browser-check.ts",
-          "docs/evidence/chapter10",
-          "apps/web/src/components/shell/drawer-focus.ts",
-          "apps/web/src/components/shell/SystemStrip.tsx",
-          "apps/web/src/components/shell/AppShell.tsx",
-          "apps/web/src/components/shell/CommandDock.tsx",
-          "apps/web/src/components/voice",
-          "apps/web/src/features/matters/describe-entry.ts",
-          "apps/web/src/features/assistant/boundaries.test.ts",
-          "package.json",
-          ".gitignore",
-          ".prettierignore",
-          "eslint.config.mjs"
+          "docs/build-state.json",
+          "CLAUDE.md",
+          "docs/assistant-ui-contract.md",
+          ".github/workflows/ci.yml",
+          "tooling/scripts/assistant-browser-check.ts"
         ]
       }
+    },
+    "completedOn": "2026-10-11",
+    "note": "Built and verified offline on synthetic documents with a scripted provider and scripted registry state, real PostgreSQL and S3-compatible storage, a virtual authenticator and mock speech adapters. No transaction was sent to any network from this chapter's checks: the registry address in the browser check is a fixture, the chain state is scripted, and the second (fee-paying) stage is proven at controller level and, in the browser, only as an honest 'not sent' when no network is configured. Not real-device evidence, not live-testnet evidence, not a legal review, and not a security audit.",
+    "checks": {
+      "static": {
+        "command": "pnpm lint && pnpm format:check && pnpm typecheck && pnpm build",
+        "outcome": "pass",
+        "notes": "eslint --max-warnings 0 over the whole repository, prettier, strict typecheck of all projects and both production builds."
+      },
+      "unit": {
+        "command": "pnpm test",
+        "outcome": "pass",
+        "evidenceClass": "local_scripted",
+        "notes": "1,233 of 1,233 in 91 files (web 528 in 47 files). New: readiness selector, scope guard, token contrast, orb mapping, composer Enter semantics, decisions (schemas, binding, reasons, invalidation, reload), package preview/freeze/retry on the real account and vault controllers, approval on the real account controller (trusted click, stale observation, lifecycle, nonce change, lock during signing, revoke, replacement refusal), transaction controller (quote view, requote, duplicate send, Stop, external execution), live-state parsing, coordinated Stop, voice and read-aloud through injected adapters, assistant boundary scan, working-entry descriptions."
+      },
+      "browser": {
+        "command": "pnpm test:hud:browser",
+        "outcome": "pass",
+        "evidenceClass": "virtual_authenticator",
+        "notes": "69 of 69 on the production build in headless Chromium: virtual authenticator, real PostgreSQL and S3-compatible storage, scripted provider, SCRIPTED registry state (route-fulfilled) with a FIXTURE registry address, MOCK speech adapters, synthetic documents. Covers the journey account -> vault -> matter -> PDF -> cited facts -> checks -> decisions -> record -> preview -> freeze/save/read-back -> approval preview -> refused scripted click -> nonce change discard -> Stop -> trusted approval -> honest 'not sent' with no network -> export disclosure -> lock. 10 screenshots under docs/evidence/chapter10, inspected by eye; the inspection found and fixed a crushed mobile layout and raw JSON in the saved-context rail."
+      },
+      "regression": {
+        "outcome": "pass",
+        "notes": "Earlier browser checks re-run after the shell changes: account 31/31, vault 26/26, review 33/33, assistant 59/59. The assistant check caught a real Chapter 10 regression (Enter ignored while a disclosure preview was pending), fixed in CommandDock. Two stale expectations in that check were updated: the activity drawer now has tabs, and the Chapter 7 public history request carries ?limit=<n> (an exact public-address pattern is now allowed; any other query or fragment still fails). pnpm test:history:browser was blocked ('ALCHEMY_MONAD_RPC_URL is required'): not run, not a pass."
+      },
+      "generated": {
+        "command": "pnpm fixtures:check && pnpm baselines:check && pnpm state:validate && pnpm scope:docs:check",
+        "outcome": "pass",
+        "notes": "No fixture, vector, protocol, registry, vault or contract file was changed."
+      },
+      "exclusion": {
+        "command": "pnpm exclusion:check",
+        "outcome": "pass",
+        "notes": "Voice has no remote speech service, MediaRecorder or WebGL; the production scan is clean."
+      },
+      "boundaries": {
+        "outcome": "pass",
+        "notes": "Assistant sources may not name or import an approval, decision, package, transaction, signing or voice controller (boundaries.test.ts). packages/agent cannot import apps/web. The browser check asserts the client bundle contains no QWEN_API_KEY, DATABASE_URL, S3 secret, test-provider URL or injected-wallet code."
+      },
+      "contrast": {
+        "outcome": "pass",
+        "notes": "tokens.test.ts: every text colour on every surface at least 4.5:1, filled action 4.5:1, control edge and focus 3:1."
+      },
+      "documents": {
+        "outcome": "pass",
+        "notes": "CLAUDE.md 450 words; docs/assistant-ui-contract.md 1,152 words, stale statements replaced."
+      },
+      "secrets": {
+        "command": "pnpm secrets:check",
+        "outcome": "fail",
+        "notes": "2 findings, both in the operator's git-ignored, untracked .env (KEY_ASSIGNMENT, PROVIDER_KEY_URL), as recorded for Chapters 6, 8 and 9. A diagnostic scan with only that file excluded was clean. The .env was not read, moved or committed. A clean pass was not observed."
+      },
+      "readiness": {
+        "command": "pnpm readiness",
+        "outcome": "fail",
+        "notes": "typecheck, unit-tests, forge-test, protected-baselines, build and exclusion pass; secret-scan fails on the .env above. Gates A and B fail and C fails, D is unknown, for the reasons they print (deployed registry, real Mera signer, genuine Qwen run, hosted T0 journey). They are computed and were not edited."
+      },
+      "liveEvidence": {
+        "outcome": "unverified",
+        "notes": "Nothing in this chapter is live_testnet or real_device evidence: no registry transaction, no real passkey device, no real microphone or voice, no Qwen call."
+      },
+      "ci": {
+        "outcome": "unverified",
+        "notes": "ci.yml now runs test:hud:browser. It has still never executed on GitHub."
+      }
+    },
+    "voice": {
+      "adapterContract": "Typed adapters over the real SpeechRecognition (secure context, available(), install(), processLocally) and speechSynthesis (localService). A prefixed constructor, a browser name or a microphone permission is never taken as proof.",
+      "supportedInThisRun": {
+        "chromiumHeadless": "recognition and synthesis APIs are absent or unverifiable in headless Chromium, so the real adapters report unsupported there; behaviour was exercised through injected adapters only"
+      },
+      "realDeviceRecognition": "NOT verified",
+      "realDevicePlayback": "NOT verified",
+      "flag": "voice is implemented and verified at controller level (FEATURE_READINESS); it stays off unless FEATURE_VOICE=true, and the browser re-detects capability at runtime",
+      "permissionsPolicy": "microphone=(self); camera, geolocation and payment stay off"
+    },
+    "screenshots": [
+      "docs/evidence/chapter10/01-command-centre-empty-1440x900.png",
+      "docs/evidence/chapter10/02-review-1440x900.png",
+      "docs/evidence/chapter10/03-approval-preview-1440x900.png",
+      "docs/evidence/chapter10/04-transaction-unavailable-1440x900.png",
+      "docs/evidence/chapter10/05-review-after-approval-1440x900.png",
+      "docs/evidence/chapter10/06-command-centre-1440x900.png",
+      "docs/evidence/chapter10/07-command-centre-1024x768.png",
+      "docs/evidence/chapter10/08-review-package-390x844.png",
+      "docs/evidence/chapter10/09-review-320x640.png",
+      "docs/evidence/chapter10/10-locked-1440x900.png"
+    ],
+    "interfaces": {
+      "features/workspace": "selectReadiness, outstandingDecisions, guard/sameScope, stopAll/anythingToStop",
+      "features/review": "DecisionController (ReviewDispositionV1, ReviewDecisionLogV1), PackageController (preview, freeze, retry, reconnect), ApprovalController (prepare, approve, takeAuthorisation, readVerifiedDecisionLog), PREFLIGHT_FRESHNESS_MS",
+      "features/account": "AccountHandle.review and bindReviewGate; createReviewGateLatch (the production gate stays shut until the approval controller binds it)",
+      "features/vault": "VaultHandle.commands.saveFrozenReview and recoverableSubject (capture, public reference, declared predecessor, artifact roles, decision-log bytes)",
+      "features/transactions": "TransactionController.requote, TransactionState.quote, readConfirmedLifecycle, createLiveStateReader; read-only route /api/chain/state/[reviewer]/[commitment]",
+      "features/voice": "VoiceController, ReadAloudController, browser adapters"
+    },
+    "decisions": [
+      "Approval builds the registry action from the capture-verified public reference rather than calling buildIssueAction, because that builder accepts only an in-session PreparedReviewPackage and approval must also work after a reload (a VerifiedReview). The action is validated by boundReviewActionSchema and again by the signing controller.",
+      "The human-review gate is read from the decision log inside the verified package (schema-checked, reviewer-matched, no requires_change), not from UI state, so it survives reload and cannot be claimed by a flag.",
+      "Dispositions are stored as encrypted context entries (kind note, typed prefix) and dropped when the finding digest or snapshot changes; the decision log is rebuilt only by an explicit Record action and is not persisted on its own.",
+      "approve() requires event.isTrusted from the dedicated control; a scripted click is refused. This is defence in depth for a same-origin page, not a defence against compromised page code.",
+      "Code-only packages carry an agent-config artifact built with the existing localAgentConfig (modelExecution none).",
+      "A pre-signing registry read (provisional latest block, nonce, lifecycle) was added as a public read-only route because the nonce must be known before the action exists.",
+      "CommandDock Enter treats only running or stopping as busy; a pending disclosure preview still accepts typed commands (found by the Chapter 9 assistant browser check).",
+      "On narrow screens the page scrolls and the dock is sticky; the status strip shows matter, passkey session and vault, with the other readings in Diagnostics."
+    ],
+    "limitations": [
+      "No fee-paying transaction was sent from any Chapter 10 check. The stage-two quote, send, refresh, requote and Stop behaviour is verified against a scripted chain API at controller level; the browser shows only the honest unavailable state.",
+      "Receipt revoke, replace and nonce-cancellation are covered by controller and integration tests with scripted chain state; their browser path was not driven.",
+      "Voice: recognition and read-aloud ran only through injected mock adapters; no real microphone or on-device voice was used.",
+      "No real screen reader or mobile device was used; accessibility checks are automated (names, focus visibility, target size, reflow, reduced motion, token contrast) and are not a certification.",
+      "The drawers are non-modal asides with Escape-to-close and focus restoration; no modal dialog was built, so the modal-dialog pattern did not apply.",
+      "Only Chromium was driven.",
+      "An approval signature that has been disclosed cannot be retracted by Stop, closing a panel or locking the vault.",
+      "The reviewer account is an address, not a verified professional identity, and the rule pack is a demonstration draft."
+    ],
+    "handoff": {
+      "chapter11": "ReceiptReferenceV1 is the only public object. Readable review export (ReviewExportV1) and context export (MatterContextExportV1) come from VaultHandle.commands.prepareExport with a disclosure preview and an explicit Download; the verifier panel states that verification is not available. Receipt states stay separate: package integrity, receipt binding and live lifecycle, signer acceptance, indexed history. A complete package example is any frozen review from the Chapter 10 flow (source, extracted-text, calculation, checklist, rule-pack, analysis, agent-config and exactly one decision-log). The decision-log schema is lexaegis.review-decision-log.v1 and validates with decisionLogSchema in apps/web.",
+      "chapters12and13": "pnpm test:hud:browser is the repeatable Chapter 10 journey; it needs no credentials. A live demo additionally needs a deployed registry (NEXT_PUBLIC_REGISTRY_ADDRESS), Alchemy configuration for the chain routes, and a real passkey device."
     }
   }
 }

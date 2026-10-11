@@ -138,7 +138,7 @@ export function CommandDock() {
               shiftKey: event.shiftKey,
               isComposing: event.nativeEvent.isComposing,
               draft,
-              busy: stoppable,
+              busy: snapshot.phase === 'running' || snapshot.phase === 'stopping',
               available: controller !== null,
             });
             if (event.key === 'Enter' && decision !== 'newline') {

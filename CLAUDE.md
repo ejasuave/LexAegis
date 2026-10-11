@@ -6,7 +6,7 @@ Status: `docs/build-state.json` (5 real-device recovery, 6 testnet credentials, 
 
 - `pnpm install --frozen-lockfile`, `lint`, `typecheck`, `test`, `build`
 - Gates: `fixtures:check`, `baselines:check`, `exclusion:check`, `secrets:check`, `state:validate`, `readiness`
-- Others (`contracts:*`, `test:*:browser`, `db:dev`, `tools:s3`): see `package.json`. Copy `.env.example`. TypeScript stays below 6.1.
+- Others (`contracts:*`, `test:*:browser`, `db:dev`, `tools:s3`): see `package.json`. Copy `.env.example`. TypeScript below 6.1.
 
 ## Workflow
 
@@ -17,8 +17,8 @@ Status: `docs/build-state.json` (5 real-device recovery, 6 testnet credentials, 
 
 ## Git
 
-- After each task: `git add -A`, commit `ch<N> task <X>: <summary>`, push. Chapter end: `ch<N> complete`. Messages come from the task just done; no `git diff` or `git log`.
-- Never force-push, commit `.env` or secrets, or rewrite history. If a push fails, report it and continue; no retry loop.
+- After each task: `git add -A`, commit `ch<N> task <X>: <summary>`, push. Chapter end: `ch<N> complete`. Messages come from the task just done; no `git diff`/`git log`.
+- Never force-push, commit `.env` or secrets, or rewrite history. If a push fails, report and continue; no retry loop.
 
 ## What is being built
 
@@ -33,12 +33,11 @@ Status: `docs/build-state.json` (5 real-device recovery, 6 testnet credentials, 
 ## Invariants
 
 - v1 is frozen: schema IDs, commitment construction, EIP-712 domain, registry ABI, profiles `lexaegis.evm.bip32-prf.v1` and `lexaegis.vault.hkdf-sha256.aes-256-gcm.v1`. Never regenerate vectors to pass a test.
-- Only `ReceiptReferenceV1` is public; manifests, hashes, labels, nonces stay private.
-- Signing consumes a `PreparedReviewPackage`; never rebuild it or its nonce.
+- Only `ReceiptReferenceV1` is public; manifests, hashes, labels, nonces are private.
 - Saved, signed, confirmed, indexed and active differ; no `valid=true`; RPC failure is `unknown`.
 - No simulated success; unavailable integrations return typed failures.
 - Keys, PRF outputs and sessions stay in memory. Vault unlock is not a signing session.
 - Model proposes, code decides: no model, chat or voice input approves, signs or confirms.
-- A frozen package is ready only via a `RecoverableCapture` rebuilt by retrieval and verification in this unlock.
+- A frozen package is ready only via a `RecoverableCapture` rebuilt by retrieval and verification in this unlock; signing consumes it, never a rebuild. Approval is a trusted click; technical failures are unwaivable.
 - Money is GBP minor units as decimal strings.
 - Only real_device/live_testnet evidence passes live gates; gates are computed. Failed Gate B withdraws the Mera bounty claims.
