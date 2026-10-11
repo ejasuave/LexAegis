@@ -7598,6 +7598,11 @@
           "package.json",
           "pnpm-lock.yaml"
         ]
+      },
+      "10": {
+        "status": "complete",
+        "summary": "docs/WHY.md: a factual, dated comparison of Proof of Review with hash-and-timestamp services, generic on-chain attestations, e-signature audit trails and C2PA content credentials, in a table (what is bound, interpretation, lifecycle, recipient verification, disclosure, integration effort, what each does better) plus what the primitive actually provides (each point traced to SPEC.md and its checks) and what it does not do. External claims were fetched on 2026-10-11 from primary documents and appear in an evidence appendix with URL, version, supported claim and uncertainty: RFC 3161 (sections 1, 2.1, 2.2), OpenTimestamps home page, the EAS contracts README, and C2PA specification 2.2 (sections 1.2, 1.3.2, 2.1-2.3, 9.1, 15.7). Left NOT YET rather than filled from memory: the e-signature audit-trail row (the DocuSign support page returned only an error notice, a DocuSign legality page does not describe the audit trail, the Adobe help page returned HTTP 403), EAS revocation/expiry/off-chain behaviour (docs.attest.org returned only a page title; the README does not cover it) and C2PA section 14 (not read). No uniqueness, adoption, benchmark, market, legal-enforceability, compliance or certification claim is made.",
+        "files": ["docs/WHY.md"]
       }
     }
   }
