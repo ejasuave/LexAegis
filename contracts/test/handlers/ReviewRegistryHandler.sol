@@ -53,6 +53,16 @@ contract ReviewRegistryHandler is Test {
         uint256 updatedAt;
     }
 
+    /// @dev Everything the model holds about one (reviewer, commitment) pair, in one read.
+    struct Expected {
+        Ghost ghost;
+        bool issued;
+        bool everTerminal;
+        uint256 firstIssuedAt;
+        uint256 issuedEvents;
+        uint256 supersededEvents;
+    }
+
     struct SignedAction {
         IProofOfReviewRegistry.ReviewAction action;
         bytes signature;
@@ -93,6 +103,9 @@ contract ReviewRegistryHandler is Test {
     // ---- Ghost model ---------------------------------------------------------------------------
     mapping(address reviewer => mapping(bytes32 commitment => Ghost)) internal _ghost;
     mapping(address reviewer => bytes32[] commitments) internal _issued;
+    /// @dev Bit i is set once pool entry i was issued by the reviewer.
+    mapping(address reviewer => uint256 mask) internal _issuedMask;
+    mapping(bytes32 commitment => uint256 indexPlusOne) internal _poolIndex;
     mapping(address account => uint256 nonce) internal _nonce;
     mapping(address reviewer => mapping(bytes32 commitment => bool)) public everTerminal;
     mapping(address reviewer => mapping(bytes32 commitment => uint256)) public firstIssuedAt;
@@ -146,6 +159,7 @@ contract ReviewRegistryHandler is Test {
         }
         for (uint256 i = 0; i < POOL; ++i) {
             _pool.push(keccak256(abi.encode("synthetic stateful commitment", i)));
+            _poolIndex[_pool[i]] = i + 1;
         }
     }
 
@@ -377,6 +391,10 @@ contract ReviewRegistryHandler is Test {
         return _accounts[index];
     }
 
+    function pool() external view returns (bytes32[] memory) {
+        return _pool;
+    }
+
     function poolAt(uint256 index) external view returns (bytes32) {
         return _pool[index];
     }
@@ -391,6 +409,31 @@ contract ReviewRegistryHandler is Test {
 
     function ghostOf(address reviewer, bytes32 commitment) external view returns (Ghost memory) {
         return _ghost[reviewer][commitment];
+    }
+
+    function expectedOf(address reviewer, bytes32 commitment) public view returns (Expected memory) {
+        return Expected({
+            ghost: _ghost[reviewer][commitment],
+            issued: firstIssuedAt[reviewer][commitment] != 0,
+            everTerminal: everTerminal[reviewer][commitment],
+            firstIssuedAt: firstIssuedAt[reviewer][commitment],
+            issuedEvents: issuedEvents[reviewer][commitment],
+            supersededEvents: supersededEvents[reviewer][commitment]
+        });
+    }
+
+    /// @dev The model's view of every pool commitment under one reviewer, in pool order. Entries
+    /// the model never issued are left zeroed (`issued == false`): the model holds nothing for them.
+    function expectedFor(address reviewer) external view returns (Expected[] memory all) {
+        all = new Expected[](POOL);
+        uint256 mask = _issuedMask[reviewer];
+        for (uint256 i = 0; i < POOL; ++i) {
+            if (mask & (1 << i) != 0) all[i] = expectedOf(reviewer, _pool[i]);
+        }
+    }
+
+    function issuedOf(address reviewer) external view returns (bytes32[] memory) {
+        return _issued[reviewer];
     }
 
     function ghostNonce(address account) external view returns (uint256) {
@@ -530,6 +573,8 @@ contract ReviewRegistryHandler is Test {
         ghost.updatedAt = vm.getBlockTimestamp();
         firstIssuedAt[reviewer][commitment] = vm.getBlockTimestamp();
         _issued[reviewer].push(commitment);
+        if (_poolIndex[commitment] == 0) revert ModelError("a commitment outside the pool was issued");
+        _issuedMask[reviewer] |= 1 << (_poolIndex[commitment] - 1);
     }
 
     // ============================================================================================

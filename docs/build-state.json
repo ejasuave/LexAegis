@@ -9067,6 +9067,14 @@
           "contracts/test/handlers/ReviewRegistryHandler.t.sol",
           "contracts/test/RegistryInvariants.t.sol"
         ]
+      },
+      "4": {
+        "status": "complete",
+        "summary": "contracts/test/RegistryInvariants.t.sol on the Task 3 handler; the Chapter 3 suite (Invariants.t.sol) is unchanged and still passes. Campaign contract RegistryInvariantsTest with four invariants checked after every call: (a) every (reviewer, pool commitment) pair, issued or not (5 x 24 = 120), equals the independent model field by field; a never-issued pair is NotFound with zero metadata even when another reviewer issued the same bytes; an ever-terminal receipt is Revoked or Superseded; issuance time unchanged; issued exactly once and superseded at most once by event count (a supersession's two logs are one issuance) [properties 1, 2, 6, 7]; (b) every account's nonce equals the model and equals successful executes + successful invalidations, the zero address stays at 0, and the handler reverts if any observed nonce decreases [3]; (c) links agree within one namespace, a superseded receipt has exactly one successor that points back and was created in the same second, successors are issued receipts of the same reviewer, chains terminate [4, 5]; (d) every refusal had its modelled reason. The exactly-one-Active condition is asserted only immediately after a supersession (in the handler and in a transition test), never forever or per reviewer. RegistryTransitionsTest (7 explicit tests): issue->supersede->revoke replacement; issue->supersede->supersede again incl. no loop back; several Active receipts at once; ERC-1271 supersession emitting ReceiptIssued then ReceiptSuperseded with one nonce via an unrelated submitter; a reverted supersession commits no status, link, time, nonce or log (trace-level writes inside the reverted call are not committed state); two validly signed actions racing for one nonce have exactly one winner across three submitters; identical bytes under two reviewers evolve independently. RegistryInvariantControlsTest (5 local boundary tests using a storage cheatcode outside any campaign): a reactivated terminal receipt, an erased issuance, a stray record in a never-issued namespace, a nonce moved without an operation and a broken successor link are each reported by the corresponding check. Observed: forge test 89 passed, 0 failed across 9 suites; default campaign 64 x 64 = 4,096 calls, 0 reverts, about 16 s. No registry counterexample found; the contract is unchanged (artifacts:check, fmt:check pass). Local ERC-1271 fixtures say nothing about Mera or a mainnet deployment.",
+        "files": [
+          "contracts/test/RegistryInvariants.t.sol",
+          "contracts/test/handlers/ReviewRegistryHandler.sol"
+        ]
       }
     }
   }
