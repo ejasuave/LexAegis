@@ -3,7 +3,7 @@
 import { createContext, useContext, useMemo, useState, type ReactNode } from 'react';
 
 export type PresentationMode = 'command' | 'review';
-export type MobileTab = 'matter' | 'work' | 'evidence';
+export type MobileTab = 'document' | 'aegis' | 'findings' | 'package';
 
 /** The selected matter/document/clause. Null until a later chapter provides real matters. */
 export interface Selection {
@@ -35,7 +35,7 @@ const EMPTY_SELECTION: Selection = { matterId: null, documentVersionId: null, cl
  */
 export function WorkspaceProvider({ children }: { children: ReactNode }) {
   const [mode, setMode] = useState<PresentationMode>('command');
-  const [mobileTab, setMobileTab] = useState<MobileTab>('work');
+  const [mobileTab, setMobileTab] = useState<MobileTab>('document');
   const [draft, setDraft] = useState('');
   const [activityOpen, setActivityOpen] = useState(false);
 

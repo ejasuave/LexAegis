@@ -3,28 +3,44 @@
 :root {
   color-scheme: dark;
 
-  --lj-bg: #000000;
-  --lj-bg-soft: #0d1117;
-  --lj-text: #e6edf3;
-  --lj-text-secondary: #aab6c4;
-  --lj-text-muted: #8b98a9;
+  /* Blueprint palette. Contrast of every text pairing is asserted in tokens.test.ts. */
+  --lj-bg: #060b14;
+  --lj-bg-soft: #0c1626; /* surface */
+  --lj-raised: #112039;
+  --lj-border: #23364c;
+  --lj-text: #e6edf7;
+  --lj-text-secondary: #aabcd0;
+  --lj-text-muted: #8c9db3;
 
-  --lj-cobalt: #3b82f6;
+  --lj-cobalt: #3b82f6; /* decorative core and rings */
+  --lj-cobalt-action: #1d4ed8; /* filled action buttons, with --lj-text on top */
   --lj-cyan: #67e8f9;
   --lj-violet-field: #6d28d9;
-  --lj-violet-text: #c4b5fd;
-  --lj-amber: #fbbf24;
-  --lj-error: #fb7185;
-  --lj-positive: #6ee7b7;
+  --lj-violet-text: #b6a1ff;
+  --lj-amber: #f5c76a;
+  --lj-error: #fda4af;
+  --lj-positive: #69d8a7;
 
-  --lj-divider: rgb(170 182 196 / 18%);
+  --lj-divider: #23364c;
   --lj-control-edge: #64748b;
   --lj-focus: #67e8f9;
+
+  /* Spacing scale (4/8 px) and card radii (12-16 px). */
+  --lj-space-1: 4px;
+  --lj-space-2: 8px;
+  --lj-space-3: 12px;
+  --lj-space-4: 16px;
+  --lj-radius-card: 12px;
+  --lj-radius-panel: 16px;
+  --lj-header-height: 64px;
+  --lj-rail-width: 232px;
 }
 
 @theme inline {
   --color-lj-bg: var(--lj-bg);
   --color-lj-soft: var(--lj-bg-soft);
+  --color-lj-raised: var(--lj-raised);
+  --color-lj-action: var(--lj-cobalt-action);
   --color-lj-text: var(--lj-text);
   --color-lj-secondary: var(--lj-text-secondary);
   --color-lj-muted: var(--lj-text-muted);
@@ -42,6 +58,7 @@
 html,
 body {
   min-height: 100%;
+  min-height: 100dvh;
   background-color: var(--lj-bg);
   color: var(--lj-text);
 }
@@ -68,6 +85,35 @@ body {
 :focus-visible {
   outline: 2px solid var(--lj-focus);
   outline-offset: 2px;
+}
+
+/* Safe-area insets for notched devices; the dock and drawers never sit under them. */
+.lj-safe-x {
+  padding-left: max(0.75rem, env(safe-area-inset-left));
+  padding-right: max(0.75rem, env(safe-area-inset-right));
+}
+.lj-safe-bottom {
+  padding-bottom: max(0.5rem, env(safe-area-inset-bottom));
+}
+
+.lj-card {
+  border: 1px solid var(--lj-border);
+  border-radius: var(--lj-radius-card);
+  background: var(--lj-bg-soft);
+  box-shadow: 0 1px 0 rgb(0 0 0 / 30%);
+}
+
+.lj-action {
+  background: var(--lj-cobalt-action);
+  color: var(--lj-text);
+  border: 1px solid #3b6cf0;
+  border-radius: 8px;
+}
+.lj-action[aria-disabled='true'],
+.lj-action:disabled {
+  background: var(--lj-bg-soft);
+  color: var(--lj-text-muted);
+  border-color: var(--lj-control-edge);
 }
 
 code,

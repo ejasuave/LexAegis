@@ -63,7 +63,10 @@ export function CommandDock() {
         : IDLE_TEXT[snapshot.availabilityStatus];
 
   return (
-    <section aria-label="Command dock" className="border-t border-lj-divider bg-lj-bg px-3 py-2">
+    <section
+      aria-label="Command dock"
+      className="lj-safe-x lj-safe-bottom sticky bottom-0 z-10 border-t border-lj-divider bg-lj-bg py-2"
+    >
       <form onSubmit={onSubmit} className="flex flex-wrap items-center gap-2">
         <div className="relative">
           <button

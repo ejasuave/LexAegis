@@ -8,6 +8,7 @@ import { useVault } from '@/components/vault/vault-context';
 import { vaultStatusLabel } from '@/components/vault/status';
 import { IndexerStatusIndicator } from '@/components/history/IndexerStatusIndicator';
 import { useHistory } from '@/components/history/history-context';
+import { useReview } from '@/components/review/review-context';
 import { Icon, type IconName } from './icons';
 
 interface Reading {
@@ -24,10 +25,24 @@ export function SystemStrip({ networkLabel }: { networkLabel: string }) {
   const { availability, snapshot } = useAccount();
   const vault = useVault();
   const history = useHistory();
+  const review = useReview().snapshot;
   const account =
     availability === 'loading' ? 'Checking' : accountStatusLabel(snapshot, availability);
+  // The title is shown only in this in-memory view; it is never put in a URL or document title.
+  const matter = vault.snapshot.selectedMatter;
+  const selectedDocs = review.documents.filter((doc) => doc.selected);
+  const matterText =
+    matter === null
+      ? 'None selected'
+      : `${matter.title}, ${
+          selectedDocs.length === 0
+            ? 'no document selected'
+            : selectedDocs.length === 1
+              ? `version ${selectedDocs[0]?.documentVersionId.slice(0, 8) ?? ''}`
+              : `${selectedDocs.length} versions`
+        }`;
   const readings: Reading[] = [
-    { label: 'Matter', value: 'None selected', icon: 'file' },
+    { label: 'Matter', value: matterText, icon: 'file' },
     { label: 'Network', value: networkLabel, icon: 'network' },
     { label: 'Passkey session', value: account, icon: 'key' },
     {
@@ -40,7 +55,10 @@ export function SystemStrip({ networkLabel }: { networkLabel: string }) {
     { label: 'Indexer', value: <IndexerStatusIndicator health={history.health} />, icon: 'index' },
   ];
   return (
-    <header className="border-b border-lj-divider px-3 py-2" aria-label="System status">
+    <header
+      className="lj-safe-x min-h-16 border-b border-lj-divider py-2"
+      aria-label="System status"
+    >
       <dl className="m-0 flex flex-wrap gap-x-6 gap-y-1 text-[0.8125rem] leading-5">
         {readings.map((reading) => (
           <div key={reading.label} className="flex items-center gap-2">
@@ -50,6 +68,14 @@ export function SystemStrip({ networkLabel }: { networkLabel: string }) {
           </div>
         ))}
       </dl>
+      <details className="mt-1 text-[0.8125rem] text-lj-secondary">
+        <summary className="min-h-6 cursor-pointer">Diagnostics</summary>
+        <p className="m-0 mt-1">
+          Readings are separate: a usable passkey session does not mean the vault is unlocked,
+          server sign-in does not approve anything, and indexed history never replaces a live
+          network read.
+        </p>
+      </details>
     </header>
   );
 }

@@ -21,9 +21,10 @@ const MODES: { id: PresentationMode; label: string }[] = [
 ];
 
 const TABS: { id: MobileTab; label: string }[] = [
-  { id: 'matter', label: 'Matter' },
-  { id: 'work', label: 'Work' },
-  { id: 'evidence', label: 'Evidence' },
+  { id: 'document', label: 'Document' },
+  { id: 'aegis', label: 'Aegis' },
+  { id: 'findings', label: 'Findings' },
+  { id: 'package', label: 'Review package' },
 ];
 
 const panelTitle = 'm-0 text-lg font-medium';
@@ -155,11 +156,14 @@ function CommandCentre() {
   );
 }
 
-function ReviewView() {
+function ReviewView({ tab }: { tab: MobileTab }) {
   const { snapshot } = useAssistant();
   return (
     <div className="grid gap-4 xl:grid-cols-[minmax(0,1fr)_minmax(16rem,20rem)]">
-      <section aria-label="Document" className="min-w-0">
+      <section
+        aria-label="Document"
+        className={`min-w-0 ${tab === 'document' ? '' : 'hidden lg:block'}`}
+      >
         <div className="flex items-center justify-between border-b border-lj-divider pb-2">
           <h2 className={panelTitle}>Document</h2>
           <AssistantOrb state={snapshot.orb} size="compact" />
@@ -169,7 +173,7 @@ function ReviewView() {
       </section>
       <section
         aria-label="Assistant"
-        className="min-w-0 border-t border-lj-divider pt-4 xl:border-l xl:border-t-0 xl:pl-4 xl:pt-0"
+        className={`min-w-0 ${tab === 'aegis' ? '' : 'hidden lg:block'} border-t border-lj-divider pt-4 xl:border-l xl:border-t-0 xl:pl-4 xl:pt-0`}
       >
         <h2 className={panelTitle}>Assistant</h2>
         <ConversationPanel compact />
@@ -184,6 +188,13 @@ function EvidencePanel() {
       <h2 className={panelTitle}>Evidence</h2>
       <p className={muted}>Select a finding to see its source passage and calculation.</p>
       <ReviewEvidence />
+    </div>
+  );
+}
+
+function PackagePanel() {
+  return (
+    <div>
       <ActionPreview />
       <ReadinessPanel />
     </div>
@@ -193,7 +204,7 @@ function EvidencePanel() {
 /** Command-centre and Review modes share one selection and one draft (held in WorkspaceProvider). */
 export function ReviewWorkspace() {
   const { mode, setMode, mobileTab, setMobileTab, selection } = useWorkspace();
-  const show = (tab: MobileTab) => (mobileTab === tab ? '' : 'hidden lg:block');
+  const show = (...tabs: MobileTab[]) => (tabs.includes(mobileTab) ? '' : 'hidden lg:block');
 
   return (
     <div>
@@ -218,7 +229,11 @@ export function ReviewWorkspace() {
         </div>
       </div>
 
-      <div role="tablist" aria-label="Workspace sections" className="mb-3 flex gap-1 lg:hidden">
+      <div
+        role="tablist"
+        aria-label="Workspace sections"
+        className="mb-3 flex flex-wrap gap-1 lg:hidden"
+      >
         {TABS.map((tab) => (
           <button
             key={tab.id}
@@ -226,7 +241,7 @@ export function ReviewWorkspace() {
             role="tab"
             aria-selected={mobileTab === tab.id}
             onClick={() => setMobileTab(tab.id)}
-            className={`min-h-11 flex-1 rounded border px-3 text-[0.875rem] ${
+            className={`min-h-11 min-w-[7rem] flex-1 rounded border px-3 text-[0.875rem] ${
               mobileTab === tab.id
                 ? 'border-lj-cyan text-lj-text'
                 : 'border-lj-edge text-lj-secondary'
@@ -241,15 +256,26 @@ export function ReviewWorkspace() {
         {selection.matterId ? 'Matter selected.' : 'No matter selected.'}
       </p>
 
-      <div className="grid gap-6 lg:grid-cols-[minmax(13rem,15rem)_minmax(0,1fr)_minmax(19rem,21rem)]">
-        <aside aria-label="Matter" className={show('matter')}>
+      <div className="grid gap-6 lg:grid-cols-[var(--lj-rail-width)_minmax(0,1fr)_minmax(22.5rem,26.25rem)]">
+        <aside aria-label="Matter" className={show('document')}>
           <MatterRail />
         </aside>
-        <section aria-label="Work" className={`min-w-0 ${show('work')}`}>
-          {mode === 'command' ? <CommandCentre /> : <ReviewView />}
+        <section aria-label="Work" className="min-w-0">
+          {mode === 'command' ? (
+            <div className={show('aegis')}>
+              <CommandCentre />
+            </div>
+          ) : (
+            <ReviewView tab={mobileTab} />
+          )}
         </section>
-        <aside aria-label="Evidence and approval" className={show('evidence')}>
-          <EvidencePanel />
+        <aside aria-label="Evidence and approval" className="min-w-0">
+          <div className={show('findings')}>
+            <EvidencePanel />
+          </div>
+          <div className={show('package')}>
+            <PackagePanel />
+          </div>
         </aside>
       </div>
     </div>
