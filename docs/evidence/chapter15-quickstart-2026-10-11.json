@@ -4,8 +4,8 @@
   "evidenceClass": "local_scripted",
   "command": "pnpm quickstart:check",
   "outcome": "pass",
-  "sourceRevision": "06ecbf00156cde52f2545895c5ca5e8052dcfcb8",
-  "workingTreeDirty": true,
+  "sourceRevision": "c8c7bd1d9c0161ef615fd8af56a0500a50af8271",
+  "workingTreeDirty": false,
   "environment": {
     "os": "linux 7.0.0-38-generic",
     "arch": "x64",
@@ -18,27 +18,27 @@
       "id": "path1",
       "phase": "execute",
       "status": "pass",
-      "durationMs": 457
+      "durationMs": 461
     },
     "cli": {
       "id": "path2",
       "phase": "execute",
       "status": "pass",
-      "durationMs": 976
+      "durationMs": 989
     },
     "lifecycleLocal": {
       "id": "path3",
       "phase": "execute",
       "status": "pass",
-      "durationMs": 6333
+      "durationMs": 6305
     }
   },
   "timingsMs": {
-    "installation": 8686,
-    "localExecution": 1433,
-    "lifecycleLocalExecution": 6333,
+    "installation": 9759,
+    "localExecution": 1450,
+    "lifecycleLocalExecution": 6305,
     "liveStepsPerformedManually": 0,
-    "wallClockOfThisCheck": 17699
+    "wallClockOfThisCheck": 17868
   },
   "notRun": [],
   "liveSteps": "not performed: no check contacts a public network",
