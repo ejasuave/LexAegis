@@ -272,7 +272,7 @@ describe('stage one: explicit package authorisation', () => {
   });
 
   it('revokes a known public receipt without any private documents, only when it is Active', async () => {
-    const { r, latch, commitment } = await frozen();
+    const { r, latch } = await frozen();
     const reviewer = r.h.controller.getSnapshot().account?.address ?? '';
     const reference = {
       schema: 'lexaegis.receipt-ref.v1' as const,
