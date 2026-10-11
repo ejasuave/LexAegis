@@ -36,7 +36,7 @@ On-device only: dictation requires the browser to report local recognition for e
 
 - Reads `/api/history/{status,reviewers/<address>,receipts/<address>/<commitment>}`: public, read-only. Index state is `availability`, `freshness` and `indexConsistency`, worded in text with block lag. `history_reset_required` (409) means refresh. `not_indexed` is never NotFound. Indexed lifecycle and live registry result are separate readings; newer actions are "provisional". The live read wins.
 - The activity drawer has three views: assistant work; human decisions (unsigned, local) apart from signed authorisations; public receipts. Private matter titles join only in browser memory while unlocked.
-- Saved reviews open read-only after verification in this unlock, copy only the public reference, and export through disclosure previews. The independent verifier is Chapter 11; nothing here reports verified.
+- Saved reviews open read-only after verification in this unlock, copy only the public reference, and export through disclosure previews. Verify links to the separate verifier; nothing here reports verified.
 
 ## Assistant (Chapter 9)
 
@@ -62,6 +62,10 @@ Create (after an absence check), unlock, recover, lock, matters, source files (1
 
 `/review`: text-PDF intake (10 MiB, 80 pages, one job, 30-second worker), source viewer with the exact passage highlighted, findings, checklist, SIMULATED what-if, and (flag, off by default) two-version comparison. Absence findings name the searched documents. Only the reviewer confirms facts. Any change to sources, facts, evidence or rules marks results stale. Findings are plain statements: no validity verdict or risk score. The rule pack is `demo_draft`, unreviewed.
 
+## Independent verifier (Chapter 11)
+
+`apps/verifier` checks an exported bundle locally against a separately supplied public reference; the registry check is an explicit, read-only RPC action. Panels never combine into "valid"; signer acceptance needs a caller policy. A receipt does not prove legal correctness or professional identity.
+
 ## Requirements still open
 
-Chapter 11 independent verifier; Chapters 12 and 13 validation (cited output, cancellation, isolation, approval binding, injection, accessibility) and the demo with a real transaction.
+Chapters 12 and 13 validation (cited output, cancellation, isolation, approval binding, injection, accessibility) and the demo with a real transaction.

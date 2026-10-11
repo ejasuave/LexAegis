@@ -13,13 +13,13 @@
       "reviewerAddress": "0x076815e4c5fa1048db77d533c2e05f18a5ca89d5",
       "commitment": "0xa98a4088de298d89160b975e907325554e2560f9a36a899188da29bb4cd58216"
     },
-    "lifecycle": "Superseded at block 70088589 · Receipt binding not evaluated",
-    "checkpoint": "Read at block 70088589 (finalized height 70088592, chain 10143) on Sun, 11 Oct 2026 10:33:40 GMT."
+    "lifecycle": "Superseded at block 70093756 · Receipt binding not evaluated",
+    "checkpoint": "Read at block 70093756 (finalized height 70093759, chain 10143) on Sun, 11 Oct 2026 10:59:40 GMT."
   },
   "history": "Replacements 0xc55bfeb8d0dd2fd17d935564c9c89c4be34d7a7a35fd335e5832c358b182024e — revoked. Its files have not been checked here; inspect it as a separate reference. Copy",
   "notFound": {
     "commitment": "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
-    "lifecycle": "Receipt not found at block 70088592 · Receipt binding not evaluated"
+    "lifecycle": "Receipt not found at block 70093759 · Receipt binding not evaluated"
   },
   "activeExample": "UNVERIFIED: no Active receipt exists among the recorded lifecycle examples; none was created for this check."
 }

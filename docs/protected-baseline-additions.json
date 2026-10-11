@@ -1,0 +1,18 @@
+{
+  "schema": "lexaegis.protected-baseline-additions.v1",
+  "note": "Additive only. docs/protected-baselines.json is unchanged; each entry is accepted at exactly this hash. No existing v1 schema ID, commitment construction, EIP-712 domain, registry ABI, profile or vector changed.",
+  "files": {
+    "packages/protocol/schemas/v1/review-export.schema.json": {
+      "sha256": "c3307a7322e6fa9ba6668414bed5427100ad5a37dc3d67c4c1a156da385fc658",
+      "chapter": "11",
+      "task": "13",
+      "reason": "new ReviewExportV1 portable-bundle JSON Schema; a new file, not a v1 protocol object"
+    },
+    "packages/protocol/src/v1/json-schema.ts": {
+      "sha256": "6a80f211d11d5f08f057ce6fb346c68606628c22ea73f7459f266d127b0cdd7b",
+      "chapter": "11",
+      "task": "13",
+      "reason": "registers the ReviewExportV1 schema in the generator list; the other generated schemas are byte-identical to the baseline"
+    }
+  }
+}

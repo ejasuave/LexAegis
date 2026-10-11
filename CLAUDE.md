@@ -5,8 +5,8 @@
 Status: `docs/build-state.json` (5 real-device recovery, 6 testnet credentials, 9 live Qwen run). Node 24+, pnpm 11.
 
 - `pnpm install --frozen-lockfile`, `lint`, `typecheck`, `test`, `build`
-- Gates: `fixtures:check`, `baselines:check`, `exclusion:check`, `secrets:check`, `state:validate`, `readiness`
-- Others (`contracts:*`, `test:*:browser`, `db:dev`, `tools:s3`): see `package.json`. Copy `.env.example`. TypeScript below 6.1.
+- Gates: `fixtures:check`, `baselines:check`, `exclusion:check`, `secrets:check`, `packages:check`, `state:validate`, `readiness`
+- Others (`contracts:*`, `test:*:browser`, `db:dev`): see `package.json`. Copy `.env.example`. TypeScript below 6.1.
 
 ## Workflow
 

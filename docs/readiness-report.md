@@ -1,15 +1,15 @@
 # Readiness report
 
-<!-- readiness-run:rd-20261011021525-8232d6 version:1 -->
+<!-- readiness-run:rd-20261011111030-576d9b version:1 -->
 
-Run `rd-20261011021525-8232d6` at 2026-10-11T02:15:25.367Z. Source fingerprint `bd789ee6479f688f`.
+Run `rd-20261011111030-576d9b` at 2026-10-11T11:10:30.456Z. Source fingerprint `a80ac8b62440f12a`.
 Exit 0 before a deadline is not a claim of submission readiness. Recorded chain results are historical, not live reads.
 
 ## Gates
 
 ```text
 gate  target                     outcome  observed                   missing evidence / reason
-A  2026-10-06T23:59:59+01:00  fail     2026-10-11T02:15:25.367Z  NOT YET: Registry deployed on Monad testnet (observed receipt, matching identity)
+A  2026-10-06T23:59:59+01:00  fail     2026-10-11T11:10:30.456Z  NOT YET: Registry deployed on Monad testnet (observed receipt, matching identity)
 B  2026-10-08T23:59:59+01:00  fail     -  NOT YET: A real Mera account signed the exact action; NOT YET: Registry transaction confirmed through Alchemy; NOT YET: Verifier read the resulting state
 C  2026-10-10T23:59:59+01:00  fail     -  NOT YET: Genuine Qwen run with bounded tools and valid source-linked findings; NOT YET: Complete T0 browser journey
 D  2026-10-11T23:59:59+01:00  unknown  -  NOT YET: Feature freeze recorded; NOT YET: Verifier passes; NOT YET: SDK passes; NOT YET: CLI passes; NOT YET: Judge path passes; NOT YET: Anonymously accessible public repository
@@ -19,12 +19,12 @@ D  2026-10-11T23:59:59+01:00  unknown  -  NOT YET: Feature freeze recorded; NOT 
 
 | Check               | Outcome | Reason | Seconds |
 | ------------------- | ------- | ------ | ------- |
-| typecheck           | pass    | OK     | 19.0    |
-| unit-tests          | pass    | OK     | 11.0    |
-| forge-test          | pass    | OK     | 21.4    |
+| typecheck           | pass    | OK     | 25.2    |
+| unit-tests          | pass    | OK     | 16.3    |
+| forge-test          | pass    | OK     | 26.7    |
 | secret-scan         | fail    | EXIT_1 | 0.7     |
 | protected-baselines | pass    | OK     | 0.6     |
-| build               | pass    | OK     | 4.5     |
-| exclusion           | pass    | OK     | 0.8     |
+| build               | pass    | OK     | 5.7     |
+| exclusion           | pass    | OK     | 0.9     |
 
-Total 29.3 s. Tools: node v24.21.0, pnpm 11.11.0, forge 1.8.5.
+Total 38.5 s. Tools: node v24.21.0, pnpm 11.11.0, forge 1.8.5.

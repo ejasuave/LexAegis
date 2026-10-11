@@ -21,6 +21,8 @@ const PROTECTED = [
 ];
 const COMPILED = 'contracts/out/ProofOfReviewRegistry.sol/ProofOfReviewRegistry.json';
 const BASELINE = join(ROOT, 'docs', 'protected-baselines.json');
+/** Additive extensions: exact hashes of files a later chapter added or extended. The baseline is never rewritten. */
+const ADDITIONS = join(ROOT, 'docs', 'protected-baseline-additions.json');
 
 const sha = (data: string | Buffer) => createHash('sha256').update(data).digest('hex');
 
@@ -68,13 +70,19 @@ if (process.argv.includes('--write')) {
     files: Record<string, string>;
     compiled: typeof now.compiled;
   };
+  const additions = existsSync(ADDITIONS)
+    ? (JSON.parse(readFileSync(ADDITIONS, 'utf8')) as { files: Record<string, { sha256: string }> })
+        .files
+    : {};
+  // An addition is accepted only at its recorded hash; any further edit is a problem again.
+  const accepted = (file: string) => additions[file]?.sha256 === now.files[file];
   const problems: string[] = [];
   for (const [file, hash] of Object.entries(recorded.files)) {
     if (now.files[file] === undefined) problems.push(`MISSING ${file}`);
-    else if (now.files[file] !== hash) problems.push(`CHANGED ${file}`);
+    else if (now.files[file] !== hash && !accepted(file)) problems.push(`CHANGED ${file}`);
   }
   for (const file of Object.keys(now.files))
-    if (recorded.files[file] === undefined) problems.push(`ADDED ${file}`);
+    if (recorded.files[file] === undefined && !accepted(file)) problems.push(`ADDED ${file}`);
   if (now.compiled === null)
     problems.push('UNVERIFIED compiled registry artifact is missing (not evidence of equality)');
   else if (JSON.stringify(now.compiled) !== JSON.stringify(recorded.compiled))

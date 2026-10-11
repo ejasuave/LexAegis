@@ -652,7 +652,7 @@ async function main(): Promise<void> {
               !(el instanceof HTMLInputElement && (el.type === 'radio' || el.type === 'checkbox'))
             );
           })
-          .map((el) => `${el.tagName}:${(el.textContent ?? '').trim().slice(0, 20)}`),
+          .map((el) => `${el.tagName}:${el.textContent.trim().slice(0, 20)}`),
       );
       check(
         `touch controls are at least 44px at ${String(width)}px`,

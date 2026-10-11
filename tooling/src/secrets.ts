@@ -27,6 +27,10 @@ export const SECRET_ALLOWLIST: Readonly<Record<string, string>> = {
     'deliberately credential-bearing URLs as invalid-input cases',
   'apps/web/src/server/readiness.test.ts':
     'deliberately credential-bearing URLs as invalid-input cases',
+  'apps/verifier/src/controller.test.ts':
+    'deliberately credential-bearing RPC URL as an invalid-input case',
+  'packages/sdk/src/registry/rpc-client.test.ts':
+    'deliberately credential-bearing RPC URLs as invalid-input cases',
   'tooling/src/exclusion.test.ts': 'fake credentials the scanner must detect (negative controls)',
   'tooling/src/readiness.test.ts': 'fake credentials the redactor must remove',
 };
