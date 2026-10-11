@@ -66,7 +66,7 @@ export interface FindingReading {
   readonly findingId: string;
   /** Digest of the exact input and result the finding was computed from. */
   readonly digest: string;
-  readonly state: 'ok' | 'attention' | 'technical_failure' | 'not_assessed' | 'unknown';
+  readonly state: 'ok' | 'attention' | 'needs_input' | 'not_comparable' | 'technical_failure';
   readonly summary: string;
 }
 
@@ -167,9 +167,7 @@ const blocker = (code: BlockerCode, text: string): Blocker => ({ code, text, wai
 
 /** Findings that need a disposition: anything that is not a clean pass and not a technical failure. */
 export function needsDisposition(finding: FindingReading): boolean {
-  return (
-    finding.state === 'attention' || finding.state === 'not_assessed' || finding.state === 'unknown'
-  );
+  return finding.state !== 'ok' && finding.state !== 'technical_failure';
 }
 
 export function outstandingDecisions(

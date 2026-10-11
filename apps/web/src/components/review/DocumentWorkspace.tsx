@@ -2,6 +2,7 @@
 
 import { DocumentComparison } from './DocumentComparison';
 import { DocumentIntakePanel } from './DocumentIntakePanel';
+import { DocumentStatusBar } from './DocumentStatusBar';
 import { EvidenceChecklist } from './EvidenceChecklist';
 import { FindingsPanel } from './FindingsPanel';
 import { PaymentWhatIfPanel } from './PaymentWhatIfPanel';
@@ -15,6 +16,7 @@ export function ReviewDocuments() {
   return (
     <div className="grid gap-6">
       <DocumentIntakePanel />
+      <DocumentStatusBar />
       <SourceViewer focus={focus} onFocus={setFocus} />
       <FindingsPanel onFocus={setFocus} />
     </div>

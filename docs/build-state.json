@@ -5108,6 +5108,15 @@
           "apps/web/src/components/assistant/CommandActions.tsx",
           "apps/web/src/components/review/ReviewWorkspace.tsx"
         ]
+      },
+      "05": {
+        "status": "complete",
+        "summary": "Review view completed on Chapter 8 components: document status bar (exact version, extraction coverage, saved state, citation availability); findings, checklist, comparison and SIMULATED what-if reused unchanged; readiness vocabulary aligned to the real finding states.",
+        "files": [
+          "apps/web/src/components/review/DocumentStatusBar.tsx",
+          "apps/web/src/components/review/DocumentWorkspace.tsx",
+          "apps/web/src/features/workspace/readiness.ts"
+        ]
       }
     }
   }
