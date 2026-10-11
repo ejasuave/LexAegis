@@ -11,7 +11,11 @@
     },
     "mode": {
       "type": "string",
-      "enum": ["reference-only", "manifest-only", "full-package"]
+      "enum": [
+        "reference-only",
+        "manifest-only",
+        "full-package"
+      ]
     },
     "expectedReference": {
       "type": "object",
@@ -44,36 +48,71 @@
           "pattern": "^0x[0-9a-f]{64}$"
         }
       },
-      "required": ["schema", "chainId", "registryAddress", "reviewerAddress", "commitment"],
+      "required": [
+        "schema",
+        "chainId",
+        "registryAddress",
+        "reviewerAddress",
+        "commitment"
+      ],
       "additionalProperties": false
     },
     "referenceOrigin": {
       "type": "string",
-      "enum": ["independent", "file-declared"]
+      "enum": [
+        "independent",
+        "file-declared"
+      ]
     },
     "manifestIntegrity": {
       "type": "string",
-      "enum": ["match", "mismatch", "unknown"]
+      "enum": [
+        "match",
+        "mismatch",
+        "unknown"
+      ]
     },
     "artifactIntegrity": {
       "type": "string",
-      "enum": ["match", "mismatch", "unknown"]
+      "enum": [
+        "match",
+        "mismatch",
+        "unknown"
+      ]
     },
     "registryIdentity": {
       "type": "string",
-      "enum": ["match", "mismatch", "unknown"]
+      "enum": [
+        "match",
+        "mismatch",
+        "unknown"
+      ]
     },
     "receiptBinding": {
       "type": "string",
-      "enum": ["match", "mismatch", "unknown"]
+      "enum": [
+        "match",
+        "mismatch",
+        "unknown"
+      ]
     },
     "chainStatus": {
       "type": "string",
-      "enum": ["unknown", "not_found", "active", "revoked", "superseded"]
+      "enum": [
+        "unknown",
+        "not_found",
+        "active",
+        "revoked",
+        "superseded"
+      ]
     },
     "signerAcceptance": {
       "type": "string",
-      "enum": ["accepted", "rejected", "unknown"]
+      "enum": [
+        "accepted",
+        "rejected",
+        "unknown"
+      ]
     },
     "checkpoint": {
       "anyOf": [
@@ -113,7 +152,9 @@
             },
             "pinning": {
               "type": "string",
-              "enum": ["block_number_with_hash_recheck"]
+              "enum": [
+                "block_number_with_hash_recheck"
+              ]
             },
             "observedAt": {
               "type": "string",
@@ -177,7 +218,10 @@
               "maxLength": 10
             }
           },
-          "required": ["id", "version"],
+          "required": [
+            "id",
+            "version"
+          ],
           "additionalProperties": false
         },
         {
@@ -245,19 +289,32 @@
                   },
                   "chainStatus": {
                     "type": "string",
-                    "enum": ["unknown", "not_found", "active", "revoked", "superseded"]
+                    "enum": [
+                      "unknown",
+                      "not_found",
+                      "active",
+                      "revoked",
+                      "superseded"
+                    ]
                   },
                   "packageIntegrity": {
                     "type": "string",
                     "const": "unknown"
                   }
                 },
-                "required": ["reference", "chainStatus", "packageIntegrity"],
+                "required": [
+                  "reference",
+                  "chainStatus",
+                  "packageIntegrity"
+                ],
                 "additionalProperties": false
               }
             }
           },
-          "required": ["complete", "successors"],
+          "required": [
+            "complete",
+            "successors"
+          ],
           "additionalProperties": false
         },
         {
@@ -325,7 +382,9 @@
             "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
           }
         },
-        "required": ["code"],
+        "required": [
+          "code"
+        ],
         "additionalProperties": false
       }
     }

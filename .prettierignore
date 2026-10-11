@@ -32,3 +32,4 @@ indexer/abi/*.json
 indexer/src/binding.generated.ts
 docs/evidence/chapter07-envio-rpc-source-*.json
 docs/evidence/chapter07-*.json
+packages/sdk/schemas
