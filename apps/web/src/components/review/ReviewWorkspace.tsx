@@ -20,6 +20,7 @@ import { ReviewActionPreview } from './ReviewActionPreview';
 import { DecisionsPanel } from './DecisionsPanel';
 import { PackagePanel as ReviewPackageSection } from './PackagePanel';
 import { ReceiptActions } from './ReceiptActions';
+import { SavedReviews } from './SavedReviews';
 import { ReviewDocuments, ReviewEvidence } from './DocumentWorkspace';
 
 const MODES: { id: PresentationMode; label: string }[] = [
@@ -214,6 +215,7 @@ function PackagePanel() {
       <ReviewActionPreview />
       <TransactionPanel />
       <ReceiptActions />
+      <SavedReviews />
       <ReadinessPanel />
     </div>
   );

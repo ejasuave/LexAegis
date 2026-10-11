@@ -123,7 +123,7 @@ export function EntryRow({
   );
 }
 
-function ExportAndImport({ matterId }: { matterId: string }) {
+export function ExportAndImport({ matterId }: { matterId: string }) {
   const report = useContext(NoticeContext);
   const { snapshot, commands } = useVault();
   const fileRef = useRef<HTMLInputElement>(null);

@@ -73,3 +73,5 @@ export type {
   ApprovalTarget,
   Authorisation,
 } from './approval';
+
+export { readVerifiedDecisionLog } from './approval';

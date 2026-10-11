@@ -5210,6 +5210,16 @@
           "apps/web/src/components/review/ReceiptActions.tsx",
           "apps/web/src/integration/approval-flow.test.ts"
         ]
+      },
+      "13": {
+        "status": "complete",
+        "summary": "Activity drawer has three separate views (assistant work; human decisions with unsigned local decisions apart from signed authorisations; public receipts with observed indexed events and indexer state). Saved reviews open read-only after verification in this unlock, copy the public reference without the opening, reuse the Chapter 5 export/import controls with their disclosure previews, and state the verifier's actual availability without fabricated success.",
+        "files": [
+          "apps/web/src/components/shell/ActivityDrawer.tsx",
+          "apps/web/src/components/review/SavedReviews.tsx",
+          "apps/web/src/components/vault/VaultPanel.tsx",
+          "apps/web/src/features/review/public.ts"
+        ]
       }
     }
   }
