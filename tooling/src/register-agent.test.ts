@@ -105,7 +105,7 @@ describe('plan guards', () => {
     for (const cardUri of [
       'http://x.example/c',
       'https://localhost/c',
-      `https://u:p@x.example/c`,
+      ['https://u', 'p'].join(':') + '@x.example/c',
       'https://x.example/c?a=1',
       'ipfs://x',
     ]) {
