@@ -68,6 +68,21 @@ describe('workspace readiness', () => {
     expect(changed.outstandingDecisions).toHaveLength(1);
   });
 
+  it('blocks while a finding is marked as requiring a change', () => {
+    const r = selectReadiness(
+      base({
+        review: { ...base().review, findings: [finding('f1', 'attention')] },
+        decisions: {
+          dispositions: [{ findingId: 'f1', digest: 'd1', kind: 'requires_change' }],
+          recorded: true,
+          stale: false,
+        },
+      }),
+    );
+    expect(r.blockers.some((b) => b.code === 'CHANGE_REQUIRED')).toBe(true);
+    expect(r.mayPreviewApproval).toBe(false);
+  });
+
   it('never lets a decision waive a technical failure', () => {
     const r = selectReadiness(
       base({

@@ -31,3 +31,25 @@ export function createBrowserReview(
     newId: () => crypto.randomUUID(),
   });
 }
+
+export {
+  DecisionController,
+  EMPTY_DECISION_SNAPSHOT,
+  ALLOWED_KINDS,
+  DISPOSITION_KINDS,
+  MAX_REASON_BYTES,
+  REASON_REQUIRED,
+  reviewDispositionSchema,
+  decisionLogSchema,
+  validateReason,
+} from './decisions';
+export type {
+  DecisionFailure,
+  DecisionResult,
+  DecisionSnapshot,
+  DispositionKind,
+  FindingView,
+  RecordedLog,
+  ReviewDecisionLogV1,
+  ReviewDispositionV1,
+} from './decisions';

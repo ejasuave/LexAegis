@@ -12,7 +12,7 @@ import { useAccount } from './account-context';
  * After a recovery it resumes read-only reconciliation of known public operations.
  */
 export function AccessGuide() {
-  const { availability, snapshot, commands } = useAccount();
+  const { availability, snapshot } = useAccount();
   const { snapshot: vault } = useVault();
   const [unresolved, setUnresolved] = useState<number | null>(null);
   const recovered = snapshot.lastEvent === 'account_recovered';

@@ -21,7 +21,7 @@ export function Onboarding() {
           type="button"
           className={`${button} lj-action`}
           aria-disabled={!ready}
-          onClick={() => ready && void commands?.createAndSignIn()}
+          onClick={() => ready && void commands.createAndSignIn()}
         >
           Create account
         </button>
@@ -29,7 +29,7 @@ export function Onboarding() {
           type="button"
           className={button}
           aria-disabled={!ready}
-          onClick={() => ready && void commands?.recover()}
+          onClick={() => ready && void commands.recover()}
         >
           Use existing passkey
         </button>

@@ -5142,6 +5142,20 @@
           "apps/web/src/app/vault/page.tsx",
           "apps/web/src/components/review/ReviewWorkspace.tsx"
         ]
+      },
+      "08": {
+        "status": "complete",
+        "summary": "ReviewDispositionV1 and ReviewDecisionLogV1 closed schemas (outside the receipt protocol); DecisionController binding each disposition to finding digest, snapshot and reviewer; technical failures cannot be waived; reasons bounded to 2 KiB and required for accepted concerns and not-applicable; working decisions persisted as encrypted context entries and dropped when inputs change; explicit Record builds the canonical decision log without its own digest. Decisions panel in the Review package tab.",
+        "files": [
+          "apps/web/src/features/review/decisions.ts",
+          "apps/web/src/features/review/decisions.test.ts",
+          "apps/web/src/features/review/public.ts",
+          "apps/web/src/components/review/decision-context.tsx",
+          "apps/web/src/components/review/DecisionsPanel.tsx",
+          "apps/web/src/components/review/ReviewWorkspace.tsx",
+          "apps/web/src/app/layout.tsx",
+          "apps/web/src/features/workspace/readiness.ts"
+        ]
       }
     }
   }

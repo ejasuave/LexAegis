@@ -5,7 +5,6 @@ const ctx = (patch: Partial<EnterContext> = {}): EnterContext => ({
   key: 'Enter',
   shiftKey: false,
   isComposing: false,
-  keyCode: 13,
   draft: 'check payments',
   busy: false,
   available: true,
@@ -18,7 +17,7 @@ describe('composer Enter handling', () => {
     expect(decideEnter(ctx({ shiftKey: true }))).toBe('newline'));
   it('never sends while an input method is composing', () => {
     expect(decideEnter(ctx({ isComposing: true }))).toBe('newline');
-    expect(decideEnter(ctx({ keyCode: 229 }))).toBe('newline');
+    expect(decideEnter(ctx({ key: 'Process' }))).toBe('newline');
   });
   it('ignores Enter for a blank draft, a running request or a missing assistant', () => {
     expect(decideEnter(ctx({ draft: '   ' }))).toBe('ignore');

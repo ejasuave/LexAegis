@@ -123,7 +123,6 @@ export function CommandDock() {
               key: event.key,
               shiftKey: event.shiftKey,
               isComposing: event.nativeEvent.isComposing,
-              keyCode: event.keyCode,
               draft,
               busy: stoppable,
               available: controller !== null,

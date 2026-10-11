@@ -8,8 +8,6 @@ export interface EnterContext {
   readonly key: string;
   readonly shiftKey: boolean;
   readonly isComposing: boolean;
-  /** Legacy IME signal: keyCode 229 means the input method is handling the key. */
-  readonly keyCode: number;
   readonly draft: string;
   readonly busy: boolean;
   readonly available: boolean;
@@ -18,8 +16,9 @@ export interface EnterContext {
 export type EnterDecision = 'send' | 'newline' | 'ignore';
 
 export function decideEnter(context: EnterContext): EnterDecision {
+  // Browsers report an input method's key handling as key "Process" or isComposing.
+  if (context.isComposing || context.key === 'Process') return 'newline';
   if (context.key !== 'Enter') return 'newline';
-  if (context.isComposing || context.keyCode === 229) return 'newline';
   if (context.shiftKey) return 'newline';
   if (context.draft.trim() === '' || context.busy || !context.available) return 'ignore';
   return 'send';

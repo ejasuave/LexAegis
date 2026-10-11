@@ -28,6 +28,7 @@ export type BlockerCode =
   | 'WORKING_UNSAVED'
   | 'TECHNICAL_FAILURE'
   | 'DECISION_REQUIRED'
+  | 'CHANGE_REQUIRED'
   | 'DECISIONS_STALE'
   | 'DECISIONS_NOT_RECORDED'
   | 'CAPTURE_MISSING'
@@ -251,6 +252,8 @@ export function selectReadiness(inputs: WorkspaceInputs): Readiness {
       blocker('DECISION_REQUIRED', `${outstanding.length} finding(s) need your decision.`),
     );
     next.push('record_decisions');
+  } else if (decisions.dispositions.some((d) => d.kind === 'requires_change')) {
+    blockers.push(blocker('CHANGE_REQUIRED', 'You marked a finding as requiring a change.'));
   } else if (decisions.stale) {
     blockers.push(blocker('DECISIONS_STALE', 'Inputs changed after decisions were recorded.'));
     next.push('record_decisions');
