@@ -9075,6 +9075,20 @@
           "contracts/test/RegistryInvariants.t.sol",
           "contracts/test/handlers/ReviewRegistryHandler.sol"
         ]
+      },
+      "6": {
+        "status": "complete",
+        "summary": "Static analysis of the production registry and its inheritance. pnpm contracts:static (tooling/scripts/static-analysis.ts, tooling/src/static-analysis.ts with 7 unit tests, tooling/security/slither_reachability.py) runs in an isolated copy of the Foundry project under .tools/slither/work, because the analyser runs forge clean and a forced rebuild; contracts/out, the compiler (0.8.37), settings and OpenZeppelin 5.6.1 are unchanged. Contract linter: forge lint src with the pinned Foundry 1.8.5 reports nothing; with the two inline suppressions removed in the copy it reports reentrancy-events x4 and block-timestamp x1, both triaged (L-01, L-02). No contract-linter command existed before; forge fmt --check is formatting only. Analyser: Slither 0.11.6 / crytic-compile 0.4.2 in an isolated Python 3.13 venv: 19 contracts, 102 detectors, 72 findings (3 located in contracts/src, 69 in the pinned dependency), no detector, path or severity excluded. Full sanitised inventory in docs/security/slither-findings.json with reachability from the registry's 7 entry points (29 reachable functions, from Slither's call graph). Triage in docs/security/static-analysis-triage.json: 13 entries naming all 72 finding IDs exactly once (the check fails on an untriaged, duplicated, stale or mis-scoped finding and on an inventory that differs from the committed one; an entry cannot name a detector without IDs). Dispositions: false positive x6 entries (uninitialized-state on the receipts mapping, solc-version constraint ranges, incorrect-exp and divide-before-multiply in unreachable OZ Math, unused-return x2), accepted x7 (timestamp deadline, pragma ranges, reachable and unreachable OZ assembly, low-level call in the unused ERC-7913 path, naming, long literals). None fixed, none open, none requires a registry change or a redeploy decision. Solidity bugs_by_version.json lists no known bug for 0.8.37 (read 2026-10-11). Exit 3 with NOT YET when a tool is missing or fails: never a clean result. docs/security/static-analysis.md records tool versions, commands, scope, exclusions (none), triage and limits, and makes no audit or vulnerability-free claim. Consulted https://github.com/crytic/slither on 2026-10-11.",
+        "files": [
+          "docs/security/static-analysis.md",
+          "docs/security/slither-findings.json",
+          "docs/security/static-analysis-triage.json",
+          "tooling/scripts/static-analysis.ts",
+          "tooling/src/static-analysis.ts",
+          "tooling/src/static-analysis.test.ts",
+          "tooling/security/slither_reachability.py",
+          "package.json"
+        ]
       }
     }
   }

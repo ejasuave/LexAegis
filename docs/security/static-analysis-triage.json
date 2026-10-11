@@ -1,0 +1,211 @@
+{
+  "schema": "lexaegis.security.static-analysis-triage.v1",
+  "slither": [
+    {
+      "key": "S-01",
+      "check": "uninitialized-state",
+      "scope": "source",
+      "disposition": "false_positive",
+      "reasoning": "Slither reports the private mapping `_receipts` as never initialized. A mapping has no initializer: every slot starts at zero, which is the NotFound status. It IS written, through the storage references `_create` and `_retire` receive (`receipts[commitment]` and `Receipt storage`), which this detector does not follow.",
+      "evidence": "contracts/test/Lifecycle.t.sol test_issueCreatesOneActiveReceiptWithNoPredecessor and the stateful campaign read back every written field; contracts/src/ProofOfReviewRegistry.sol lines 64-81.",
+      "ids": ["9e91bc3c1ef96cdc7373cfadd38164051c6cb250c87685ef79a82cb03d83fd26"]
+    },
+    {
+      "key": "S-02",
+      "check": "timestamp",
+      "scope": "source",
+      "disposition": "accepted",
+      "reasoning": "`block.timestamp > action.deadline` decides expiry of an unexecuted instruction. A block producer can shift the timestamp slightly, so an action may be accepted or refused a few seconds around its deadline. Bounded: the deadline is a coarse expiry (the application signs at most 600 seconds ahead), it never affects an issued receipt, and the reviewer can cancel earlier with invalidateNonce. No value is at stake in the registry.",
+      "evidence": "contracts/test/Authorization.t.sol testFuzz_deadlineBoundaryForEveryActionShape (deadline-1, deadline, deadline+1) and test_anExpiredDeadlineDoesNotExpireAnIssuedReceipt; the source comments the intent at ReviewAuthorization.sol line 64.",
+      "ids": ["9e9ce0ec9f5b1d19814ea667d51e8fe4a0ad416b5e9ed88dc8c402083adb1416"]
+    },
+    {
+      "key": "S-03",
+      "check": "pragma",
+      "scope": "source",
+      "disposition": "accepted",
+      "reasoning": "Five version constraints appear across the compiled files: the two registry sources pin `0.8.37` exactly, the interface allows `^0.8.24` (SPEC discrepancy D2) and the pinned OpenZeppelin files use their own ranges. Bounded: one compiler compiles all of them. `contracts/foundry.toml` sets `solc = \"0.8.37\"` with `auto_detect_solc = false`, and the deployed bytecode is compared with that build.",
+      "evidence": "contracts/foundry.toml (protected baseline); pnpm baselines:check; pnpm verify:deployment.",
+      "ids": ["06aafccdc06782ffdf90886c673ba5449cd627eb206ea310f484b20255eef9dc"]
+    },
+    {
+      "key": "S-04",
+      "check": "solc-version",
+      "scope": "dependency",
+      "disposition": "false_positive",
+      "reasoning": "The detector lists compiler bugs for the oldest version each dependency's CONSTRAINT would allow (>=0.4.16, >=0.5.0, ^0.8.20). No such compiler is used: the project compiles every file with exactly 0.8.37. The Solidity project's bugs_by_version.json lists no known bug for 0.8.37 (read 2026-10-11).",
+      "evidence": "contracts/toolchain.json and foundry.toml pin 0.8.37; https://raw.githubusercontent.com/ethereum/solidity/develop/docs/bugs_by_version.json entry 0.8.37: bugs [] released 2026-09-10 (read 2026-10-11).",
+      "ids": [
+        "7d2619e580c961b9d6a35871d3b81a2912d8a517f3663ae0b324df1ed9f39221",
+        "99ef63a70120c49405ede7f56749a333d608e633af65f722227e03b0d75fe435",
+        "f6ea3595542e17783bdacb3f1d3ab5ba6d118f393bd558e0ca06015331ecab6b"
+      ]
+    },
+    {
+      "key": "S-05",
+      "check": "incorrect-exp",
+      "scope": "dependency",
+      "disposition": "false_positive",
+      "reasoning": "`inverse = (3 * denominator) ^ 2` in OpenZeppelin Math.mulDiv is an intended XOR: it seeds the Newton-Raphson modular inverse, as the surrounding comments in that file state. The function is also not reachable from any registry entry point, so it is not part of the registry's behaviour.",
+      "evidence": "docs/security/slither-findings.json reachableFunctions does not contain Math.mulDiv; node_modules/@openzeppelin/contracts/utils/math/Math.sol lines 255-268.",
+      "ids": ["cb31e5c02549cc32f4545b03e02378382fdd3b60ba8def41bb31d0a2892de618"]
+    },
+    {
+      "key": "S-06",
+      "check": "divide-before-multiply",
+      "scope": "dependency",
+      "disposition": "false_positive",
+      "reasoning": "OpenZeppelin Math.mulDiv and Math.invMod divide then multiply on purpose (512-bit division and the extended Euclidean algorithm); precision loss is the algorithm, not an error. Neither function is reachable from any registry entry point.",
+      "evidence": "docs/security/slither-findings.json reachableFunctions contains no Math function.",
+      "ids": [
+        "321d1fef2c65c414ce9e32cb9ca06c928081468c8933fabce1bcc04e4c7b370d",
+        "3e21bbc49957da86de9174ff7938f28694f051eb8f5f0769d249e7712176df74",
+        "46101a439a6ca4b477925b21e196352ac107c065eb02d78b99627af63f68cecd",
+        "6531447186da49c2c9cc56c9a15cd0be691dd1fb1816f73202712f99b6a61167",
+        "684a24495ce698fd6c27846d3fda6a1e1ad15b20dce1039f86c14d55326366df",
+        "7a163fd49492e563becb7693a0f13bfb295c6b635f15c5c7084bbda666027c60",
+        "b635b99497ad5edd9e835a8fc9e828a18047ffdcb71b57ffda992cca0ae9fea8",
+        "d92beaa20741db07d76a2539a33a5a8e9e783c16af88df8f03acb484a2ca30b7",
+        "df415df764da49062ba6548e91cfb4dbda97c89506870402a02f7c6ccac9e9c2"
+      ]
+    },
+    {
+      "key": "S-07",
+      "check": "unused-return",
+      "scope": "dependency",
+      "disposition": "false_positive",
+      "reasoning": "SignatureChecker.isValidSignatureNowCalldata (reachable: it is the registry's signature check) destructures `(recovered, err, )` from ECDSA.tryRecoverCalldata and ignores only the third value, the error ARGUMENT. Both values that decide the result are used: `err == NoError && recovered == signer`.",
+      "evidence": "node_modules/@openzeppelin/contracts/utils/cryptography/SignatureChecker.sol lines 44-55; contracts/test/Authorization.t.sol test_emptyAndMalformedSignaturesAreRejected and test_malleableHighSSignatureIsRejected.",
+      "ids": ["bcc8a0d87d4e857649d5c60b360eb65b8a5d129d4fb06a28acd44decc370e4af"]
+    },
+    {
+      "key": "S-08",
+      "check": "unused-return",
+      "scope": "dependency",
+      "disposition": "false_positive",
+      "reasoning": "The memory variant SignatureChecker.isValidSignatureNow(address,bytes32,bytes) ignores the same error argument for the same reason, and is not reachable from any registry entry point (the registry calls the calldata variant).",
+      "evidence": "docs/security/slither-findings.json reachableFunctions lists isValidSignatureNowCalldata only.",
+      "ids": ["3a8257197f2d20db0ad9b6cd5b789b91f3713672d5f1faab3681b5a2a4e51f43"]
+    },
+    {
+      "key": "S-09",
+      "check": "assembly",
+      "scope": "dependency",
+      "disposition": "accepted",
+      "reasoning": "Five reachable functions of the pinned OpenZeppelin 5.6.1 use inline assembly: typed-data hashing, calldata signature parsing, the ERC-1271 STATICCALL, short-string decoding and a storage-slot cast. Informational. Residual risk, bounded: the registry relies on the correctness of this pinned dependency; the version is fixed in pnpm-lock.yaml and toolchain.json and cannot change without changing the compiled bytecode, which the baselines and the deployment comparison detect.",
+      "evidence": "contracts/test/Vectors.t.sol (digests equal independent vectors), Authorization.t.sol test_invalidOrAdversarialErc1271ValidationFailsWithoutStateChanges (empty, short and dirty return data), contracts/toolchain.json openzeppelinContracts 5.6.1.",
+      "ids": [
+        "1d9c8dc4b0d4f966e8912b1a90b4b796cd26780540342e153263f7b13a68c76b",
+        "21684b209ba0488d2402f71bd0b02a0cd89e3aa4816931bf48baed9a68f039b0",
+        "8c68fe113cf75fb4b3e01efbf8a286d356af4fe6d560253ef4480fef00f1ffd7",
+        "c242b16f9d7ba2c0f8be576b5fc71ae1951eea16908028f4cd35e032f919a8e5",
+        "db34953f818f397396c85143c60823b1c9698a3ddc4cc9bcc660f006a2c221e7"
+      ]
+    },
+    {
+      "key": "S-10",
+      "check": "assembly",
+      "scope": "dependency",
+      "disposition": "accepted",
+      "reasoning": "Inline assembly in OpenZeppelin library functions that no registry entry point reaches (Bytes, Strings, Math, Panic, SafeCast, other StorageSlot and MessageHashUtils helpers, the memory signature paths). Informational and outside the registry's behaviour: internal library code is compiled in only where it is called. Residual risk: none for the registry while these stay unreachable, which this check re-derives on every run.",
+      "evidence": "docs/security/slither-findings.json: every finding in this entry has reachable=false.",
+      "ids": [
+        "02f5259e080856d63e5545d201ae538dd6b493b8f5a09e4287364c8b9a650872",
+        "054be2726c041e3fb58c31a34494cdcecaeaee608fbdb1976c6606f26d6559fd",
+        "07de372df94c05347afe1c70e8d8840305e76ccc1afb44ef8f7894330f237864",
+        "1fc458f799c39499b7d6bbc36761d6360921e3c90ba6991cd09f084db9c8ffa9",
+        "264c3ea2ec5f81f48f40bc32de2e71f4534bc537579c0899d8e1bc23ed94c652",
+        "2b68210da2254a4c774852dc2843b179736db658113678337f8783ea24567681",
+        "41e61d98f9bff261dbf8a11664f6c8b8c3af74cc177f0b573c779abdfc2223bd",
+        "4d3a671c5e7a65e622a8d2c04b0c6e905f058c8b85eea36c76fabb99eba339be",
+        "4ffcc4bc56133512f291e0c8f23819ab8446934f704bebe05592aa8eea731e00",
+        "59d29456e4e62641cc23515aa0bb393d7dae4fd0be0fceecdb3fb29b94d34488",
+        "5a10d00c770ab303360b63085e17d03f2337465ca7836c9939b8aeeb06d648aa",
+        "612a9dc8c9c1dbfe7add1f8af0f4900582be8dddb47a4de76e5fa917021b0b88",
+        "6ab1e1747dbc6d1fdd5981a182316d2004e37d00c32c3bbe6864dda6614f2b48",
+        "6b9e67291c502e0170fe7e856173b7dfdc60a14ed74cc695b43324c0047fff70",
+        "75081d69b36828ba91ac1151c685b1aebadd0ba1df9c8d90ad44a18feb32c7ff",
+        "7612c64afe6994dc125a0efabcfec4f0083fdd6cdaf0d04c3e26bdf994927db5",
+        "76502d1be4f6d19cafe0691c0f0f12ee6bd060f0d2e31208ded3c04716e69dd3",
+        "8887dfdd2cca0932aa8a47d4fee242700d79106ed3de5917f8bbaa3b3d09c35b",
+        "8d02d8a507fc80b562bbea7681bb933a839065109fa9f0bd0623f07db75641c8",
+        "8f9187b9370698bf3762fb8387168ac3547d1608a4623dce784744bb06c256b5",
+        "8fc877a96d4067319b343c0d9bd2cdbf0f95fd84f867bf804c0023402d21d0a3",
+        "904241742512a631da133983681f96e6e07a9d1b70326c4a1f75d014fed6ff14",
+        "96230fa76ad1044328b7e0d998fea87dc0155981c0466586dee3ed183036b1e8",
+        "98a38daf187a050903d837022e875b739edc787fbc4a7747baf53e811ba118d5",
+        "9afc2c43f065cf3fe1452981a6b55dc27c6bc95642e598da45fa226493eac6cb",
+        "9c9a62b0d8bd994f6489fc53e9c267a08738e9d73d6a0bb2550579d19fd616ab",
+        "a3713752719363bc9a1061a233c3fe41e5f83c17e73e773ff826405e18599e2e",
+        "a71708395626672417771d87ab5c365818996d0104dabf6b62914f5d3c8c5ad1",
+        "c02c94693f1ed27b751965ce8bd5baa2b81c36986dfaeec48291316f2fd50140",
+        "c9b577be3ced93f22739fffdb6412c478ac11ba4fbfb832a24f271848789988b",
+        "caed652e47a43e185998c77581624a067e7fc04ed2f575ac4e35adf387aec115",
+        "d157c527fb903d6284db1c35ee7cf183db1be54b3e53913f3390c37f30279328",
+        "d4fee22f13e59a3fe9db6750252db29a47d4fdb32128fb1942827c0910e4a97e",
+        "d78e7e85e12d6bdb74bebffb61bcb33e173d4336ea4af18ae3bd87951c3eef33",
+        "de7b79eb75a330e845a10745e40ec72277defc0ed834c15639acddc1b9979874",
+        "decf6fd758d052aae22b7826218cade514c9f5db9b747dca732101188dad83bc",
+        "f09d18586120cd164de3ccdde29694a945939c1775f6f7795cec1cc3aec34442",
+        "f2906f6dc51a3ca6ec6db0c163e036667be25739e938918f805dd4954be968d7",
+        "f40aae5a8261398a8243e2f31b249cb81205bba167fb6fac3d29bce06ce3f56a"
+      ]
+    },
+    {
+      "key": "S-11",
+      "check": "low-level-calls",
+      "scope": "dependency",
+      "disposition": "accepted",
+      "reasoning": "A low-level staticcall in SignatureChecker.isValidSignatureNow(bytes,bytes32,bytes), the ERC-7913 verifier path. The registry does not use ERC-7913 and the function is not reachable from any entry point. Informational; no residual risk for the registry while unreachable.",
+      "evidence": "docs/security/slither-findings.json reachable=false for this finding.",
+      "ids": ["55004c38ce61c685966420c2137a865f3abcd2981bb30573d9fec40a18ae53f5"]
+    },
+    {
+      "key": "S-12",
+      "check": "naming-convention",
+      "scope": "dependency",
+      "disposition": "accepted",
+      "reasoning": "EIP712._EIP712Name and _EIP712Version are not mixedCase. Naming style in the pinned dependency; no behaviour. Not ours to edit, and renaming would change nothing in the bytecode's behaviour.",
+      "evidence": "node_modules/@openzeppelin/contracts/utils/cryptography/EIP712.sol lines 146-159.",
+      "ids": [
+        "5b08301e8648d88e4cc740cc85995aa02917ecb8ccef3ef89d067cf5d80e4685",
+        "db96ea04e6546eb3d22674155940655c8a832e0e60c564b72e5f02f0c4ebf387"
+      ]
+    },
+    {
+      "key": "S-13",
+      "check": "too-many-digits",
+      "scope": "dependency",
+      "disposition": "accepted",
+      "reasoning": "Long hexadecimal literals (bit masks and the short-string fallback sentinel) in the pinned OpenZeppelin libraries. Readability only. The masks are in functions the registry cannot reach; the sentinel is a constant.",
+      "evidence": "docs/security/slither-findings.json locations in Bytes.sol, Math.sol and ShortStrings.sol.",
+      "ids": [
+        "10f719f08bd608378dcfa92b9b87d7104953046750f40ddcd6f8c77bd504877a",
+        "37099ebc569262e04282f20de01c8b048680e2a4355932c0e3bd808a2bef7f4b",
+        "5c0b598507d1697674c5e292672c23f09d1df755babcec8746c61b4644eb380a",
+        "8ac9aa4c0279bf816857c309e46d8b6b689fa04dfa34c2fbe0113ce940274f63",
+        "a712f76fe8ca730fc28e88827bbcbc4f76f8e9ed21d6da756d32498a0ebc7af6",
+        "d247b812c4883e6529f625c0a64572cfc26152ac54fe8fb57307599afeda9711",
+        "fca20d7d3c93e7f48731dc95d5002acf93924353c1ec37b0bcdb8c6bac48b7c2"
+      ]
+    }
+  ],
+  "lint": [
+    {
+      "key": "L-01",
+      "lint": "reentrancy-events",
+      "count": 4,
+      "disposition": "accepted",
+      "reasoning": "forge lint flags the four receipt events in `execute` as emitted after an external call. The only external call before them is the ERC-1271 signature check, made with STATICCALL: during it the callee cannot emit a log or change state, so it cannot reorder or fabricate the registry's events. The source suppresses the rule for exactly these lines and says why.",
+      "evidence": "contracts/src/ProofOfReviewRegistry.sol lines 43-60; contracts/test/Authorization.t.sol test_reentrantValidationCannotMutateTheRegistry and test_aSwallowedNestedMutationLetsTheOuterActionSucceedExactlyOnce (exactly one log, one nonce)."
+    },
+    {
+      "key": "L-02",
+      "lint": "block-timestamp",
+      "count": 1,
+      "disposition": "accepted",
+      "reasoning": "The same deadline comparison as S-02: a coarse expiry in seconds where small validator timestamp drift is acceptable, bounded by the 600-second signing window and by nonce invalidation. Suppressed for that one line with a comment.",
+      "evidence": "contracts/src/ReviewAuthorization.sol lines 64-66; contracts/test/Authorization.t.sol testFuzz_deadlineBoundaryForEveryActionShape."
+    }
+  ]
+}
