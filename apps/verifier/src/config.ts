@@ -31,11 +31,15 @@ const generatedSchema = z.strictObject({
 });
 
 /** The default endpoint's origin plus any the integrator lists. Only valid public HTTPS origins count. */
-export function parseAllowedOrigins(listed: string | undefined, defaultUrl: string): string[] {
+export function parseAllowedOrigins(
+  listed: string | undefined,
+  defaultUrl: string,
+  allowLoopbackHttp = false,
+): string[] {
   const origins = new Set<string>([new URL(defaultUrl).origin]);
   for (const item of (listed ?? '').split(/[\s,]+/)) {
     if (item === '') continue;
-    const endpoint = parseRpcEndpoint(item);
+    const endpoint = parseRpcEndpoint(item, { allowLoopbackHttp });
     if (endpoint.ok) origins.add(endpoint.origin);
   }
   return [...origins];
@@ -44,10 +48,14 @@ export function parseAllowedOrigins(listed: string | undefined, defaultUrl: stri
 export function loadVerifierConfig(
   env: Readonly<Record<string, string | undefined>>,
   defaults: unknown = generated,
+  options: { readonly allowLoopbackHttp?: boolean } = {},
 ): VerifierConfig {
-  const rpc = parseRpcEndpoint(env.VITE_RPC_URL ?? DEFAULT_PUBLIC_RPC_URL);
+  const loopback = options.allowLoopbackHttp === true;
+  const rpc = parseRpcEndpoint(env.VITE_RPC_URL ?? DEFAULT_PUBLIC_RPC_URL, {
+    allowLoopbackHttp: loopback,
+  });
   const rpcUrl = rpc.ok ? rpc.url : DEFAULT_PUBLIC_RPC_URL;
-  const allowedRpcOrigins = parseAllowedOrigins(env.VITE_RPC_ALLOWED_ORIGINS, rpcUrl);
+  const allowedRpcOrigins = parseAllowedOrigins(env.VITE_RPC_ALLOWED_ORIGINS, rpcUrl, loopback);
 
   // A deliberate integrator override: a build-time policy, never anything an imported file says.
   if (env.VITE_REGISTRY_POLICY_JSON !== undefined && env.VITE_REGISTRY_POLICY_JSON !== '') {

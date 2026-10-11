@@ -6,7 +6,9 @@ import { RegistrySection } from './components/RegistrySection';
 import { ResultSection } from './components/ResultSection';
 import { useVerifier } from './use-verifier';
 
-const config = loadVerifierConfig(import.meta.env);
+// Loopback HTTP exists only in the test build mode used by the browser check, never in production.
+const loopback = import.meta.env.MODE === 'loopback-test';
+const config = loadVerifierConfig(import.meta.env, undefined, { allowLoopbackHttp: loopback });
 
 function createController(): VerifierController {
   return new VerifierController({
@@ -15,6 +17,7 @@ function createController(): VerifierController {
     policy: config.policy,
     rpcUrl: config.rpcUrl,
     allowedRpcOrigins: config.allowedRpcOrigins,
+    ...(loopback && { allowLoopbackHttp: true }),
   });
 }
 

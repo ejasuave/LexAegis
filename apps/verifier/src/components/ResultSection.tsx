@@ -368,7 +368,9 @@ function Technical({
   const { local } = snapshot;
   return (
     <details className="card mt-3 text-[0.875rem]" data-testid="technical">
-      <summary className="cursor-pointer">Technical details (private, shown only here)</summary>
+      <summary className="flex min-h-11 cursor-pointer items-center">
+        Technical details (private, shown only here)
+      </summary>
       <p className="m-0 mt-2 text-lj-secondary">
         These values are private to the package. They are shown on this device only and are not part
         of the downloadable result.

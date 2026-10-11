@@ -4441,6 +4441,277 @@
         "browser": "chromium (playwright)",
         "published": false
       }
+    },
+    {
+      "id": "hud-browser-20261011103022",
+      "subject": "hud-browser-check",
+      "sourceRevision": {
+        "commit": "4b0242e8d4edee04e837fe129b4a0a5bb48f7be3",
+        "dirtyWorktree": true,
+        "contentFingerprint": "92fef245b47910ed375e78fadca32ce0640f356e74e3c2fa1410c3219df42801"
+      },
+      "checkedAt": "2026-10-11T10:30:23.648Z",
+      "command": "pnpm test:hud:browser",
+      "environment": {
+        "node": "v24.21.0",
+        "os": "linux-x64",
+        "pnpm": "11.11.0"
+      },
+      "evidenceClass": "virtual_authenticator",
+      "outcome": "pass",
+      "reasonCodes": [
+        "AUTHENTICATOR_MODE_VIRTUAL",
+        "SYNTHETIC_DOCUMENTS_ONLY",
+        "SCRIPTED_CHAIN_STATE",
+        "MOCK_SPEECH_ADAPTERS"
+      ],
+      "evidenceRefs": [
+        {
+          "type": "path",
+          "value": "docs/evidence/chapter10/01-command-centre-empty-1440x900.png"
+        },
+        {
+          "type": "path",
+          "value": "docs/evidence/chapter10/02-review-1440x900.png"
+        },
+        {
+          "type": "path",
+          "value": "docs/evidence/chapter10/03-approval-preview-1440x900.png"
+        },
+        {
+          "type": "path",
+          "value": "docs/evidence/chapter10/04-transaction-unavailable-1440x900.png"
+        },
+        {
+          "type": "path",
+          "value": "docs/evidence/chapter10/05-review-after-approval-1440x900.png"
+        },
+        {
+          "type": "path",
+          "value": "docs/evidence/chapter10/06-command-centre-1440x900.png"
+        },
+        {
+          "type": "path",
+          "value": "docs/evidence/chapter10/07-command-centre-1024x768.png"
+        },
+        {
+          "type": "path",
+          "value": "docs/evidence/chapter10/08-review-package-390x844.png"
+        },
+        {
+          "type": "path",
+          "value": "docs/evidence/chapter10/09-review-320x640.png"
+        },
+        {
+          "type": "path",
+          "value": "docs/evidence/chapter10/10-locked-1440x900.png"
+        }
+      ],
+      "facts": {
+        "browser": "chromium 153.0.8010.12",
+        "checksPassed": "69",
+        "checksTotal": "69",
+        "provider": "scripted-test (loopback, no model)",
+        "chain": "scripted live state, fixture registry address, no network",
+        "speech": "mock adapters, not a real device",
+        "storage": "postgresql + versitygw",
+        "authenticatorMode": "virtual",
+        "realDeviceEvidence": false,
+        "liveProviderEvidence": false,
+        "screenshotCount": "10"
+      }
+    },
+    {
+      "id": "hud-browser-20261011103202",
+      "subject": "hud-browser-check",
+      "sourceRevision": {
+        "commit": "4b0242e8d4edee04e837fe129b4a0a5bb48f7be3",
+        "dirtyWorktree": true,
+        "contentFingerprint": "3ef02325a6fe4fcbc1ccf21b5e4180b3bd77740817cc79c8225e2394258babd3"
+      },
+      "checkedAt": "2026-10-11T10:32:03.888Z",
+      "command": "pnpm test:hud:browser",
+      "environment": {
+        "node": "v24.21.0",
+        "os": "linux-x64",
+        "pnpm": "11.11.0"
+      },
+      "evidenceClass": "virtual_authenticator",
+      "outcome": "pass",
+      "reasonCodes": [
+        "AUTHENTICATOR_MODE_VIRTUAL",
+        "SYNTHETIC_DOCUMENTS_ONLY",
+        "SCRIPTED_CHAIN_STATE",
+        "MOCK_SPEECH_ADAPTERS"
+      ],
+      "evidenceRefs": [
+        {
+          "type": "path",
+          "value": "docs/evidence/chapter10/01-command-centre-empty-1440x900.png"
+        },
+        {
+          "type": "path",
+          "value": "docs/evidence/chapter10/02-review-1440x900.png"
+        },
+        {
+          "type": "path",
+          "value": "docs/evidence/chapter10/03-approval-preview-1440x900.png"
+        },
+        {
+          "type": "path",
+          "value": "docs/evidence/chapter10/04-transaction-unavailable-1440x900.png"
+        },
+        {
+          "type": "path",
+          "value": "docs/evidence/chapter10/05-review-after-approval-1440x900.png"
+        },
+        {
+          "type": "path",
+          "value": "docs/evidence/chapter10/06-command-centre-1440x900.png"
+        },
+        {
+          "type": "path",
+          "value": "docs/evidence/chapter10/07-command-centre-1024x768.png"
+        },
+        {
+          "type": "path",
+          "value": "docs/evidence/chapter10/08-review-package-390x844.png"
+        },
+        {
+          "type": "path",
+          "value": "docs/evidence/chapter10/09-review-320x640.png"
+        },
+        {
+          "type": "path",
+          "value": "docs/evidence/chapter10/10-locked-1440x900.png"
+        }
+      ],
+      "facts": {
+        "browser": "chromium 153.0.8010.12",
+        "checksPassed": "69",
+        "checksTotal": "69",
+        "provider": "scripted-test (loopback, no model)",
+        "chain": "scripted live state, fixture registry address, no network",
+        "speech": "mock adapters, not a real device",
+        "storage": "postgresql + versitygw",
+        "authenticatorMode": "virtual",
+        "realDeviceEvidence": false,
+        "liveProviderEvidence": false,
+        "screenshotCount": "10"
+      }
+    },
+    {
+      "id": "verifier-browser-20261011103308",
+      "subject": "verifier-browser-check",
+      "sourceRevision": {
+        "commit": "4b0242e8d4edee04e837fe129b4a0a5bb48f7be3",
+        "dirtyWorktree": true,
+        "contentFingerprint": "67e693b886e8149d174a700d0091d5753b507f7242aaa1da654f18b73029db9d"
+      },
+      "checkedAt": "2026-10-11T10:33:09.025Z",
+      "command": "pnpm test:verifier:browser",
+      "environment": {
+        "node": "v24.21.0",
+        "os": "linux-x64",
+        "pnpm": "11.11.0"
+      },
+      "evidenceClass": "virtual_authenticator",
+      "outcome": "fail",
+      "reasonCodes": [
+        "EXPORT_FROM_CHAPTER10_FLOW",
+        "SYNTHETIC_DOCUMENTS_ONLY",
+        "SCRIPTED_RPC_LOOPBACK_FOR_PRIVACY_CHECK",
+        "CHECKS_FAILED"
+      ],
+      "evidenceRefs": [
+        {
+          "type": "path",
+          "value": "docs/evidence/chapter11/01-local-check-1280.png"
+        },
+        {
+          "type": "path",
+          "value": "docs/evidence/chapter11/02-substituted-reference-1280.png"
+        },
+        {
+          "type": "path",
+          "value": "docs/evidence/chapter11/03-live-status-scripted-rpc-1280.png"
+        },
+        {
+          "type": "path",
+          "value": "docs/evidence/chapter11/04-local-check-390.png"
+        },
+        {
+          "type": "path",
+          "value": "docs/evidence/chapter11/04-local-check-320.png"
+        },
+        {
+          "type": "path",
+          "value": "docs/evidence/chapter11/05-live-testnet-superseded-1280.png"
+        }
+      ],
+      "facts": {
+        "browser": "chromium 153.0.8010.12",
+        "checksPassed": "55",
+        "checksTotal": "59",
+        "liveReadOutcome": "pass",
+        "realDeviceEvidence": false
+      }
+    },
+    {
+      "id": "verifier-browser-20261011103342",
+      "subject": "verifier-browser-check",
+      "sourceRevision": {
+        "commit": "4b0242e8d4edee04e837fe129b4a0a5bb48f7be3",
+        "dirtyWorktree": true,
+        "contentFingerprint": "19ee10b2b69bc8b7ad8d7f20e39783571bec3632c93d1bb5dd7aaec1452789c2"
+      },
+      "checkedAt": "2026-10-11T10:33:43.072Z",
+      "command": "pnpm test:verifier:browser",
+      "environment": {
+        "node": "v24.21.0",
+        "os": "linux-x64",
+        "pnpm": "11.11.0"
+      },
+      "evidenceClass": "virtual_authenticator",
+      "outcome": "pass",
+      "reasonCodes": [
+        "EXPORT_FROM_CHAPTER10_FLOW",
+        "SYNTHETIC_DOCUMENTS_ONLY",
+        "SCRIPTED_RPC_LOOPBACK_FOR_PRIVACY_CHECK"
+      ],
+      "evidenceRefs": [
+        {
+          "type": "path",
+          "value": "docs/evidence/chapter11/01-local-check-1280.png"
+        },
+        {
+          "type": "path",
+          "value": "docs/evidence/chapter11/02-substituted-reference-1280.png"
+        },
+        {
+          "type": "path",
+          "value": "docs/evidence/chapter11/03-live-status-scripted-rpc-1280.png"
+        },
+        {
+          "type": "path",
+          "value": "docs/evidence/chapter11/04-local-check-390.png"
+        },
+        {
+          "type": "path",
+          "value": "docs/evidence/chapter11/04-local-check-320.png"
+        },
+        {
+          "type": "path",
+          "value": "docs/evidence/chapter11/05-live-testnet-superseded-1280.png"
+        }
+      ],
+      "facts": {
+        "browser": "chromium 153.0.8010.12",
+        "checksPassed": "59",
+        "checksTotal": "59",
+        "liveReadOutcome": "pass",
+        "realDeviceEvidence": false
+      }
     }
   ],
   "appliedCuts": [],
@@ -6373,6 +6644,17 @@
         "status": "complete",
         "summary": "Adversarial and interoperability tests. Node and real Chromium: protocol portable decoder (duplicate and escaped keys, BOM, malformed UTF-8, trailing content, unsafe numbers, depth, unknown fields and versions, wrong formats, size limits, noncanonical base64url, missing/extra/duplicate/reordered artifacts; pnpm test:protocol:browser 193 tests) and SDK registry and verification suites (pnpm sdk:browser 183 tests) against the Chapter 2 literal vectors, with array reordering, whole-bundle substitution (rewritten consistent manifest caught only by the independent reference), mode over-claim checks, wrong/missing code, protocol version, chain/genesis, changing block hashes, refused historical reads, unknown status words, budget deadline and abort, stale generations, no artifact content in errors. Vault output decodes through the portable decoder byte for byte. Local Anvil (contracts/integration/chapter11.anvil.test.ts, 6 tests, real compiled registry, local_anvil only): not_found only after a verified read; EOA issue by an unrelated executor judged by reviewer not sender; supersede, revoke of the successor never reactivating the predecessor; real predecessor mismatch via a hand-built SUPERSEDE; a real ten-link chain bounded at eight; ERC-1271 account whose owner changes after issuance keeps its recorded lifecycle while a new action fails; reports compared with the contract's own records through both a viem client and the SDK JSON-RPC client. Note: Anvil's finalized tag trails latest by about 64 blocks, so the tests mine 100 blocks; it says nothing about Monad finality.",
         "files": ["packages", "contracts/integration/chapter11.anvil.test.ts", "package.json"]
+      },
+      "15": {
+        "status": "complete",
+        "summary": "pnpm test:verifier:browser (59 checks) in fresh Chromium contexts with no cookies, storage or LexAegis state, using the export and copied public reference produced by the actual Chapter 10 flow (pnpm test:hud:browser with HUD_EXPORT_OUT; exact bytes). Local verification ran with all non-asset requests blocked; independent expected reference, substitution, keyboard, Cancel (worker terminated), Clear, wrong-format messages, 390 and 320 px layouts (no horizontal scroll, 44 px targets), hostile label and URLs inert (trap server received zero requests), no CSP violation. Registry check through an independent scripted loopback RPC (test-only build mode 'loopback-test'): only eth_chainId/getBlockByNumber/getCode/call, no nonce, artifact hash, file name or case text, no cookies/auth headers, backend/Qwen/Envio never contacted, failed refresh keeps last status as-of, signer-rule change invalidates the result, public-field download. This scripted RPC is not live evidence. Genuine Monad Testnet (live_testnet class, read-only, public endpoint https://testnet-rpc.monad.xyz, default recorded deployment policy; references from the Chapter 6 run, nothing broadcast or created): original receipt Superseded, its replacement read separately as Revoked, an unissued commitment Receipt not found; see docs/evidence/chapter11-verifier-live-2026-10-11.json. No Active receipt exists among recorded examples: Active-on-testnet is UNVERIFIED. Packaged SDK in a clean consumer: pnpm packages:check (Task 13). Authored example proves portability, not adoption or security review.",
+        "files": [
+          "tooling/scripts/verifier-browser-check.ts",
+          "docs/evidence/chapter11",
+          "docs/evidence/chapter11-verifier-live-2026-10-11.json",
+          "apps/verifier/src/controller.ts",
+          "apps/verifier/src/App.tsx"
+        ]
       }
     }
   }

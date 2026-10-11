@@ -66,7 +66,8 @@
     "sdk:check": "pnpm --filter @lexaegis/sdk generate:check",
     "packages:build": "tsx tooling/scripts/build-packages.ts",
     "packages:check": "tsx tooling/scripts/package-check.ts",
-    "sdk:browser": "pnpm --filter @lexaegis/sdk test:browser"
+    "sdk:browser": "pnpm --filter @lexaegis/sdk test:browser",
+    "test:verifier:browser": "tsx tooling/scripts/verifier-browser-check.ts"
   },
   "devDependencies": {
     "@eslint/js": "10.0.1",

@@ -64,27 +64,34 @@ export interface ControllerDeps {
   readonly allowedRpcOrigins?: readonly string[] | null;
 }
 
-const INITIAL = (deps: ControllerDeps): VerifierSnapshot => ({
-  phase: 'idle',
-  inputKind: 'none',
-  fileName: null,
-  fileSize: null,
-  progress: null,
-  failure: null,
-  referenceText: '',
-  referenceInvalid: false,
-  signerText: '',
-  signerInvalid: false,
-  rpcUrl: deps.rpcUrl,
-  rpcError: null,
-  rpcOrigin: parseRpcEndpoint(deps.rpcUrl).ok ? new URL(deps.rpcUrl).origin : null,
-  policy: deps.policy,
-  local: null,
-  livePhase: 'idle',
-  report: null,
-  lastObserved: null,
-  refreshFailed: false,
-});
+const INITIAL = (deps: ControllerDeps): VerifierSnapshot => {
+  const endpoint = parseRpcEndpoint(deps.rpcUrl, {
+    allowLoopbackHttp: deps.allowLoopbackHttp === true,
+  });
+  const allowed = deps.allowedRpcOrigins ?? null;
+  const notAllowed = endpoint.ok && allowed !== null && !allowed.includes(endpoint.origin);
+  return {
+    phase: 'idle',
+    inputKind: 'none',
+    fileName: null,
+    fileSize: null,
+    progress: null,
+    failure: null,
+    referenceText: '',
+    referenceInvalid: false,
+    signerText: '',
+    signerInvalid: false,
+    rpcUrl: deps.rpcUrl,
+    rpcError: endpoint.ok ? (notAllowed ? 'ORIGIN_NOT_ALLOWED' : null) : endpoint.error,
+    rpcOrigin: endpoint.ok ? endpoint.origin : null,
+    policy: deps.policy,
+    local: null,
+    livePhase: 'idle',
+    report: null,
+    lastObserved: null,
+    refreshFailed: false,
+  };
+};
 
 function parseReferenceText(text: string): ReceiptReferenceV1 | null | 'invalid' {
   if (text.trim() === '') return null;

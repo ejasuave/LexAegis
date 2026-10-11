@@ -36,7 +36,11 @@ export default defineConfig(({ mode }) => {
   const defaultRpc = new URL(env.VITE_RPC_URL ?? 'https://testnet-rpc.monad.xyz/').origin;
   const listed = (env.VITE_RPC_ALLOWED_ORIGINS ?? '')
     .split(/[\s,]+/)
-    .filter((item) => /^https:\/\/[^/?#@]+$/.test(item));
+    .filter((item) =>
+      mode === 'loopback-test'
+        ? /^(?:https:\/\/[^/?#@]+|http:\/\/127\.0\.0\.1:\d+)$/.test(item)
+        : /^https:\/\/[^/?#@]+$/.test(item),
+    );
   return {
     plugins: [react(), contentSecurityPolicy([...new Set([defaultRpc, ...listed])])],
     envDir: '../..',

@@ -13,7 +13,7 @@
  * negative control, and screenshots are taken of the real pages.
  */
 import { spawn, type ChildProcess } from 'node:child_process';
-import { mkdirSync, readFileSync, readdirSync, statSync } from 'node:fs';
+import { mkdirSync, readFileSync, readdirSync, statSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { Pool } from 'pg';
 import { chromium, type Page } from 'playwright';
@@ -170,6 +170,8 @@ try {
   const context = await browser.newContext({
     reducedMotion: 'reduce',
     viewport: { width: 1440, height: 900 },
+    // Only so the Chapter 11 verifier check can read back the public reference the app copies.
+    permissions: ['clipboard-read', 'clipboard-write'],
   });
   await context.addInitScript(SPEECH_MOCK);
   const page = await context.newPage();
@@ -516,7 +518,15 @@ try {
     exportText.replace(/\s+/g, ' ').slice(0, 120),
   );
   const downloads: string[] = [];
-  page.on('download', (download) => downloads.push(download.suggestedFilename()));
+  const exportOut = process.env.HUD_EXPORT_OUT;
+  page.on('download', (download) => {
+    downloads.push(download.suggestedFilename());
+    // Chapter 11 verifier check: keep the exact exported bytes for an independent verifier context.
+    if (exportOut !== undefined && exportOut !== '') {
+      mkdirSync(exportOut, { recursive: true });
+      void download.saveAs(join(exportOut, 'review-export.json'));
+    }
+  });
   check('nothing was downloaded by previewing', downloads.length === 0);
   await exportPreview.getByRole('button', { name: 'Download readable file' }).click();
   await page.waitForTimeout(500);
@@ -525,6 +535,13 @@ try {
     downloads.length === 1 && /\.json$/.test(downloads[0] ?? ''),
     downloads.join(','),
   );
+
+  if (exportOut !== undefined && exportOut !== '') {
+    // The public reference exactly as the app's Copy control puts it on the clipboard.
+    await page.getByRole('button', { name: 'Copy public receipt reference' }).first().click();
+    const copied = await page.evaluate(() => navigator.clipboard.readText());
+    writeFileSync(join(exportOut, 'receipt-reference.json'), copied);
+  }
 
   // ---- 6. Voice (MOCK speech): local only, editable draft, no auto-send -----------------------
   const voiceStatus = await page.getByTestId('voice-status').innerText();
