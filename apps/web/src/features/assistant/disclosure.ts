@@ -33,6 +33,7 @@ export interface PendingDisclosure {
 /** Statements that hold for every disclosure. None claims residency, retention or secrecy. */
 export const DISCLOSURE_FACTS: readonly string[] = [
   'The selected text is sent in readable form to the LexAegis server and from there to the model provider.',
+  'Each excerpt is sent to the LexAegis server with its source reference: document identifiers, page, position and the SHA-256 of the file and of its extracted text. Those digests are not passed to the model provider.',
   'It is not end-to-end encrypted through analysis, and sending cannot be undone once it has happened.',
   'The endpoint region names where requests are addressed. It does not prove where data is processed or how long the provider keeps it; this application does not know those settings.',
   'Nothing else from your vault is sent. Aegis cannot read further documents, open links or approve anything.',

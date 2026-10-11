@@ -12,6 +12,8 @@
  * provider: it shows nothing about Qwen, real devices or real legal documents.
  */
 import { spawn, type ChildProcess } from 'node:child_process';
+import { createHash } from 'node:crypto';
+import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { Pool } from 'pg';
 import { chromium, type Page } from 'playwright';
@@ -20,6 +22,7 @@ import { startLocalS3 } from '../../apps/web/src/test-support/local-s3';
 import { startScriptedQwenServer } from '../../apps/web/src/test-support/scripted-qwen-server';
 import { startLocalPostgres } from '../../test-support/embedded-pg';
 import { recordEvidence } from '../src/evidence-writer';
+import { attachPrivacyObserver, openPrivacyServerLog } from '../src/privacy/observe';
 import { ROOT, stamp } from './lib';
 
 const PORT = 3103;
@@ -81,6 +84,13 @@ const env = {
   QWEN_OUTPUT_MODE: '',
 };
 let server: ChildProcess | null = null;
+// Set once the privacy observer is attached. A journey that stops early still hands over what it
+// observed, so a failure is analysed instead of leaving nothing to check.
+const observation: { finish: ((ended: 'complete' | 'early') => Promise<void>) | null } = {
+  finish: null,
+};
+// Chapter 17: observed by `pnpm test:privacy:browser`; null and inert otherwise.
+const privacyLog = openPrivacyServerLog('assistant');
 const browser = await chromium.launch({ headless: true });
 
 try {
@@ -92,8 +102,8 @@ try {
   check('production build', (await run('pnpm', ['exec', 'next', 'build'], env)) === 0);
   server = spawn('pnpm', ['exec', 'next', 'start', '--port', String(PORT)], {
     cwd: WEB,
-    env: { ...process.env, ...env },
-    stdio: 'ignore',
+    env: { ...process.env, ...env, ...privacyLog?.env },
+    stdio: privacyLog?.stdio ?? 'ignore',
     detached: true,
   });
   for (let attempt = 0; attempt < 100; attempt += 1) {
@@ -106,6 +116,105 @@ try {
 
   const version = browser.version();
   const context = await browser.newContext({ reducedMotion: 'reduce' });
+  const observer = await attachPrivacyObserver(context, {
+    journey: 'assistant',
+    origin: ORIGIN,
+    serverLog: privacyLog,
+  });
+  // In this journey the reviewer presses Send: the selected payment lines and the confirmed
+  // amounts may reach the analysis route and the provider. Page 1 of the PDF is never selected.
+  observer?.canary({
+    id: 'matter-title',
+    class: 'matter_title',
+    kind: 'text',
+    value: SENTINEL_TITLE,
+  });
+  observer?.canary({
+    id: 'pdf-file-name',
+    class: 'filename',
+    kind: 'text',
+    value: 'discrepancy-2000.pdf',
+  });
+  // The SHA-256 of the uploaded file: part of an excerpt's source reference, so it may reach the
+  // analysis route with a consented excerpt and must not appear anywhere else, the provider included.
+  observer?.canary({
+    id: 'source-file-sha256',
+    class: 'artifact_hash',
+    kind: 'bytes',
+    value: createHash('sha256')
+      .update(readFileSync(join(PDFS, 'discrepancy-2000.pdf')))
+      .digest('hex'),
+  });
+  observer?.canary({
+    id: 'pdf-employer',
+    class: 'unselected_text',
+    kind: 'text',
+    value: 'Northwind Demo Ltd',
+  });
+  observer?.canary({
+    id: 'pdf-heading',
+    class: 'unselected_text',
+    kind: 'text',
+    value: 'SYNTHETIC SETTLEMENT AGREEMENT',
+  });
+  observer?.canary({
+    id: 'pdf-employee',
+    class: 'unselected_text',
+    kind: 'text',
+    value: 'Employee: A. Example',
+  });
+  observer?.canary({
+    id: 'pdf-total-line',
+    class: 'selected_text',
+    kind: 'text',
+    value: 'Total settlement payment',
+  });
+  observer?.canary({
+    id: 'fact-total-pence',
+    class: 'money_field',
+    kind: 'token',
+    value: '2400000',
+  });
+  observer?.canary({
+    id: 'storage-secret',
+    class: 'storage_credential',
+    kind: 'text',
+    value: s3.secretAccessKey,
+  });
+  observer?.canary({
+    id: 'storage-access-key',
+    class: 'storage_credential',
+    kind: 'text',
+    value: s3.accessKeyId,
+  });
+  observer?.canary({
+    id: 'database-url',
+    class: 'database_credential',
+    kind: 'text',
+    value: postgres.url,
+  });
+  if (observer !== null) {
+    observation.finish = async (ended) => {
+      observation.finish = null;
+      await observer.finish({
+        consentedDisclosure: true,
+        providerRequests: { requests: provider.requests, authorizations: provider.authorizations },
+        pool,
+        objectStoreRoot: s3.root,
+        serverEgressAllowed: [postgres.url, s3.endpoint, provider.baseUrl].map((url) => {
+          const parsed = new URL(url);
+          return `${parsed.hostname}:${parsed.port}`;
+        }),
+        unobserved: [
+          'the real model provider (this provider is a scripted loopback server; its own logs and retention are outside this repository)',
+          'storage writes made inside a worker (snapshots still see what persisted)',
+          ...(ended === 'early'
+            ? ['the journey stopped early: its remaining steps and stores were not observed']
+            : []),
+        ],
+      });
+    };
+  }
   const page = await context.newPage();
   const violations: string[] = [];
   page.on('console', (message) => {
@@ -217,6 +326,7 @@ try {
 
   // ---- Account, vault, matter, document and four cited facts (Chapter 4, 5 and 8 flows) ----------
   await page.goto(`${ORIGIN}/vault`);
+  await observer?.phase(page, 'before-account');
   await page.getByRole('button', { name: 'Create account and sign in' }).click();
   check('account ready', await waitFor(page, 'account-status', 'Account ready'));
   await page.getByRole('button', { name: 'Create vault' }).click();
@@ -252,6 +362,7 @@ try {
   );
   check('docked orb reads Ready in Review mode', await has('Ready'));
 
+  await observer?.phase(page, 'after-unlock-save-and-facts');
   // ---- 1. Explain selection: disclosure first, nothing sent until Send ------------------------------
   await selectQuote('24,000');
   await page.getByTestId('explain-selection').click();
@@ -345,6 +456,7 @@ try {
       !JSON.stringify(provider.requests).includes(SENTINEL_TITLE),
   );
 
+  await observer?.phase(page, 'after-consented-run');
   // ---- 2. Exact-source opening ----------------------------------------------------------------------
   await first.getByTestId('citation-S1').first().click();
   const highlighted = await page.getByTestId('source-highlight').first().innerText();
@@ -411,6 +523,7 @@ try {
     `rows=${String(stopped.rowCount)} provider=${String(provider.requests.length - providerBefore)}`,
   );
 
+  await observer?.phase(page, 'after-stop-during-provider-wait');
   // ---- 6. Proposal -> explicit human confirmation ---------------------------------------------------
   await selectQuote('24,000');
   await typeCommand('Please explain this clause PROPOSE-TEST');
@@ -501,6 +614,7 @@ try {
     await has(/Unconfirmed:\s*Assistant observation:/),
   );
 
+  await observer?.phase(page, 'after-encrypted-save-outcome');
   // ---- 9. Stale inputs: a pending disclosure is dropped, nothing is sent ----------------------------
   await page
     .getByRole('tab', { name: 'Aegis' })
@@ -561,6 +675,7 @@ try {
       !/24,000|Northwind|Scripted test answer|SENTINEL|Assistant observation/.test(locked),
   );
 
+  await observer?.phase(page, 'after-lock');
   // ---- Privacy surface ------------------------------------------------------------------------------
   const vaultBodies = requests
     .filter((r) => r.url.includes('/api/vault'))
@@ -625,42 +740,51 @@ try {
     `requests=${String(provider.requests.length)}`,
   );
   check('no Content Security Policy violation', violations.length === 0, violations[0] ?? '');
+  if (observer !== null) {
+    await page.reload();
+    await page.waitForLoadState('networkidle').catch(() => undefined);
+    await observer.phase(page, 'after-reload');
+  }
+  await observation.finish?.('complete');
   await pool.end();
 
   const ok = checks.every((item) => item.ok);
-  await recordEvidence({
-    root: ROOT,
-    results: [
-      stamp({
-        id: `assistant-browser-${new Date().toISOString().replace(/\D/g, '').slice(0, 14)}`,
-        subject: 'assistant-browser-check',
-        command: 'pnpm test:assistant:browser',
-        evidenceClass: 'virtual_authenticator',
-        outcome: ok ? 'pass' : 'fail',
-        reasonCodes: [
-          'AUTHENTICATOR_MODE_VIRTUAL',
-          'SYNTHETIC_DOCUMENTS_ONLY',
-          'SCRIPTED_PROVIDER_NOT_QWEN',
-          ...(ok ? [] : ['CHECKS_FAILED']),
-        ],
-        facts: {
-          browser: `chromium ${version}`,
-          checksPassed: String(checks.filter((item) => item.ok).length),
-          checksTotal: String(checks.length),
-          provider: 'scripted-test (loopback, no model)',
-          storage: 'postgresql + versitygw',
-          authenticatorMode: 'virtual',
-          realDeviceEvidence: false,
-          liveProviderEvidence: false,
-        },
-      }),
-    ],
-  });
+  // An observed run is evidence for the privacy check, which records its own result.
+  if (observer === null)
+    await recordEvidence({
+      root: ROOT,
+      results: [
+        stamp({
+          id: `assistant-browser-${new Date().toISOString().replace(/\D/g, '').slice(0, 14)}`,
+          subject: 'assistant-browser-check',
+          command: 'pnpm test:assistant:browser',
+          evidenceClass: 'virtual_authenticator',
+          outcome: ok ? 'pass' : 'fail',
+          reasonCodes: [
+            'AUTHENTICATOR_MODE_VIRTUAL',
+            'SYNTHETIC_DOCUMENTS_ONLY',
+            'SCRIPTED_PROVIDER_NOT_QWEN',
+            ...(ok ? [] : ['CHECKS_FAILED']),
+          ],
+          facts: {
+            browser: `chromium ${version}`,
+            checksPassed: String(checks.filter((item) => item.ok).length),
+            checksTotal: String(checks.length),
+            provider: 'scripted-test (loopback, no model)',
+            storage: 'postgresql + versitygw',
+            authenticatorMode: 'virtual',
+            realDeviceEvidence: false,
+            liveProviderEvidence: false,
+          },
+        }),
+      ],
+    });
   console.log(
     `\n${String(checks.filter((item) => item.ok).length)} of ${String(checks.length)} checks passed (virtual authenticator; scripted provider, not Qwen; synthetic documents).`,
   );
   process.exitCode = ok ? 0 : 1;
 } finally {
+  await observation.finish?.('early').catch(() => undefined);
   await browser.close();
   if (server?.pid !== undefined) {
     try {

@@ -22,6 +22,8 @@ export interface LocalS3 {
   readonly region: string;
   readonly accessKeyId: string;
   readonly secretAccessKey: string;
+  /** The directory the local server keeps objects in, for tests that inspect what was stored. */
+  readonly root: string;
   stop(): Promise<void>;
 }
 
@@ -81,6 +83,7 @@ export async function startLocalS3(bucket = 'lexvault'): Promise<LocalS3> {
     region: 'us-east-1',
     accessKeyId,
     secretAccessKey,
+    root,
     async stop() {
       // Stops only the process this call started.
       if (child.exitCode === null && child.signalCode === null) child.kill('SIGTERM');

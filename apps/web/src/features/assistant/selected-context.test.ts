@@ -2,7 +2,12 @@ import { describe, expect, it } from 'vitest';
 import type { AssistantAvailability } from '@lexaegis/agent/contracts';
 import { disclosureDigest } from '@lexaegis/agent/review';
 import { confirm, importAndWait, range, rig, wait, type Rig } from '@/test-support/review-rig';
-import { consentToDisclosure, disclosureIsCurrent, prepareDisclosure } from './disclosure';
+import {
+  DISCLOSURE_FACTS,
+  consentToDisclosure,
+  disclosureIsCurrent,
+  prepareDisclosure,
+} from './disclosure';
 import { buildRequestBody, factsFor, savedContextOf, type ContextPorts } from './selected-context';
 
 /*
@@ -68,6 +73,35 @@ describe('selected context for a request', () => {
     expect(built.body.clientObserved).toBeNull();
     // The body carries no whole document: only the selected quote and bindings.
     expect(JSON.stringify(built.body).length).toBeLessThan(4000);
+    r.controller.dispose();
+  });
+
+  it('says on the preview that an excerpt carries the digests of its source, which it does', async () => {
+    // Chapter 17 privacy check: the request names the SHA-256 of the file and of its extraction for
+    // every excerpt. The disclosure facts must say so for as long as the request does.
+    const { r, id, clause } = await prepared();
+    const built = await buildRequestBody(ports(r), {
+      intent: 'explain',
+      trigger: 'ui_action',
+      utterance: '',
+      documentVersionId: id,
+      references: [clause],
+      savedEntryIds: [],
+      history: [],
+    });
+    expect(built.ok).toBe(true);
+    if (!built.ok) return;
+    const references = built.body.context.sources.map((source) => source.reference);
+    expect(references.length).toBe(1);
+    for (const reference of references) {
+      expect(reference.sourceSha256).toMatch(/^0x[0-9a-f]{64}$/);
+      expect(reference.extractionSha256).toMatch(/^0x[0-9a-f]{64}$/);
+    }
+    expect(
+      DISCLOSURE_FACTS.some(
+        (fact) => /source reference/.test(fact) && /SHA-256 of the file/.test(fact),
+      ),
+    ).toBe(true);
     r.controller.dispose();
   });
 

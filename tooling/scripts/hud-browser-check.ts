@@ -13,6 +13,7 @@
  * negative control, and screenshots are taken of the real pages.
  */
 import { spawn, type ChildProcess } from 'node:child_process';
+import { createHash } from 'node:crypto';
 import { mkdirSync, readFileSync, readdirSync, statSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { Pool } from 'pg';
@@ -22,12 +23,19 @@ import { startLocalS3 } from '../../apps/web/src/test-support/local-s3';
 import { startScriptedQwenServer } from '../../apps/web/src/test-support/scripted-qwen-server';
 import { startLocalPostgres } from '../../test-support/embedded-pg';
 import { recordEvidence } from '../src/evidence-writer';
+import { attachPrivacyObserver, openPrivacyServerLog } from '../src/privacy/observe';
 import { ROOT, stamp } from './lib';
 
 const PORT = 3107;
 const ORIGIN = `http://localhost:${String(PORT)}`;
 const WEB = join(ROOT, 'apps', 'web');
-const SHOTS = join(ROOT, 'docs', 'evidence', 'chapter10');
+// Observed by `pnpm test:privacy:browser`, the screenshots are scratch: the Chapter 10 evidence
+// images are rewritten only by this journey's own command.
+const OBSERVE_DIR = process.env.PRIVACY_OBSERVE_DIR ?? '';
+const SHOTS =
+  OBSERVE_DIR === ''
+    ? join(ROOT, 'docs', 'evidence', 'chapter10')
+    : join(OBSERVE_DIR, 'hud-screenshots');
 const SENTINEL_TITLE = 'SENTINEL-hud-matter-5e72';
 const PDFS = join(ROOT, 'fixtures', 'documents-v1', 'pdfs');
 const REGISTRY = `0x${'ab'.repeat(20)}`;
@@ -139,6 +147,14 @@ const env = {
   QWEN_OUTPUT_MODE: '',
 };
 let server: ChildProcess | null = null;
+// Set once the privacy observer is attached. A journey that stops early still hands over what it
+// observed, so a failure is analysed instead of leaving nothing to check.
+const observation: { finish: ((ended: 'complete' | 'early') => Promise<void>) | null } = {
+  finish: null,
+};
+// Chapter 17: when `pnpm test:privacy:browser` runs this journey it also observes storage, network,
+// logs and stores. Without PRIVACY_OBSERVE_DIR these are null and nothing changes.
+const privacyLog = openPrivacyServerLog('hud');
 const browser = await chromium.launch({ headless: true });
 
 try {
@@ -150,8 +166,8 @@ try {
   check('production build', (await run('pnpm', ['exec', 'next', 'build'], env)) === 0);
   server = spawn('pnpm', ['exec', 'next', 'start', '--port', String(PORT)], {
     cwd: WEB,
-    env: { ...process.env, ...env },
-    stdio: 'ignore',
+    env: { ...process.env, ...env, ...privacyLog?.env },
+    stdio: privacyLog?.stdio ?? 'ignore',
     detached: true,
   });
   for (let attempt = 0; attempt < 100; attempt += 1) {
@@ -186,6 +202,119 @@ try {
     permissions: ['clipboard-read', 'clipboard-write'],
   });
   await context.addInitScript(SPEECH_MOCK);
+  const observer = await attachPrivacyObserver(context, {
+    journey: 'hud',
+    origin: ORIGIN,
+    serverLog: privacyLog,
+  });
+  // Values this journey plants or that exist only in its synthetic PDF. Send is pressed once, in the
+  // read-aloud section, for the excerpt "24,000" alone: the lines below were never selected for a
+  // disclosure, so they are `unselected_text` and may not leave the browser in plaintext at all.
+  observer?.canary({
+    id: 'matter-title',
+    class: 'matter_title',
+    kind: 'text',
+    value: SENTINEL_TITLE,
+  });
+  observer?.canary({
+    id: 'pdf-file-name',
+    class: 'filename',
+    kind: 'text',
+    value: 'discrepancy-2000.pdf',
+  });
+  // The SHA-256 of the uploaded file: part of an excerpt's source reference, so it may reach the
+  // analysis route with a consented excerpt and must not appear anywhere else, the provider included.
+  observer?.canary({
+    id: 'source-file-sha256',
+    class: 'artifact_hash',
+    kind: 'bytes',
+    value: createHash('sha256')
+      .update(readFileSync(join(PDFS, 'discrepancy-2000.pdf')))
+      .digest('hex'),
+  });
+  observer?.canary({
+    id: 'pdf-employer',
+    class: 'unselected_text',
+    kind: 'text',
+    value: 'Northwind Demo Ltd',
+  });
+  observer?.canary({
+    id: 'pdf-heading',
+    class: 'unselected_text',
+    kind: 'text',
+    value: 'SYNTHETIC SETTLEMENT AGREEMENT',
+  });
+  observer?.canary({
+    id: 'pdf-total-line',
+    class: 'unselected_text',
+    kind: 'text',
+    value: 'Total settlement payment',
+  });
+  observer?.canary({
+    id: 'pdf-total-amount',
+    class: 'unselected_text',
+    kind: 'text',
+    value: 'GBP 24,000',
+  });
+  observer?.canary({
+    id: 'fact-total-pence',
+    class: 'money_field',
+    kind: 'token',
+    value: '2400000',
+  });
+  observer?.canary({
+    id: 'fact-instalment-pence',
+    class: 'money_field',
+    kind: 'token',
+    value: '1200000',
+  });
+  observer?.canary({
+    id: 'reviewer-reason',
+    class: 'reviewer_note',
+    kind: 'text',
+    value: 'The client was told about the GBP 2,000 gap.',
+  });
+  observer?.canary({
+    id: 'storage-secret',
+    class: 'storage_credential',
+    kind: 'text',
+    value: s3.secretAccessKey,
+  });
+  observer?.canary({
+    id: 'storage-access-key',
+    class: 'storage_credential',
+    kind: 'text',
+    value: s3.accessKeyId,
+  });
+  observer?.canary({
+    id: 'database-url',
+    class: 'database_credential',
+    kind: 'text',
+    value: postgres.url,
+  });
+  if (observer !== null) {
+    observation.finish = async (ended) => {
+      observation.finish = null;
+      await observer.finish({
+        consentedDisclosure: true,
+        providerRequests: provider.requests,
+        pool,
+        objectStoreRoot: s3.root,
+        serverEgressAllowed: [postgres.url, s3.endpoint, provider.baseUrl].map((url) => {
+          const parsed = new URL(url);
+          return `${parsed.hostname}:${parsed.port}`;
+        }),
+        unobserved: [
+          'session expiry (idle and absolute limits are covered by unit tests, not by this browser run)',
+          'a broadcast transaction (the chain is scripted and no network is configured)',
+          'storage writes made inside a worker (snapshots still see what persisted)',
+          ...(ended === 'early'
+            ? ['the journey stopped early: its remaining steps and stores were not observed']
+            : []),
+        ],
+      });
+    };
+  }
   const page = await context.newPage();
   const violations: string[] = [];
   page.on('console', (message) => {
@@ -286,6 +415,7 @@ try {
 
   // ---- 1. Setup: account, vault, matter, document, four cited facts, checks -------------------
   await page.goto(`${ORIGIN}/review`);
+  await observer?.phase(page, 'before-account');
   check(
     'empty account shows onboarding and no fabricated matter',
     (await page.getByRole('button', { name: 'Create account', exact: true }).count()) === 1 &&
@@ -323,6 +453,7 @@ try {
   check('four cited facts confirmed', facts.every(Boolean), facts.join(','));
   await page.getByRole('button', { name: 'Run checks' }).click();
   check('checks ran on the current inputs', await has('Checked the current inputs.'));
+  await observer?.phase(page, 'after-unlock-save-and-facts');
   await shot('02-review-1440x900');
 
   // ---- 2. Human decisions are required and are never preselected -----------------------------
@@ -387,6 +518,7 @@ try {
     'frozen package is saved, read back and not approved',
     await waitFor(page, 'frozen-package', 'Saved and checked'),
   );
+  await observer?.phase(page, 'after-freeze-and-save');
   const frozen = await page.getByTestId('frozen-package').innerText();
   const commitment = /0x[0-9a-f]{64}/.exec(frozen)?.[0] ?? '';
   check(
@@ -462,6 +594,7 @@ try {
     'approval signed; publication not confirmed',
     await has('Approval signed; publication not confirmed.'),
   );
+  await observer?.phase(page, 'after-approval-signed');
   check(
     'a signed approval is never shown as a published or active receipt',
     !/Active receipt|Confirmed on-chain|Published/.test(
@@ -476,6 +609,7 @@ try {
     /Not sent/.test(txText) && (await page.getByTestId('send-transaction').count()) === 0,
     txText.replace(/\s+/g, ' ').slice(0, 120),
   );
+  await observer?.phase(page, 'after-transaction-stage-failed');
   await shot('04-transaction-unavailable-1440x900');
   check(
     'no submit request was made',
@@ -754,6 +888,7 @@ try {
     (await page.getByTestId('approve-package').count()) === 0 &&
       (await page.getByTestId('preview-approval').count()) === 0,
   );
+  await observer?.phase(page, 'after-lock');
   await shot('10-locked-1440x900');
 
   // ---- 10. Privacy and policy ------------------------------------------------------------------
@@ -774,47 +909,56 @@ try {
   const objects = await pool.query('SELECT * FROM vault_objects LIMIT 50');
   check('the server holds ciphertext only', !JSON.stringify(objects.rows).includes('GBP 2,000'));
   check('no Content Security Policy violation', violations.length === 0, violations[0] ?? '');
+  if (observer !== null) {
+    await page.reload();
+    await page.waitForLoadState('networkidle').catch(() => undefined);
+    await observer.phase(page, 'after-reload');
+  }
+  await observation.finish?.('complete');
   await pool.end();
 
   const ok = checks.every((item) => item.ok);
-  await recordEvidence({
-    root: ROOT,
-    results: [
-      stamp({
-        id: `hud-browser-${new Date().toISOString().replace(/\D/g, '').slice(0, 14)}`,
-        subject: 'hud-browser-check',
-        command: 'pnpm test:hud:browser',
-        evidenceClass: 'virtual_authenticator',
-        outcome: ok ? 'pass' : 'fail',
-        evidenceRefs: shots.map((value) => ({ type: 'path' as const, value })),
-        reasonCodes: [
-          'AUTHENTICATOR_MODE_VIRTUAL',
-          'SYNTHETIC_DOCUMENTS_ONLY',
-          'SCRIPTED_CHAIN_STATE',
-          'MOCK_SPEECH_ADAPTERS',
-          ...(ok ? [] : ['CHECKS_FAILED']),
-        ],
-        facts: {
-          browser: `chromium ${version}`,
-          checksPassed: String(checks.filter((item) => item.ok).length),
-          checksTotal: String(checks.length),
-          provider: 'scripted-test (loopback, no model)',
-          chain: 'scripted live state, fixture registry address, no network',
-          speech: 'mock adapters, not a real device',
-          storage: 'postgresql + versitygw',
-          authenticatorMode: 'virtual',
-          realDeviceEvidence: false,
-          liveProviderEvidence: false,
-          screenshotCount: String(shots.length),
-        },
-      }),
-    ],
-  });
+  // An observed run is evidence for the privacy check, which records its own result.
+  if (observer === null)
+    await recordEvidence({
+      root: ROOT,
+      results: [
+        stamp({
+          id: `hud-browser-${new Date().toISOString().replace(/\D/g, '').slice(0, 14)}`,
+          subject: 'hud-browser-check',
+          command: 'pnpm test:hud:browser',
+          evidenceClass: 'virtual_authenticator',
+          outcome: ok ? 'pass' : 'fail',
+          evidenceRefs: shots.map((value) => ({ type: 'path' as const, value })),
+          reasonCodes: [
+            'AUTHENTICATOR_MODE_VIRTUAL',
+            'SYNTHETIC_DOCUMENTS_ONLY',
+            'SCRIPTED_CHAIN_STATE',
+            'MOCK_SPEECH_ADAPTERS',
+            ...(ok ? [] : ['CHECKS_FAILED']),
+          ],
+          facts: {
+            browser: `chromium ${version}`,
+            checksPassed: String(checks.filter((item) => item.ok).length),
+            checksTotal: String(checks.length),
+            provider: 'scripted-test (loopback, no model)',
+            chain: 'scripted live state, fixture registry address, no network',
+            speech: 'mock adapters, not a real device',
+            storage: 'postgresql + versitygw',
+            authenticatorMode: 'virtual',
+            realDeviceEvidence: false,
+            liveProviderEvidence: false,
+            screenshotCount: String(shots.length),
+          },
+        }),
+      ],
+    });
   console.log(
     `\n${String(checks.filter((item) => item.ok).length)} of ${String(checks.length)} checks passed (virtual authenticator; scripted chain and provider; mock speech; synthetic documents).`,
   );
   process.exitCode = ok ? 0 : 1;
 } finally {
+  await observation.finish?.('early').catch(() => undefined);
   await browser.close();
   if (server?.pid !== undefined) {
     try {
