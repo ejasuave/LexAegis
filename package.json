@@ -79,6 +79,7 @@
     "quickstart:check": "tsx tooling/scripts/quickstart-check.ts",
     "docs:api": "typedoc",
     "docs:check": "tsx tooling/scripts/docs-check.ts",
+    "threat:check": "tsx tooling/scripts/threat-model-check.ts",
     "probe:erc8004": "tsx tooling/scripts/probe-erc8004.ts",
     "register:agent": "tsx tooling/scripts/register-agent.ts"
   },
