@@ -7344,6 +7344,19 @@
         "status": "complete",
         "summary": "Compatibility baseline recorded before any Chapter 15 edit: docs/evidence/chapter15-baseline-2026-10-11.json holds source revision 063e549, SHA-256 of protocol and registry vectors, registry source, committed artifact, ABI module, foundry settings and toolchain, the compiled ABI/runtime-bytecode hashes, committed compiler settings (solc 0.8.37+commit.f401782d, osaka, optimizer 200 runs, bytecode_hash none), public entry points of protocol and sdk, existing dependencies by owning chapter, the source-to-task mapping and blockers (Chapter 14 in-progress by owner waiver; no Active testnet receipt; no widget). pnpm baselines:check passes (43 files + compiled registry). IProofOfReviewRegistry.sol and the generated SDK ABI already exist.",
         "files": ["docs/evidence/chapter15-baseline-2026-10-11.json"]
+      },
+      "2": {
+        "status": "complete",
+        "summary": "docs/SPEC.md written from the implemented schemas, constants, registry source, committed ABI artifact and fixtures at source revision b841626: terminology, field/constraint tables, strict import stages, JCS and byte encodings, digest/commitment formulas with a worked vector, registry lifecycle table and Mermaid diagram, EIP-712 domain/types/nonce/deadline/roles, ordered verification and dimensions, live checkpoint rules, issue and error codes, limits, security/privacy, non-goals and a Discrepancies section (D1-D5, none blocking). The check lives at packages/sdk/scripts (spec-check.ts, check-spec.ts; run pnpm spec:check) rather than scripts/ at the root because it imports protocol and sdk, which tooling may not. It compares tagged literals, patterns, lists, tables and field order with the code, Solidity text, artifact and vectors, cross-checks the sources against each other, and type-checks and runs the two executable snippets; spec-check.test.ts (22 tests) proves 19 deliberately altered temporary copies and a stale snippet are detected. Nothing is regenerated.",
+        "files": [
+          "docs/SPEC.md",
+          "packages/sdk/scripts/spec-check.ts",
+          "packages/sdk/scripts/check-spec.ts",
+          "packages/sdk/scripts/spec-check.test.ts",
+          "packages/sdk/package.json",
+          "package.json",
+          ".gitignore"
+        ]
       }
     }
   }

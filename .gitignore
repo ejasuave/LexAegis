@@ -44,3 +44,4 @@ indexer/.generation
 indexer/config.local.yaml
 .next-history-check/
 indexer/config.rpc-evidence.yaml
+packages/sdk/.spec-snippets/
