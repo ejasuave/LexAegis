@@ -13,7 +13,8 @@
     "dev": "pnpm config:generate && tsx scripts/run.ts dev",
     "start": "pnpm config:check && tsx scripts/verify-binding.ts && tsx scripts/run.ts start",
     "rebuild": "tsx scripts/rebuild.ts",
-    "verify:binding": "tsx scripts/verify-binding.ts"
+    "verify:binding": "tsx scripts/verify-binding.ts",
+    "evidence:rpc": "tsx scripts/rpc-evidence-run.ts"
   },
   "dependencies": {
     "envio": "3.13.0"
@@ -22,6 +23,8 @@
     "@lexaegis/sdk": "workspace:*",
     "viem": "2.57.3",
     "zod": "4.6.5",
-    "tsx": "4.23.15"
+    "tsx": "4.23.15",
+    "pg": "8.23.1",
+    "@types/pg": "8.23.1"
   }
 }

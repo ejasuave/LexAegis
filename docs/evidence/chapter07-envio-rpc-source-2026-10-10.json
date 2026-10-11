@@ -1,0 +1,294 @@
+{
+  "startedAt": "2026-10-10T23:57:07.081Z",
+  "finishedAt": "2026-10-10T23:57:13.106Z",
+  "engine": "envio 3.13.0 (HyperIndex)",
+  "sourceMode": "rpc (Alchemy), NOT HyperSync; no GraphQL layer (ENVIO_HASURA=false)",
+  "chainId": "10143",
+  "registry": "0x453bfd1602d8a8666f55bf9a8d87b127cb94048f",
+  "startBlock": "69534196",
+  "endBlock": "69534700",
+  "generation": "gen-evidence-0001",
+  "engineExited": 0,
+  "reachedEndBlock": true,
+  "tables": [
+    {
+      "table_name": "ChainEvent"
+    },
+    {
+      "table_name": "IndexedAction"
+    },
+    {
+      "table_name": "IndexedReceipt"
+    },
+    {
+      "table_name": "PendingSupersession"
+    },
+    {
+      "table_name": "RegistryState"
+    },
+    {
+      "table_name": "ReviewerSummary"
+    },
+    {
+      "table_name": "_meta"
+    },
+    {
+      "table_name": "chain_metadata"
+    },
+    {
+      "table_name": "envio_addresses"
+    },
+    {
+      "table_name": "envio_chains"
+    },
+    {
+      "table_name": "envio_checkpoints"
+    },
+    {
+      "table_name": "envio_contracts"
+    },
+    {
+      "table_name": "envio_history_ChainEvent"
+    },
+    {
+      "table_name": "envio_history_IndexedAction"
+    },
+    {
+      "table_name": "envio_history_IndexedReceipt"
+    },
+    {
+      "table_name": "envio_history_PendingSupersession"
+    },
+    {
+      "table_name": "envio_history_RegistryState"
+    },
+    {
+      "table_name": "envio_history_ReviewerSummary"
+    },
+    {
+      "table_name": "envio_info"
+    },
+    {
+      "table_name": "raw_events"
+    }
+  ],
+  "chains": [
+    {
+      "id": 10143,
+      "ecosystem": "evm",
+      "start_block": 69534196,
+      "end_block": 69534700,
+      "max_reorg_depth": 200,
+      "buffer_block": 69534700,
+      "source_block": 69962098,
+      "first_event_block": 69534635,
+      "ready_at": "2026-10-10T23:57:11.714Z",
+      "events_processed": "4",
+      "_is_hyper_sync": false,
+      "progress_block": 69534700,
+      "progress_block_time": "2026-10-09T12:03:51.000Z",
+      "checkpoint_id": "3"
+    }
+  ],
+  "registryState": [
+    {
+      "id": "10143:0x298034669ee44327d2da9744b9b2782848e2f2a6959756b7b0471b09a404f5c9:0x453bfd1602d8a8666f55bf9a8d87b127cb94048f",
+      "chainId": "10143",
+      "genesisHash": "0x298034669ee44327d2da9744b9b2782848e2f2a6959756b7b0471b09a404f5c9",
+      "registryAddress": "0x453bfd1602d8a8666f55bf9a8d87b127cb94048f",
+      "configFingerprint": "0xc9320a65d58d42061c881c2e0fc064865e1ef5ba00cb1fd36392070d436afd93",
+      "generation": "gen-evidence-0001",
+      "projectionVersion": "lexaegis.history-projection.v1",
+      "startBlock": "69534196",
+      "rawEventCount": 4,
+      "actionCount": 3,
+      "pendingSupersessions": 0,
+      "lastEventId": "10143:0x298034669ee44327d2da9744b9b2782848e2f2a6959756b7b0471b09a404f5c9:0x453bfd1602d8a8666f55bf9a8d87b127cb94048f:0xaa1a0f5b1cbd452c60c82fc83d7c6db0a0455ec2a7649b71402dcc0d4c2358b0:0xdf29c1cc28113b5c506bf72524bf93e3b527de5747df1b5fb9e7ac9d2d502fdf:34",
+      "lastEventBlockNumber": "69534662",
+      "lastEventBlockHash": "0xaa1a0f5b1cbd452c60c82fc83d7c6db0a0455ec2a7649b71402dcc0d4c2358b0",
+      "lastEventLogIndex": 34
+    }
+  ],
+  "summaries": [
+    {
+      "id": "10143:0x298034669ee44327d2da9744b9b2782848e2f2a6959756b7b0471b09a404f5c9:0x453bfd1602d8a8666f55bf9a8d87b127cb94048f:0x076815e4c5fa1048db77d533c2e05f18a5ca89d5",
+      "registryKey": "10143:0x298034669ee44327d2da9744b9b2782848e2f2a6959756b7b0471b09a404f5c9:0x453bfd1602d8a8666f55bf9a8d87b127cb94048f",
+      "reviewer": "0x076815e4c5fa1048db77d533c2e05f18a5ca89d5",
+      "nextNonce": "3",
+      "totalReceipts": 2,
+      "activeReceipts": 0,
+      "revokedReceipts": 1,
+      "supersededReceipts": 1,
+      "actionCount": 3
+    }
+  ],
+  "actions": [
+    {
+      "id": "10143:0x298034669ee44327d2da9744b9b2782848e2f2a6959756b7b0471b09a404f5c9:0x453bfd1602d8a8666f55bf9a8d87b127cb94048f:0x076815e4c5fa1048db77d533c2e05f18a5ca89d5:0",
+      "registryKey": "10143:0x298034669ee44327d2da9744b9b2782848e2f2a6959756b7b0471b09a404f5c9:0x453bfd1602d8a8666f55bf9a8d87b127cb94048f",
+      "reviewer": "0x076815e4c5fa1048db77d533c2e05f18a5ca89d5",
+      "kind": "ISSUE",
+      "consumedNonce": "0",
+      "nextNonce": "1",
+      "commitment": "0xa98a4088de298d89160b975e907325554e2560f9a36a899188da29bb4cd58216",
+      "relatedCommitment": null,
+      "transactionHash": "0x50c397613df3bc080d214f5a3cdae86b3e9558d9a86ca0bdcb6721b57ca638c5",
+      "executor": "0x076815e4c5fa1048db77d533c2e05f18a5ca89d5",
+      "blockNumber": "69534635",
+      "blockHash": "0xde8b9a339372c11c2ac2033bbed87610448a6adda9fa39f5ab104ac308caefce",
+      "timestamp": "1791547412",
+      "firstEventId": "10143:0x298034669ee44327d2da9744b9b2782848e2f2a6959756b7b0471b09a404f5c9:0x453bfd1602d8a8666f55bf9a8d87b127cb94048f:0xde8b9a339372c11c2ac2033bbed87610448a6adda9fa39f5ab104ac308caefce:0x50c397613df3bc080d214f5a3cdae86b3e9558d9a86ca0bdcb6721b57ca638c5:10",
+      "lastEventId": "10143:0x298034669ee44327d2da9744b9b2782848e2f2a6959756b7b0471b09a404f5c9:0x453bfd1602d8a8666f55bf9a8d87b127cb94048f:0xde8b9a339372c11c2ac2033bbed87610448a6adda9fa39f5ab104ac308caefce:0x50c397613df3bc080d214f5a3cdae86b3e9558d9a86ca0bdcb6721b57ca638c5:10",
+      "firstLogIndex": 10,
+      "lastLogIndex": 10,
+      "eventCount": 1
+    },
+    {
+      "id": "10143:0x298034669ee44327d2da9744b9b2782848e2f2a6959756b7b0471b09a404f5c9:0x453bfd1602d8a8666f55bf9a8d87b127cb94048f:0x076815e4c5fa1048db77d533c2e05f18a5ca89d5:1",
+      "registryKey": "10143:0x298034669ee44327d2da9744b9b2782848e2f2a6959756b7b0471b09a404f5c9:0x453bfd1602d8a8666f55bf9a8d87b127cb94048f",
+      "reviewer": "0x076815e4c5fa1048db77d533c2e05f18a5ca89d5",
+      "kind": "SUPERSEDE",
+      "consumedNonce": "1",
+      "nextNonce": "2",
+      "commitment": "0xa98a4088de298d89160b975e907325554e2560f9a36a899188da29bb4cd58216",
+      "relatedCommitment": "0xc55bfeb8d0dd2fd17d935564c9c89c4be34d7a7a35fd335e5832c358b182024e",
+      "transactionHash": "0x7384b82ccff948a651349fd7f05a471aa545a89511d60e8cdc8c34c68e6c597f",
+      "executor": "0x076815e4c5fa1048db77d533c2e05f18a5ca89d5",
+      "blockNumber": "69534650",
+      "blockHash": "0xb45716c8e41f271eb211f7e453a2f5bc69921e111a2ae71997e1382cc6f25340",
+      "timestamp": "1791547416",
+      "firstEventId": "10143:0x298034669ee44327d2da9744b9b2782848e2f2a6959756b7b0471b09a404f5c9:0x453bfd1602d8a8666f55bf9a8d87b127cb94048f:0xb45716c8e41f271eb211f7e453a2f5bc69921e111a2ae71997e1382cc6f25340:0x7384b82ccff948a651349fd7f05a471aa545a89511d60e8cdc8c34c68e6c597f:99",
+      "lastEventId": "10143:0x298034669ee44327d2da9744b9b2782848e2f2a6959756b7b0471b09a404f5c9:0x453bfd1602d8a8666f55bf9a8d87b127cb94048f:0xb45716c8e41f271eb211f7e453a2f5bc69921e111a2ae71997e1382cc6f25340:0x7384b82ccff948a651349fd7f05a471aa545a89511d60e8cdc8c34c68e6c597f:100",
+      "firstLogIndex": 99,
+      "lastLogIndex": 100,
+      "eventCount": 2
+    },
+    {
+      "id": "10143:0x298034669ee44327d2da9744b9b2782848e2f2a6959756b7b0471b09a404f5c9:0x453bfd1602d8a8666f55bf9a8d87b127cb94048f:0x076815e4c5fa1048db77d533c2e05f18a5ca89d5:2",
+      "registryKey": "10143:0x298034669ee44327d2da9744b9b2782848e2f2a6959756b7b0471b09a404f5c9:0x453bfd1602d8a8666f55bf9a8d87b127cb94048f",
+      "reviewer": "0x076815e4c5fa1048db77d533c2e05f18a5ca89d5",
+      "kind": "REVOKE",
+      "consumedNonce": "2",
+      "nextNonce": "3",
+      "commitment": "0xc55bfeb8d0dd2fd17d935564c9c89c4be34d7a7a35fd335e5832c358b182024e",
+      "relatedCommitment": null,
+      "transactionHash": "0xdf29c1cc28113b5c506bf72524bf93e3b527de5747df1b5fb9e7ac9d2d502fdf",
+      "executor": "0x076815e4c5fa1048db77d533c2e05f18a5ca89d5",
+      "blockNumber": "69534662",
+      "blockHash": "0xaa1a0f5b1cbd452c60c82fc83d7c6db0a0455ec2a7649b71402dcc0d4c2358b0",
+      "timestamp": "1791547420",
+      "firstEventId": "10143:0x298034669ee44327d2da9744b9b2782848e2f2a6959756b7b0471b09a404f5c9:0x453bfd1602d8a8666f55bf9a8d87b127cb94048f:0xaa1a0f5b1cbd452c60c82fc83d7c6db0a0455ec2a7649b71402dcc0d4c2358b0:0xdf29c1cc28113b5c506bf72524bf93e3b527de5747df1b5fb9e7ac9d2d502fdf:34",
+      "lastEventId": "10143:0x298034669ee44327d2da9744b9b2782848e2f2a6959756b7b0471b09a404f5c9:0x453bfd1602d8a8666f55bf9a8d87b127cb94048f:0xaa1a0f5b1cbd452c60c82fc83d7c6db0a0455ec2a7649b71402dcc0d4c2358b0:0xdf29c1cc28113b5c506bf72524bf93e3b527de5747df1b5fb9e7ac9d2d502fdf:34",
+      "firstLogIndex": 34,
+      "lastLogIndex": 34,
+      "eventCount": 1
+    }
+  ],
+  "receipts": [
+    {
+      "id": "10143:0x298034669ee44327d2da9744b9b2782848e2f2a6959756b7b0471b09a404f5c9:0x453bfd1602d8a8666f55bf9a8d87b127cb94048f:0x076815e4c5fa1048db77d533c2e05f18a5ca89d5:0xa98a4088de298d89160b975e907325554e2560f9a36a899188da29bb4cd58216",
+      "registryKey": "10143:0x298034669ee44327d2da9744b9b2782848e2f2a6959756b7b0471b09a404f5c9:0x453bfd1602d8a8666f55bf9a8d87b127cb94048f",
+      "reviewer": "0x076815e4c5fa1048db77d533c2e05f18a5ca89d5",
+      "commitment": "0xa98a4088de298d89160b975e907325554e2560f9a36a899188da29bb4cd58216",
+      "status": "SUPERSEDED",
+      "predecessor": "0x0000000000000000000000000000000000000000000000000000000000000000",
+      "successor": "0xc55bfeb8d0dd2fd17d935564c9c89c4be34d7a7a35fd335e5832c358b182024e",
+      "issuedAt": "1791547412",
+      "updatedAt": "1791547416",
+      "issuingActionId": "10143:0x298034669ee44327d2da9744b9b2782848e2f2a6959756b7b0471b09a404f5c9:0x453bfd1602d8a8666f55bf9a8d87b127cb94048f:0x076815e4c5fa1048db77d533c2e05f18a5ca89d5:0",
+      "latestActionId": "10143:0x298034669ee44327d2da9744b9b2782848e2f2a6959756b7b0471b09a404f5c9:0x453bfd1602d8a8666f55bf9a8d87b127cb94048f:0x076815e4c5fa1048db77d533c2e05f18a5ca89d5:1"
+    },
+    {
+      "id": "10143:0x298034669ee44327d2da9744b9b2782848e2f2a6959756b7b0471b09a404f5c9:0x453bfd1602d8a8666f55bf9a8d87b127cb94048f:0x076815e4c5fa1048db77d533c2e05f18a5ca89d5:0xc55bfeb8d0dd2fd17d935564c9c89c4be34d7a7a35fd335e5832c358b182024e",
+      "registryKey": "10143:0x298034669ee44327d2da9744b9b2782848e2f2a6959756b7b0471b09a404f5c9:0x453bfd1602d8a8666f55bf9a8d87b127cb94048f",
+      "reviewer": "0x076815e4c5fa1048db77d533c2e05f18a5ca89d5",
+      "commitment": "0xc55bfeb8d0dd2fd17d935564c9c89c4be34d7a7a35fd335e5832c358b182024e",
+      "status": "REVOKED",
+      "predecessor": "0xa98a4088de298d89160b975e907325554e2560f9a36a899188da29bb4cd58216",
+      "successor": "0x0000000000000000000000000000000000000000000000000000000000000000",
+      "issuedAt": "1791547416",
+      "updatedAt": "1791547420",
+      "issuingActionId": "10143:0x298034669ee44327d2da9744b9b2782848e2f2a6959756b7b0471b09a404f5c9:0x453bfd1602d8a8666f55bf9a8d87b127cb94048f:0x076815e4c5fa1048db77d533c2e05f18a5ca89d5:1",
+      "latestActionId": "10143:0x298034669ee44327d2da9744b9b2782848e2f2a6959756b7b0471b09a404f5c9:0x453bfd1602d8a8666f55bf9a8d87b127cb94048f:0x076815e4c5fa1048db77d533c2e05f18a5ca89d5:2"
+    }
+  ],
+  "events": [
+    {
+      "id": "10143:0x298034669ee44327d2da9744b9b2782848e2f2a6959756b7b0471b09a404f5c9:0x453bfd1602d8a8666f55bf9a8d87b127cb94048f:0xde8b9a339372c11c2ac2033bbed87610448a6adda9fa39f5ab104ac308caefce:0x50c397613df3bc080d214f5a3cdae86b3e9558d9a86ca0bdcb6721b57ca638c5:10",
+      "kind": "RECEIPT_ISSUED",
+      "blockNumber": "69534635",
+      "logIndex": 10,
+      "actionId": "10143:0x298034669ee44327d2da9744b9b2782848e2f2a6959756b7b0471b09a404f5c9:0x453bfd1602d8a8666f55bf9a8d87b127cb94048f:0x076815e4c5fa1048db77d533c2e05f18a5ca89d5:0"
+    },
+    {
+      "id": "10143:0x298034669ee44327d2da9744b9b2782848e2f2a6959756b7b0471b09a404f5c9:0x453bfd1602d8a8666f55bf9a8d87b127cb94048f:0xb45716c8e41f271eb211f7e453a2f5bc69921e111a2ae71997e1382cc6f25340:0x7384b82ccff948a651349fd7f05a471aa545a89511d60e8cdc8c34c68e6c597f:99",
+      "kind": "RECEIPT_ISSUED",
+      "blockNumber": "69534650",
+      "logIndex": 99,
+      "actionId": "10143:0x298034669ee44327d2da9744b9b2782848e2f2a6959756b7b0471b09a404f5c9:0x453bfd1602d8a8666f55bf9a8d87b127cb94048f:0x076815e4c5fa1048db77d533c2e05f18a5ca89d5:1"
+    },
+    {
+      "id": "10143:0x298034669ee44327d2da9744b9b2782848e2f2a6959756b7b0471b09a404f5c9:0x453bfd1602d8a8666f55bf9a8d87b127cb94048f:0xb45716c8e41f271eb211f7e453a2f5bc69921e111a2ae71997e1382cc6f25340:0x7384b82ccff948a651349fd7f05a471aa545a89511d60e8cdc8c34c68e6c597f:100",
+      "kind": "RECEIPT_SUPERSEDED",
+      "blockNumber": "69534650",
+      "logIndex": 100,
+      "actionId": "10143:0x298034669ee44327d2da9744b9b2782848e2f2a6959756b7b0471b09a404f5c9:0x453bfd1602d8a8666f55bf9a8d87b127cb94048f:0x076815e4c5fa1048db77d533c2e05f18a5ca89d5:1"
+    },
+    {
+      "id": "10143:0x298034669ee44327d2da9744b9b2782848e2f2a6959756b7b0471b09a404f5c9:0x453bfd1602d8a8666f55bf9a8d87b127cb94048f:0xaa1a0f5b1cbd452c60c82fc83d7c6db0a0455ec2a7649b71402dcc0d4c2358b0:0xdf29c1cc28113b5c506bf72524bf93e3b527de5747df1b5fb9e7ac9d2d502fdf:34",
+      "kind": "RECEIPT_REVOKED",
+      "blockNumber": "69534662",
+      "logIndex": 34,
+      "actionId": "10143:0x298034669ee44327d2da9744b9b2782848e2f2a6959756b7b0471b09a404f5c9:0x453bfd1602d8a8666f55bf9a8d87b127cb94048f:0x076815e4c5fa1048db77d533c2e05f18a5ca89d5:2"
+    }
+  ],
+  "pending": [
+    {
+      "count": 1,
+      "incomplete": 0
+    }
+  ],
+  "comparisons": [
+    {
+      "receipt": "10143:0x298034669ee44327d2da9744b9b2782848e2f2a6959756b7b0471b09a404f5c9:0x453bfd1602d8a8666f55bf9a8d87b127cb94048f:0x076815e4c5fa1048db77d533c2e05f18a5ca89d5:0xa98a4088de298d89160b975e907325554e2560f9a36a899188da29bb4cd58216",
+      "indexed": "superseded",
+      "live": "superseded",
+      "block": "69534700",
+      "agree": true
+    },
+    {
+      "receipt": "10143:0x298034669ee44327d2da9744b9b2782848e2f2a6959756b7b0471b09a404f5c9:0x453bfd1602d8a8666f55bf9a8d87b127cb94048f:0x076815e4c5fa1048db77d533c2e05f18a5ca89d5:0xc55bfeb8d0dd2fd17d935564c9c89c4be34d7a7a35fd335e5832c358b182024e",
+      "indexed": "revoked",
+      "live": "revoked",
+      "block": "69534700",
+      "agree": true
+    }
+  ],
+  "engineLogTail": [
+    "[00:57:11.708] \u001b[32mINFO\u001b[39m: \u001b[36mBuilding database indexes. Indexing is paused until they are ready, which can take a while on a large database.\u001b[39m",
+    "    \u001b[35mchainId\u001b[39m: 10143",
+    "",
+    "[00:57:11.716] \u001b[32mINFO\u001b[39m: \u001b[36mCreating the 8 remaining schema indexes before the indexer reports ready. Writes are paused until they are committed. This can take a long time on a large database.\u001b[39m",
+    "    \u001b[35mstorage\u001b[39m: \"postgres\"",
+    "    \u001b[35mindexes\u001b[39m: [",
+    "      \"ChainEvent_registryKey_e0ga1eckf3\",",
+    "      \"ChainEvent_reviewer_hnikm3kdi8\",",
+    "      \"IndexedAction_consumedNonce_fp5kme0ip9\",",
+    "      \"IndexedAction_reviewer_3t4qy8d813\",",
+    "      \"IndexedReceipt_predecessor_4ft3v5jybz\",",
+    "      \"IndexedReceipt_reviewer_2w3h077ry2\",",
+    "      \"IndexedReceipt_successor_b1stu16sp7\",",
+    "      \"ReviewerSummary_reviewer_5kzzw2bten\"",
+    "    ]",
+    "",
+    "[00:57:11.732] \u001b[32mINFO\u001b[39m: \u001b[36mCommitted 8 schema indexes and the ready timestamp in 0.02s.\u001b[39m",
+    "    \u001b[35mstorage\u001b[39m: \"postgres\"",
+    "",
+    "[00:57:11.732] \u001b[32mINFO\u001b[39m: \u001b[36mReady. Fully indexed for queries.\u001b[39m",
+    "    \u001b[35mchainId\u001b[39m: 10143",
+    "",
+    "[00:57:11.733] \u001b[32mINFO\u001b[39m: \u001b[36mExiting with success\u001b[39m",
+    "",
+    ""
+  ]
+}

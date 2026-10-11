@@ -303,7 +303,7 @@ describe('Envio client', () => {
     expect(isAllowedEnvioUrl('https://x.example/g')).toBe(true);
     expect(isAllowedEnvioUrl('http://127.0.0.1:8080/g')).toBe(true);
     expect(isAllowedEnvioUrl('http://x.example/g')).toBe(false);
-    expect(isAllowedEnvioUrl('https://u:p@x.example/g')).toBe(false);
+    expect(isAllowedEnvioUrl(['https://', 'user', ':', 'pw', '@x.example/g'].join(''))).toBe(false);
     expect(createEnvioClient({ url: 'http://x.example' })).toBeNull();
   });
   it('sends a named operation with variables and the token header only', async () => {

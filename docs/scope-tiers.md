@@ -13,7 +13,7 @@ still needs a real signer, and the Envio pipeline stays required despite its T2 
 | ----------------------------------------- | ----------------------------- | ------- | ----------- |
 | Document import                           | `document-import`             | 08      | not-started |
 | Consent before analysis                   | `consent`                     | 10      | not-started |
-| Live Qwen-assisted source-linked findings | `qwen-source-linked-findings` | 09      | not-started |
+| Live Qwen-assisted source-linked findings | `qwen-source-linked-findings` | 09      | in-progress |
 | Human decision                            | `human-decision`              | 10      | not-started |
 | Immutable freeze and verified save        | `freeze-and-verified-save`    | 05      | in-progress |
 | Explicit real-signature approval          | `real-signature-approval`     | 04      | in-progress |
@@ -32,7 +32,7 @@ still needs a real signer, and the Envio pipeline stays required despite its T2 
 | Encrypted vault                | `encrypted-vault`            | 05      | in-progress |
 | Payment what-if                | `payment-what-if`            | 08      | not-started |
 | Compact labelled orb           | `compact-labelled-orb`       | 10      | not-started |
-| Pinned runtime prompts         | `pinned-runtime-prompts`     | 09      | not-started |
+| Pinned runtime prompts         | `pinned-runtime-prompts`     | 09      | in-progress |
 | CLI                            | `cli`                        | 15      | not-started |
 | Embeddable widget              | `embeddable-widget`          | 18      | not-started |
 | Second-domain example          | `second-domain-example`      | 18      | not-started |
@@ -44,7 +44,7 @@ still needs a real signer, and the Envio pipeline stays required despite its T2 
 
 | Feature                           | ID                      | Chapter | Status      |
 | --------------------------------- | ----------------------- | ------- | ----------- |
-| Envio history and derived status  | `envio-history`         | 07      | not-started |
+| Envio history and derived status  | `envio-history`         | 07      | in-progress |
 | Matter notes                      | `matter-notes`          | 10      | not-started |
 | Availability-gated agent identity | `agent-identity`        | 16      | not-started |
 | Invariant tests                   | `invariant-tests`       | 17      | in-progress |

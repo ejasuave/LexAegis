@@ -10,7 +10,7 @@
   "scripts": {
     "dev": "pnpm --filter @lexaegis/web dev",
     "dev:verifier": "pnpm --filter @lexaegis/verifier dev",
-    "lint": "eslint . --max-warnings 0",
+    "lint": "node --max-old-space-size=6144 ./node_modules/eslint/bin/eslint.js . --max-warnings 0",
     "format:check": "prettier --check .",
     "typecheck": "tsc --noEmit -p tsconfig.json && pnpm -r --if-present typecheck",
     "test": "vitest run",

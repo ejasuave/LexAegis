@@ -26,3 +26,7 @@ docs/evidence/chapter09-qwen-smoke-*.json
 indexer/deployment-binding.json
 indexer/.envio/types.d.ts
 indexer/queries/*.graphql
+indexer/config.yaml
+indexer/abi/*.json
+indexer/src/binding.generated.ts
+docs/evidence/chapter07-envio-rpc-source-*.json

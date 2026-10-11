@@ -66,8 +66,8 @@
       "id": "07",
       "title": "Envio Indexer, Review History and Derived Status",
       "additive": false,
-      "state": "pending",
-      "evidence": [],
+      "state": "in-progress",
+      "evidence": ["chapter07.checks"],
       "chapterPromptPath": "build_instructions/prompt_library/LexAegis_Prompt_Library_Chapter_07_Targeted_Build_Tasks_v1_0.md"
     },
     {
@@ -433,7 +433,7 @@
         "id": "envio-history",
         "tier": "T2",
         "chapter": "07",
-        "status": "not-started",
+        "status": "in-progress",
         "evidence": []
       },
       {
@@ -4933,6 +4933,116 @@
       "chapter07": "The activity drawer keeps assistant runs, human decisions and on-chain events in separate sections; indexed history is reported by get_status as not_connected and must stay distinct from live reads when the indexer arrives.",
       "chapter10": "Validated result cards: RunView (blocks, tools, catalog, summary, complete, incomplete, stale, agentConfig) from @/features/assistant/public, rendered by components/assistant/RunCard.tsx. Current plan and run state: AssistantSnapshot (phase, orb, activeRunViewId, pending) through useAssistant(). Confirmed-fact actions: AssistantController.confirmProposal and dismissProposal on ReviewController.confirmFact. Saved outcomes: saveOutcome, with decodeOutcome and describeContextEntry in features/assistant/saved-outcomes.ts giving analysisVersionId and agentConfigVersionId. Source navigation: openSource(viewId, handle) returns the Focus for ReviewProvider.setFocus only if the passage still resolves. Cancellation: stop() and the cancel route. Draft artifacts: ReviewController.draftArtifacts({ analysisVersionId, agentConfigVersionId }) returns artifacts including agent-config and the assistant analysis with DECISION_LOG_MISSING and HUMAN_REVIEW_GATE_PENDING still outstanding; Chapter 10 supplies the decision log and the approval gate. Command-centre and Review modes and the --lj-* visual system are unchanged. Voice and the briefing control remain to be built there.",
       "chapters12and13": "Hosting needs QWEN_API_KEY, QWEN_BASE_URL, optional QWEN_MODEL and QWEN_OUTPUT_MODE, DATABASE_URL, a response that can stream for 120 seconds, and one pnpm qwen:smoke run against the deployed configuration. The smoke evidence file is the input for the Qwen article; no article is published and no bounty is claimed."
+    }
+  },
+  "chapter07": {
+    "startedOn": "2026-10-11",
+    "state": "in-progress",
+    "note": "All repository work for Tasks 1-14 is built and verified offline and against the real engine in RPC-source mode. The chapter is NOT complete: the HyperSync production source, the Envio GraphQL layer, real rollback and a live outage observation could not be run here. Values below are observed, never intended.",
+    "resolvedDependencies": {
+      "envio": "3.13.0 (HyperIndex V3; newest stable older than two weeks)",
+      "pg": "8.23.1 (indexer evidence script)",
+      "viem": "2.57.3"
+    },
+    "modules": {
+      "indexer/config.yaml": "GENERATED from contracts/deployments/monad-testnet.json: chain 10143, HyperSync https://10143.hypersync.xyz, start block = deployment block 69534196, rollback_on_reorg true, max_reorg_depth 200, address_format lowercase, four events only",
+      "indexer/schema.graphql": "RegistryState, ChainEvent, IndexedAction, IndexedReceipt, ReviewerSummary, PendingSupersession (@internal); BigInt precision 78 for nonces",
+      "indexer/src/projection": "pure normalize + computeTransition (no I/O), load/commit layer over Envio context entities",
+      "indexer/src/handlers/registry.ts": "four indexer.onEvent handlers; reads in preload, writes only when processing",
+      "indexer/scripts": "binding/generate-config (public fingerprint), verify-binding (live Alchemy check), generation + run + rebuild (scoped, explicit), rpc-evidence-run",
+      "apps/web/src/server/history": "bounded Envio client (1 MiB, 5 s, one retry, max page 50), cursor, lag, derived status, anchors, routes support",
+      "apps/web/src/app/api/history": "GET status, reviewers/[reviewer], receipts/[reviewer]/[commitment]; public, no-store, unknown params rejected, 409 history_reset_required",
+      "apps/web/src/features/history": "HistoryController (read-only, epoch-guarded, 10 s for 2 min), browser API client, presentation",
+      "apps/web/src/components/history": "ReviewHistoryPanel, ReceiptHistoryDetail, IndexerStatusIndicator, HistoryProvider; system strip and activity drawer wired",
+      "apps/web/src/domain/history/response.ts": "closed public response schemas shared by routes and browser"
+    },
+    "publicBinding": {
+      "configFingerprint": "0xc9320a65d58d42061c881c2e0fc064865e1ef5ba00cb1fd36392070d436afd93",
+      "projectionVersion": "lexaegis.history-projection.v1",
+      "note": "Fingerprint covers chain, genesis, registry, start block, runtime-code hash, deployment tx, ABI digest and projection version. The index generation is separate (.generation, changed only by an explicit rebuild)."
+    },
+    "checks": {
+      "lint": {
+        "command": "pnpm lint",
+        "outcome": "pass",
+        "notes": "Now runs with --max-old-space-size=6144: the type-aware run exceeded the default Node heap (exit 134) once the indexer and history modules were added."
+      },
+      "formatCheck": {
+        "command": "pnpm format:check",
+        "outcome": "pass"
+      },
+      "typecheck": {
+        "command": "pnpm typecheck",
+        "outcome": "pass"
+      },
+      "unitTests": {
+        "command": "pnpm test",
+        "outcome": "pass",
+        "notes": "78 files, 1157 tests. New: indexer 31 (24 through the real Envio createTestIndexer engine, 7 reducer), web history server 33, routes 8, features 14."
+      },
+      "build": {
+        "command": "pnpm build",
+        "outcome": "pass"
+      },
+      "gates": {
+        "outcome": "pass",
+        "notes": "fixtures:check, baselines:check, exclusion:check, protocol:check, contracts:artifacts:check, scope:docs:check, indexer:check all pass."
+      },
+      "liveBinding": {
+        "command": "pnpm indexer:verify-binding (env from .env)",
+        "outcome": "pass",
+        "evidenceClass": "live_testnet",
+        "notes": "Alchemy: chain 10143, genesis hash, runtime code hash, protocolVersion 1, no code before block 69534196, code at it. Deployment block hash 0x9f9a11f3234202e24d6f0c50fe85301cf09fa97652dfa236c97aa5bd22cde0a8."
+      },
+      "realEngineRpcSource": {
+        "command": "pnpm --filter @lexaegis/indexer evidence:rpc --end-block 69534700",
+        "outcome": "pass",
+        "evidenceClass": "live_testnet",
+        "record": "docs/evidence/chapter07-envio-rpc-source-2026-10-10.json",
+        "notes": "REAL HyperIndex 3.13.0 engine, REAL Chapter 6 testnet events, embedded PostgreSQL, ENVIO_HASURA=false. Source was the Alchemy RPC (_is_hyper_sync false), NOT HyperSync, and there was no GraphQL layer: rows were read from PostgreSQL. Result: 4 raw events, 3 actions (ISSUE nonce 0 block 69534635, SUPERSEDE nonce 1 block 69534650 as ONE action over two raw logs 99 and 100, REVOKE nonce 2 block 69534662), 2 receipts (SUPERSEDED, REVOKED), nextNonce 3, counters consistent, pending staging complete, and both receipts equal the live registry at block 69534700 (same-block comparison)."
+      },
+      "historyBrowser": {
+        "command": "pnpm test:history:browser",
+        "outcome": "pass",
+        "evidenceClass": "local_fixture_index",
+        "notes": "26 of 26 in headless Chromium on the production build. Routes ran for real against the real Alchemy endpoint (live checkpoint, canonical block hashes); the Envio service was a LOCAL LOOPBACK FIXTURE. Covers pagination, load more, replacement row, executor, indexed-vs-live separation, 409 reset after a rebuilt generation, unreachable index with live reads still answering, keyboard, reduced motion, 390 px, no credentials, identifiers-only index requests. It is not evidence of live Envio ingestion."
+      },
+      "secretScan": {
+        "command": "pnpm secrets:check",
+        "outcome": "fail",
+        "notes": "Only the two findings in the git-ignored, untracked .env (unchanged from Chapter 6). A deliberate fake credential URL in a new test was rewritten so it is not a literal."
+      }
+    },
+    "blocked": {
+      "hyperSyncSource": "ENVIO_API_TOKEN is not set, so ingestion through the verified HyperSync source (the production source mode) was never run.",
+      "graphQlLayer": "No Docker daemon is available, so Hasura (the generated GraphQL service) never started. The named operations in indexer/queries and apps/web/src/server/history/queries.ts are Hasura-style and were NOT validated against the real generated schema. The history client, routes and UI were tested against clearly labelled fixtures only.",
+      "realRollback": "Real HyperIndex rollback (index branch A, revert to a common ancestor, mine branch B) was not run. It needs a disposable local chain with reorg control plus the engine and a database; the harness was not built. Reducer and engine simulation tests are not rollback evidence.",
+      "invalidateNonceLive": "NonceInvalidated was never emitted on testnet in Chapter 6, so INVALIDATE_NONCE is covered only by the engine simulation tests.",
+      "outageObservation": "No real indexing delay or controlled outage of the real engine was observed; delay and recovery are covered by tests against fixtures and the browser fixture (mode down).",
+      "bundledOutcome": "Until the above run, envio-history stays in-progress and Chapter 7 stays in-progress. Gates are computed by pnpm readiness and were not edited."
+    },
+    "decisions": [
+      "Handlers keep no state of their own; every projection row is a context entity so Envio rollback covers it. Reducer is pure and separately tested.",
+      "A supersession stages the ReceiptIssued log as an internal PendingSupersession and completes at ReceiptSuperseded: one action, two raw events, one nonce.",
+      "A replayed identical event is a no-op; a different payload under one event id fails the batch. Out-of-order positions fail.",
+      "Index freshness never uses the last event block. caught_up needs source lag and confirmed lag both zero on coherent coverage.",
+      "A cursor from another generation or fingerprint is reset before availability is judged, so a rebuild cannot be read through an old cursor.",
+      "Page reads are bracketed by metadata reads and retried once; otherwise retryable uncertainty. No trustless-snapshot claim.",
+      "Live and indexed receipt states are compared only when the index progress block equals the live checkpoint block; otherwise different_checkpoints. No pinned historical live read was added.",
+      "Private matter titles are joined at render time from the unlocked vault by commitment and the selected account address (the vault frozen reference carries no reviewer or registry, so this is the strongest match it allows). Nothing private is stored, sent or put in a URL.",
+      "A public reviewer-address lookup was added to the history panel so public history can be read without a passkey.",
+      "History routes fail closed with a typed 503 if the shared rate-limit store is down."
+    ],
+    "limitations": [
+      "Rate limiting keys on x-forwarded-for, which a client can spoof unless a trusted proxy overwrites it.",
+      "Hash anchoring checks the newest row of a page and not every row.",
+      "The fixture Envio service in the browser check returns data shaped by my reading of Hasura conventions; real field and type names may differ.",
+      "The RPC-source evidence run covers blocks 69534196 to 69534700 (505) because that is where the live events end.",
+      "No git remote is configured, so no commit from this chapter has been pushed."
+    ],
+    "handoff": {
+      "chapter8": "Receipt reference and protocol formats unchanged. History uses typed indexed/live separation, an unavailable state for every failure, and a local private-label join; Chapter 10 should call HistoryController.startWatching() after a confirmed transaction.",
+      "nextWork": "To close Chapter 7: set ENVIO_API_TOKEN, start a Docker daemon (or provide Hasura), run pnpm --filter @lexaegis/indexer start against HyperSync, validate the six operations against the generated schema, then run the rollback harness and an outage observation, and record them here."
     }
   }
 }
