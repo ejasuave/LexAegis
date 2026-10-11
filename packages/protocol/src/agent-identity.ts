@@ -4,7 +4,7 @@ import {
   decimalAtMost,
   nonZeroAddressSchema,
   unsignedDecimalSchema,
-} from '@lexaegis/protocol/v1';
+} from './v1/primitives';
 
 /*
  * The optional ERC-8004 reference carried inside the committed agent-configuration artifact. It

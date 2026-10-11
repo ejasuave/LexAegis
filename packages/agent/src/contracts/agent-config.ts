@@ -1,7 +1,6 @@
 import { z } from 'zod';
-import { opaqueIdSchema } from '@lexaegis/protocol';
+import { agentIdentityRefSchema, opaqueIdSchema } from '@lexaegis/protocol';
 import { digestSchema, timestampSchema } from '@lexaegis/protocol/v1';
-import { agentIdentityRefSchema } from './agent-identity';
 import {
   assistantIntentSchema,
   modelExecutionSchema,

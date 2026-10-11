@@ -10,7 +10,8 @@
     "./transactions": "./src/transactions/index.ts",
     "./portable": "./src/portable/index.ts",
     "./offline": "./src/verification/index.ts",
-    "./verify": "./src/verification/live.ts"
+    "./verify": "./src/verification/live.ts",
+    "./agent-identity": "./src/agent-identity/index.ts"
   },
   "scripts": {
     "typecheck": "tsc --noEmit -p tsconfig.json",
@@ -59,7 +60,11 @@
         "types": "./dist/verification/live.d.ts",
         "default": "./dist/verification/live.js"
       },
-      "./schemas/v1/*": "./schemas/v1/*"
+      "./schemas/v1/*": "./schemas/v1/*",
+      "./agent-identity": {
+        "types": "./dist/agent-identity/index.d.ts",
+        "default": "./dist/agent-identity/index.js"
+      }
     }
   }
 }

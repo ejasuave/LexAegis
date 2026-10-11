@@ -41,7 +41,7 @@ const AMBIENT = [
 ];
 
 /** The only production file allowed to call the network: the explicit JSON-RPC transport. */
-const NETWORK_FILES = new Set(['registry/rpc-client.ts']);
+const NETWORK_FILES = new Set(['registry/rpc-client.ts', 'agent-identity/rpc.ts']);
 
 describe('protocol and sdk dependency boundaries', () => {
   for (const pkg of ['protocol', 'sdk'] as const) {
