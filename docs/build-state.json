@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "currentChapter": "10",
+  "currentChapter": "11",
   "nextChapter": "11",
   "project": {
     "name": "LexAegis",
@@ -98,7 +98,7 @@
       "id": "11",
       "title": "Protocol SDK, Independent Verifier and Developer Integration",
       "additive": false,
-      "state": "pending",
+      "state": "in-progress",
       "evidence": [],
       "chapterPromptPath": "build_instructions/prompt_library/LexAegis_Prompt_Library_Chapter_11_Targeted_Build_Tasks_v1_0.md"
     },
@@ -6218,6 +6218,21 @@
     "handoff": {
       "chapter11": "ReceiptReferenceV1 is the only public object. Readable review export (ReviewExportV1) and context export (MatterContextExportV1) come from VaultHandle.commands.prepareExport with a disclosure preview and an explicit Download; the verifier panel states that verification is not available. Receipt states stay separate: package integrity, receipt binding and live lifecycle, signer acceptance, indexed history. A complete package example is any frozen review from the Chapter 10 flow (source, extracted-text, calculation, checklist, rule-pack, analysis, agent-config and exactly one decision-log). The decision-log schema is lexaegis.review-decision-log.v1 and validates with decisionLogSchema in apps/web.",
       "chapters12and13": "pnpm test:hud:browser is the repeatable Chapter 10 journey; it needs no credentials. A live demo additionally needs a deployed registry (NEXT_PUBLIC_REGISTRY_ADDRESS), Alchemy configuration for the chain routes, and a real passkey device."
+    }
+  },
+  "chapter11": {
+    "startedOn": "2026-10-11",
+    "state": "in-progress",
+    "tasks": {
+      "1": {
+        "status": "complete",
+        "summary": "Verifier and examples lint boundaries added; protocol/sdk dependency-boundary test (no framework, Node, backend, account or model imports; no ambient env/storage/wallet; fetch only in the explicit RPC transport). Primary references (RFC 8785, EIP-712/1271/1898, viem, Monad docs) were not re-fetched in this session: relied on installed viem 2.57.3 behaviour and the Chapter 3/6 records.",
+        "files": [
+          "eslint.config.mjs",
+          "packages/sdk/src/boundaries.test.ts",
+          "docs/build-state.json"
+        ]
+      }
     }
   }
 }

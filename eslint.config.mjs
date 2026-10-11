@@ -347,6 +347,53 @@ export default tseslint.config(
     ]),
   },
   {
+    // verifier: standalone. No legal workspace, Aegis runtime, backend, account or model code.
+    files: ['apps/verifier/src/**/*.{ts,tsx}'],
+    rules: restrict([
+      APPS_PRIVATE_SOURCE,
+      NODE_ONLY,
+      SERVER_ONLY,
+      {
+        group: [
+          'next',
+          'next/*',
+          '@lexaegis/web',
+          '@lexaegis/agent',
+          '@lexaegis/agent/*',
+          '@lexaegis/vault',
+          '@lexaegis/vault/*',
+          '@category-labs/*',
+          '@scure/*',
+          '@/*',
+          '**/apps/web/**',
+        ],
+        message:
+          'The verifier is standalone: it uses the protocol and SDK only, never the web app, agent, vault or account code.',
+      },
+    ]),
+  },
+  {
+    // examples: public entry points only, never monorepo sources or reference-app code.
+    files: ['examples/**/*.ts'],
+    rules: restrict([
+      APPS_PRIVATE_SOURCE,
+      {
+        group: [
+          '@lexaegis/web',
+          '@lexaegis/verifier',
+          '@lexaegis/agent',
+          '@lexaegis/agent/*',
+          '@lexaegis/vault',
+          '@lexaegis/vault/*',
+          '@category-labs/*',
+          '@scure/*',
+          '**/apps/**',
+        ],
+        message: 'Examples use only the public protocol and SDK entry points.',
+      },
+    ]),
+  },
+  {
     // Applications consume declared package exports, never private source paths.
     files: ['apps/**/*.{ts,tsx}'],
     rules: restrict([APPS_PRIVATE_SOURCE]),
