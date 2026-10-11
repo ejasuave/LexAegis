@@ -130,8 +130,8 @@
       "id": "15",
       "title": "Developer Experience: Specification, Test Vectors, Quickstart and CLI",
       "additive": true,
-      "state": "pending",
-      "evidence": [],
+      "state": "in-progress",
+      "evidence": ["chapter15.checks"],
       "chapterPromptPath": "build_instructions/prompt_library/LexAegis_Prompt_Library_Chapter_15_Targeted_Build_Tasks_v1_0.md"
     },
     {
@@ -7333,6 +7333,18 @@
     "handoff": {
       "chapter12": "End-to-end privacy and security validation journey: pnpm test:hud:browser (HUD_EXPORT_OUT keeps the exact export bytes and copied public reference) then pnpm test:verifier:browser in fresh contexts. Cases to validate: recovery and import of ReviewExportV1 (wrong-format messages for encrypted backups and context exports, size, depth and duplicate-key limits), whole-bundle substitution caught only by the independent reference, Cancel terminates the worker, Clear and pagehide drop all state, hostile labels and artifact URLs inert, registry check sends only eth_chainId/getBlockByNumber/getCode/call and no nonce, hash, filename or case text, failed refresh keeps the as-of status. Caller-policy boundaries: RegistryPolicy and the expected-reviewers signer policy are trusted caller configuration. Package dependency checks: pnpm packages:check and the boundary tests.",
       "chapter13": "Production deployment, public package publication, licence and submission assets are not done. Active-lifecycle live evidence needs a real approved transaction."
+    }
+  },
+  "chapter15": {
+    "startedOn": "2026-10-11",
+    "state": "in-progress",
+    "ruleWaiver": "Owner waived, for this run only, the rule that chapter 14 must be complete before chapter 15. Chapter 14 remains in-progress and is to be completed later.",
+    "tasks": {
+      "1": {
+        "status": "complete",
+        "summary": "Compatibility baseline recorded before any Chapter 15 edit: docs/evidence/chapter15-baseline-2026-10-11.json holds source revision 063e549, SHA-256 of protocol and registry vectors, registry source, committed artifact, ABI module, foundry settings and toolchain, the compiled ABI/runtime-bytecode hashes, committed compiler settings (solc 0.8.37+commit.f401782d, osaka, optimizer 200 runs, bytecode_hash none), public entry points of protocol and sdk, existing dependencies by owning chapter, the source-to-task mapping and blockers (Chapter 14 in-progress by owner waiver; no Active testnet receipt; no widget). pnpm baselines:check passes (43 files + compiled registry). IProofOfReviewRegistry.sol and the generated SDK ABI already exist.",
+        "files": ["docs/evidence/chapter15-baseline-2026-10-11.json"]
+      }
     }
   }
 }

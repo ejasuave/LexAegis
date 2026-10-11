@@ -1,0 +1,104 @@
+{
+  "schema": "lexaegis.chapter15-baseline.v1",
+  "recordedOn": "2026-10-11",
+  "evidenceClass": "local_scripted",
+  "sourceRevision": "063e549884cf68854087c98faa051265c22ee40e",
+  "note": "Recorded before any Chapter 15 edit. Protected files are also covered by docs/protected-baselines.json (+ additions). Compiler settings are read from the committed registry artifact.",
+  "compiler": {
+    "solc": "0.8.37+commit.f401782d",
+    "evmVersion": "osaka",
+    "optimizer": {
+      "enabled": true,
+      "runs": 200
+    },
+    "viaIR": false,
+    "bytecodeHash": "none"
+  },
+  "toolchain": {
+    "foundry": {
+      "version": "1.8.5",
+      "commit": "51a52c59cffd940f76eddd0b4bb1791aa4b5ac7f",
+      "archiveSha256": {
+        "linux_amd64": "6c66ffcc55fa4249197721baa3098bc208014ea1d8aa04b2ed50ac6bccffb226",
+        "linux_arm64": "5bdce3dade8b6f0a65d4fccf6908426aee4905a988b08dce79d0a72fe7498310",
+        "darwin_amd64": "b919f69bb4231ad68beaaba9dc8f7d36d9d552cef1a76a8bf69c2bdfd974339a",
+        "darwin_arm64": "56049728e25e44a61c7f2e49438023b0890cb45850ffcb7c882f90cd998baf83"
+      }
+    },
+    "solc": "0.8.37",
+    "evmVersion": "osaka",
+    "openzeppelinContracts": "5.6.1",
+    "forgeStd": {
+      "version": "1.17.0",
+      "commit": "f3dae6e6ee381f25eb6a246f7da9b85c91a68219"
+    }
+  },
+  "fileSha256": {
+    "fixtures/protocol-v1/vectors.json": "a588b12b255342885ead018489e1f4ff4852c2ccaf883f114ba16860c077aeef",
+    "fixtures/protocol-v1/generate.mjs": "0f2c71efff6a401a81f79a6a4abdbff334c61f075e249ffad8177928082bd020",
+    "fixtures/registry-v1/vectors.json": "87c994b81614bce3f373ca9c31e353c785be2afc38c13727488138ca3c19d429",
+    "contracts/src/ProofOfReviewRegistry.sol": "6c007cfec0430392f0574f50486c570102ca7cbc6df13dcb03e802980ad77259",
+    "contracts/src/ReviewAuthorization.sol": "c6efe055226de236e1c299119cd77813f1b4f70914713ebd6b2d19da5d131867",
+    "contracts/src/interfaces/IProofOfReviewRegistry.sol": "249c3a0dfdfe2bf529ed92255e1d8650fd6f6a6d96e4217a8caf79394d7f8f2f",
+    "contracts/artifacts/registry-v1.json": "a9d92ec2a19e5125c2eee7c97ea02d2cfa89128d072a696b9119d912d654f7bc",
+    "contracts/foundry.toml": "45099d81d0fa1b3e044b4220d105378e1fa1e396a9229ca5fad589eaa375cdcf",
+    "contracts/toolchain.json": "518060af016c206ecb19e1fa84817b2a2fe9d121f4ae11363c71b10ddc6eb790",
+    "packages/sdk/src/registry/generated/registry-abi.ts": "df7889569d0cd2f075148fec4c8437101282f7bb5f177a090801ef16f5961808",
+    "packages/protocol/schemas/v1/protocol-descriptor.json": "62b67f5d7d62701a58638bc302f36677658986b5948f7ef8eb6c88a1ac020e74"
+  },
+  "compiledRegistry": {
+    "abiSha256": "d98676a789f3c2776d14c580b8c023e11bd37cf3432a8c1139d0d51405015f72",
+    "deployedBytecodeSha256": "7870d43df736c744d49df8f87dfa71f90dba9576b551e29c09222b7fff7f3d54"
+  },
+  "publicEntryPoints": {
+    "@lexaegis/protocol": [".", "./v1", "./portable", "./schemas/v1/*"],
+    "@lexaegis/sdk": [
+      ".",
+      "./registry",
+      "./transactions",
+      "./portable",
+      "./offline",
+      "./verify",
+      "./schemas/v1/*"
+    ]
+  },
+  "dependencies": {
+    "existing": [
+      "packages/protocol (Ch2)",
+      "contracts + registry ABI (Ch3)",
+      "vault ReviewExportV1 (Ch5)",
+      "sdk live reader (Ch6)",
+      "sdk verification + apps/verifier + examples/document-review + packages:check (Ch11)",
+      "tooling baselines/exclusion/secrets/readiness (Ch14, in-progress, used as-is)"
+    ],
+    "missing": []
+  },
+  "taskMapping": {
+    "1": "compat boundary",
+    "2": "15.1 docs/SPEC.md + check-spec",
+    "3": "15.2 vectors",
+    "4": "15.2 python",
+    "5": "15.3 sdk api",
+    "6": "15.4 cli",
+    "7": "15.4 cli tests + packed consumers",
+    "8": "15.5 interface/abi",
+    "9": "15.6 quickstart",
+    "10": "15.6 WHY",
+    "11": "15.6 api docs",
+    "12": "gate + handoff"
+  },
+  "blockers": [
+    {
+      "chapter": "14",
+      "item": "Chapter 14 is in-progress; its evidence/packaging tooling is reused as it stands (owner waived the completion rule for this run)."
+    },
+    {
+      "chapter": "6",
+      "item": "No Active receipt exists on Monad testnet; nothing here creates one."
+    },
+    {
+      "chapter": "18",
+      "item": "Embeddable widget does not exist: QUICKSTART marks it NOT YET."
+    }
+  ]
+}
