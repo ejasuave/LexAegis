@@ -30,7 +30,8 @@
   },
   "files": [
     "dist",
-    "schemas"
+    "schemas",
+    "RESULT_CODES.md"
   ],
   "publishConfig": {
     "exports": {

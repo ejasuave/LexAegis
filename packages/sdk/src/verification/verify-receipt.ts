@@ -349,6 +349,25 @@ async function runLive(
  * Live checks run only when `live` is supplied. The report is an observation at `observedAt`, not
  * a certificate: an earlier Active result says nothing about status after a later revocation or
  * replacement. profileSemantics is `not_evaluated`: no business or legal content is assessed.
+ *
+ * @example
+ * ```ts
+ * import { verifyReceipt } from '@lexaegis/sdk/verify';
+ *
+ * declare const expectedReference: unknown;
+ * declare const opening: unknown;
+ * declare const artifacts: ReadonlyMap<string, Uint8Array>;
+ * declare const policy: unknown; // a registry policy YOU trust (never taken from the file)
+ * const result = await verifyReceipt({
+ *   mode: 'full-package',
+ *   expectedReference,
+ *   referenceOrigin: 'independent',
+ *   opening,
+ *   artifacts,
+ *   live: { policy, transport: { kind: 'rpc', url: 'https://rpc.example.invalid/' } },
+ * });
+ * if (result.ok) console.log(result.data.report.chainStatus); // "active" | "revoked" | ... | "unknown"
+ * ```
  */
 export async function verifyReceipt(input: VerifyReceiptInput): Promise<VerifyReceiptResult> {
   if (input.signal?.aborted === true) return { ok: false, error: { code: 'ABORTED' } };

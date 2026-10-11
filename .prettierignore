@@ -37,3 +37,5 @@ packages/sdk/schemas
 # Chapter 15: generated, machine-readable interoperability vectors
 fixtures/protocol-interop-v1/cases.json
 packages/protocol/test-vectors/protocol-v1.json
+packages/sdk/RESULT_CODES.md
+.doc-snippets-test/

@@ -16,7 +16,16 @@ export type GasLimitResult =
   | { readonly ok: true; readonly gasLimit: bigint }
   | { readonly ok: false; readonly code: 'ESTIMATE_INVALID' | 'GAS_LIMIT_TOO_HIGH' };
 
-/** gasLimit = ceil(estimatedGas * 110 / 100); a result above the ceiling is rejected, never clipped. */
+/**
+ * gasLimit = ceil(estimatedGas * 110 / 100); a result above the ceiling is rejected, never clipped.
+ *
+ * @example
+ * ```ts
+ * import { registryGasLimit } from '@lexaegis/sdk/transactions';
+ *
+ * const limit = registryGasLimit(120_000n); // { ok: true, gasLimit: 132000n }
+ * ```
+ */
 export function registryGasLimit(
   estimatedGas: bigint,
   ceiling: bigint = REGISTRY_GAS_LIMIT_CEILING,
@@ -39,7 +48,19 @@ export type FeeCheck =
       readonly code: 'FEE_FIELDS_INVALID' | 'FEE_CEILING_EXCEEDED' | 'INSUFFICIENT_BALANCE';
     };
 
-/** Validates the fee ceiling and, when a balance is supplied, that gasLimit * maxFeePerGas is covered. */
+/**
+ * Validates the fee ceiling and, when a balance is supplied, that gasLimit * maxFeePerGas is covered.
+ *
+ * @example
+ * ```ts
+ * import { DEFAULT_MAX_REGISTRY_FEE_WEI, checkFees } from '@lexaegis/sdk/transactions';
+ *
+ * const check = checkFees(
+ *   { gasLimit: 132_000n, maxFeePerGas: 100_000_000_000n, maxPriorityFeePerGas: 1_000_000_000n },
+ *   DEFAULT_MAX_REGISTRY_FEE_WEI,
+ * );
+ * ```
+ */
 export function checkFees(
   fees: FeeInputs,
   ceilingWei: bigint,
@@ -68,7 +89,16 @@ export const expectedFeeWei = (gasLimit: bigint, effectiveGasPrice: bigint): big
 export const monadChargedFeeWei = (gasLimit: bigint, effectiveGasPrice: bigint): bigint =>
   gasLimit * effectiveGasPrice;
 
-/** Exact decimal MON text for a wei amount, trimmed of trailing zeros. */
+/**
+ * Exact decimal MON text for a wei amount, trimmed of trailing zeros.
+ *
+ * @example
+ * ```ts
+ * import { formatMon } from '@lexaegis/sdk/transactions';
+ *
+ * console.log(formatMon(200_000_000_000_000_000n)); // "0.2"
+ * ```
+ */
 export function formatMon(wei: bigint): string {
   if (wei < 0n) throw new RangeError('negative amount');
   const whole = wei / WEI_PER_MON;
@@ -76,7 +106,16 @@ export function formatMon(wei: bigint): string {
   return fraction === '' ? whole.toString() : `${whole}.${fraction}`;
 }
 
-/** Parses a decimal MON string such as "0.2" to wei. Returns null for anything inexact. */
+/**
+ * Parses a decimal MON string such as "0.2" to wei. Returns null for anything inexact.
+ *
+ * @example
+ * ```ts
+ * import { parseMon } from '@lexaegis/sdk/transactions';
+ *
+ * console.log(parseMon('0.2')); // 200000000000000000n
+ * ```
+ */
 export function parseMon(text: string): bigint | null {
   const match = /^(0|[1-9][0-9]{0,15})(?:\.([0-9]{1,18}))?$/.exec(text);
   if (match === null) return null;

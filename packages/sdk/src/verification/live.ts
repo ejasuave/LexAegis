@@ -35,3 +35,9 @@ export {
   type RpcLiveClientOptions,
 } from '../registry/rpc-client';
 export { liveClientFromViem, type LiveChainClient } from '../registry/live-reader';
+export {
+  verifyReviewExport,
+  type VerifyReviewExportFailure,
+  type VerifyReviewExportInput,
+  type VerifyReviewExportResult,
+} from './export';

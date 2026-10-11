@@ -138,7 +138,20 @@ function result(
   };
 }
 
-/** Events expected from a successful registry transaction, in order. */
+/**
+ * Events expected from a successful registry transaction, in order.
+ *
+ * @example
+ * ```ts
+ * import { expectedRegistryEvents } from '@lexaegis/sdk/transactions';
+ *
+ * const events = expectedRegistryEvents({
+ *   kind: 'invalidate_nonce',
+ *   reviewer: '0x1111111111111111111111111111111111111111',
+ *   expectedNonce: '3',
+ * });
+ * ```
+ */
 export function expectedRegistryEvents(
   intent: Extract<ExpectedIntent, { kind: 'execute' | 'invalidate_nonce' }>,
 ): readonly Partial<RegistryEvent>[] {
@@ -201,7 +214,19 @@ function eventsMatch(
   });
 }
 
-/** Decodes only logs from the configured registry address; others are ignored. */
+/**
+ * Decodes only logs from the configured registry address; others are ignored.
+ *
+ * @example
+ * ```ts
+ * import { decodeRegistryLogs, type ChainLogView } from '@lexaegis/sdk/transactions';
+ * import type { ChainPolicy } from '@lexaegis/sdk/registry';
+ *
+ * declare const policy: ChainPolicy;
+ * declare const logs: readonly ChainLogView[];
+ * const events = decodeRegistryLogs(policy, logs); // null when a registry log cannot be decoded
+ * ```
+ */
 export function decodeRegistryLogs(
   policy: ChainPolicy,
   logs: readonly ChainLogView[],
@@ -243,6 +268,20 @@ function transactionMatches(
  * One bounded observation of a transaction. It performs a fixed number of reads and never scans
  * the chain. Replaced is reported only when the transaction itself is gone and a different
  * transaction is established; an advanced nonce without that evidence is `unknown`.
+ *
+ * @example
+ * ```ts
+ * import {
+ *   observeTransaction,
+ *   type MonitorContext,
+ *   type MonitorTarget,
+ * } from '@lexaegis/sdk/transactions';
+ *
+ * declare const context: MonitorContext;
+ * declare const target: MonitorTarget;
+ * const observation = await observeTransaction(context, target);
+ * console.log(observation.outcome); // "confirmed" | "reverted" | "replaced" | "pending" | "unknown" ...
+ * ```
  */
 export async function observeTransaction(
   ctx: MonitorContext,
@@ -383,6 +422,20 @@ export type CurrentLifecycle = ObservedReceipt['receiptLifecycle'];
  * Polls every 2 seconds with bounded backoff for at most 120 seconds, then returns the last
  * observation as an unresolved state. The caller may refresh explicitly; no request is held open
  * indefinitely and nothing is re-broadcast.
+ *
+ * @example
+ * ```ts
+ * import {
+ *   monitorTransaction,
+ *   type MonitorContext,
+ *   type MonitorTarget,
+ * } from '@lexaegis/sdk/transactions';
+ *
+ * declare const context: MonitorContext;
+ * declare const target: MonitorTarget;
+ * const { observation, resolved } = await monitorTransaction(context, target);
+ * if (!resolved) console.log('still unresolved after 120 s:', observation.outcome);
+ * ```
  */
 export async function monitorTransaction(
   ctx: MonitorContext,

@@ -45,3 +45,5 @@ indexer/config.local.yaml
 .next-history-check/
 indexer/config.rpc-evidence.yaml
 packages/sdk/.spec-snippets/
+packages/sdk/.doc-snippets-test/
+contracts/integration/.readme-run-*/

@@ -5310,6 +5310,38 @@
         "browser": "chromium (playwright)",
         "published": false
       }
+    },
+    {
+      "id": "packages-check-20261011114753",
+      "subject": "packaged-consumer-check",
+      "sourceRevision": {
+        "commit": "e30a32d57e5c935a1f1bb1d9772f0f1fdbd23b29",
+        "dirtyWorktree": true,
+        "contentFingerprint": "439578abf013e3d3144b9931bd431eae33fa2d907facd62dceab7c6650a68ccc"
+      },
+      "checkedAt": "2026-10-11T11:47:54.035Z",
+      "command": "pnpm packages:check",
+      "environment": {
+        "node": "v24.21.0",
+        "os": "linux-x64",
+        "pnpm": "11.11.0"
+      },
+      "evidenceClass": "local_scripted",
+      "outcome": "pass",
+      "reasonCodes": ["LOCAL_TARBALLS_NOT_PUBLISHED", "AUTHORED_EXAMPLE_NOT_ADOPTION"],
+      "evidenceRefs": [],
+      "facts": {
+        "checksPassed": "20",
+        "checksTotal": "20",
+        "protocolTarballBytes": "67609",
+        "sdkTarballBytes": "69763",
+        "protocolTarballSha256": "719cfc4143acd9bf98b97d8c5861b00b009ae6a1c8217c5c4e1ec570e6954e89",
+        "sdkTarballSha256": "b8832fcebe712595edd7f59e974497c68eb974d71d96008e1d9026b483512649",
+        "protocolFiles": "66",
+        "sdkFiles": "59",
+        "browser": "chromium (playwright)",
+        "published": false
+      }
     }
   ],
   "appliedCuts": [],
@@ -7416,6 +7448,11 @@
           "tooling/scripts/interop-python.ts",
           "package.json"
         ]
+      },
+      "5": {
+        "status": "complete",
+        "summary": "SDK public API documentation and a read-only path, additively (no export, signature or serialized report field changed). New: verifyReviewExport at @lexaegis/sdk/verify (strict bounded decode, full-package integrity against an explicit expected reference or, if omitted, the file's own declaration marked file-declared, optional live check; no wallet/key/backend; export and verification failures carry separate sources) and RESULT_CODE_CATALOG/describeResultCode at the root, documenting every public code with cause and retryability (no/after-fix/transient/informational) for 7 code families; a test fails when a code and its entry diverge, and packages/sdk/RESULT_CODES.md is generated and checked by pnpm sdk:check. TSDoc @example added to every public function (a test requires it; scripts/doc-snippets.ts type-checks all 50+ examples and the README fences against the public entry points, with a negative control); the NOT_IMPLEMENTED placeholders in ports.ts are documented as such. README rewritten: a ten-line verification example with an explicit setup table, the dimension table and what an active receipt does not prove. contracts/integration/local-registry.ts (deploys the unchanged registry on isolated Anvil and creates real issue/revoke/supersede records) and sdk-readme.anvil.test.ts extract the README example and run it as a separate process on real local records: not_found, active, revoked, unreachable RPC keeps local integrity as unknown (never not_found), a rejecting caller policy stays rejected, a substituted bundle is caught only by the independent reference. 263 SDK unit tests, existing chapter 11 Anvil tests, packages:check 20/20 and baselines pass. Local Anvil is not Monad evidence.",
+        "files": ["packages/sdk", "contracts/integration", ".gitignore", ".prettierignore"]
       }
     }
   }

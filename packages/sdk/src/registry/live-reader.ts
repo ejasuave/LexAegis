@@ -99,6 +99,18 @@ export interface LiveChainClient {
   }): Promise<Hex | undefined>;
 }
 
+/**
+ * Adapts a viem PublicClient to the four reads the live reader needs.
+ *
+ * @example
+ * ```ts
+ * import { liveClientFromViem } from '@lexaegis/sdk/registry';
+ * import type { PublicClient } from 'viem';
+ *
+ * declare const publicClient: PublicClient;
+ * const client = liveClientFromViem(publicClient);
+ * ```
+ */
 export function liveClientFromViem(client: PublicClient): LiveChainClient {
   return {
     getChainId: () => client.getChainId(),
@@ -135,6 +147,16 @@ const toHex32 = (value: Hex): string => value.toLowerCase();
  * Builds a ChainCheckpoint from the actual finalized block: the selected read height is
  * `finalized - executionDelayBlocks`, and never before the deployment block. A missing
  * finalized tag, wrong chain or unreadable block is "unknown"; it never falls back to latest.
+ *
+ * @example
+ * ```ts
+ * import { readChainCheckpoint, type ChainPolicy, type LiveChainClient } from '@lexaegis/sdk/registry';
+ *
+ * declare const client: LiveChainClient;
+ * declare const policy: ChainPolicy;
+ * const checkpoint = await readChainCheckpoint(client, policy, () => new Date());
+ * if (checkpoint.status === 'unknown') console.error(checkpoint.reason);
+ * ```
  */
 export async function readChainCheckpoint(
   client: LiveChainClient,
@@ -225,6 +247,26 @@ async function readRegistryGroup(
  * Reads one receipt at an already-verified checkpoint. The block's hash is rechecked after the
  * read group; any change returns unknown. Several receipts (for example a bounded successor
  * chain) can be read at the same checkpoint by calling this repeatedly.
+ *
+ * @example
+ * ```ts
+ * import {
+ *   readChainCheckpoint,
+ *   readReceiptAtCheckpoint,
+ *   type ChainPolicy,
+ *   type LiveChainClient,
+ * } from '@lexaegis/sdk/registry';
+ * import type { ReceiptReferenceV1 } from '@lexaegis/sdk';
+ *
+ * declare const client: LiveChainClient;
+ * declare const policy: ChainPolicy;
+ * declare const reference: ReceiptReferenceV1;
+ * const checkpoint = await readChainCheckpoint(client, policy, () => new Date());
+ * if (checkpoint.status === 'ok') {
+ *   const read = await readReceiptAtCheckpoint(client, policy, checkpoint.data, { reference });
+ *   if (read.status === 'ok') console.log(read.data.receipt.receiptLifecycle);
+ * }
+ * ```
  */
 export async function readReceiptAtCheckpoint(
   client: LiveChainClient,
@@ -287,6 +329,18 @@ export async function readReceiptAtCheckpoint(
 /**
  * Confirmed live verification of one receipt at the execution checkpoint. `not_found` is returned
  * only for a successful, validated NotFound record at the verified deployment.
+ *
+ * @example
+ * ```ts
+ * import { readLiveReceipt, type ChainPolicy, type LiveChainClient } from '@lexaegis/sdk/registry';
+ * import type { ReceiptReferenceV1 } from '@lexaegis/sdk';
+ *
+ * declare const client: LiveChainClient;
+ * declare const policy: ChainPolicy;
+ * declare const reference: ReceiptReferenceV1;
+ * const read = await readLiveReceipt(client, policy, { reference });
+ * if (read.status === 'ok') console.log(read.data.receipt.receiptLifecycle, read.data.checkpoint.blockNumber);
+ * ```
  */
 export async function readLiveReceipt(
   client: LiveChainClient,
@@ -322,7 +376,20 @@ export interface ProvisionalState {
   readonly observedAt: string;
 }
 
-/** Latest-state read for preparing a transaction. Refresh it before every important action. */
+/**
+ * Latest-state read for preparing a transaction. Refresh it before every important action.
+ *
+ * @example
+ * ```ts
+ * import { readProvisionalState, type ChainPolicy, type LiveChainClient } from '@lexaegis/sdk/registry';
+ * import type { ReceiptReferenceV1 } from '@lexaegis/sdk';
+ *
+ * declare const client: LiveChainClient;
+ * declare const policy: ChainPolicy;
+ * declare const reference: ReceiptReferenceV1;
+ * const state = await readProvisionalState(client, policy, reference); // for preparing a transaction only
+ * ```
+ */
 export async function readProvisionalState(
   client: LiveChainClient,
   policyInput: ChainPolicy,

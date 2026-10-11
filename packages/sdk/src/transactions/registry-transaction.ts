@@ -33,6 +33,19 @@ export type RegistryCall =
     }
   | { readonly kind: 'invalidate_nonce'; readonly expectedNonce: string };
 
+/**
+ * Encodes `execute(action, signature)`; returns null for a malformed action or signature.
+ *
+ * @example
+ * ```ts
+ * import { encodeExecuteCalldata } from '@lexaegis/sdk/transactions';
+ * import type { BoundReviewAction } from '@lexaegis/sdk/registry';
+ *
+ * declare const bound: BoundReviewAction;
+ * declare const signature: `0x${string}`; // produced by YOUR signer
+ * const calldata = encodeExecuteCalldata(bound.action, signature); // null when anything is malformed
+ * ```
+ */
 export function encodeExecuteCalldata(action: unknown, signature: Hex): Hex | null {
   const abiAction = toAbiReviewAction(action);
   if (!abiAction.ok || !/^0x(?:[0-9a-fA-F]{2}){65}$/.test(signature)) return null;
@@ -43,6 +56,16 @@ export function encodeExecuteCalldata(action: unknown, signature: Hex): Hex | nu
   });
 }
 
+/**
+ * Encodes `invalidateNonce(expectedNonce)`; returns null for a non-canonical decimal.
+ *
+ * @example
+ * ```ts
+ * import { encodeInvalidateNonceCalldata } from '@lexaegis/sdk/transactions';
+ *
+ * const calldata = encodeInvalidateNonceCalldata('3');
+ * ```
+ */
 export function encodeInvalidateNonceCalldata(expectedNonce: string): Hex | null {
   if (!/^(0|[1-9][0-9]{0,77})$/.test(expectedNonce)) return null;
   return encodeFunctionData({
@@ -56,6 +79,14 @@ export function encodeInvalidateNonceCalldata(expectedNonce: string): Hex | null
  * Decodes calldata as exactly one generated registry call. Anything else (another selector,
  * appended bytes, non-canonical padding) returns null: the decoded call is re-encoded and must
  * reproduce the input byte for byte.
+ *
+ * @example
+ * ```ts
+ * import { decodeRegistryCalldata } from '@lexaegis/sdk/transactions';
+ *
+ * declare const data: `0x${string}`;
+ * const call = decodeRegistryCalldata(data); // null unless it is exactly one generated registry call
+ * ```
  */
 export function decodeRegistryCalldata(data: Hex): RegistryCall | null {
   try {
@@ -117,7 +148,18 @@ export type ScopeCheck =
 
 const hasEntries = (value: unknown): boolean => Array.isArray(value) && value.length > 0;
 
-/** Scope check for an unsigned or decoded signed transaction. */
+/**
+ * Scope check for an unsigned or decoded signed transaction.
+ *
+ * @example
+ * ```ts
+ * import { checkRegistryTransaction, type RegistryTxScope } from '@lexaegis/sdk/transactions';
+ *
+ * declare const transaction: Record<string, unknown>;
+ * declare const scope: RegistryTxScope;
+ * const verdict = checkRegistryTransaction(transaction, scope); // { ok: false, reason } when out of scope
+ * ```
+ */
 export function checkRegistryTransaction(
   tx: Record<string, unknown>,
   scope: RegistryTxScope,
@@ -156,6 +198,16 @@ export interface DecodedSignedTransaction {
 /**
  * Decodes a complete raw signed transaction, recovers its signer and applies the scope check.
  * The hash is keccak256 of the raw bytes. Nothing here trusts a client-supplied sender or hash.
+ *
+ * @example
+ * ```ts
+ * import { decodeSignedRegistryTransaction, type RegistryTxScope } from '@lexaegis/sdk/transactions';
+ *
+ * declare const raw: string; // a complete raw signed transaction
+ * declare const scope: RegistryTxScope;
+ * const decoded = await decodeSignedRegistryTransaction(raw, scope);
+ * if (decoded.ok) console.log(decoded.sender, decoded.hash);
+ * ```
  */
 export async function decodeSignedRegistryTransaction(
   raw: string,

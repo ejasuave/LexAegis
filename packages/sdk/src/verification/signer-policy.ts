@@ -23,6 +23,16 @@ const policyIdSchema = z.string().regex(/^[a-z0-9][a-z0-9._-]{0,79}$/);
 /**
  * The minimal policy: accept exactly the listed reviewer addresses (lowercase 0x addresses).
  * Any other reviewer is rejected. An empty list is refused rather than rejecting everyone.
+ *
+ * @example
+ * ```ts
+ * import { expectedReviewersPolicy } from '@lexaegis/sdk';
+ *
+ * // "accepted" only means the reviewer account is one of the addresses YOU listed.
+ * const signerPolicy = expectedReviewersPolicy('my-team.reviewers', [
+ *   '0x1111111111111111111111111111111111111111',
+ * ]);
+ * ```
  */
 export function expectedReviewersPolicy(
   id: string,
@@ -39,7 +49,19 @@ export function expectedReviewersPolicy(
 
 export const signerAcceptanceResultSchema = z.enum(['accepted', 'rejected', 'unknown']);
 
-/** Runs a caller policy defensively: an exception or a malformed answer is "unknown". */
+/**
+ * Runs a caller policy defensively: an exception or a malformed answer is "unknown".
+ *
+ * @example
+ * ```ts
+ * import { evaluateSignerPolicy, expectedReviewersPolicy } from '@lexaegis/sdk';
+ * import type { ReceiptReferenceV1 } from '@lexaegis/sdk';
+ *
+ * declare const reference: ReceiptReferenceV1;
+ * const policy = expectedReviewersPolicy('my-team.reviewers', [reference.reviewerAddress]);
+ * console.log(evaluateSignerPolicy(policy, reference, null).acceptance); // "accepted"
+ * ```
+ */
 export function evaluateSignerPolicy(
   policy: SignerAcceptancePolicy | undefined,
   reference: ReceiptReferenceV1,

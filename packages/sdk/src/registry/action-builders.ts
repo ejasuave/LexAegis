@@ -77,6 +77,16 @@ function bind(
 /**
  * ISSUE for a prepared snapshot that replaces nothing. A package whose manifest names a
  * predecessor must go through buildSupersedeAction instead.
+ *
+ * @example
+ * ```ts
+ * import { buildIssueAction } from '@lexaegis/sdk/registry';
+ * import type { PreparedReviewPackage } from '@lexaegis/sdk';
+ *
+ * declare const prepared: PreparedReviewPackage; // an unapproved, immutable snapshot
+ * const action = buildIssueAction(prepared, '0', '1800000600'); // reviewer nonce, Unix-seconds deadline
+ * if (!action.ok) console.error(action.error.code); // nothing is signed or sent
+ * ```
  */
 export function buildIssueAction(
   preparedSnapshot: unknown,
@@ -99,7 +109,18 @@ export function buildIssueAction(
   );
 }
 
-/** REVOKE for the receipt identified by a public reference. */
+/**
+ * REVOKE for the receipt identified by a public reference.
+ *
+ * @example
+ * ```ts
+ * import { buildRevokeAction } from '@lexaegis/sdk/registry';
+ * import type { ReceiptReferenceV1 } from '@lexaegis/sdk';
+ *
+ * declare const reference: ReceiptReferenceV1;
+ * const action = buildRevokeAction(reference, '1', '1800000600');
+ * ```
+ */
 export function buildRevokeAction(
   receiptReference: unknown,
   nonce: unknown,
@@ -124,6 +145,16 @@ export function buildRevokeAction(
  * SUPERSEDE: replaces `previousReference` with the prepared snapshot. The snapshot's manifest
  * must itself name exactly that predecessor, so the replacement was prepared as a replacement,
  * and both must share one reviewer, chain and registry.
+ *
+ * @example
+ * ```ts
+ * import { buildSupersedeAction } from '@lexaegis/sdk/registry';
+ * import type { PreparedReviewPackage, ReceiptReferenceV1 } from '@lexaegis/sdk';
+ *
+ * declare const previous: ReceiptReferenceV1;
+ * declare const replacement: PreparedReviewPackage; // its manifest names `previous` as its predecessor
+ * const action = buildSupersedeAction(previous, replacement, '1', '1800000600');
+ * ```
  */
 export function buildSupersedeAction(
   previousReference: unknown,
@@ -166,6 +197,14 @@ export function buildSupersedeAction(
 /**
  * The reference-application default deadline: the supplied current Unix time in seconds plus
  * 600. The current time is an explicit argument so this stays pure.
+ *
+ * @example
+ * ```ts
+ * import { defaultActionDeadline } from '@lexaegis/sdk/registry';
+ *
+ * const deadline = defaultActionDeadline('1800000000'); // current chain time in Unix seconds
+ * console.log(deadline.ok ? deadline.data : deadline.error.code); // "1800000600"
+ * ```
  */
 export function defaultActionDeadline(nowUnixSeconds: unknown): RegistryResult<string> {
   const now = uint256DecimalSchema.safeParse(nowUnixSeconds);

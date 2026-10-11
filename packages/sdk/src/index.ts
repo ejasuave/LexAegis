@@ -1,4 +1,5 @@
 export * from './ports';
+export * from './result-codes';
 
 /*
  * Protocol v1 package preparation, hashing and offline verification, re-exported unchanged from

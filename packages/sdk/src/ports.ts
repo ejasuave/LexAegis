@@ -60,6 +60,28 @@ export interface ReceiptClient {
   submit(input: unknown, signal?: AbortSignal): Promise<Result<never>>;
 }
 
+/**
+ * A client whose only working operation is local `prepare`. `readStatus` and `submit` return the
+ * typed `NOT_IMPLEMENTED` failure by design, never a simulated success: use `verifyReceipt` from
+ * `@lexaegis/sdk/verify` for read-only live status, and your own signer and transport to submit.
+ *
+ * @example
+ * ```ts
+ * import { createReceiptClient } from '@lexaegis/sdk';
+ *
+ * const client = createReceiptClient();
+ * const status = await client.readStatus(
+ *   {
+ *     chainId: '10143',
+ *     registryAddress: '0x1111111111111111111111111111111111111111',
+ *     reviewerAddress: '0x2222222222222222222222222222222222222222',
+ *     commitment: `0x${'ab'.repeat(32)}`,
+ *   },
+ *   { transport: { request: () => Promise.reject(new Error('unused')) } },
+ * );
+ * console.log(status.ok); // false: this placeholder never reports a status
+ * ```
+ */
 export function createReceiptClient(): ReceiptClient {
   return {
     prepare: prepareReviewPackage,
@@ -100,6 +122,22 @@ export interface ReceiptIndexer {
   history(query: HistoryQuery, signal?: AbortSignal): Promise<Result<IndexedHistory>>;
 }
 
+/**
+ * An indexer placeholder that always returns the typed `NOT_IMPLEMENTED` failure. Indexed history
+ * can never override a live contract read.
+ *
+ * @example
+ * ```ts
+ * import { createUnavailableReceiptIndexer } from '@lexaegis/sdk';
+ *
+ * const indexer = createUnavailableReceiptIndexer();
+ * const page = await indexer.history({
+ *   reviewerAddress: '0x2222222222222222222222222222222222222222',
+ *   limit: 10,
+ * });
+ * console.log(page.ok); // false
+ * ```
+ */
 export function createUnavailableReceiptIndexer(): ReceiptIndexer {
   return {
     history: () => Promise.resolve(unavailable('NOT_IMPLEMENTED', 'Indexed receipt history')),

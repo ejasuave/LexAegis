@@ -62,6 +62,17 @@ function isPossibleRecord(record: ObservedReceipt): boolean {
  * Opening-free checks of an observed record against the reference it was read for: the tuple
  * matches and the registry's own rules could have produced the record. Used when no verified
  * opening is available (reference-only checks and successor links).
+ *
+ * @example
+ * ```ts
+ * import { observedRecordIssues } from '@lexaegis/sdk/registry';
+ * import type { ObservedReceipt } from '@lexaegis/sdk/registry';
+ * import type { ReceiptReferenceV1 } from '@lexaegis/sdk';
+ *
+ * declare const reference: ReceiptReferenceV1;
+ * declare const record: ObservedReceipt;
+ * console.log(observedRecordIssues(reference, record)); // [] when the record fits the reference
+ * ```
  */
 export function observedRecordIssues(
   reference: ReceiptReferenceV1,
@@ -91,6 +102,17 @@ export function observedRecordIssues(
  *
  * A Superseded record stays Superseded whatever later happened to its successor: revoking a
  * replacement never makes the earlier receipt Active again, and nothing here infers that.
+ *
+ * @example
+ * ```ts
+ * import { validateReceiptBinding } from '@lexaegis/sdk/registry';
+ *
+ * declare const opening: unknown; // already verified against the reference
+ * declare const reference: unknown;
+ * declare const observed: unknown; // a decoded registry record
+ * const binding = validateReceiptBinding({ opening, reference, observed });
+ * if (binding.ok) console.log(binding.data.binding); // "match" | "absent" | "mismatch"
+ * ```
  */
 export function validateReceiptBinding(input: {
   readonly opening: unknown;

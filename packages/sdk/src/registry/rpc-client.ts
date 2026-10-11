@@ -38,6 +38,14 @@ export type RpcEndpointResult =
  * Validates a caller-selected public RPC endpoint. HTTPS only (loopback HTTP only when the
  * caller explicitly allows it, for isolated local chains in tests). No user information, query
  * or fragment is accepted, so a credential cannot ride in the URL.
+ *
+ * @example
+ * ```ts
+ * import { parseRpcEndpoint } from '@lexaegis/sdk/verify';
+ *
+ * const endpoint = parseRpcEndpoint('https://rpc.example.invalid/');
+ * if (!endpoint.ok) console.error(endpoint.error); // "NOT_HTTPS", "HAS_CREDENTIALS", ...
+ * ```
  */
 export function parseRpcEndpoint(
   value: string,
@@ -98,7 +106,19 @@ export interface RpcLiveClientOptions {
   readonly allowLoopbackHttp?: boolean;
 }
 
-/** Builds a LiveChainClient over explicit public JSON-RPC. Throws on an invalid endpoint. */
+/**
+ * Builds a LiveChainClient over explicit public JSON-RPC. Throws on an invalid endpoint.
+ *
+ * @example
+ * ```ts
+ * import { LiveBudget, createRpcLiveClient } from '@lexaegis/sdk/verify';
+ *
+ * const budget = new LiveBudget({ totalMs: 10_000 });
+ * const client = createRpcLiveClient({ url: 'https://rpc.example.invalid/', budget });
+ * // Only eth_chainId, eth_getBlockByNumber, eth_getCode and eth_call are ever sent.
+ * budget.dispose();
+ * ```
+ */
 export function createRpcLiveClient(options: RpcLiveClientOptions): LiveChainClient {
   const endpoint = parseRpcEndpoint(options.url, {
     allowLoopbackHttp: options.allowLoopbackHttp === true,

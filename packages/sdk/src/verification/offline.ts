@@ -79,7 +79,26 @@ function failure<T>(
   return { ok: false, error: { code, path } };
 }
 
-/** Never throws for malformed input: it returns a typed failure instead of a partial success badge. */
+/**
+ * Never throws for malformed input: it returns a typed failure instead of a partial success badge.
+ *
+ * @example
+ * ```ts
+ * import { verifyOffline } from '@lexaegis/sdk';
+ *
+ * declare const expectedReference: unknown; // obtained independently of the file
+ * declare const opening: unknown;
+ * declare const artifacts: ReadonlyMap<string, Uint8Array>;
+ * const result = await verifyOffline({
+ *   mode: 'full-package',
+ *   expectedReference,
+ *   referenceOrigin: 'independent',
+ *   opening,
+ *   artifacts,
+ * });
+ * if (result.ok) console.log(result.data.manifestIntegrity, result.data.artifactIntegrity);
+ * ```
+ */
 export async function verifyOffline(
   input: OfflineInput,
 ): Promise<ProtocolResult<OfflineVerification>> {

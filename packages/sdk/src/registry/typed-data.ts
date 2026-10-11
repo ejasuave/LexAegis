@@ -136,6 +136,15 @@ export function freezeResult<T>(value: T): RegistryResult<T> {
  * Builds the typed data a reviewer signs. `chainId` and `registryAddress` state the domain the
  * caller intends to sign for; they must equal the context the action was built from, so a
  * package prepared for one chain or registry can never be signed for another.
+ *
+ * @example
+ * ```ts
+ * import { buildTypedData, type BoundReviewAction } from '@lexaegis/sdk/registry';
+ *
+ * declare const bound: BoundReviewAction;
+ * const typedData = buildTypedData(bound, bound.chainId, bound.registryAddress);
+ * // Hand typedData.data to YOUR signer; this SDK never signs.
+ * ```
  */
 export function buildTypedData(
   action: unknown,
@@ -194,7 +203,17 @@ function abiAction(action: ReviewActionV1): AbiReviewAction {
   };
 }
 
-/** Converts a validated action to bigint ABI values for a contract call. */
+/**
+ * Converts a validated action to bigint ABI values for a contract call.
+ *
+ * @example
+ * ```ts
+ * import { toAbiReviewAction, type BoundReviewAction } from '@lexaegis/sdk/registry';
+ *
+ * declare const bound: BoundReviewAction;
+ * const abiAction = toAbiReviewAction(bound.action); // bigint fields for a contract call
+ * ```
+ */
 export function toAbiReviewAction(action: unknown): RegistryResult<AbiReviewAction> {
   const parsed = reviewActionSchema.safeParse(action);
   if (!parsed.success) return failWith('ACTION_INVALID', parsed.error.issues[0]?.path);
@@ -214,7 +233,18 @@ export interface Eip712ReviewAction {
   readonly message: AbiReviewAction;
 }
 
-/** Converts validated JSON typed data to bigint values for an EIP-712 library. */
+/**
+ * Converts validated JSON typed data to bigint values for an EIP-712 library.
+ *
+ * @example
+ * ```ts
+ * import { buildTypedData, toEip712ReviewAction, type BoundReviewAction } from '@lexaegis/sdk/registry';
+ *
+ * declare const bound: BoundReviewAction;
+ * const typedData = buildTypedData(bound, bound.chainId, bound.registryAddress);
+ * if (typedData.ok) console.log(toEip712ReviewAction(typedData.data).ok);
+ * ```
+ */
 export function toEip712ReviewAction(typedData: unknown): RegistryResult<Eip712ReviewAction> {
   const parsed = reviewActionTypedDataSchema.safeParse(typedData);
   if (!parsed.success) return failWith('TYPED_DATA_INVALID', parsed.error.issues[0]?.path);
@@ -235,6 +265,15 @@ export function toEip712ReviewAction(typedData: unknown): RegistryResult<Eip712R
 /**
  * EIP-712 digest of the typed data: the value the registry's `hashAction` returns and the
  * reviewer signs. It is not the Chapter 2 package digest and cannot be substituted for it.
+ *
+ * @example
+ * ```ts
+ * import { buildTypedData, hashReviewAction, type BoundReviewAction } from '@lexaegis/sdk/registry';
+ *
+ * declare const bound: BoundReviewAction;
+ * const typedData = buildTypedData(bound, bound.chainId, bound.registryAddress);
+ * if (typedData.ok) console.log(hashReviewAction(typedData.data)); // the digest the reviewer signs
+ * ```
  */
 export function hashReviewAction(typedData: unknown): RegistryResult<string> {
   const converted = toEip712ReviewAction(typedData);

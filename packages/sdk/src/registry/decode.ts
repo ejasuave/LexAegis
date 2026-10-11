@@ -84,6 +84,17 @@ const receiptWords = getAbiItem({ abi, name: 'getReceipt' }).outputs[0].componen
 /**
  * Decodes the return data of `getReceipt(reviewer, commitment)` for the receipt identified by
  * `receiptReference`. The data must be exactly one Receipt struct.
+ *
+ * @example
+ * ```ts
+ * import { decodeReceipt } from '@lexaegis/sdk/registry';
+ * import type { ReceiptReferenceV1 } from '@lexaegis/sdk';
+ *
+ * declare const reference: ReceiptReferenceV1;
+ * declare const returnData: string; // raw eth_call result of getReceipt(reviewer, commitment)
+ * const observed = decodeReceipt(reference, returnData);
+ * if (observed.ok) console.log(observed.data.receiptLifecycle);
+ * ```
  */
 export function decodeReceipt(
   receiptReference: unknown,
@@ -118,6 +129,16 @@ export function decodeReceipt(
 /**
  * Lifecycle to display for a read. A failed or undecodable read is "unknown"; only a
  * successfully decoded NotFound record is "not_found".
+ *
+ * @example
+ * ```ts
+ * import { decodeReceipt, receiptLifecycleOf } from '@lexaegis/sdk/registry';
+ * import type { ReceiptReferenceV1 } from '@lexaegis/sdk';
+ *
+ * declare const reference: ReceiptReferenceV1;
+ * declare const returnData: string;
+ * console.log(receiptLifecycleOf(decodeReceipt(reference, returnData))); // a failed read is "unknown", never "not_found"
+ * ```
  */
 export function receiptLifecycleOf(read: RegistryResult<ObservedReceipt>): ReceiptLifecycle {
   return read.ok ? read.data.receiptLifecycle : 'unknown';
@@ -216,7 +237,18 @@ const ADDRESS_TOPIC = /^0x0{24}[0-9a-f]{40}$/;
 
 let cachedLayouts: ReadonlyMap<string, EventLayout> | undefined;
 
-/** Decodes one registry log emitted by the registry named in `context`. */
+/**
+ * Decodes one registry log emitted by the registry named in `context`.
+ *
+ * @example
+ * ```ts
+ * import { decodeRegistryEvent } from '@lexaegis/sdk/registry';
+ *
+ * declare const context: { chainId: string; registryAddress: string };
+ * declare const log: unknown;
+ * const event = decodeRegistryEvent(context, log);
+ * ```
+ */
 export function decodeRegistryEvent(context: unknown, log: unknown): RegistryResult<RegistryEvent> {
   const where = registryContextSchema.safeParse(context);
   if (!where.success) return failWith('CONTEXT_INVALID', where.error.issues[0]?.path);
@@ -362,6 +394,14 @@ let cachedErrorLayouts: ReadonlyMap<string, ErrorLayout> | undefined;
 /**
  * Decodes revert data into a known registry error. Anything else, including library errors
  * and plain `Error(string)` reverts, is ERROR_UNKNOWN.
+ *
+ * @example
+ * ```ts
+ * import { decodeRegistryError } from '@lexaegis/sdk/registry';
+ *
+ * declare const revertData: string;
+ * const revert = decodeRegistryError(revertData);
+ * ```
  */
 export function decodeRegistryError(revertData: unknown): RegistryResult<RegistryRevert> {
   const data = readHex(revertData);
