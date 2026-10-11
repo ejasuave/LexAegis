@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "currentChapter": "07",
+  "currentChapter": "10",
   "nextChapter": "10",
   "project": {
     "name": "LexAegis",
@@ -19,7 +19,9 @@
       "title": "Runnable Monorepo, Shared Types and Build Checks",
       "additive": false,
       "state": "complete",
-      "evidence": ["chapter01.checks"],
+      "evidence": [
+        "chapter01.checks"
+      ],
       "chapterPromptPath": "build_instructions/prompt_library/LexAegis_Prompt_Library_Chapter_01_Targeted_Build_Tasks_v2_2.md"
     },
     {
@@ -27,7 +29,9 @@
       "title": "Receipt Format, Canonical Hashing and Private Commitments",
       "additive": false,
       "state": "complete",
-      "evidence": ["chapter02.checks"],
+      "evidence": [
+        "chapter02.checks"
+      ],
       "chapterPromptPath": "build_instructions/prompt_library/LexAegis_Prompt_Library_Chapter_02_Targeted_Build_Tasks_v1_0.md"
     },
     {
@@ -35,7 +39,9 @@
       "title": "Monad Registry, Approval Signatures and Receipt Lifecycle",
       "additive": false,
       "state": "complete",
-      "evidence": ["chapter03.checks"],
+      "evidence": [
+        "chapter03.checks"
+      ],
       "chapterPromptPath": "build_instructions/prompt_library/LexAegis_Prompt_Library_Chapter_03_Targeted_Build_Tasks_v1_0.md"
     },
     {
@@ -43,7 +49,9 @@
       "title": "Mera Passkeys, Signing Sessions and Account Recovery",
       "additive": false,
       "state": "complete",
-      "evidence": ["chapter04.checks"],
+      "evidence": [
+        "chapter04.checks"
+      ],
       "chapterPromptPath": "build_instructions/prompt_library/LexAegis_Prompt_Library_Chapter_04_Targeted_Build_Tasks_v1_0.md"
     },
     {
@@ -51,7 +59,9 @@
       "title": "Encrypted Evidence Vault, Stateless Recovery and Portable Export",
       "additive": false,
       "state": "complete",
-      "evidence": ["chapter05.checks"],
+      "evidence": [
+        "chapter05.checks"
+      ],
       "chapterPromptPath": "build_instructions/prompt_library/LexAegis_Prompt_Library_Chapter_05_Targeted_Build_Tasks_v1_0.md"
     },
     {
@@ -59,7 +69,9 @@
       "title": "Alchemy Transactions, Testnet Funding and Live Verification",
       "additive": false,
       "state": "complete",
-      "evidence": ["chapter06.checks"],
+      "evidence": [
+        "chapter06.checks"
+      ],
       "chapterPromptPath": "build_instructions/prompt_library/LexAegis_Prompt_Library_Chapter_06_Targeted_Build_Tasks_v1_0.md"
     },
     {
@@ -67,7 +79,9 @@
       "title": "Envio Indexer, Review History and Derived Status",
       "additive": false,
       "state": "complete",
-      "evidence": ["chapter07.checks"],
+      "evidence": [
+        "chapter07.checks"
+      ],
       "chapterPromptPath": "build_instructions/prompt_library/LexAegis_Prompt_Library_Chapter_07_Targeted_Build_Tasks_v1_0.md"
     },
     {
@@ -75,7 +89,9 @@
       "title": "Document Intake, Source References and Deterministic Checks",
       "additive": false,
       "state": "complete",
-      "evidence": ["chapter08.checks"],
+      "evidence": [
+        "chapter08.checks"
+      ],
       "chapterPromptPath": "build_instructions/prompt_library/LexAegis_Prompt_Library_Chapter_08_Targeted_Build_Tasks_v1_0.md"
     },
     {
@@ -83,14 +99,16 @@
       "title": "Qwen 3.8 Max, Aegis Assistant Runtime and Review Tools",
       "additive": false,
       "state": "complete",
-      "evidence": ["chapter09.checks"],
+      "evidence": [
+        "chapter09.checks"
+      ],
       "chapterPromptPath": "build_instructions/prompt_library/LexAegis_Prompt_Library_Chapter_09_Targeted_Build_Tasks_v1_0.md"
     },
     {
       "id": "10",
       "title": "Aegis HUD, Legal Workspace and Human Approval",
       "additive": false,
-      "state": "pending",
+      "state": "in-progress",
       "evidence": [],
       "chapterPromptPath": "build_instructions/prompt_library/LexAegis_Prompt_Library_Chapter_10_Targeted_Build_Tasks_v1_0.md"
     },
@@ -123,7 +141,9 @@
       "title": "Scope Gates, Feature Flags and Golden-Path Smoke Test",
       "additive": true,
       "state": "in-progress",
-      "evidence": ["chapter14.checks"],
+      "evidence": [
+        "chapter14.checks"
+      ],
       "chapterPromptPath": "build_instructions/prompt_library/LexAegis_Prompt_Library_Chapter_14_Targeted_Build_Tasks_v1_0.md"
     },
     {
@@ -605,7 +625,11 @@
     "fixtures": {
       "vectors": "fixtures/protocol-v1/vectors.json",
       "generator": "fixtures/protocol-v1/generate.mjs",
-      "cases": ["generic", "legal", "legal-revised"]
+      "cases": [
+        "generic",
+        "legal",
+        "legal-revised"
+      ]
     },
     "modules": {
       "packages/protocol/src/v1": "constants, errors, bytes, primitives, parse-json (strict import), schemas, parse (version dispatch), canonicalize (RFC 8785), hashes, commitment, artifacts, prepared, prepare, verify, descriptor, json-schema",
@@ -758,7 +782,10 @@
         "nonceOf(address)",
         "protocolVersion()"
       ],
-      "stateChanging": ["execute", "invalidateNonce"]
+      "stateChanging": [
+        "execute",
+        "invalidateNonce"
+      ]
     },
     "actionCodes": {
       "ISSUE": 0,
@@ -788,7 +815,10 @@
       "ReceiptRevoked": "reviewer (indexed), commitment (indexed), nonce, timestamp",
       "ReceiptSuperseded": "reviewer (indexed), previousCommitment (indexed), replacementCommitment (indexed), nonce, timestamp",
       "NonceInvalidated": "reviewer (indexed), previousNonce, newNonce, timestamp",
-      "supersessionOrder": ["ReceiptIssued", "ReceiptSuperseded"],
+      "supersessionOrder": [
+        "ReceiptIssued",
+        "ReceiptSuperseded"
+      ],
       "supersessionNote": "One SUPERSEDE emits ReceiptIssued for the replacement (predecessor set) and then ReceiptSuperseded, in one transaction and with the same nonce. They are one atomic action: the replacement is counted once."
     },
     "customErrors": [
@@ -1233,7 +1263,9 @@
       },
       "evidenceClass": "local_scripted",
       "outcome": "pending",
-      "reasonCodes": ["PENDING_STEPS"],
+      "reasonCodes": [
+        "PENDING_STEPS"
+      ],
       "evidenceRefs": [
         {
           "type": "path",
@@ -1262,7 +1294,10 @@
       },
       "evidenceClass": "local_scripted",
       "outcome": "blocked",
-      "reasonCodes": ["T0_JOURNEY_PENDING", "OPTIONAL_FEATURES_UNIMPLEMENTED"],
+      "reasonCodes": [
+        "T0_JOURNEY_PENDING",
+        "OPTIONAL_FEATURES_UNIMPLEMENTED"
+      ],
       "evidenceRefs": [],
       "facts": {
         "configurations": "13",
@@ -1448,7 +1483,10 @@
       },
       "evidenceClass": "virtual_authenticator",
       "outcome": "pass",
-      "reasonCodes": ["AUTHENTICATOR_MODE_VIRTUAL", "PASSKEY_STEP_REQUIRES_REAL_DEVICE_EVIDENCE"],
+      "reasonCodes": [
+        "AUTHENTICATOR_MODE_VIRTUAL",
+        "PASSKEY_STEP_REQUIRES_REAL_DEVICE_EVIDENCE"
+      ],
       "evidenceRefs": [],
       "facts": {
         "browser": "chromium 153.0.8010.12",
@@ -1478,7 +1516,10 @@
       },
       "evidenceClass": "virtual_authenticator",
       "outcome": "pass",
-      "reasonCodes": ["AUTHENTICATOR_MODE_VIRTUAL", "PASSKEY_STEP_REQUIRES_REAL_DEVICE_EVIDENCE"],
+      "reasonCodes": [
+        "AUTHENTICATOR_MODE_VIRTUAL",
+        "PASSKEY_STEP_REQUIRES_REAL_DEVICE_EVIDENCE"
+      ],
       "evidenceRefs": [],
       "facts": {
         "browser": "chromium 153.0.8010.12",
@@ -1701,7 +1742,10 @@
       },
       "evidenceClass": "virtual_authenticator",
       "outcome": "pass",
-      "reasonCodes": ["AUTHENTICATOR_MODE_VIRTUAL", "PASSKEY_STEP_REQUIRES_REAL_DEVICE_EVIDENCE"],
+      "reasonCodes": [
+        "AUTHENTICATOR_MODE_VIRTUAL",
+        "PASSKEY_STEP_REQUIRES_REAL_DEVICE_EVIDENCE"
+      ],
       "evidenceRefs": [],
       "facts": {
         "browser": "chromium 153.0.8010.12",
@@ -1796,7 +1840,10 @@
       },
       "evidenceClass": "virtual_authenticator",
       "outcome": "pass",
-      "reasonCodes": ["AUTHENTICATOR_MODE_VIRTUAL", "PASSKEY_STEP_REQUIRES_REAL_DEVICE_EVIDENCE"],
+      "reasonCodes": [
+        "AUTHENTICATOR_MODE_VIRTUAL",
+        "PASSKEY_STEP_REQUIRES_REAL_DEVICE_EVIDENCE"
+      ],
       "evidenceRefs": [],
       "facts": {
         "browser": "chromium 153.0.8010.12",
@@ -1825,7 +1872,10 @@
       },
       "evidenceClass": "virtual_authenticator",
       "outcome": "pass",
-      "reasonCodes": ["AUTHENTICATOR_MODE_VIRTUAL", "PASSKEY_STEP_REQUIRES_REAL_DEVICE_EVIDENCE"],
+      "reasonCodes": [
+        "AUTHENTICATOR_MODE_VIRTUAL",
+        "PASSKEY_STEP_REQUIRES_REAL_DEVICE_EVIDENCE"
+      ],
       "evidenceRefs": [],
       "facts": {
         "browser": "chromium 153.0.8010.12",
@@ -1855,7 +1905,10 @@
       },
       "evidenceClass": "virtual_authenticator",
       "outcome": "pass",
-      "reasonCodes": ["AUTHENTICATOR_MODE_VIRTUAL", "PASSKEY_STEP_REQUIRES_REAL_DEVICE_EVIDENCE"],
+      "reasonCodes": [
+        "AUTHENTICATOR_MODE_VIRTUAL",
+        "PASSKEY_STEP_REQUIRES_REAL_DEVICE_EVIDENCE"
+      ],
       "evidenceRefs": [],
       "facts": {
         "browser": "chromium 153.0.8010.12",
@@ -2044,7 +2097,10 @@
       },
       "evidenceClass": "virtual_authenticator",
       "outcome": "pass",
-      "reasonCodes": ["AUTHENTICATOR_MODE_VIRTUAL", "PASSKEY_STEP_REQUIRES_REAL_DEVICE_EVIDENCE"],
+      "reasonCodes": [
+        "AUTHENTICATOR_MODE_VIRTUAL",
+        "PASSKEY_STEP_REQUIRES_REAL_DEVICE_EVIDENCE"
+      ],
       "evidenceRefs": [],
       "facts": {
         "browser": "chromium 153.0.8010.12",
@@ -2073,7 +2129,10 @@
       },
       "evidenceClass": "virtual_authenticator",
       "outcome": "pass",
-      "reasonCodes": ["AUTHENTICATOR_MODE_VIRTUAL", "PASSKEY_STEP_REQUIRES_REAL_DEVICE_EVIDENCE"],
+      "reasonCodes": [
+        "AUTHENTICATOR_MODE_VIRTUAL",
+        "PASSKEY_STEP_REQUIRES_REAL_DEVICE_EVIDENCE"
+      ],
       "evidenceRefs": [],
       "facts": {
         "browser": "chromium 153.0.8010.12",
@@ -2123,7 +2182,9 @@
       },
       "evidenceClass": "local_scripted",
       "outcome": "fail",
-      "reasonCodes": ["EXIT_1"],
+      "reasonCodes": [
+        "EXIT_1"
+      ],
       "evidenceRefs": []
     },
     {
@@ -2163,7 +2224,9 @@
       },
       "evidenceClass": "local_scripted",
       "outcome": "fail",
-      "reasonCodes": ["EXIT_1"],
+      "reasonCodes": [
+        "EXIT_1"
+      ],
       "evidenceRefs": []
     },
     {
@@ -2183,7 +2246,9 @@
       },
       "evidenceClass": "local_scripted",
       "outcome": "fail",
-      "reasonCodes": ["EXIT_1"],
+      "reasonCodes": [
+        "EXIT_1"
+      ],
       "evidenceRefs": []
     },
     {
@@ -2243,7 +2308,9 @@
       },
       "evidenceClass": "local_scripted",
       "outcome": "fail",
-      "reasonCodes": ["CHECKS_NOT_ALL_PASSED"],
+      "reasonCodes": [
+        "CHECKS_NOT_ALL_PASSED"
+      ],
       "evidenceRefs": []
     },
     {
@@ -2263,7 +2330,10 @@
       },
       "evidenceClass": "virtual_authenticator",
       "outcome": "pass",
-      "reasonCodes": ["AUTHENTICATOR_MODE_VIRTUAL", "PASSKEY_STEP_REQUIRES_REAL_DEVICE_EVIDENCE"],
+      "reasonCodes": [
+        "AUTHENTICATOR_MODE_VIRTUAL",
+        "PASSKEY_STEP_REQUIRES_REAL_DEVICE_EVIDENCE"
+      ],
       "evidenceRefs": [],
       "facts": {
         "browser": "chromium 153.0.8010.12",
@@ -2293,7 +2363,10 @@
       },
       "evidenceClass": "virtual_authenticator",
       "outcome": "pass",
-      "reasonCodes": ["AUTHENTICATOR_MODE_VIRTUAL", "PASSKEY_STEP_REQUIRES_REAL_DEVICE_EVIDENCE"],
+      "reasonCodes": [
+        "AUTHENTICATOR_MODE_VIRTUAL",
+        "PASSKEY_STEP_REQUIRES_REAL_DEVICE_EVIDENCE"
+      ],
       "evidenceRefs": [],
       "facts": {
         "browser": "chromium 153.0.8010.12",
@@ -2322,7 +2395,10 @@
       },
       "evidenceClass": "virtual_authenticator",
       "outcome": "pass",
-      "reasonCodes": ["AUTHENTICATOR_MODE_VIRTUAL", "SYNTHETIC_DOCUMENTS_ONLY"],
+      "reasonCodes": [
+        "AUTHENTICATOR_MODE_VIRTUAL",
+        "SYNTHETIC_DOCUMENTS_ONLY"
+      ],
       "evidenceRefs": [],
       "facts": {
         "browser": "chromium 153.0.8010.12",
@@ -2350,7 +2426,10 @@
       },
       "evidenceClass": "virtual_authenticator",
       "outcome": "pass",
-      "reasonCodes": ["AUTHENTICATOR_MODE_VIRTUAL", "SYNTHETIC_DOCUMENTS_ONLY"],
+      "reasonCodes": [
+        "AUTHENTICATOR_MODE_VIRTUAL",
+        "SYNTHETIC_DOCUMENTS_ONLY"
+      ],
       "evidenceRefs": [],
       "facts": {
         "browser": "chromium 153.0.8010.12",
@@ -2378,7 +2457,10 @@
       },
       "evidenceClass": "virtual_authenticator",
       "outcome": "pass",
-      "reasonCodes": ["AUTHENTICATOR_MODE_VIRTUAL", "SYNTHETIC_DOCUMENTS_ONLY"],
+      "reasonCodes": [
+        "AUTHENTICATOR_MODE_VIRTUAL",
+        "SYNTHETIC_DOCUMENTS_ONLY"
+      ],
       "evidenceRefs": [],
       "facts": {
         "browser": "chromium 153.0.8010.12",
@@ -2406,7 +2488,10 @@
       },
       "evidenceClass": "virtual_authenticator",
       "outcome": "pass",
-      "reasonCodes": ["AUTHENTICATOR_MODE_VIRTUAL", "PASSKEY_STEP_REQUIRES_REAL_DEVICE_EVIDENCE"],
+      "reasonCodes": [
+        "AUTHENTICATOR_MODE_VIRTUAL",
+        "PASSKEY_STEP_REQUIRES_REAL_DEVICE_EVIDENCE"
+      ],
       "evidenceRefs": [],
       "facts": {
         "browser": "chromium 153.0.8010.12",
@@ -2435,7 +2520,10 @@
       },
       "evidenceClass": "virtual_authenticator",
       "outcome": "pass",
-      "reasonCodes": ["AUTHENTICATOR_MODE_VIRTUAL", "PASSKEY_STEP_REQUIRES_REAL_DEVICE_EVIDENCE"],
+      "reasonCodes": [
+        "AUTHENTICATOR_MODE_VIRTUAL",
+        "PASSKEY_STEP_REQUIRES_REAL_DEVICE_EVIDENCE"
+      ],
       "evidenceRefs": [],
       "facts": {
         "browser": "chromium 153.0.8010.12",
@@ -2465,7 +2553,10 @@
       },
       "evidenceClass": "virtual_authenticator",
       "outcome": "pass",
-      "reasonCodes": ["AUTHENTICATOR_MODE_VIRTUAL", "PASSKEY_STEP_REQUIRES_REAL_DEVICE_EVIDENCE"],
+      "reasonCodes": [
+        "AUTHENTICATOR_MODE_VIRTUAL",
+        "PASSKEY_STEP_REQUIRES_REAL_DEVICE_EVIDENCE"
+      ],
       "evidenceRefs": [],
       "facts": {
         "browser": "chromium 153.0.8010.12",
@@ -2495,7 +2586,10 @@
       },
       "evidenceClass": "real_device",
       "outcome": "pass",
-      "reasonCodes": ["OPERATOR_REPORTED", "SECOND_DEVICE_NOT_SHOWN"],
+      "reasonCodes": [
+        "OPERATOR_REPORTED",
+        "SECOND_DEVICE_NOT_SHOWN"
+      ],
       "evidenceRefs": [],
       "facts": {
         "address": "0x7e03648ff57557d9c0eddb786c6f840d29452cc1",
@@ -2547,7 +2641,9 @@
       },
       "evidenceClass": "local_scripted",
       "outcome": "fail",
-      "reasonCodes": ["EXIT_1"],
+      "reasonCodes": [
+        "EXIT_1"
+      ],
       "evidenceRefs": []
     },
     {
@@ -2587,7 +2683,9 @@
       },
       "evidenceClass": "local_scripted",
       "outcome": "fail",
-      "reasonCodes": ["EXIT_1"],
+      "reasonCodes": [
+        "EXIT_1"
+      ],
       "evidenceRefs": []
     },
     {
@@ -2667,7 +2765,9 @@
       },
       "evidenceClass": "local_scripted",
       "outcome": "fail",
-      "reasonCodes": ["CHECKS_NOT_ALL_PASSED"],
+      "reasonCodes": [
+        "CHECKS_NOT_ALL_PASSED"
+      ],
       "evidenceRefs": []
     },
     {
@@ -2707,7 +2807,9 @@
       },
       "evidenceClass": "local_scripted",
       "outcome": "fail",
-      "reasonCodes": ["EXIT_1"],
+      "reasonCodes": [
+        "EXIT_1"
+      ],
       "evidenceRefs": []
     },
     {
@@ -2747,7 +2849,9 @@
       },
       "evidenceClass": "local_scripted",
       "outcome": "fail",
-      "reasonCodes": ["EXIT_1"],
+      "reasonCodes": [
+        "EXIT_1"
+      ],
       "evidenceRefs": []
     },
     {
@@ -2827,7 +2931,9 @@
       },
       "evidenceClass": "local_scripted",
       "outcome": "fail",
-      "reasonCodes": ["CHECKS_NOT_ALL_PASSED"],
+      "reasonCodes": [
+        "CHECKS_NOT_ALL_PASSED"
+      ],
       "evidenceRefs": []
     },
     {
@@ -2847,7 +2953,10 @@
       },
       "evidenceClass": "virtual_authenticator",
       "outcome": "pass",
-      "reasonCodes": ["AUTHENTICATOR_MODE_VIRTUAL", "PASSKEY_STEP_REQUIRES_REAL_DEVICE_EVIDENCE"],
+      "reasonCodes": [
+        "AUTHENTICATOR_MODE_VIRTUAL",
+        "PASSKEY_STEP_REQUIRES_REAL_DEVICE_EVIDENCE"
+      ],
       "evidenceRefs": [],
       "facts": {
         "browser": "chromium 153.0.8010.12",
@@ -2876,7 +2985,11 @@
       },
       "evidenceClass": "real_device",
       "outcome": "fail",
-      "reasonCodes": ["OPERATOR_REPORTED", "SECOND_DEVICE_NOT_SHOWN", "EXPORT_IMPORT_NOT_SHOWN"],
+      "reasonCodes": [
+        "OPERATOR_REPORTED",
+        "SECOND_DEVICE_NOT_SHOWN",
+        "EXPORT_IMPORT_NOT_SHOWN"
+      ],
       "evidenceRefs": [],
       "facts": {
         "browser": "Chrome",
@@ -3009,7 +3122,10 @@
       },
       "evidenceClass": "virtual_authenticator",
       "outcome": "pass",
-      "reasonCodes": ["AUTHENTICATOR_MODE_VIRTUAL", "SYNTHETIC_DOCUMENTS_ONLY"],
+      "reasonCodes": [
+        "AUTHENTICATOR_MODE_VIRTUAL",
+        "SYNTHETIC_DOCUMENTS_ONLY"
+      ],
       "evidenceRefs": [],
       "facts": {
         "browser": "chromium 153.0.8010.12",
@@ -3037,7 +3153,10 @@
       },
       "evidenceClass": "virtual_authenticator",
       "outcome": "pass",
-      "reasonCodes": ["AUTHENTICATOR_MODE_VIRTUAL", "PASSKEY_STEP_REQUIRES_REAL_DEVICE_EVIDENCE"],
+      "reasonCodes": [
+        "AUTHENTICATOR_MODE_VIRTUAL",
+        "PASSKEY_STEP_REQUIRES_REAL_DEVICE_EVIDENCE"
+      ],
       "evidenceRefs": [],
       "facts": {
         "browser": "chromium 153.0.8010.12",
@@ -3066,7 +3185,10 @@
       },
       "evidenceClass": "virtual_authenticator",
       "outcome": "pass",
-      "reasonCodes": ["AUTHENTICATOR_MODE_VIRTUAL", "PASSKEY_STEP_REQUIRES_REAL_DEVICE_EVIDENCE"],
+      "reasonCodes": [
+        "AUTHENTICATOR_MODE_VIRTUAL",
+        "PASSKEY_STEP_REQUIRES_REAL_DEVICE_EVIDENCE"
+      ],
       "evidenceRefs": [],
       "facts": {
         "browser": "chromium 153.0.8010.12",
@@ -3116,7 +3238,9 @@
       },
       "evidenceClass": "local_scripted",
       "outcome": "fail",
-      "reasonCodes": ["EXIT_1"],
+      "reasonCodes": [
+        "EXIT_1"
+      ],
       "evidenceRefs": []
     },
     {
@@ -3156,7 +3280,9 @@
       },
       "evidenceClass": "local_scripted",
       "outcome": "fail",
-      "reasonCodes": ["EXIT_1"],
+      "reasonCodes": [
+        "EXIT_1"
+      ],
       "evidenceRefs": []
     },
     {
@@ -3236,7 +3362,9 @@
       },
       "evidenceClass": "local_scripted",
       "outcome": "fail",
-      "reasonCodes": ["CHECKS_NOT_ALL_PASSED"],
+      "reasonCodes": [
+        "CHECKS_NOT_ALL_PASSED"
+      ],
       "evidenceRefs": []
     },
     {
@@ -3316,7 +3444,9 @@
       },
       "evidenceClass": "local_scripted",
       "outcome": "fail",
-      "reasonCodes": ["EXIT_1"],
+      "reasonCodes": [
+        "EXIT_1"
+      ],
       "evidenceRefs": []
     },
     {
@@ -3416,7 +3546,10 @@
       },
       "evidenceClass": "local_scripted",
       "outcome": "blocked",
-      "reasonCodes": ["T0_JOURNEY_PENDING", "OPTIONAL_FEATURES_UNIMPLEMENTED"],
+      "reasonCodes": [
+        "T0_JOURNEY_PENDING",
+        "OPTIONAL_FEATURES_UNIMPLEMENTED"
+      ],
       "evidenceRefs": [],
       "facts": {
         "configurations": "13",
@@ -3502,7 +3635,9 @@
       },
       "evidenceClass": "local_scripted",
       "outcome": "fail",
-      "reasonCodes": ["EXIT_1"],
+      "reasonCodes": [
+        "EXIT_1"
+      ],
       "evidenceRefs": []
     },
     {
@@ -3620,7 +3755,10 @@
             "resultId": null
           }
         ],
-        "reasons": ["MISSING:A2", "UNPROVEN_AT_CUTOFF"],
+        "reasons": [
+          "MISSING:A2",
+          "UNPROVEN_AT_CUTOFF"
+        ],
         "observedAt": "2026-10-10T23:25:46.728Z"
       },
       {
@@ -3647,7 +3785,12 @@
             "resultId": null
           }
         ],
-        "reasons": ["MISSING:B1", "MISSING:B2", "MISSING:B3", "UNPROVEN_AT_CUTOFF"],
+        "reasons": [
+          "MISSING:B1",
+          "MISSING:B2",
+          "MISSING:B3",
+          "UNPROVEN_AT_CUTOFF"
+        ],
         "observedAt": null
       },
       {
@@ -3668,7 +3811,11 @@
             "resultId": null
           }
         ],
-        "reasons": ["MISSING:C1", "MISSING:C2", "UNPROVEN_AT_CUTOFF"],
+        "reasons": [
+          "MISSING:C1",
+          "MISSING:C2",
+          "UNPROVEN_AT_CUTOFF"
+        ],
         "observedAt": null
       },
       {
@@ -3885,7 +4032,9 @@
         "name": "ladder-5-nonessential-orb-animation",
         "effective": "7059ede017cc",
         "enabled": [],
-        "presentation": ["nonessential-orb-animation"],
+        "presentation": [
+          "nonessential-orb-animation"
+        ],
         "outcome": "blocked",
         "reason": "T0_JOURNEY_PENDING"
       },
@@ -3893,7 +4042,10 @@
         "name": "ladder-6-history-ui-polish",
         "effective": "046d77a117a6",
         "enabled": [],
-        "presentation": ["nonessential-orb-animation", "history-ui-polish"],
+        "presentation": [
+          "nonessential-orb-animation",
+          "history-ui-polish"
+        ],
         "outcome": "blocked",
         "reason": "T0_JOURNEY_PENDING"
       },
@@ -4607,7 +4759,11 @@
       "01": {
         "status": "complete",
         "summary": "Documentation read; import boundaries added for the browser-safe review export, the production runtime and the test adapters.",
-        "files": ["eslint.config.mjs", ".gitignore", ".prettierignore"]
+        "files": [
+          "eslint.config.mjs",
+          ".gitignore",
+          ".prettierignore"
+        ]
       },
       "02": {
         "status": "complete",
@@ -4662,7 +4818,9 @@
       "07": {
         "status": "complete",
         "summary": "Final-output validator: closed schema, size limits, handle resolution against the consented catalog, the pinned rules and this run's successful tool results, proposal validation as FactCandidateV1, plain-text handling and action allowlist.",
-        "files": ["packages/agent/src/runtime/validate-output.ts"]
+        "files": [
+          "packages/agent/src/runtime/validate-output.ts"
+        ]
       },
       "08": {
         "status": "complete",
@@ -4720,7 +4878,10 @@
       "manifestVersion": "1",
       "words": "common policy 463; with the largest intent asset 570 (limit 1,200)",
       "hashing": "SHA-256 of exact UTF-8 asset bytes; SHA-256 of RFC 8785 canonical JSON for the output, intent-selection and tool schemas; digests live in the manifest and the generated module, never inside hashed content",
-      "commands": ["pnpm agent:prompts:generate", "pnpm agent:prompts:check"],
+      "commands": [
+        "pnpm agent:prompts:generate",
+        "pnpm agent:prompts:check"
+      ],
       "toolsByIntent": "summarise: read_sources; explain: read_sources, get_rules; check_payments: read_sources, get_rules, check_payments; missing_evidence: read_sources, get_rules, check_evidence; brief_matter: read_sources, check_payments, check_evidence, get_status; prepare_review: get_rules, check_payments, check_evidence, prepare_review; status: get_status",
       "decisions": [
         "The model is shown source handles and minimal metadata; excerpt text is read through read_sources, so every document read is a native tool call over the consented catalog.",
@@ -5064,6 +5225,29 @@
       "hyperSyncReorg": "HyperSync production reorg behaviour was not observed; local rollback used the RPC source.",
       "secretScan": "pnpm secrets:check still fails only on the git-ignored .env (now also holding the Envio token).",
       "tierStatus": "Feature envio-history stays in-progress: verified needs registered evidence results, which were not added; evidence is recorded under chapter07.checks and docs/evidence."
+    }
+  },
+  "chapter10": {
+    "startedOn": "2026-10-11",
+    "state": "in-progress",
+    "tasks": {
+      "01": {
+        "status": "complete",
+        "summary": "Boundaries validated: baseline pnpm typecheck passed on all projects before any edit; Chapter 4-9 controllers read (review-signing gate shut, vault RecoverableCapture, chain preflight, assistant snapshot).",
+        "files": [
+          "docs/build-state.json"
+        ]
+      },
+      "02": {
+        "status": "complete",
+        "summary": "Pure readiness selector (typed blockers, outstanding decisions, next actions, separate dimensions, no combined approved flag) and an operation-scope guard that rejects late completions.",
+        "files": [
+          "apps/web/src/features/workspace/readiness.ts",
+          "apps/web/src/features/workspace/scope.ts",
+          "apps/web/src/features/workspace/public.ts",
+          "apps/web/src/features/workspace/readiness.test.ts"
+        ]
+      }
     }
   }
 }
