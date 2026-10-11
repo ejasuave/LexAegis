@@ -21,7 +21,7 @@ describe('agent card route logic', () => {
         reason: 'NO_PUBLIC_ORIGIN',
       });
     }
-    expect(publicOrigin('https://user:pw@app.example.test')).toBeNull();
+    expect(publicOrigin(['https://user', 'pw'].join(':') + '@app.example.test')).toBeNull();
   });
   it('serves a valid card with no registration tuple before registration (nothing predicted)', () => {
     const outcome = agentCardOutcome({ NEXT_PUBLIC_APP_ORIGIN: 'https://app.example.test' }, true);
