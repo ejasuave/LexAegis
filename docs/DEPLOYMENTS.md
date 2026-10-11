@@ -91,6 +91,13 @@ Local evidence for the same checker, kept separate: `contracts/integration/verif
 runs it against the unchanged registry on a throwaway Anvil chain, including one-byte changes that
 must be detected. That is not a Monad observation.
 
+Re-checked on the final Chapter 17 source, 2026-10-11T21:05:13Z, over the public endpoint
+(`pnpm verify:deployment --public-rpc`, no evidence file written): **MATCH**, exit `0`, policy
+`exact`, 4,118 of 4,118 bytes, checkpoint block `70214061` re-checked, code pin equal, deployment
+transaction consistent. CI runs the same command as a separate read-only job
+(`deployment-read-only`); that job has not been observed on GitHub yet, and a failed or skipped run
+of it is not a verified deployment.
+
 ## 3. Explorer source verification (Chapter 17)
 
 Kept apart from section 2: an explorer result cannot override a bytecode mismatch, and a passing

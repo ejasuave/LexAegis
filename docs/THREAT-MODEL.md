@@ -776,11 +776,17 @@ check (virtual authenticator, scripted provider and chain).
 
 ## Observed results
 
-Filled in from the runs recorded in `docs/build-state.json` (`chapter17.checks`).
+The runs behind the results above, on the final Chapter 17 source (commit `f49f2e7`, 2026-10-11).
+They are recorded in `docs/build-state.json` (`chapter17.checks`).
 
-| Suite | Command                                                                                                                  | Observed             | Outcome |
-| ----- | ------------------------------------------------------------------------------------------------------------------------ | -------------------- | ------- |
-| F     | `pnpm contracts:test`                                                                                                    | 2026-10-11, 1f1c185  | pass    |
-| U     | `pnpm test`                                                                                                              | 2026-10-11, 342b491  | pass    |
-| A     | `pnpm test:contracts:integration`                                                                                        | NOT YET this chapter | not_run |
-| B     | `pnpm test:account:browser`, `test:vault:browser`, `test:assistant:browser`, `test:hud:browser`, `test:verifier:browser` | NOT YET this chapter | not_run |
+| Suite | Command                                                                                                                  | Observed                                             | Outcome |
+| ----- | ------------------------------------------------------------------------------------------------------------------------ | ---------------------------------------------------- | ------- |
+| F     | `pnpm contracts:test`                                                                                                    | 2026-10-11, 105 of 105 in 11 suites                  | pass    |
+| F     | `pnpm contracts:campaign --profile full` (two seeds)                                                                     | 2026-10-11, commit `458d3c5`, same contract inputs   | pass    |
+| U     | `pnpm test`                                                                                                              | 2026-10-11, 1,743 of 1,743                           | pass    |
+| A     | `pnpm test:contracts:integration`                                                                                        | 2026-10-11, 89 of 89 on local Anvil                  | pass    |
+| B     | `pnpm test:account:browser`, `test:vault:browser`, `test:assistant:browser`, `test:hud:browser`, `test:verifier:browser` | 2026-10-11: 31, 26, 61, 69 and 60 checks, all passed | pass    |
+| B     | `pnpm test:privacy:browser`                                                                                              | 2026-10-11, 0 violations, 0 asset findings           | pass    |
+
+Browser suites use a virtual authenticator, a scripted provider and a scripted chain. None is
+real-device, live-provider or live-chain evidence.

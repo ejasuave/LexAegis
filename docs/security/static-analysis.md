@@ -39,6 +39,9 @@ The repository had no contract-linter command before this chapter. `forge fmt --
 - **Unresolved findings: none. Findings that need a change to the registry, inherited logic or
   deployed dependencies: none.** No `requires redeploy decision` blocker is open.
 
+Re-run on the final Chapter 17 source (2026-10-11T21:05Z): the same 72 findings, 0 unresolved; the
+committed inventory and triage still match. The contract sources are unchanged.
+
 ## Triage
 
 Every one of the 72 findings is named, by identifier, in exactly one entry of

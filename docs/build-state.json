@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
-  "currentChapter": "17",
-  "nextChapter": "17",
+  "currentChapter": "18",
+  "nextChapter": "18",
   "project": {
     "name": "LexAegis",
     "primitive": "Proof of Review",
@@ -146,7 +146,7 @@
       "id": "17",
       "title": "Security Hardening and Verified Deployment",
       "additive": true,
-      "state": "in-progress",
+      "state": "complete",
       "evidence": ["chapter17.checks"],
       "chapterPromptPath": "build_instructions/prompt_library/LexAegis_Prompt_Library_Chapter_17_Targeted_Build_Tasks_v1_0.md"
     },
@@ -5457,6 +5457,382 @@
         "detectedAndRestored": "13",
         "testedCommit": "841c3472d17b9e309dfd3f98b001838f3275ca4c"
       }
+    },
+    {
+      "id": "packages-check-20261011212436",
+      "subject": "packaged-consumer-check",
+      "sourceRevision": {
+        "commit": "f49f2e71fd989047f9baab0f527d8e671b61827e",
+        "dirtyWorktree": false,
+        "contentFingerprint": "9388b2eac350b29a4d12213aade028adac939452d3f1194842c960d5c8dd1812"
+      },
+      "checkedAt": "2026-10-11T21:24:37.673Z",
+      "command": "pnpm packages:check",
+      "environment": { "node": "v24.21.0", "os": "linux-x64", "pnpm": "11.11.0" },
+      "evidenceClass": "local_scripted",
+      "outcome": "pass",
+      "reasonCodes": ["LOCAL_TARBALLS_NOT_PUBLISHED", "AUTHORED_EXAMPLE_NOT_ADOPTION"],
+      "evidenceRefs": [],
+      "facts": {
+        "checksPassed": "40",
+        "checksTotal": "40",
+        "protocolTarballBytes": "72014",
+        "sdkTarballBytes": "85117",
+        "cliTarballBytes": "21356",
+        "protocolTarballSha256": "53058f8a7694b581bdd1a305377470ee74a48b7b7f52d74628559ef0629cea34",
+        "sdkTarballSha256": "e970c2ce2df348244a867c4ab9233bf86d820f454c21b07e2a9c8d7857f57b2b",
+        "cliTarballSha256": "599cabd5756bcd50cde36860ec175fcbd0fdb5420c5e488dad4fed2cede32ecb",
+        "protocolFiles": "68",
+        "sdkFiles": "71",
+        "cliFiles": "28",
+        "browser": "chromium (playwright)",
+        "published": false
+      }
+    },
+    {
+      "id": "account-browser-20261011212524",
+      "subject": "account-browser-check",
+      "sourceRevision": {
+        "commit": "f49f2e71fd989047f9baab0f527d8e671b61827e",
+        "dirtyWorktree": true,
+        "contentFingerprint": "3788e735a0896c933a7be1cf3d2b069c55054427f0bc7385a00cc22b81c9e011"
+      },
+      "checkedAt": "2026-10-11T21:25:24.357Z",
+      "command": "pnpm test:account:browser",
+      "environment": { "node": "v24.21.0", "os": "linux-x64", "pnpm": "11.11.0" },
+      "evidenceClass": "virtual_authenticator",
+      "outcome": "pass",
+      "reasonCodes": ["AUTHENTICATOR_MODE_VIRTUAL", "PASSKEY_STEP_REQUIRES_REAL_DEVICE_EVIDENCE"],
+      "evidenceRefs": [],
+      "facts": {
+        "browser": "chromium 153.0.8010.12",
+        "checksPassed": "31",
+        "checksTotal": "31",
+        "addressReproducedAfterClearingStorage": true,
+        "credentialsCreatedDuringCreate": "1",
+        "assertionsDuringCreate": "0",
+        "authenticatorMode": "virtual",
+        "realDeviceEvidence": false
+      }
+    },
+    {
+      "id": "vault-browser-20261011212544",
+      "subject": "vault-browser-check",
+      "sourceRevision": {
+        "commit": "f49f2e71fd989047f9baab0f527d8e671b61827e",
+        "dirtyWorktree": true,
+        "contentFingerprint": "85b6825d39c7b9d9fd8a54153410bb49ee7efe4b5a65a9655f31dec46e3e8d5f"
+      },
+      "checkedAt": "2026-10-11T21:25:44.434Z",
+      "command": "pnpm test:vault:browser",
+      "environment": { "node": "v24.21.0", "os": "linux-x64", "pnpm": "11.11.0" },
+      "evidenceClass": "virtual_authenticator",
+      "outcome": "pass",
+      "reasonCodes": ["AUTHENTICATOR_MODE_VIRTUAL", "PASSKEY_STEP_REQUIRES_REAL_DEVICE_EVIDENCE"],
+      "evidenceRefs": [],
+      "facts": {
+        "browser": "chromium 153.0.8010.12",
+        "checksPassed": "26",
+        "checksTotal": "26",
+        "recoveredAfterClearingStorage": true,
+        "storage": "postgresql + versitygw 1.8.0",
+        "authenticatorMode": "virtual",
+        "realDeviceEvidence": false
+      }
+    },
+    {
+      "id": "assistant-browser-20261011212655",
+      "subject": "assistant-browser-check",
+      "sourceRevision": {
+        "commit": "f49f2e71fd989047f9baab0f527d8e671b61827e",
+        "dirtyWorktree": true,
+        "contentFingerprint": "20a69f4cbd236e2b9afb5510a6e3716f112c8ad8189581f261e57cb377f94393"
+      },
+      "checkedAt": "2026-10-11T21:26:56.154Z",
+      "command": "pnpm test:assistant:browser",
+      "environment": { "node": "v24.21.0", "os": "linux-x64", "pnpm": "11.11.0" },
+      "evidenceClass": "virtual_authenticator",
+      "outcome": "pass",
+      "reasonCodes": [
+        "AUTHENTICATOR_MODE_VIRTUAL",
+        "SYNTHETIC_DOCUMENTS_ONLY",
+        "SCRIPTED_PROVIDER_NOT_QWEN"
+      ],
+      "evidenceRefs": [],
+      "facts": {
+        "browser": "chromium 153.0.8010.12",
+        "checksPassed": "61",
+        "checksTotal": "61",
+        "provider": "scripted-test (loopback, no model)",
+        "storage": "postgresql + versitygw",
+        "authenticatorMode": "virtual",
+        "realDeviceEvidence": false,
+        "liveProviderEvidence": false
+      }
+    },
+    {
+      "id": "hud-browser-20261011212730",
+      "subject": "hud-browser-check",
+      "sourceRevision": {
+        "commit": "f49f2e71fd989047f9baab0f527d8e671b61827e",
+        "dirtyWorktree": true,
+        "contentFingerprint": "4e9f89aba0de583752cd29317e8b0584a0bbaee635b49d7178bedb15dedc9185"
+      },
+      "checkedAt": "2026-10-11T21:27:31.035Z",
+      "command": "pnpm test:hud:browser",
+      "environment": { "node": "v24.21.0", "os": "linux-x64", "pnpm": "11.11.0" },
+      "evidenceClass": "virtual_authenticator",
+      "outcome": "pass",
+      "reasonCodes": [
+        "AUTHENTICATOR_MODE_VIRTUAL",
+        "SYNTHETIC_DOCUMENTS_ONLY",
+        "SCRIPTED_CHAIN_STATE",
+        "MOCK_SPEECH_ADAPTERS"
+      ],
+      "evidenceRefs": [
+        { "type": "path", "value": "docs/evidence/chapter10/01-command-centre-empty-1440x900.png" },
+        { "type": "path", "value": "docs/evidence/chapter10/02-review-1440x900.png" },
+        { "type": "path", "value": "docs/evidence/chapter10/03-approval-preview-1440x900.png" },
+        {
+          "type": "path",
+          "value": "docs/evidence/chapter10/04-transaction-unavailable-1440x900.png"
+        },
+        {
+          "type": "path",
+          "value": "docs/evidence/chapter10/05-review-after-approval-1440x900.png"
+        },
+        { "type": "path", "value": "docs/evidence/chapter10/06-command-centre-1440x900.png" },
+        { "type": "path", "value": "docs/evidence/chapter10/07-command-centre-1024x768.png" },
+        { "type": "path", "value": "docs/evidence/chapter10/08-review-package-390x844.png" },
+        { "type": "path", "value": "docs/evidence/chapter10/09-review-320x640.png" },
+        { "type": "path", "value": "docs/evidence/chapter10/10-locked-1440x900.png" }
+      ],
+      "facts": {
+        "browser": "chromium 153.0.8010.12",
+        "checksPassed": "69",
+        "checksTotal": "69",
+        "provider": "scripted-test (loopback, no model)",
+        "chain": "scripted live state, fixture registry address, no network",
+        "speech": "mock adapters, not a real device",
+        "storage": "postgresql + versitygw",
+        "authenticatorMode": "virtual",
+        "realDeviceEvidence": false,
+        "liveProviderEvidence": false,
+        "screenshotCount": "10"
+      }
+    },
+    {
+      "id": "hud-browser-20261011212806",
+      "subject": "hud-browser-check",
+      "sourceRevision": {
+        "commit": "f49f2e71fd989047f9baab0f527d8e671b61827e",
+        "dirtyWorktree": true,
+        "contentFingerprint": "aa128e4e2da0af3504ccb58d689036631e0182d3dedb927bdcbea5b897d331ed"
+      },
+      "checkedAt": "2026-10-11T21:28:06.464Z",
+      "command": "pnpm test:hud:browser",
+      "environment": { "node": "v24.21.0", "os": "linux-x64", "pnpm": "11.11.0" },
+      "evidenceClass": "virtual_authenticator",
+      "outcome": "pass",
+      "reasonCodes": [
+        "AUTHENTICATOR_MODE_VIRTUAL",
+        "SYNTHETIC_DOCUMENTS_ONLY",
+        "SCRIPTED_CHAIN_STATE",
+        "MOCK_SPEECH_ADAPTERS"
+      ],
+      "evidenceRefs": [
+        { "type": "path", "value": "docs/evidence/chapter10/01-command-centre-empty-1440x900.png" },
+        { "type": "path", "value": "docs/evidence/chapter10/02-review-1440x900.png" },
+        { "type": "path", "value": "docs/evidence/chapter10/03-approval-preview-1440x900.png" },
+        {
+          "type": "path",
+          "value": "docs/evidence/chapter10/04-transaction-unavailable-1440x900.png"
+        },
+        {
+          "type": "path",
+          "value": "docs/evidence/chapter10/05-review-after-approval-1440x900.png"
+        },
+        { "type": "path", "value": "docs/evidence/chapter10/06-command-centre-1440x900.png" },
+        { "type": "path", "value": "docs/evidence/chapter10/07-command-centre-1024x768.png" },
+        { "type": "path", "value": "docs/evidence/chapter10/08-review-package-390x844.png" },
+        { "type": "path", "value": "docs/evidence/chapter10/09-review-320x640.png" },
+        { "type": "path", "value": "docs/evidence/chapter10/10-locked-1440x900.png" }
+      ],
+      "facts": {
+        "browser": "chromium 153.0.8010.12",
+        "checksPassed": "69",
+        "checksTotal": "69",
+        "provider": "scripted-test (loopback, no model)",
+        "chain": "scripted live state, fixture registry address, no network",
+        "speech": "mock adapters, not a real device",
+        "storage": "postgresql + versitygw",
+        "authenticatorMode": "virtual",
+        "realDeviceEvidence": false,
+        "liveProviderEvidence": false,
+        "screenshotCount": "10"
+      }
+    },
+    {
+      "id": "verifier-browser-20261011212817",
+      "subject": "verifier-browser-check",
+      "sourceRevision": {
+        "commit": "f49f2e71fd989047f9baab0f527d8e671b61827e",
+        "dirtyWorktree": true,
+        "contentFingerprint": "aa128e4e2da0af3504ccb58d689036631e0182d3dedb927bdcbea5b897d331ed"
+      },
+      "checkedAt": "2026-10-11T21:28:17.995Z",
+      "command": "pnpm test:verifier:browser",
+      "environment": { "node": "v24.21.0", "os": "linux-x64", "pnpm": "11.11.0" },
+      "evidenceClass": "virtual_authenticator",
+      "outcome": "pass",
+      "reasonCodes": [
+        "EXPORT_FROM_CHAPTER10_FLOW",
+        "SYNTHETIC_DOCUMENTS_ONLY",
+        "SCRIPTED_RPC_LOOPBACK_FOR_PRIVACY_CHECK"
+      ],
+      "evidenceRefs": [
+        { "type": "path", "value": "docs/evidence/chapter11/01-local-check-1280.png" },
+        { "type": "path", "value": "docs/evidence/chapter11/02-substituted-reference-1280.png" },
+        { "type": "path", "value": "docs/evidence/chapter11/03-live-status-scripted-rpc-1280.png" },
+        { "type": "path", "value": "docs/evidence/chapter11/04-local-check-390.png" },
+        { "type": "path", "value": "docs/evidence/chapter11/04-local-check-320.png" },
+        { "type": "path", "value": "docs/evidence/chapter11/05-live-testnet-superseded-1280.png" }
+      ],
+      "facts": {
+        "browser": "chromium 153.0.8010.12",
+        "checksPassed": "60",
+        "checksTotal": "60",
+        "liveReadOutcome": "pass",
+        "realDeviceEvidence": false
+      }
+    },
+    {
+      "id": "rd-20261011212833-e42176-check-typecheck",
+      "subject": "check-typecheck",
+      "sourceRevision": {
+        "commit": "f49f2e71fd989047f9baab0f527d8e671b61827e",
+        "dirtyWorktree": true,
+        "contentFingerprint": "aa128e4e2da0af3504ccb58d689036631e0182d3dedb927bdcbea5b897d331ed"
+      },
+      "checkedAt": "2026-10-11T21:28:33.064Z",
+      "command": "pnpm readiness",
+      "environment": { "node": "v24.21.0", "os": "linux-x64", "pnpm": "11.11.0" },
+      "evidenceClass": "local_scripted",
+      "outcome": "pass",
+      "reasonCodes": [],
+      "evidenceRefs": []
+    },
+    {
+      "id": "rd-20261011212833-e42176-check-unit-tests",
+      "subject": "check-unit-tests",
+      "sourceRevision": {
+        "commit": "f49f2e71fd989047f9baab0f527d8e671b61827e",
+        "dirtyWorktree": true,
+        "contentFingerprint": "aa128e4e2da0af3504ccb58d689036631e0182d3dedb927bdcbea5b897d331ed"
+      },
+      "checkedAt": "2026-10-11T21:28:33.064Z",
+      "command": "pnpm readiness",
+      "environment": { "node": "v24.21.0", "os": "linux-x64", "pnpm": "11.11.0" },
+      "evidenceClass": "local_scripted",
+      "outcome": "pass",
+      "reasonCodes": [],
+      "evidenceRefs": []
+    },
+    {
+      "id": "rd-20261011212833-e42176-check-forge-test",
+      "subject": "check-forge-test",
+      "sourceRevision": {
+        "commit": "f49f2e71fd989047f9baab0f527d8e671b61827e",
+        "dirtyWorktree": true,
+        "contentFingerprint": "aa128e4e2da0af3504ccb58d689036631e0182d3dedb927bdcbea5b897d331ed"
+      },
+      "checkedAt": "2026-10-11T21:28:33.064Z",
+      "command": "pnpm readiness",
+      "environment": { "node": "v24.21.0", "os": "linux-x64", "pnpm": "11.11.0" },
+      "evidenceClass": "local_scripted",
+      "outcome": "pass",
+      "reasonCodes": [],
+      "evidenceRefs": []
+    },
+    {
+      "id": "rd-20261011212833-e42176-check-secret-scan",
+      "subject": "check-secret-scan",
+      "sourceRevision": {
+        "commit": "f49f2e71fd989047f9baab0f527d8e671b61827e",
+        "dirtyWorktree": true,
+        "contentFingerprint": "aa128e4e2da0af3504ccb58d689036631e0182d3dedb927bdcbea5b897d331ed"
+      },
+      "checkedAt": "2026-10-11T21:28:33.064Z",
+      "command": "pnpm readiness",
+      "environment": { "node": "v24.21.0", "os": "linux-x64", "pnpm": "11.11.0" },
+      "evidenceClass": "local_scripted",
+      "outcome": "fail",
+      "reasonCodes": ["EXIT_1"],
+      "evidenceRefs": []
+    },
+    {
+      "id": "rd-20261011212833-e42176-check-protected-baselines",
+      "subject": "check-protected-baselines",
+      "sourceRevision": {
+        "commit": "f49f2e71fd989047f9baab0f527d8e671b61827e",
+        "dirtyWorktree": true,
+        "contentFingerprint": "aa128e4e2da0af3504ccb58d689036631e0182d3dedb927bdcbea5b897d331ed"
+      },
+      "checkedAt": "2026-10-11T21:28:33.064Z",
+      "command": "pnpm readiness",
+      "environment": { "node": "v24.21.0", "os": "linux-x64", "pnpm": "11.11.0" },
+      "evidenceClass": "local_scripted",
+      "outcome": "pass",
+      "reasonCodes": [],
+      "evidenceRefs": []
+    },
+    {
+      "id": "rd-20261011212833-e42176-check-build",
+      "subject": "check-build",
+      "sourceRevision": {
+        "commit": "f49f2e71fd989047f9baab0f527d8e671b61827e",
+        "dirtyWorktree": true,
+        "contentFingerprint": "aa128e4e2da0af3504ccb58d689036631e0182d3dedb927bdcbea5b897d331ed"
+      },
+      "checkedAt": "2026-10-11T21:28:33.064Z",
+      "command": "pnpm readiness",
+      "environment": { "node": "v24.21.0", "os": "linux-x64", "pnpm": "11.11.0" },
+      "evidenceClass": "local_scripted",
+      "outcome": "pass",
+      "reasonCodes": [],
+      "evidenceRefs": []
+    },
+    {
+      "id": "rd-20261011212833-e42176-check-exclusion",
+      "subject": "check-exclusion",
+      "sourceRevision": {
+        "commit": "f49f2e71fd989047f9baab0f527d8e671b61827e",
+        "dirtyWorktree": true,
+        "contentFingerprint": "aa128e4e2da0af3504ccb58d689036631e0182d3dedb927bdcbea5b897d331ed"
+      },
+      "checkedAt": "2026-10-11T21:28:33.064Z",
+      "command": "pnpm readiness",
+      "environment": { "node": "v24.21.0", "os": "linux-x64", "pnpm": "11.11.0" },
+      "evidenceClass": "local_scripted",
+      "outcome": "pass",
+      "reasonCodes": [],
+      "evidenceRefs": []
+    },
+    {
+      "id": "rd-20261011212833-e42176-chapters-1-3-checks",
+      "subject": "chapters-1-3-checks",
+      "sourceRevision": {
+        "commit": "f49f2e71fd989047f9baab0f527d8e671b61827e",
+        "dirtyWorktree": true,
+        "contentFingerprint": "aa128e4e2da0af3504ccb58d689036631e0182d3dedb927bdcbea5b897d331ed"
+      },
+      "checkedAt": "2026-10-11T21:28:33.064Z",
+      "command": "pnpm readiness",
+      "environment": { "node": "v24.21.0", "os": "linux-x64", "pnpm": "11.11.0" },
+      "evidenceClass": "local_scripted",
+      "outcome": "pass",
+      "reasonCodes": [],
+      "evidenceRefs": []
     }
   ],
   "appliedCuts": [],
@@ -5484,7 +5860,7 @@
             "id": "A1",
             "label": "Chapters 1–3 build and tests pass",
             "state": "satisfied",
-            "resultId": "rd-20261011151207-198117-chapters-1-3-checks"
+            "resultId": "rd-20261011212833-e42176-chapters-1-3-checks"
           },
           {
             "id": "A2",
@@ -5494,7 +5870,7 @@
           }
         ],
         "reasons": ["MISSING:A2", "UNPROVEN_AT_CUTOFF"],
-        "observedAt": "2026-10-11T15:12:07.796Z"
+        "observedAt": "2026-10-11T21:28:33.064Z"
       },
       {
         "gate": "B",
@@ -5579,7 +5955,7 @@
         "HOSTED_T0_INCOMPLETE: dropping the bounties does not complete the hosted golden path"
       ]
     },
-    "evaluatedAt": "2026-10-11T15:12:07.796Z"
+    "evaluatedAt": "2026-10-11T21:28:33.064Z"
   },
   "cutLadder": {
     "order": [
@@ -5610,20 +5986,20 @@
     "fixtureTargets": { "required": 8, "stretch": 12 }
   },
   "readiness": {
-    "runId": "rd-20261011151207-198117",
-    "generatedAt": "2026-10-11T15:12:07.796Z",
+    "runId": "rd-20261011212833-e42176",
+    "generatedAt": "2026-10-11T21:28:33.064Z",
     "live": false,
-    "fingerprint": "2fbf2af21e0a39274fd72347801715f507944fc3084f5ea9d4dd85e6be639756",
-    "totalMs": 37216,
+    "fingerprint": "aa128e4e2da0af3504ccb58d689036631e0182d3dedb927bdcbea5b897d331ed",
+    "totalMs": 39473,
     "versions": { "node": "v24.21.0", "pnpm": "11.11.0", "forge": "1.8.5" },
     "checks": [
-      { "id": "typecheck", "outcome": "pass", "reason": "OK", "durationMs": 26364 },
-      { "id": "unit-tests", "outcome": "pass", "reason": "OK", "durationMs": 20107 },
-      { "id": "forge-test", "outcome": "pass", "reason": "OK", "durationMs": 25351 },
-      { "id": "secret-scan", "outcome": "fail", "reason": "EXIT_1", "durationMs": 708 },
-      { "id": "protected-baselines", "outcome": "pass", "reason": "OK", "durationMs": 569 },
-      { "id": "build", "outcome": "pass", "reason": "OK", "durationMs": 4738 },
-      { "id": "exclusion", "outcome": "pass", "reason": "OK", "durationMs": 789 }
+      { "id": "typecheck", "outcome": "pass", "reason": "OK", "durationMs": 28540 },
+      { "id": "unit-tests", "outcome": "pass", "reason": "OK", "durationMs": 19779 },
+      { "id": "forge-test", "outcome": "pass", "reason": "OK", "durationMs": 34324 },
+      { "id": "secret-scan", "outcome": "fail", "reason": "EXIT_1", "durationMs": 730 },
+      { "id": "protected-baselines", "outcome": "pass", "reason": "OK", "durationMs": 540 },
+      { "id": "build", "outcome": "pass", "reason": "OK", "durationMs": 4977 },
+      { "id": "exclusion", "outcome": "pass", "reason": "OK", "durationMs": 788 }
     ]
   },
   "cutLadderChecks": {
@@ -7865,7 +8241,7 @@
   },
   "chapter17": {
     "startedOn": "2026-10-11",
-    "state": "in-progress",
+    "state": "complete",
     "ruleWaiver": "Chapter 16 is complete. Chapter 14 remains in-progress (owner decision) and Chapter 12 has not run: its validation plan exists only as a prompt, so no Chapter 12 result is reused or claimed.",
     "tasks": {
       "1": {
@@ -8001,8 +8377,8 @@
         "files": ["SECURITY.md"]
       },
       "12": {
-        "status": "in-progress",
-        "summary": "Handoff started, NOT complete. Done: THREAT-MODEL.md refreshed (43 cases, 194 test references, all resolving; new contract, comparator and privacy tests cited; NO TEST YET kept on TM-W01 and TM-X01; residual risks updated), SPEC.md discrepancy table D7-D12 (lifecycle actions use execute; exactly-one-Active holds only immediately after supersession; valid third-party execution is permitted; nonce invalidation is a separate reviewer-owned call; deployment immutables need explicit resolution; leak checks follow the implemented narrow exceptions because Chapter 12's matrix has not run), CLAUDE.md and docs/assistant-ui-contract.md updated with security commands, deployment status and blockers; no HUD badge added. Checks observed on the final source (see chapter17.checks). STOPPED: the batch running the five browser suites was killed by the session host because the machine was critically low on memory (not a test failure; the account suite was interrupted mid-build and recorded nothing). Not yet run on the final state: pnpm lint, typecheck, test, build, exclusion:check, packages:check, docs:check, the five browser suites (account, vault, assistant, hud as the T0 smoke path, verifier) and pnpm readiness. The chapter cannot be marked complete until they run.",
+        "status": "complete",
+        "summary": "Final checks run on commit f49f2e7 and recorded in chapter17.checks: contract regression 105/105; SDK/Solidity compatibility on Anvil 89/89 with unchanged tests; protected baselines (43 files and the compiled registry), Chapter 2 vectors, fixtures, generated protocol and SDK artifacts and SPEC all unchanged; static analysis 72 findings, all triaged, 0 unresolved; live read-only deployment check MATCH (exact, 4,118 bytes, block 70214061); explorer verification reused (Sourcify match; Monadscan NOT YET); both full campaigns reused for unchanged contract inputs and the reduced CI campaign recorded separately; privacy boundaries 0 violations; negative controls 13 of 13; lint, format, typecheck, 1,743 unit tests and build pass; exclusion, packages, docs and quickstart pass; five browser suites pass incl. the HUD T0 smoke path. Refreshed: docs/THREAT-MODEL.md (43 cases, 194 references, observed-results table filled, NO TEST YET kept on TM-W01 and TM-X01), docs/security/invariants.md, docs/security/static-analysis.md, docs/DEPLOYMENTS.md, SECURITY.md, docs/security/privacy-checks.md; SPEC.md discrepancies D7-D12; CLAUDE.md and docs/assistant-ui-contract.md. No HUD badge claims audited, secure, legally correct or professionally verified. Not passed and stated as such: pnpm secrets:check (two pre-existing findings in the local git-ignored .env), pnpm readiness (project gates A-C fail, D unknown, unchanged), CI jobs unverified on GitHub. No registry counterexample, no executable-byte mismatch and no unresolved leak. Stopped after Chapter 17: Chapter 18 not started, no replacement deployment, nothing published.",
         "files": [
           "docs/THREAT-MODEL.md",
           "docs/SPEC.md",
@@ -8024,7 +8400,7 @@
       "Negative controls run in a disposable git worktree in the user's cache directory, never in the working tree."
     ],
     "checks": {
-      "note": "Observed 2026-10-11 on commit 841c347 plus uncommitted documentation and two evidence-formatting edits to the privacy scripts (dirty worktree). Contract inputs unchanged (sha256 2001781f576486f5…).",
+      "note": "Observed 2026-10-11 on the final Chapter 17 source: commit f49f2e7, with only generated evidence and state changes in the worktree. Contract inputs unchanged (sha256 2001781f576486f5…).",
       "contracts": {
         "command": "pnpm contracts:fmt:check; contracts:build; contracts:test; contracts:artifacts:check; contracts:reference:check",
         "outcome": "pass",
@@ -8096,34 +8472,63 @@
       },
       "format": {
         "command": "pnpm format:check",
-        "outcome": "fail",
-        "notes": "One file: the privacy evidence JSON was not written through the formatting writer. Fixed (both privacy scripts now use the repository writer and the file was reformatted); NOT re-run on the final state."
+        "outcome": "pass",
+        "observedAt": "2026-10-11T21:22:45Z",
+        "notes": "An earlier run failed on one file (the privacy evidence JSON was not written through the formatting writer); both privacy scripts now use the repository writer."
       },
       "static": {
         "command": "pnpm lint; pnpm typecheck; pnpm build",
-        "outcome": "not_run",
-        "notes": "NOT YET on the final state. Changed files were linted and tooling was type-checked during the tasks."
+        "outcome": "pass",
+        "observedAt": "2026-10-11T21:23:17Z",
+        "notes": "Whole repository. Typecheck failed once in the indexer because pnpm test:contracts:integration (the rollback test) had left the generated indexer types on local chain 31337; pnpm indexer:codegen restored them for the recorded deployment and typecheck then passed. No source changed."
       },
       "unit": {
         "command": "pnpm test",
-        "outcome": "not_run",
-        "notes": "NOT YET on the final state. tooling/src/privacy: 35 tests passed when last run."
+        "outcome": "pass",
+        "evidenceClass": "local_scripted",
+        "observedAt": "2026-10-11T21:23:11Z",
+        "notes": "1,743 of 1,743, including the comparator, detector, bounded-run and fault-anchor tests."
       },
       "exclusionPackagesDocs": {
-        "command": "pnpm exclusion:check; pnpm packages:check; pnpm docs:check",
-        "outcome": "not_run",
-        "notes": "NOT YET."
+        "command": "pnpm exclusion:check; pnpm packages:check; pnpm docs:check; pnpm quickstart:check",
+        "outcome": "pass",
+        "evidenceClass": "local_scripted",
+        "observedAt": "2026-10-11T21:25:03Z",
+        "notes": "Exclusion clean (no fault machinery or tooling in shipped output); packages 40/40; docs 14/14; quickstart 10/10."
       },
       "browser": {
         "command": "pnpm test:account:browser; test:vault:browser; test:assistant:browser; test:hud:browser; test:verifier:browser",
-        "outcome": "not_run",
-        "notes": "STOPPED by the session host for low system memory during the first suite; not a test failure and nothing was recorded. The HUD and assistant journeys did pass 69/69 and 61/61 under observation in pnpm test:privacy:browser."
+        "outcome": "pass",
+        "evidenceClass": "virtual_authenticator",
+        "observedAt": "2026-10-11T21:28:18Z",
+        "notes": "Account 31/31, vault 26/26, assistant 61/61, HUD 69/69 (the T0 smoke path, optional identity flag in its existing off state), verifier 60/60. An earlier batch was stopped by the session host for low memory and recorded nothing. pnpm smoke:local remains pending under Chapter 14 and was not run."
       },
-      "readiness": { "command": "pnpm readiness", "outcome": "not_run", "notes": "NOT YET." },
+      "readiness": {
+        "command": "pnpm readiness",
+        "outcome": "fail",
+        "observedAt": "2026-10-11T21:28:33Z",
+        "notes": "Unchanged project-level state, not a Chapter 17 check failure: six of seven local checks pass (typecheck, unit, forge, baselines, build, exclusion); secret-scan fails on the local .env; Gates A, B and C remain fail and D unknown for the reasons already recorded."
+      },
       "ci": {
         "outcome": "unverified",
         "notes": "The security and deployment-read-only jobs were added; neither has been observed running on GitHub."
       }
-    }
+    },
+    "completedOn": "2026-10-11",
+    "limitations": [
+      "Not an audit. Local tests, campaigns, static analysis, source verification and disclosure checks are different evidence types; none certifies safety or legal correctness.",
+      "NOT YET: Monadscan source verification (no API key); the rendered explorer page was not checked by tooling. Sourcify reports a match.",
+      "NOT YET: deployment source commit (the deployment predates the first commit; first-commit sources compile to the deployed creation code).",
+      "NOT YET: the security and deployment-read-only CI jobs have not been observed running on GitHub.",
+      "NOT YET: private security reporting contact (none configured for the repository).",
+      "Chapter 12 has not run: the disclosure checks reuse the Chapter 9 and 10 journeys with a virtual authenticator, a scripted provider and a scripted chain. Nothing is observed at a real provider, host or device.",
+      "Unobserved in the disclosure checks: response bodies of requests cut off by navigation, lock or Stop (including the HUD journey's only consented result stream), browser session expiry, a broadcast transaction, storage writes inside a worker, memory.",
+      "A key-shaped value added to a named public source file would be classified as public by the asset scan.",
+      "pnpm secrets:check still fails on two findings in the local git-ignored .env, carried forward from earlier chapters.",
+      "pnpm test:contracts:integration leaves the generated indexer types on chain 31337; run pnpm indexer:codegen before pnpm typecheck afterwards.",
+      "Threat-model cases TM-W01 (dependency compromise) and TM-X01 (unlinkability) have NO TEST YET.",
+      "Project gates are unchanged: A, B and C fail, D unknown; no deployable signer; hosted T0 incomplete."
+    ],
+    "handoff": "Chapter 18 can rely on: SECURITY.md, docs/THREAT-MODEL.md (pnpm threat:check), docs/security/{invariants,static-analysis,privacy-checks}.md and docs/DEPLOYMENTS.md as the security record; pnpm verify:deployment (read-only, exit 0/10/11/12) and pnpm verify:explorer; pnpm contracts:test:ci and pnpm contracts:campaign (sizes via FOUNDRY_* only, foundry.toml untouched); pnpm contracts:static; pnpm test:privacy:browser (bounded: journeys stop at 8 minutes, options --journey, --assets-only, --report, --extra-canaries) and pnpm test:privacy:controls (disposable worktree under the cache directory; about 18 minutes). The disclosure preview now states the source-reference digests. Adoption material must not describe any of this as an audit and must keep the stated limits."
   }
 }
