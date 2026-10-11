@@ -79,7 +79,8 @@
     "quickstart:check": "tsx tooling/scripts/quickstart-check.ts",
     "docs:api": "typedoc",
     "docs:check": "tsx tooling/scripts/docs-check.ts",
-    "probe:erc8004": "tsx tooling/scripts/probe-erc8004.ts"
+    "probe:erc8004": "tsx tooling/scripts/probe-erc8004.ts",
+    "register:agent": "tsx tooling/scripts/register-agent.ts"
   },
   "devDependencies": {
     "@eslint/js": "10.0.1",
