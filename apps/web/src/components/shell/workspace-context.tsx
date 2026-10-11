@@ -22,6 +22,8 @@ interface WorkspaceState {
   setDraft: (draft: string) => void;
   activityOpen: boolean;
   setActivityOpen: (open: boolean) => void;
+  contextOpen: boolean;
+  setContextOpen: (open: boolean) => void;
   selection: Selection;
 }
 
@@ -38,6 +40,7 @@ export function WorkspaceProvider({ children }: { children: ReactNode }) {
   const [mobileTab, setMobileTab] = useState<MobileTab>('document');
   const [draft, setDraft] = useState('');
   const [activityOpen, setActivityOpen] = useState(false);
+  const [contextOpen, setContextOpen] = useState(false);
 
   const value = useMemo<WorkspaceState>(
     () => ({
@@ -49,9 +52,11 @@ export function WorkspaceProvider({ children }: { children: ReactNode }) {
       setDraft,
       activityOpen,
       setActivityOpen,
+      contextOpen,
+      setContextOpen,
       selection: EMPTY_SELECTION,
     }),
-    [mode, mobileTab, draft, activityOpen],
+    [mode, mobileTab, draft, activityOpen, contextOpen],
   );
   return <WorkspaceContext.Provider value={value}>{children}</WorkspaceContext.Provider>;
 }

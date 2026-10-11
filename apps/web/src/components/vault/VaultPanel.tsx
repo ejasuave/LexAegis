@@ -18,12 +18,12 @@ const muted = 'm-0 mt-1 text-[0.875rem] text-lj-secondary';
 
 /** Reports the result of a user action that does not change the vault status (for example a file that was too large). */
 type Reportable = VaultOutcome<unknown> | Promise<VaultOutcome<unknown>> | undefined;
-const NoticeContext = createContext<(outcome: Reportable) => void>(() => undefined);
+export const NoticeContext = createContext<(outcome: Reportable) => void>(() => undefined);
 
 const MAX_IMPORT_BYTES = 64 * 1024 * 1024;
 
 /** Hands the bytes to the browser once, then revokes the URL and clears them. */
-function download(fileName: string, bytes: Uint8Array): void {
+export function download(fileName: string, bytes: Uint8Array): void {
   const url = URL.createObjectURL(new Blob([bytes.slice()], { type: 'application/json' }));
   const link = document.createElement('a');
   link.href = url;
@@ -36,7 +36,7 @@ function download(fileName: string, bytes: Uint8Array): void {
   bytes.fill(0);
 }
 
-function EntryRow({
+export function EntryRow({
   matterId,
   entry,
   unresolved,

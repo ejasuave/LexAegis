@@ -2,6 +2,8 @@
 
 import { useId, useState, type SyntheticEvent } from 'react';
 import { useAssistant } from '@/components/assistant/assistant-context';
+import { useReview } from '@/components/review/review-context';
+import { decideEnter } from './command-input';
 import { useFeatureFlag } from './feature-flags-context';
 import { Icon } from './icons';
 import { useWorkspace } from './workspace-context';
@@ -33,13 +35,16 @@ const IDLE_TEXT = {
  * the disclosure preview's own Send. The voice control exists only while the voice flag is on.
  */
 export function CommandDock() {
-  const { draft, setDraft, activityOpen, setActivityOpen } = useWorkspace();
+  const { draft, setDraft, activityOpen, setActivityOpen, contextOpen, setContextOpen } =
+    useWorkspace();
+  const review = useReview().snapshot;
   const { controller, snapshot } = useAssistant();
   const [menuOpen, setMenuOpen] = useState(false);
   const voiceEnabled = useFeatureFlag('voice');
   const briefing = useFeatureFlag('matterBriefing');
   const inputId = useId();
   const noticeId = useId();
+  const scopeId = useId();
   const stoppable =
     snapshot.phase === 'running' || snapshot.phase === 'stopping' || snapshot.phase === 'preview';
   const commands = briefing ? [...SLASH_COMMANDS.slice(0, 6), '/brief', '/stop'] : SLASH_COMMANDS;
@@ -105,18 +110,33 @@ export function CommandDock() {
         <label htmlFor={inputId} className="sr-only">
           Command or question for Aegis
         </label>
-        <input
+        <textarea
           id={inputId}
-          type="text"
+          rows={1}
           autoComplete="off"
           spellCheck={false}
           maxLength={2000}
           value={draft}
           onChange={(event) => setDraft(event.target.value)}
+          onKeyDown={(event) => {
+            const decision = decideEnter({
+              key: event.key,
+              shiftKey: event.shiftKey,
+              isComposing: event.nativeEvent.isComposing,
+              keyCode: event.keyCode,
+              draft,
+              busy: stoppable,
+              available: controller !== null,
+            });
+            if (event.key === 'Enter' && decision !== 'newline') {
+              event.preventDefault();
+              if (decision === 'send') event.currentTarget.form?.requestSubmit();
+            }
+          }}
           placeholder="Ask Aegis or type / for commands"
-          aria-describedby={noticeId}
+          aria-describedby={`${noticeId} ${scopeId}`}
           data-testid="aegis-input"
-          className="min-h-11 min-w-0 flex-1 basis-64 rounded border border-lj-edge bg-lj-soft px-3 font-mono text-base text-lj-text placeholder:text-lj-muted"
+          className="min-h-11 min-w-0 flex-1 basis-64 resize-y rounded border border-lj-edge bg-lj-soft px-3 py-2 font-mono text-base text-lj-text placeholder:text-lj-muted"
         />
 
         <button
@@ -152,6 +172,15 @@ export function CommandDock() {
         <button
           type="button"
           className={button}
+          aria-expanded={contextOpen}
+          aria-controls="context-drawer"
+          onClick={() => setContextOpen(!contextOpen)}
+        >
+          Saved context
+        </button>
+        <button
+          type="button"
+          className={button}
           aria-expanded={activityOpen}
           aria-controls="activity-drawer"
           onClick={() => setActivityOpen(!activityOpen)}
@@ -159,6 +188,18 @@ export function CommandDock() {
           <Icon name="activity" /> Activity
         </button>
       </form>
+      <p
+        id={scopeId}
+        className="m-0 mt-1 text-[0.8125rem] text-lj-secondary"
+        data-testid="aegis-scope"
+      >
+        Scope:{' '}
+        {snapshot.selectionCount > 0
+          ? `${snapshot.selectionCount} selected passage(s) in ${
+              review.documents.find((doc) => doc.selected)?.label ?? 'the selected document'
+            }. You review exactly what would be sent before Send.`
+          : 'no passage selected. Local checks stay on this device.'}
+      </p>
       <p
         id={noticeId}
         role="status"

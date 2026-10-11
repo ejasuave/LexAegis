@@ -5117,6 +5117,20 @@
           "apps/web/src/components/review/DocumentWorkspace.tsx",
           "apps/web/src/features/workspace/readiness.ts"
         ]
+      },
+      "06": {
+        "status": "complete",
+        "summary": "Composer is a textarea (Enter sends only when appropriate, Shift+Enter newline, IME-safe) with the selected scope shown before Send; saved-context drawer groups confirmed facts, notes and assistant observations with inspect, correct, remove and export over the existing encrypted vault operations. Approve/sign phrases remain unsupported in chat.",
+        "files": [
+          "apps/web/src/components/shell/command-input.ts",
+          "apps/web/src/components/shell/command-input.test.ts",
+          "apps/web/src/components/shell/ContextDrawer.tsx",
+          "apps/web/src/components/shell/ContextDrawerHost.tsx",
+          "apps/web/src/components/shell/CommandDock.tsx",
+          "apps/web/src/components/shell/AppShell.tsx",
+          "apps/web/src/components/shell/workspace-context.tsx",
+          "apps/web/src/components/vault/VaultPanel.tsx"
+        ]
       }
     }
   }

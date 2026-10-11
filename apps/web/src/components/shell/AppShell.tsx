@@ -1,6 +1,7 @@
 import type { ReactNode } from 'react';
 import { ActivityDrawer } from './ActivityDrawer';
 import { CommandDock } from './CommandDock';
+import { ContextDrawerHost } from './ContextDrawerHost';
 import { NavBar } from './NavBar';
 import { SystemStrip } from './SystemStrip';
 import { WorkspaceProvider } from './workspace-context';
@@ -23,6 +24,7 @@ export function AppShell({
         </main>
         <CommandDock />
         <ActivityDrawer />
+        <ContextDrawerHost />
       </div>
     </WorkspaceProvider>
   );
