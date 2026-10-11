@@ -10,9 +10,12 @@ export const OBJECT_SCHEMA = 'lexaegis.vault-object.v1';
 export const CATALOG_SCHEMA = 'lexaegis.vault-catalog.v1';
 export const MATTER_SCHEMA = 'lexaegis.matter.v1';
 export const FROZEN_REVIEW_SCHEMA = 'lexaegis.frozen-review.v1';
-export const ENCRYPTED_EXPORT_SCHEMA = 'lexaegis.encrypted-review-export.v1';
-export const REVIEW_EXPORT_SCHEMA = 'lexaegis.review-export.v1';
-export const CONTEXT_EXPORT_SCHEMA = 'lexaegis.matter-context-export.v1';
+// The readable-export and wrong-format identifiers are owned by the portable protocol module.
+export {
+  CONTEXT_EXPORT_SCHEMA,
+  ENCRYPTED_EXPORT_SCHEMA,
+  REVIEW_EXPORT_SCHEMA,
+} from '@lexaegis/protocol/portable';
 
 /** Domain separators, followed by one 0x00 byte and the JCS of the binding or header. */
 export const KEY_INFO_DOMAIN = 'lexaegis:vault-object-key:v1';

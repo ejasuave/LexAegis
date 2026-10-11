@@ -1,15 +1,14 @@
-import { verifyReviewPackage, type Bytes, type ReceiptReferenceV1 } from '@lexaegis/protocol/v1';
+import { decodeReviewExport } from '@lexaegis/protocol/portable';
+import { verifyReviewPackage, type ReceiptReferenceV1 } from '@lexaegis/protocol/v1';
 import type { VaultKeys } from './crypto/browser-crypto';
 import {
   encryptedReviewExportSchema,
   matterContextExportSchema,
-  reviewExportSchema,
   type MatterContextExportV1,
 } from './export';
 import { VerifiedReview, verifyFrozenReview, type RecoverableCapture } from './frozen-review';
 import { addEntry, type MatterRecordV1 } from './matter';
 import { VAULT_LIMITS } from './v1/constants';
-import { fromBase64Url, toBase64Url } from './v1/base64url';
 import { encodeEnvelope, parseJsonBytes } from './v1/encoding';
 import { err, ok, type VaultResult } from './v1/errors';
 
@@ -62,28 +61,24 @@ export async function parseReadableReviewExport(
   bytes: Uint8Array,
   context: ImportContext,
 ): Promise<VaultResult<ReviewImport>> {
-  const json = parseJsonBytes(bytes, VAULT_LIMITS.maxReadableExportBytes);
-  if (!json.ok) return err(json.code === 'TOO_LARGE' ? 'TOO_LARGE' : 'BUNDLE_INVALID');
-  const bundle = reviewExportSchema.safeParse(json.data);
-  if (!bundle.success) return err('BUNDLE_INVALID');
-  const { opening, receiptReference } = bundle.data;
-
-  // Exactly the manifest's artifacts, once each, in manifest order.
-  const wanted = opening.manifest.artifacts.map((artifact) => artifact.id);
-  const given = bundle.data.artifacts.map((artifact) => artifact.artifactId);
-  if (wanted.length !== given.length || !wanted.every((id, index) => given[index] === id))
-    return err('BUNDLE_INVALID');
-
-  const artifacts = new Map<string, Bytes>();
-  let total = 0;
-  for (const entry of bundle.data.artifacts) {
-    const decoded = fromBase64Url(entry.bytes);
-    if (decoded === null || toBase64Url(decoded) !== entry.bytes) return err('BUNDLE_INVALID');
-    if (decoded.byteLength > VAULT_LIMITS.maxArtifactBytes) return err('TOO_LARGE');
-    total += decoded.byteLength;
-    if (total > VAULT_LIMITS.maxTotalArtifactBytes) return err('TOO_LARGE');
-    artifacts.set(entry.artifactId, decoded);
+  // Strict, bounded decode lives in the portable protocol module; the vault maps its codes.
+  const decoded = decodeReviewExport(bytes);
+  if (!decoded.ok) {
+    return err(
+      decoded.error.code === 'INPUT_TOO_LARGE' ||
+        decoded.error.code === 'ARTIFACT_TOO_LARGE' ||
+        decoded.error.code === 'ARTIFACTS_TOO_LARGE'
+        ? 'TOO_LARGE'
+        : 'BUNDLE_INVALID',
+    );
   }
+  const {
+    opening,
+    artifacts,
+    declaredReference: receiptReference,
+    totalArtifactBytes,
+  } = decoded.data;
+  const total = totalArtifactBytes;
 
   const verification = await verifyReviewPackage(opening, artifacts, receiptReference);
   if (!verification.ok) return err('BUNDLE_INVALID');

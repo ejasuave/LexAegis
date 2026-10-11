@@ -6232,6 +6232,20 @@
           "packages/sdk/src/boundaries.test.ts",
           "docs/build-state.json"
         ]
+      },
+      "2": {
+        "status": "complete",
+        "summary": "Extracted the dependency-free readable ReviewExportV1 schema, base64url codecs and a bounded strict decoder (decodeReviewExport) to @lexaegis/protocol/portable; vault re-exports and uses it (wire format, identifiers and Chapter 2 limits unchanged). Limits: 48 MiB input, 1 MiB manifest/opening, depth 32, 128 artifacts, 10 MiB per artifact, 32 MiB total, checked before allocation. Specific wrong-format results for encrypted backups and context exports. 16 tests run in Node and real Chromium.",
+        "files": [
+          "packages/protocol/src/portable",
+          "packages/protocol/package.json",
+          "packages/vault/src/v1/constants.ts",
+          "packages/vault/src/v1/base64url.ts",
+          "packages/vault/src/export.ts",
+          "packages/vault/src/import.ts",
+          "packages/protocol/vitest.browser.config.ts",
+          "docs/build-state.json"
+        ]
       }
     }
   }

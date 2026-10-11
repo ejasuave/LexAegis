@@ -1,10 +1,6 @@
 import { z } from 'zod';
-import {
-  commitmentOpeningV1Schema,
-  receiptReferenceV1Schema,
-  uuidSchema,
-  type Bytes,
-} from '@lexaegis/protocol/v1';
+import { uuidSchema, type Bytes } from '@lexaegis/protocol/v1';
+import { reviewExportSchema, type ReviewExportV1 } from '@lexaegis/protocol/portable';
 import { type VerifiedReview } from './frozen-review';
 import { contextEntrySchema, matterRecordSchema, type MatterRecordV1 } from './matter';
 import {
@@ -43,15 +39,8 @@ export const encryptedReviewExportSchema = z.strictObject({
 });
 export type EncryptedReviewExportV1 = z.infer<typeof encryptedReviewExportSchema>;
 
-export const reviewExportSchema = z.strictObject({
-  schema: z.literal(REVIEW_EXPORT_SCHEMA),
-  receiptReference: receiptReferenceV1Schema,
-  opening: commitmentOpeningV1Schema,
-  artifacts: z
-    .array(z.strictObject({ artifactId: uuidSchema, bytes: z.string().regex(/^[A-Za-z0-9_-]*$/) }))
-    .max(VAULT_LIMITS.maxArtifacts),
-});
-export type ReviewExportV1 = z.infer<typeof reviewExportSchema>;
+// The readable envelope is defined by the portable protocol module and re-exported here.
+export { reviewExportSchema, type ReviewExportV1 };
 
 export const matterContextExportSchema = z.strictObject({
   schema: z.literal(CONTEXT_EXPORT_SCHEMA),

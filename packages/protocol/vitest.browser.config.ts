@@ -11,7 +11,7 @@ import { defineConfig } from 'vitest/config';
 export default defineConfig({
   test: {
     name: 'protocol-browser',
-    include: ['src/v1/**/*.test.ts'],
+    include: ['src/v1/**/*.test.ts', 'src/portable/**/*.test.ts'],
     browser: {
       enabled: true,
       headless: true,
