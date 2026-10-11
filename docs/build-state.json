@@ -6310,6 +6310,15 @@
           "apps/verifier/src/labels.ts",
           "apps/verifier/src/components"
         ]
+      },
+      "11": {
+        "status": "complete",
+        "summary": "Chapter 10 Verify navigation and saved-review panel now explain and link to the configured independent verifier (target=_blank, rel=noopener noreferrer, bare origin, no payload); the readable-export disclosure and explicit Download are unchanged; no auto-upload, postMessage or shared cache. Verifier build is self-contained (generated public policy, build-time CSP connect-src from the allowed RPC origins); static independence test over verifier sources (no web/agent/vault/account imports, no /api, storage, cookies, beacons, window.open, innerHTML, own fetch). Runtime proofs with the backend, Qwen and Envio unavailable are in the Task 15 browser check.",
+        "files": [
+          "apps/web/src/components/review/SavedReviews.tsx",
+          "apps/web/src/app/verify/page.tsx",
+          "apps/verifier/src/independence.test.ts"
+        ]
       }
     }
   }

@@ -95,18 +95,39 @@ export function SavedReviews() {
       <NoticeContext.Provider value={() => undefined}>
         <ExportAndImport matterId={matter.matterId} />
       </NoticeContext.Provider>
-      <p className="m-0 mt-2 text-[0.875rem]" data-testid="verifier-handoff">
-        Independent verifier:{' '}
-        {publicConfig.verifierOrigin === undefined
-          ? 'not configured.'
-          : 'the verifier is a separate application at '}
-        {publicConfig.verifierOrigin !== undefined ? (
-          <span className="font-mono">{publicConfig.verifierOrigin}</span>
-        ) : null}
-        . Verification is not available in this build, so nothing here is reported as verified. When
-        it is, you hand it a downloaded file yourself; files are never put in a URL or sent between
-        sites automatically.
-      </p>
+      <div className="mt-2 text-[0.875rem]" data-testid="verifier-handoff">
+        <p className="m-0">
+          Checking a package is done in the independent verifier, a separate application that needs
+          no LexAegis account, passkey or backend. This app does not report anything as verified.
+        </p>
+        <ol className="m-0 mt-1 list-decimal pl-5">
+          <li>Download the readable export above (you will see what it discloses first).</li>
+          <li>Copy the public receipt reference for the receipt you want checked.</li>
+          <li>
+            Open the verifier, choose the downloaded file yourself and paste the reference as the
+            one you expect.
+          </li>
+        </ol>
+        <p className="m-0 mt-1 text-lj-secondary">
+          Nothing is sent to the verifier automatically: no file, opening or case detail goes in the
+          address or between the sites.
+        </p>
+        {publicConfig.verifierOrigin === undefined ? (
+          <p className="m-0 mt-1">The verifier address is not configured here.</p>
+        ) : (
+          <p className="m-0 mt-1">
+            <a
+              href={publicConfig.verifierOrigin}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex min-h-11 items-center underline"
+              data-testid="open-verifier"
+            >
+              Open the independent verifier (new tab)
+            </a>
+          </p>
+        )}
+      </div>
     </section>
   );
 }

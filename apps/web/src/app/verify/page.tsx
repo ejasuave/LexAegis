@@ -11,7 +11,7 @@ export default function VerifyPage() {
   return (
     <EmptyState
       title="Verify"
-      description="Receipts are checked in the separate verifier, which needs no LexAegis account. Verification itself is not implemented yet."
+      description="Receipts are checked in the separate verifier, which needs no LexAegis account, passkey or backend. This app opens it with nothing attached: you download the readable export and choose it there yourself, then paste the public receipt reference you expect."
     >
       {origin ? (
         <p className="mt-4">
