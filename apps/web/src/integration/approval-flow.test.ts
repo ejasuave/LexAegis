@@ -277,7 +277,7 @@ describe('stage one: explicit package authorisation', () => {
     const reference = {
       schema: 'lexaegis.receipt-ref.v1' as const,
       chainId: CONFIG.chainId,
-      registryAddress: CONFIG.registryAddress,
+      registryAddress: CONFIG.registryAddress ?? '',
       reviewerAddress: reviewer,
       commitment: `0x${'77'.repeat(32)}`,
     };
@@ -312,7 +312,6 @@ describe('stage one: explicit package authorisation', () => {
         })
       ).failure,
     ).toBe('SCOPE_MISMATCH');
-    void commitment;
   });
 
   it('refuses to treat an ordinary package as a replacement, and a replacement as a new issue', async () => {
