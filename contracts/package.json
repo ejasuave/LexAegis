@@ -9,7 +9,7 @@
     "toolchain": "tsx scripts/install-foundry.ts",
     "fmt:check": "tsx scripts/foundry.ts forge fmt --check",
     "compile": "tsx scripts/foundry.ts forge build",
-    "test:forge": "tsx scripts/foundry.ts forge test",
+    "test:forge": "tsx scripts/foundry.ts forge test --invariant-workers 1",
     "test:integration": "tsx scripts/foundry.ts forge build && vitest run --config vitest.config.ts",
     "artifacts": "tsx scripts/generate-artifacts.ts",
     "artifacts:check": "tsx scripts/generate-artifacts.ts --check",

@@ -599,3 +599,445 @@ contract AuthorizationTest is RegistryTestBase {
         _assertNotFound(reviewer, COMMITMENT_A);
     }
 }
+
+/// @notice Chapter 17 boundary cases: fuzzed deadlines, signer, chain, registry, domain and field
+/// changes, replays after every kind of operation, and executor races.
+/// @dev Each rejection keeps every unrelated precondition valid, so the reason is the one named.
+contract AuthorizationBoundaryTest is RegistryTestBase {
+    IProofOfReviewRegistry.ReceiptStatus internal constant ACTIVE =
+    IProofOfReviewRegistry.ReceiptStatus.Active;
+    IProofOfReviewRegistry.ReceiptStatus internal constant REVOKED =
+    IProofOfReviewRegistry.ReceiptStatus.Revoked;
+    IProofOfReviewRegistry.ReceiptStatus internal constant SUPERSEDED =
+    IProofOfReviewRegistry.ReceiptStatus.Superseded;
+
+    // ---- Deadlines ----------------------------------------------------------------------------
+
+    /// @dev One valid shaped action, executed at deadline - 1, at the deadline and at deadline + 1,
+    /// each from the same starting state. Under v1 `timestamp <= deadline` is required: equality
+    /// succeeds. The deadline is generated so that neither neighbour overflows.
+    function testFuzz_deadlineBoundaryForEveryActionShape(uint256 deadlineSeed, uint8 codeSeed) public {
+        uint8 code = codeSeed % 3;
+        if (code != ReviewActionCodes.ISSUE) _execute(reviewerKey, _issue(reviewer, COMMITMENT_A));
+        uint256 deadline = bound(deadlineSeed, vm.getBlockTimestamp() + 1, type(uint64).max - 1);
+
+        IProofOfReviewRegistry.ReviewAction memory action = _action(
+            reviewer, code, COMMITMENT_A, code == ReviewActionCodes.SUPERSEDE ? COMMITMENT_B : bytes32(0)
+        );
+        action.deadline = deadline;
+        bytes memory signature = _sign(reviewerKey, action);
+        uint256 nonceBefore = registry.nonceOf(reviewer);
+
+        uint256 start = vm.snapshotState();
+        vm.warp(deadline - 1);
+        vm.prank(relayer);
+        registry.execute(action, signature);
+        assertEq(registry.nonceOf(reviewer), nonceBefore + 1, "one second before the deadline");
+
+        vm.revertToState(start);
+        vm.warp(deadline);
+        vm.prank(relayer);
+        registry.execute(action, signature);
+        assertEq(registry.nonceOf(reviewer), nonceBefore + 1, "exactly at the deadline");
+        // The instruction's expiry is not the receipt's: long after, the result still stands.
+        IProofOfReviewRegistry.ReceiptStatus settled = registry.getReceipt(reviewer, COMMITMENT_A).status;
+        vm.warp(deadline + 1);
+        assertEq(uint8(registry.getReceipt(reviewer, COMMITMENT_A).status), uint8(settled));
+
+        vm.revertToState(start);
+        vm.warp(deadline + 1);
+        vm.expectRevert(IProofOfReviewRegistry.AuthorizationExpired.selector);
+        vm.prank(relayer);
+        registry.execute(action, signature);
+        assertEq(registry.nonceOf(reviewer), nonceBefore, "one second after the deadline");
+    }
+
+    function test_theLargestDeadlineIsUsableAndNeverOverflows() public {
+        IProofOfReviewRegistry.ReviewAction memory action = _issue(reviewer, COMMITMENT_A);
+        action.deadline = type(uint256).max;
+        _execute(reviewerKey, action);
+        assertEq(uint8(registry.getReceipt(reviewer, COMMITMENT_A).status), uint8(ACTIVE));
+    }
+
+    /// @dev Zero is tested apart from the boundary: it is never valid, at any block time.
+    function testFuzz_zeroDeadlineNeverAuthorizes(uint64 time) public {
+        vm.warp(time);
+        IProofOfReviewRegistry.ReviewAction memory action = _issue(reviewer, COMMITMENT_A);
+        action.deadline = 0;
+        _expectExecuteRevert(
+            reviewerKey, action, _selector(IProofOfReviewRegistry.AuthorizationExpired.selector)
+        );
+        assertEq(registry.nonceOf(reviewer), 0);
+    }
+
+    // ---- Signer, chain, registry and domain ------------------------------------------------------
+
+    function testFuzz_anyOtherKeyIsRejectedForAnEoaAndForAContractAccount(uint256 keySeed, bytes32 commitment)
+        public
+    {
+        vm.assume(commitment != bytes32(0));
+        uint256 wrongKey = bound(keySeed, 1, SECP256K1_N - 1);
+        if (wrongKey == reviewerKey) wrongKey = otherKey;
+
+        _expectExecuteRevert(
+            wrongKey,
+            _issue(reviewer, commitment),
+            _selector(IProofOfReviewRegistry.InvalidSignature.selector)
+        );
+        address account = address(new ERC1271OwnedAccount(reviewer));
+        _expectExecuteRevert(
+            wrongKey, _issue(account, commitment), _selector(IProofOfReviewRegistry.InvalidSignature.selector)
+        );
+        assertEq(registry.nonceOf(reviewer) + registry.nonceOf(account), 0);
+
+        // The right key still works for both, so only the signer was wrong.
+        _execute(reviewerKey, _issue(reviewer, commitment));
+        _execute(reviewerKey, _issue(account, commitment));
+    }
+
+    function testFuzz_aSignatureForAnotherChainIsRejected(uint64 chainSeed, bytes32 commitment) public {
+        vm.assume(commitment != bytes32(0));
+        uint256 home = vm.getChainId();
+        uint256 foreign = uint256(chainSeed) == home ? home + 1 : uint256(chainSeed);
+        IProofOfReviewRegistry.ReviewAction memory action = _issue(reviewer, commitment);
+        bytes32 foreignDomain = _domainSeparator(DOMAIN_NAME, DOMAIN_VERSION, foreign, address(registry));
+        bytes memory foreignSignature = _signDigest(reviewerKey, _digestIn(foreignDomain, action));
+
+        vm.expectRevert(IProofOfReviewRegistry.InvalidSignature.selector);
+        registry.execute(action, foreignSignature);
+
+        // The same contract on the other chain id accepts it; a home signature is refused there.
+        bytes memory homeSignature = _sign(reviewerKey, action);
+        uint256 start = vm.snapshotState();
+        vm.chainId(foreign);
+        vm.expectRevert(IProofOfReviewRegistry.InvalidSignature.selector);
+        registry.execute(action, homeSignature);
+        registry.execute(action, foreignSignature);
+        assertEq(registry.nonceOf(reviewer), 1);
+
+        // Restore the chain context: nothing leaks into later assertions.
+        vm.revertToState(start);
+        vm.chainId(home);
+        assertEq(vm.getChainId(), home);
+        assertEq(registry.nonceOf(reviewer), 0);
+        registry.execute(action, homeSignature);
+    }
+
+    /// @dev Two real local registries. A signature for one is a valid signature that the other
+    /// refuses, in both directions, and each registry's nonce and records stay its own.
+    function testFuzz_aSignatureCannotBeReplayedOnASecondRegistry(bytes32 commitment, address executor)
+        public
+    {
+        vm.assume(commitment != bytes32(0));
+        ProofOfReviewRegistry second = new ProofOfReviewRegistry();
+        IProofOfReviewRegistry.ReviewAction memory action = _issue(reviewer, commitment);
+        bytes memory forFirst = _sign(reviewerKey, action);
+        bytes memory forSecond = _signDigest(
+            reviewerKey,
+            _digestIn(_domainSeparator(DOMAIN_NAME, DOMAIN_VERSION, vm.getChainId(), address(second)), action)
+        );
+
+        vm.startPrank(executor);
+        vm.expectRevert(IProofOfReviewRegistry.InvalidSignature.selector);
+        second.execute(action, forFirst);
+        vm.expectRevert(IProofOfReviewRegistry.InvalidSignature.selector);
+        registry.execute(action, forSecond);
+
+        registry.execute(action, forFirst);
+        assertEq(registry.nonceOf(reviewer), 1);
+        assertEq(second.nonceOf(reviewer), 0, "the second registry saw nothing");
+        assertEq(uint8(second.getReceipt(reviewer, commitment).status), 0);
+
+        // Still not replayable there after it executed here.
+        vm.expectRevert(IProofOfReviewRegistry.InvalidSignature.selector);
+        second.execute(action, forFirst);
+        second.execute(action, forSecond);
+        vm.stopPrank();
+        assertEq(second.nonceOf(reviewer), 1);
+    }
+
+    function testFuzz_anyOtherDomainNameOrVersionIsRejected(string calldata name, string calldata version)
+        public
+    {
+        bool sameName = keccak256(bytes(name)) == keccak256(bytes(DOMAIN_NAME));
+        bool sameVersion = keccak256(bytes(version)) == keccak256(bytes(DOMAIN_VERSION));
+        IProofOfReviewRegistry.ReviewAction memory action = _issue(reviewer, COMMITMENT_A);
+        uint256 chain = vm.getChainId();
+
+        if (!sameName) {
+            bytes32 domain = _domainSeparator(name, DOMAIN_VERSION, chain, address(registry));
+            vm.expectRevert(IProofOfReviewRegistry.InvalidSignature.selector);
+            registry.execute(action, _signDigest(reviewerKey, _digestIn(domain, action)));
+        }
+        if (!sameVersion) {
+            bytes32 domain = _domainSeparator(DOMAIN_NAME, version, chain, address(registry));
+            vm.expectRevert(IProofOfReviewRegistry.InvalidSignature.selector);
+            registry.execute(action, _signDigest(reviewerKey, _digestIn(domain, action)));
+        }
+        assertEq(registry.nonceOf(reviewer), 0);
+        registry.execute(action, _sign(reviewerKey, action));
+    }
+
+    // ---- One altered signed field at a time ------------------------------------------------------
+
+    /// @dev The reviewer signs a valid SUPERSEDE of an Active receipt. One field is then changed to
+    /// another value that would itself be acceptable, so the only failing check is the signature.
+    function testFuzz_eachIndividuallyAlteredFieldInvalidatesTheSignature(uint8 field, uint256 salt) public {
+        _execute(reviewerKey, _issue(reviewer, COMMITMENT_A));
+        _execute(reviewerKey, _issue(reviewer, COMMITMENT_B));
+        // `other` is brought to the same nonce with the same Active commitment, so swapping the
+        // reviewer leaves nonce, shape and lifecycle valid.
+        _execute(otherKey, _issue(other, COMMITMENT_A));
+        _execute(otherKey, _issue(other, COMMITMENT_B));
+
+        IProofOfReviewRegistry.ReviewAction memory signed = _supersede(reviewer, COMMITMENT_A, COMMITMENT_C);
+        bytes memory signature = _sign(reviewerKey, signed);
+        IProofOfReviewRegistry.ReviewAction memory changed = _supersede(reviewer, COMMITMENT_A, COMMITMENT_C);
+
+        uint256 which = field % 4;
+        if (which == 0) {
+            changed.reviewer = other;
+        } else if (which == 1) {
+            changed.commitment = COMMITMENT_B; // also Active
+        } else if (which == 2) {
+            bytes32 fresh = keccak256(abi.encode("synthetic altered replacement", salt));
+            changed.replacementCommitment = fresh;
+        } else {
+            changed.deadline = bound(salt, vm.getBlockTimestamp(), type(uint256).max);
+            if (changed.deadline == signed.deadline) changed.deadline += 1;
+        }
+
+        vm.recordLogs();
+        vm.expectRevert(IProofOfReviewRegistry.InvalidSignature.selector);
+        vm.prank(relayer);
+        registry.execute(changed, signature);
+        assertEq(vm.getRecordedLogs().length, 0);
+        assertEq(registry.nonceOf(reviewer), 2);
+        assertEq(registry.nonceOf(other), 2);
+
+        // The altered action is itself acceptable when its own reviewer signs it...
+        uint256 start = vm.snapshotState();
+        _execute(which == 0 ? otherKey : reviewerKey, changed);
+        vm.revertToState(start);
+        // ...and the untouched action still executes with the original signature.
+        vm.prank(relayer);
+        registry.execute(signed, signature);
+        assertEq(uint8(registry.getReceipt(reviewer, COMMITMENT_C).status), uint8(ACTIVE));
+    }
+
+    /// @dev The nonce is a signed field too: a signature over any other nonce is not a signature
+    /// over the current one.
+    function testFuzz_aSignatureOverAnotherNonceDoesNotAuthorizeTheCurrentOne(uint256 signedNonce) public {
+        IProofOfReviewRegistry.ReviewAction memory action = _issue(reviewer, COMMITMENT_A);
+        vm.assume(signedNonce != action.nonce);
+        IProofOfReviewRegistry.ReviewAction memory elsewhere = _issue(reviewer, COMMITMENT_A);
+        elsewhere.nonce = signedNonce;
+
+        vm.expectRevert(IProofOfReviewRegistry.InvalidSignature.selector);
+        registry.execute(action, _sign(reviewerKey, elsewhere));
+        // Presenting the nonce that was signed is refused as not current.
+        vm.expectRevert(_invalidNonce(0));
+        registry.execute(elsewhere, _sign(reviewerKey, elsewhere));
+        assertEq(registry.nonceOf(reviewer), 0);
+    }
+
+    // ---- Replay and executor races ---------------------------------------------------------------
+
+    function test_replayFailsAfterIssueRevokeSupersedeAndInvalidation() public {
+        IProofOfReviewRegistry.ReviewAction[] memory actions = new IProofOfReviewRegistry.ReviewAction[](4);
+        bytes[] memory signatures = new bytes[](4);
+
+        actions[0] = _issue(reviewer, COMMITMENT_A);
+        signatures[0] = _sign(reviewerKey, actions[0]);
+        registry.execute(actions[0], signatures[0]);
+
+        actions[1] = _supersede(reviewer, COMMITMENT_A, COMMITMENT_B);
+        signatures[1] = _sign(reviewerKey, actions[1]);
+        registry.execute(actions[1], signatures[1]);
+
+        actions[2] = _revoke(reviewer, COMMITMENT_B);
+        signatures[2] = _sign(reviewerKey, actions[2]);
+        registry.execute(actions[2], signatures[2]);
+
+        // Signed but never executed: cancelled by the reviewer's own invalidation.
+        actions[3] = _issue(reviewer, COMMITMENT_C);
+        signatures[3] = _sign(reviewerKey, actions[3]);
+        vm.prank(reviewer);
+        registry.invalidateNonce(3);
+
+        address[3] memory executors = [relayer, other, reviewer];
+        vm.recordLogs();
+        for (uint256 e = 0; e < executors.length; ++e) {
+            for (uint256 i = 0; i < actions.length; ++i) {
+                vm.expectRevert(_invalidNonce(4));
+                vm.prank(executors[e]);
+                registry.execute(actions[i], signatures[i]);
+            }
+        }
+        assertEq(vm.getRecordedLogs().length, 0);
+        assertEq(registry.nonceOf(reviewer), 4);
+        _assertReceipt(reviewer, COMMITMENT_A, SUPERSEDED, bytes32(0), COMMITMENT_B, START_TIME, START_TIME);
+        _assertReceipt(reviewer, COMMITMENT_B, REVOKED, COMMITMENT_A, bytes32(0), START_TIME, START_TIME);
+        _assertNotFound(reviewer, COMMITMENT_C);
+
+        // A stale expectedNonce cannot be used to cancel again, by anyone.
+        vm.expectRevert(_invalidNonce(4));
+        vm.prank(reviewer);
+        registry.invalidateNonce(3);
+        vm.expectRevert(_invalidNonce(0));
+        vm.prank(relayer);
+        registry.invalidateNonce(4);
+    }
+
+    /// @dev Anyone may submit an unchanged, validly signed action. Whoever is first produces exactly
+    /// the authorised result; the duplicate from a second executor authorises nothing more.
+    function testFuzz_anUnrelatedExecutorSubmittingFirstGetsExactlyTheAuthorisedResult(
+        address first,
+        address second,
+        bytes32 commitment
+    ) public {
+        vm.assume(commitment != bytes32(0));
+        IProofOfReviewRegistry.ReviewAction memory action = _issue(reviewer, commitment);
+        bytes memory signature = _sign(reviewerKey, action);
+
+        vm.recordLogs();
+        vm.prank(first);
+        registry.execute(action, signature);
+        Vm.Log[] memory logs = vm.getRecordedLogs();
+        assertEq(logs.length, 1);
+        _assertIssuedLog(logs[0], reviewer, commitment, bytes32(0), 0);
+        _assertReceipt(reviewer, commitment, ACTIVE, bytes32(0), bytes32(0), START_TIME, START_TIME);
+
+        vm.expectRevert(_invalidNonce(1));
+        vm.prank(second);
+        registry.execute(action, signature);
+
+        // The executors gained no record and no nonce movement of their own.
+        if (first != reviewer) {
+            assertEq(registry.nonceOf(first), 0);
+            _assertNotFound(first, commitment);
+        }
+        assertEq(registry.nonceOf(reviewer), 1);
+    }
+
+    /// @dev A valid signature that reaches an invalid lifecycle transition unwinds completely, for
+    /// an EOA and for a contract account: the nonce it consumed inside the call is restored.
+    function test_aValidSignatureReachingAnInvalidTransitionRollsBackForBothAccountKinds() public {
+        address account = address(new ERC1271OwnedAccount(reviewer));
+        address[2] memory signers = [reviewer, account];
+        for (uint256 i = 0; i < signers.length; ++i) {
+            address signer = signers[i];
+            _execute(reviewerKey, _issue(signer, COMMITMENT_A));
+            _execute(reviewerKey, _revoke(signer, COMMITMENT_A));
+
+            vm.recordLogs();
+            _expectExecuteRevert(reviewerKey, _revoke(signer, COMMITMENT_A), _transition(REVOKED));
+            _expectExecuteRevert(
+                reviewerKey, _supersede(signer, COMMITMENT_A, COMMITMENT_B), _transition(REVOKED)
+            );
+            _expectExecuteRevert(
+                reviewerKey,
+                _issue(signer, COMMITMENT_A),
+                _selector(IProofOfReviewRegistry.ReceiptAlreadyIssued.selector)
+            );
+            assertEq(vm.getRecordedLogs().length, 0);
+            assertEq(registry.nonceOf(signer), 2);
+            _assertNotFound(signer, COMMITMENT_B);
+            // The same nonce is still good for a valid action.
+            _execute(reviewerKey, _issue(signer, COMMITMENT_B));
+            assertEq(registry.nonceOf(signer), 3);
+        }
+    }
+
+    // ---- Pinned OpenZeppelin behaviour for contract accounts --------------------------------------
+
+    function test_aContractAccountAlsoRefusesMalformedAndHighSSignatures() public {
+        address account = address(new ERC1271OwnedAccount(reviewer));
+        IProofOfReviewRegistry.ReviewAction memory action = _issue(account, COMMITMENT_A);
+        (uint8 v, bytes32 r, bytes32 s) = vm.sign(reviewerKey, _digest(action));
+
+        bytes[] memory refused = new bytes[](5);
+        refused[0] = "";
+        refused[1] = abi.encodePacked(r, s);
+        refused[2] = abi.encodePacked(r, s, v, uint8(0));
+        refused[3] = abi.encodePacked(r, bytes32(SECP256K1_N - uint256(s)), v == 27 ? uint8(28) : uint8(27));
+        refused[4] = new bytes(65);
+        for (uint256 i = 0; i < refused.length; ++i) {
+            vm.expectRevert(IProofOfReviewRegistry.InvalidSignature.selector);
+            registry.execute(action, refused[i]);
+        }
+        assertEq(registry.nonceOf(account), 0);
+        registry.execute(action, abi.encodePacked(r, s, v));
+        assertEq(registry.nonceOf(account), 1);
+    }
+
+    /// @dev The account tries to change the registry while being asked to validate, swallows the
+    /// failure and answers with the magic value. STATICCALL made the nested mutation fail, so the
+    /// outer action is authorised by that answer and succeeds once. It is not replayable, and a
+    /// validation that does NOT swallow the failure authorises nothing.
+    function test_aSwallowedNestedMutationLetsTheOuterActionSucceedExactlyOnce() public {
+        address swallowing = address(new ERC1271Reentrant(registry, true));
+        IProofOfReviewRegistry.ReviewAction memory action = _issue(swallowing, COMMITMENT_A);
+        bytes memory signature = _sign(reviewerKey, action);
+
+        vm.recordLogs();
+        registry.execute(action, signature);
+        Vm.Log[] memory logs = vm.getRecordedLogs();
+        assertEq(logs.length, 1, "no NonceInvalidated log: the nested call changed nothing");
+        _assertIssuedLog(logs[0], swallowing, COMMITMENT_A, bytes32(0), 0);
+        assertEq(registry.nonceOf(swallowing), 1, "exactly the outer action's nonce was consumed");
+
+        vm.expectRevert(_invalidNonce(1));
+        registry.execute(action, signature);
+
+        address strict = address(new ERC1271Reentrant(registry, false));
+        IProofOfReviewRegistry.ReviewAction memory refused = _issue(strict, COMMITMENT_A);
+        vm.expectRevert(IProofOfReviewRegistry.InvalidSignature.selector);
+        registry.execute(refused, _sign(reviewerKey, refused));
+        assertEq(registry.nonceOf(strict), 0);
+    }
+}
+
+/// @notice LOCAL BOUNDARY FIXTURE for nonce exhaustion.
+/// @dev The registry cannot reach a nonce near 2^256 by execution: these tests place a local
+/// registry there with a storage cheatcode. They change no production source, are not part of any
+/// stateful campaign, and are not evidence about a deployed registry's reachable states.
+contract NonceExhaustionBoundaryTest is RegistryTestBase {
+    using stdStorage for StdStorage;
+
+    function _placeNonce(address account, uint256 value) internal {
+        stdstore.target(address(registry))
+            .sig(registry.nonceOf.selector)
+            .with_key(account)
+            .checked_write(value);
+    }
+
+    function test_localBoundary_theLastInvalidationWorksOnceThenTheNonceIsExhausted() public {
+        uint256 last = type(uint256).max - 1;
+        _placeNonce(reviewer, last);
+        vm.prank(reviewer);
+        registry.invalidateNonce(last);
+        assertEq(registry.nonceOf(reviewer), type(uint256).max);
+
+        vm.expectRevert(IProofOfReviewRegistry.NonceExhausted.selector);
+        vm.prank(reviewer);
+        registry.invalidateNonce(type(uint256).max);
+        _expectExecuteRevert(
+            reviewerKey,
+            _issue(reviewer, COMMITMENT_A),
+            _selector(IProofOfReviewRegistry.NonceExhausted.selector)
+        );
+        assertEq(registry.nonceOf(reviewer), type(uint256).max, "it never wraps to zero");
+        _assertNotFound(reviewer, COMMITMENT_A);
+    }
+
+    function test_localBoundary_exhaustionOfOneAccountDoesNotAffectAnother() public {
+        _placeNonce(reviewer, type(uint256).max);
+        _execute(otherKey, _issue(other, COMMITMENT_A));
+        assertEq(registry.nonceOf(other), 1);
+        // A consumed value of the exhausted account cannot authorise anything, even freshly signed.
+        IProofOfReviewRegistry.ReviewAction memory stale = _issue(reviewer, COMMITMENT_A);
+        stale.nonce = 0;
+        _expectExecuteRevert(reviewerKey, stale, _invalidNonce(type(uint256).max));
+    }
+}
