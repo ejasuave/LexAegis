@@ -1,0 +1,66 @@
+{
+  "schema": "lexaegis.release-assets.v1",
+  "version": 1,
+  "note": "Local assets are bound by SHA-256 of their exact bytes. Uploaded assets carry observed public URLs only. This file is not hashed into itself.",
+  "assets": [
+    {
+      "id": "logo",
+      "path": "submission/assets/logo.png",
+      "kind": "logo",
+      "sha256": "627c7859ded1a02aedec4a0149950db75c7115b364376e6920cdc0bce65183e1",
+      "publicUrl": null
+    },
+    {
+      "id": "judge-guide",
+      "path": "submission/judge-guide.md",
+      "kind": "text",
+      "sha256": "f817b0bc467b95e25918d908ca73626a057387c6740125de260a168aa400fd5a",
+      "publicUrl": null
+    },
+    {
+      "id": "sponsor-evidence",
+      "path": "submission/sponsor-evidence.json",
+      "kind": "text",
+      "sha256": "67708ac1f9261b30f5a738a8261859fa82d8549d2fb1f7448d46e9bd51d60183",
+      "publicUrl": null
+    },
+    {
+      "id": "qwen-article",
+      "path": "submission/qwen-article.md",
+      "kind": "text",
+      "sha256": "4558009d80a92f6c1c35b2fa633cbdff5dfeab671eaca8600c511a3c919f7b3a",
+      "publicUrl": null
+    },
+    {
+      "id": "technical-demo-script",
+      "path": "submission/technical-demo.md",
+      "kind": "text",
+      "sha256": "30cf045b602c1dccb35e3f5eefc7859a5588e0b0c2c69d61fa46bf9761c8590c",
+      "publicUrl": null
+    },
+    {
+      "id": "pitch-script",
+      "path": "submission/pitch.md",
+      "kind": "text",
+      "sha256": "e1c62103e56d83c7a3d7243344cadaad92a91993a5936e58c570f2a292c7de4d",
+      "publicUrl": null
+    }
+  ],
+  "missing": [
+    {
+      "id": "technical-demo-video",
+      "state": "missing",
+      "reason": "not recorded"
+    },
+    {
+      "id": "pitch-video",
+      "state": "missing",
+      "reason": "not recorded"
+    },
+    {
+      "id": "synthetic-screenshots",
+      "state": "missing",
+      "reason": "no hosted HUD capture; existing captures come from scripted providers and are not used as product evidence"
+    }
+  ]
+}

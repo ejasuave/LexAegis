@@ -1,0 +1,70 @@
+{
+  "schema": "lexaegis.submission-project.v1",
+  "version": 1,
+  "preparedAt": "2026-10-12",
+  "fieldLimits": {
+    "status": "unverified",
+    "note": "The submission portal and its field limits have not been inspected; text is kept concise and must be fitted to the real form."
+  },
+  "name": "LexAegis: Proof of Review",
+  "track": "Trust, Identity & AI Infrastructure",
+  "summary": "Proof of Review lets a person approve an exact package of AI-assisted work so anyone can verify it later without trusting the app. LexAegis, employment settlement review for England and Wales, is the reference application.",
+  "problem": "Advisers increasingly check settlement agreements with AI help, but afterwards nobody can show what exactly was checked, what the figures were and who approved them. Approval lives in a database that the recipient must trust.",
+  "solution": "An open protocol, SDK, CLI and independent verifier. A person approves a frozen package with a Mera passkey account; a Monad Testnet registry records only a commitment; Envio indexes lifecycle history; Alchemy carries reads and transactions; qwen3.8-max plans the review through read-only tools while code and the human decide. A receipt proves package and account binding, not legal validity or anyone's qualification.",
+  "technical": [
+    "Mera (account layer and separate PRF vault key)",
+    "Monad Testnet registry (chain 10143, non-upgradeable, unaudited)",
+    "Envio HyperIndex",
+    "Alchemy RPC",
+    "Qwen qwen3.8-max with four read-only tools",
+    "TypeScript protocol, SDK, CLI, verifier, embeddable widget"
+  ],
+  "team": {
+    "status": "not_supplied",
+    "note": "No founder or team facts were supplied; none are invented here."
+  },
+  "adoption": {
+    "externalTrials": "No external trials recorded yet",
+    "tractionLog": "No entries yet",
+    "source": "docs/adoption/traction-log.md"
+  },
+  "judging": {
+    "technicalExecution": "Deployed registry matching its pinned source; genuine qwen3.8-max tool run; full local test and security campaign record in docs/system-validation.",
+    "designAndDeveloperExperience": "Separate verifier needing no login; SDK, CLI, widget and a second-domain example; runnable quickstart (pnpm quickstart:check).",
+    "originalityAndTrackInsight": "Approval as a verifiable portable primitive rather than an e-signature or timestamp; model proposes, code and human decide.",
+    "founderAndMarketReadiness": "Not evidenced: no team facts or practitioner validation supplied.",
+    "tractionAndPathForward": "No external adoption yet; the plan is in docs/adoption/ROADMAP.md and is a plan, not a commitment."
+  },
+  "limitations": [
+    "Testnet only; registry unaudited",
+    "Hosted application and verifier not deployed yet",
+    "No real-device Mera ceremony evidence yet",
+    "Qwen article is an unpublished draft",
+    "Videos not recorded",
+    "Repository is private and has no licence"
+  ],
+  "nextSteps": [
+    "Deploy the application and verifier to one stable HTTPS origin",
+    "Run real-device passkey and recovery ceremonies and record them",
+    "Put one adviser's workflow through the product and log the result"
+  ],
+  "links": {
+    "repository": { "url": null, "state": "blocked", "reason": "repository is private" },
+    "application": { "url": null, "state": "blocked", "reason": "not deployed" },
+    "verifier": { "url": null, "state": "blocked", "reason": "not deployed" },
+    "technicalDemo": { "url": null, "state": "missing", "reason": "not recorded" },
+    "pitch": { "url": null, "state": "missing", "reason": "not recorded" },
+    "qwenArticle": { "url": null, "state": "unpublished", "reason": "draft only" }
+  },
+  "contract": {
+    "network": "Monad Testnet",
+    "chainId": 10143,
+    "registry": "0x453bfd1602d8a8666f55bf9a8d87b127cb94048f",
+    "explorerSourceVerification": "NOT YET",
+    "record": "docs/DEPLOYMENTS.md"
+  },
+  "logo": {
+    "path": "submission/assets/logo.png",
+    "sha256": "627c7859ded1a02aedec4a0149950db75c7115b364376e6920cdc0bce65183e1"
+  }
+}

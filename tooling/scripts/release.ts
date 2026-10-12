@@ -21,7 +21,7 @@ import { gitRevision, ROOT } from './lib';
 
 const CANDIDATE = join(ROOT, 'docs/release/candidate.json');
 const read = (path: string): string => readFileSync(join(ROOT, path), 'utf8');
-const json = <T>(path: string): T => JSON.parse(read(path)) as T;
+const json = (path: string): unknown => JSON.parse(read(path));
 const sha256 = (data: string | Buffer): string =>
   `sha256:${createHash('sha256').update(data).digest('hex')}`;
 
@@ -65,8 +65,8 @@ function prepare(): number {
   const migrations = readdirSync(join(ROOT, 'apps/web/src/server/db/migrations'))
     .filter((name) => name.endsWith('.sql'))
     .sort();
-  const projection = json<Record<string, string>>('docs/release/deployment-projection.json');
-  const binding = json<Record<string, string>>('indexer/deployment-binding.json');
+  const projection = json('docs/release/deployment-projection.json') as Record<string, string>;
+  const binding = json('indexer/deployment-binding.json') as Record<string, string>;
   const manifest = {
     schema: 'lexaegis.release-candidate.v1',
     createdAt: new Date().toISOString(),
@@ -97,7 +97,7 @@ function prepare(): number {
 }
 
 function chapterTwelveComplete(): boolean {
-  const state = json<{ chapters: { id: string; state: string }[] }>('docs/build-state.json');
+  const state = json('docs/build-state.json') as { chapters: { id: string; state: string }[] };
   return state.chapters.find((chapter) => chapter.id === '12')?.state === 'complete';
 }
 
@@ -105,9 +105,10 @@ function deploy(): number {
   const blockers: string[] = [];
   if (!existsSync(CANDIDATE)) blockers.push('NO_CANDIDATE: run prepare first');
   else {
-    const candidate = json<{ configDigest: string; source: { commit: string | null } }>(
-      'docs/release/candidate.json',
-    );
+    const candidate = json('docs/release/candidate.json') as {
+      configDigest: string;
+      source: { commit: string | null };
+    };
     if (candidate.configDigest !== configDigest())
       blockers.push('CANDIDATE_STALE: configuration changed since prepare');
     if (candidate.source.commit !== gitRevision().commit)
@@ -115,7 +116,7 @@ function deploy(): number {
   }
   if (!chapterTwelveComplete())
     blockers.push('GATE_NOT_COMPLETE: Chapter 12 is not recorded complete');
-  const target = json<Target>('deploy/target.json');
+  const target = json('deploy/target.json') as Target;
   if (target.status === 'unprovisioned')
     blockers.push('TARGET_UNPROVISIONED: no project, environment or origins recorded');
   if ((process.env.RAILWAY_TOKEN ?? '') === '')
@@ -140,7 +141,7 @@ async function probe(url: string): Promise<{ status: number | null; contentType:
 }
 
 async function verify(): Promise<number> {
-  const { origins } = json<Target>('deploy/target.json');
+  const { origins } = json('deploy/target.json') as Target;
   let failed = false;
   for (const [name, origin, path] of [
     ['app liveness', origins.app, '/api/health'],

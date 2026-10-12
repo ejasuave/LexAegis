@@ -12652,6 +12652,20 @@
           "apps/web/src/content/qwen-article.test.ts",
           "apps/web/src/app/build/qwen/page.tsx"
         ]
+      },
+      "16": {
+        "status": "complete",
+        "summary": "submission/project.json (closed schema, form-ready text, team facts not_supplied, adoption 'No external trials recorded yet'), submission/assets.json (SHA-256 of exact bytes), original logo (submission/assets/logo.svg exported to a 1200x400 PNG, 38,766 bytes, viewed and legible; pnpm logo:render), tooling/scripts/validate-submission.ts (pnpm submission:validate: closed schemas, PNG signature/size/hash, MP4 mvhd duration reader, anonymous bounded link checks with --check-links, article publication, per-bounty completeness; unit tests 2 passed), and pnpm submission:package (submission/upload, gitignored). Observed result: overall blocked, exit 3: repository private, app/verifier/videos/article unpublished or missing, bounties not established, team facts and portal fields unverified.",
+        "files": [
+          "submission/project.json",
+          "submission/assets.json",
+          "submission/assets/logo.svg",
+          "submission/assets/logo.png",
+          "tooling/scripts/validate-submission.ts",
+          "tooling/scripts/package-submission.ts",
+          "tooling/scripts/render-logo.ts",
+          "tooling/src/submission-validate.test.ts"
+        ]
       }
     }
   }

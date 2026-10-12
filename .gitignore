@@ -56,3 +56,4 @@ examples/embed/generated/
 
 # system-test output: raw synthetic evidence stays local; only sanitised summaries are committed
 tests/.output/
+submission/upload/

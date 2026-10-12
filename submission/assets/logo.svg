@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 400" width="1200" height="400" role="img" aria-label="LexAegis">
+  <rect width="1200" height="400" fill="#05080f"/>
+  <g transform="translate(60 60)">
+    <circle cx="140" cy="140" r="128" fill="none" stroke="#3b82f6" stroke-width="10"/>
+    <circle cx="140" cy="140" r="84" fill="none" stroke="#3b82f6" stroke-width="4" opacity="0.55"/>
+    <circle cx="140" cy="140" r="26" fill="#67e8f9"/>
+  </g>
+  <text x="400" y="232" font-family="DejaVu Sans, Arial, Helvetica, sans-serif" font-size="128" font-weight="700" fill="#f1f5f9">LexAegis</text>
+  <text x="404" y="300" font-family="DejaVu Sans, Arial, Helvetica, sans-serif" font-size="38" fill="#94a3b8">Proof of Review</text>
+</svg>
