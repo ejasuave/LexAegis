@@ -8530,5 +8530,18 @@
       "Project gates are unchanged: A, B and C fail, D unknown; no deployable signer; hosted T0 incomplete."
     ],
     "handoff": "Chapter 18 can rely on: SECURITY.md, docs/THREAT-MODEL.md (pnpm threat:check), docs/security/{invariants,static-analysis,privacy-checks}.md and docs/DEPLOYMENTS.md as the security record; pnpm verify:deployment (read-only, exit 0/10/11/12) and pnpm verify:explorer; pnpm contracts:test:ci and pnpm contracts:campaign (sizes via FOUNDRY_* only, foundry.toml untouched); pnpm contracts:static; pnpm test:privacy:browser (bounded: journeys stop at 8 minutes, options --journey, --assets-only, --report, --extra-canaries) and pnpm test:privacy:controls (disposable worktree under the cache directory; about 18 minutes). The disclosure preview now states the source-reference digests. Adoption material must not describe any of this as an audit and must keep the stated limits."
+  },
+  "chapter18": {
+    "startedOn": "2026-10-12",
+    "state": "in_progress",
+    "tasks": {
+      "1": {
+        "status": "complete",
+        "summary": "Compatibility contract. Mapping: #2-5=18.1 widget [Must]; #6-7=18.2 second-domain example [Should]; #8=18.3 packed-package trials [Must]; #9-11=18.4 adoption docs/log/roadmap [Must]; #12=18.5 README + handoff [Should]. Prerequisites inspected at commit 492d554: SDK verifyReceipt (mode reference-only + live RPC, LiveBudget 20s/64 attempts default), verifyReviewExport, parseRpcEndpoint/createRpcLiveClient, registryPolicySchema; protocol profileIdSchema accepts lexaegis.ai-pr-signoff v1 (generic profiles already used by examples/document-review), so no additive protocol change is needed; existing roles source/analysis/decision-log suffice. Chapter 15 packed-consumer harness (tooling/src/packed-consumer.ts packs protocol/sdk/cli); docs/QUICKSTART.md widget section NOT YET; apps/verifier uses Vite 8.3.4. Protected baselines (registry, ABI, EIP-712, vectors, protocol v1) are not edited by this chapter.",
+        "files": ["docs/build-state.json"]
+      }
+    },
+    "decisions": [],
+    "limitations": []
   }
 }
