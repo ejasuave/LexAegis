@@ -8677,6 +8677,16 @@
           "tooling/scripts/embed-consumer-check.ts",
           "contracts/scripts/embed-harness.ts"
         ]
+      },
+      "9": {
+        "status": "complete",
+        "summary": "docs/adoption/targets.md, outreach-messages.md, interview-guide.md created. Availability checked 2026-10-12 before drafting: registry deployed on Monad testnet (publicly readable on-chain, Sourcify match, unaudited, Monadscan NOT YET); protocol/SDK/CLI/verifier/widget/examples built locally only; GitHub repository is PRIVATE (gh repo view) and packages are unpublished, so nothing is 'publicly accessible' except the on-chain registry; no active receipt on testnet among recorded examples. targets.md: two EMPTY target tables with the required columns, exact ladder contacted -> replied -> call held -> trial started -> integrated, segments listed separately from activity, no named contacts. Exactly three drafts (97, 90 and 92 words incl. placeholders), each with placeholders (not ready to send), one fifteen-minute ask, offer to work on the verification integration, no unsubstantiated claims and no links (repo private). Interview guide: goal 8-12 conversations stated as a goal, voluntary, consent/attribution, refuses client documents, current behaviour before demonstration, negative/neutral answers recorded, notes template. tooling/src/adoption-docs.test.ts (10 tests) keeps word limits, placeholders, empty tables, ladder and guide structure honest. Nothing was sent; no one was contacted.",
+        "files": [
+          "docs/adoption/targets.md",
+          "docs/adoption/outreach-messages.md",
+          "docs/adoption/interview-guide.md",
+          "tooling/src/adoption-docs.test.ts"
+        ]
       }
     },
     "decisions": [],
