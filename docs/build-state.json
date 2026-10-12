@@ -12585,6 +12585,13 @@
         "files": [
           "deploy/indexer.json"
         ]
+      },
+      "8": {
+        "status": "complete",
+        "summary": "deploy/ingress.json states the proxy requirements (16 KiB/16 MiB/128 KiB limits already enforced in app code, SSE headers no-store/no-transform/x-accel-buffering already set, 150 s idle/drain, one replica, readiness separate from liveness). Observed locally: standalone /api/health 200, /api/readiness 503 unconfigured, CSP+no-store on pages; Next handles SIGTERM drain. Limitation recorded: no app hook interrupts in-flight runs at SIGTERM (lease sweep does later). NOT observed: any hosted ingress, progressive SSE or oversized rejection through a real proxy.",
+        "files": [
+          "deploy/ingress.json"
+        ]
       }
     }
   }

@@ -1,0 +1,52 @@
+{
+  "schema": "lexaegis.ingress-requirements.v1",
+  "status": "unverified_on_host",
+  "note": "Requirements the hosting proxy must meet and that scripts/hosted-smoke.ts checks against the real origin. Application-enforced limits live in code; a provider limit never replaces them.",
+  "limits": {
+    "controlBodyBytes": 16384,
+    "vaultObjectBytes": 16777216,
+    "assistantStartBytes": 131072,
+    "enforcedIn": [
+      "apps/web/src/server/auth/request-guard.ts",
+      "apps/web/src/server/vault/session.ts",
+      "apps/web/src/app/api/assistant/runs/route.ts"
+    ],
+    "proxyMinimumBodyBytes": 16777216
+  },
+  "streaming": {
+    "transport": "POST fetch with text/event-stream response",
+    "assistantDeadlineSeconds": 120,
+    "proxyIdleTimeoutSecondsAtLeast": 150,
+    "responseHeaders": { "cache-control": "no-store, no-transform", "x-accel-buffering": "no" },
+    "compression": "none on text/event-stream",
+    "heartbeats": "transport keepalives only, never progress"
+  },
+  "headers": {
+    "required": [
+      "content-security-policy",
+      "x-content-type-options",
+      "referrer-policy",
+      "permissions-policy",
+      "x-frame-options"
+    ],
+    "cacheControlOnPages": "no-store",
+    "corsWildcardWithCredentials": "forbidden"
+  },
+  "transport": {
+    "httpsOnly": true,
+    "postRedirects": "not relied on; clients use the HTTPS origin directly"
+  },
+  "health": {
+    "liveness": "/api/health",
+    "readiness": "/api/readiness",
+    "readinessMeaning": "redacted capability states; 503 while a required capability is unverified; never reports completed review or credentials"
+  },
+  "shutdown": {
+    "signal": "SIGTERM",
+    "behaviour": "Next.js standalone stops accepting connections and drains; assistant runs hold database leases and any run that does not finish is swept to interrupted by the existing lease sweep; pending chain operations stay durable and are reconciled read-only; nothing is re-signed or re-broadcast after restart",
+    "drainSecondsAtLeast": 150,
+    "limitation": "No application hook marks in-flight runs interrupted at the moment of SIGTERM; interruption is recorded when the lease expires. One replica, so a restart is a visible interruption: no high availability is promised."
+  },
+  "replicas": 1,
+  "logging": "disable request/response body and header capture, tracing payloads and error-report breadcrumbs for /api"
+}
