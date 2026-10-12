@@ -8580,6 +8580,17 @@
           "packages/verify-embed/src/inputs.ts",
           "packages/verify-embed/src/proof-of-review-status.ts"
         ]
+      },
+      "3": {
+        "status": "complete",
+        "summary": "proof-of-review-status element (Shadow DOM, textContent/createElementNS only, inline icons, documented --por-* custom properties, polite live region, aria-busy, native Refresh button, no animation, reduced-motion and forced-colors rules). Maps SDK verifyReceipt(reference-only) to active/revoked/superseded/not found/unknown; not found only after registryIdentity=match; stale generations discarded; attribute/config change clears the current result immediately; a failed refresh shows unknown with any earlier observation labelled historical. Real-Chromium tests against the unchanged registry on Anvil (contracts/integration/embed.anvil.test.ts, 18 pass): four lifecycle states from real local transactions, unknown by fault injection (RPC down, wrong network, untrusted registry, no configuration), keyboard refresh with focus indicator, live region, 320px/reduced motion, stale-read discard, multiple elements, disconnect/reconnect, repeated and foreign-tag registration, network boundary (page origin + RPC only, four RPC methods).",
+        "files": [
+          "packages/verify-embed/src/proof-of-review-status.ts",
+          "packages/verify-embed/src/view.ts",
+          "packages/verify-embed/src/styles.ts",
+          "contracts/integration/embed-fixture.ts",
+          "contracts/integration/embed.anvil.test.ts"
+        ]
       }
     },
     "decisions": [],
