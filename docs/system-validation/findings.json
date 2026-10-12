@@ -45,6 +45,17 @@
       "status": "fixed",
       "result": "reconcileOperation passes the stored block hash as previouslyConfirmedBlockHash for a confirmed operation, so the observation is 'unknown' with mismatch CONTRADICTS_CONFIRMED while the stored confirmation neither moves nor disappears. Regression: the system case 'a changed block hash after confirmation'.",
       "remaining": "The browser panel's presentation of a contradicting observation is not separately tested here."
+    },
+    {
+      "id": "F-005",
+      "severity": "low",
+      "invariant": "After the verifier has loaded, local verification needs no network.",
+      "case": "verifier-local-checks-offline-and-no-disclosure",
+      "module": "apps/verifier (local verification worker)",
+      "reproduction": "Open the standalone verifier, cut the network completely, then choose a file. The worker script is fetched on first use, not at page load: the request was aborted (net::ERR_ABORTED) and no result panel appeared within 30 s. What the page displayed was not captured. After one check while online, the script comes from the HTTP cache and a fully offline check works.",
+      "status": "open",
+      "result": "No disclosure and no wrong result: the check simply does not run. The test serves hashed assets with long-lived cache headers (as a static host would), warms the worker with one online check, then goes fully offline.",
+      "remaining": "Decide whether the verifier should fetch (or inline) its worker at load so first use works offline, and what the page should say when the worker cannot start. Hosting with cache headers is not yet decided."
     }
   ]
 }

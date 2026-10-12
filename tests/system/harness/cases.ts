@@ -221,6 +221,36 @@ export const SYSTEM_CASES: readonly SystemCaseV1[] = parseManifest([
     'local_integration',
   ),
   c(
+    'verifier-local-checks-offline-and-no-disclosure',
+    'tests/system/verifier-independence.spec.ts',
+    'A fresh verifier with no LexAegis state checks the downloaded bundle against an independent reference with the network cut; a registry check sends only public values to the one build-configured RPC; a file never supplies its own endpoint, policy or trust.',
+    'browser_scripted',
+  ),
+  c(
+    'verifier-substitution-and-expectation-provenance',
+    'tests/system/verifier-independence.spec.ts',
+    'A mutated file, manifest, nonce or reference field, and a whole consistent bundle from another journey, are caught by the independent reference; without one the result says the expectation came from the file and claims no authenticated origin.',
+    'browser_scripted',
+  ),
+  c(
+    'verifier-malformed-inputs-and-modes',
+    'tests/system/verifier-independence.spec.ts',
+    'Encrypted, context-only, wrong-version, malformed, over-limit, missing, extra and reordered inputs fail with a typed message and no result; Cancel stops the worker job; reference-only and manifest-only modes never claim artifact verification.',
+    'browser_scripted',
+  ),
+  c(
+    'verifier-registry-failures-and-public-report',
+    'tests/system/verifier-independence.spec.ts',
+    'On real loopback records: an unset signer rule stays unknown and a rejecting one stays rejected beside Active; a foreign registry is untrusted; RPC failure is unknown and keeps the last status as of its time; mixed checkpoints are rejected; successors stay unverified; the report is public-only.',
+    'browser_scripted',
+  ),
+  c(
+    'verifier-export-handoff-and-persistence',
+    'tests/system/verifier-independence.spec.ts',
+    'The export preview discloses before any download; no automatic upload, private URL field, cross-origin message or window handoff occurs; clearing the app cannot retract a downloaded file; the verifier persists nothing and reuses no credentials.',
+    'browser_scripted',
+  ),
+  c(
     'registry-lifecycle-and-replay-on-anvil',
     'contracts/integration/registry.anvil.test.ts',
     'ISSUE, REVOKE, SUPERSEDE, replay rejection and nonce invalidation run against the unchanged registry on isolated Anvil, through the SDK and the two-stage signer, with exact events and a separate executor.',

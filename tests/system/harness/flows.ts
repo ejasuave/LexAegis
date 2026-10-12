@@ -84,3 +84,45 @@ export async function clearOriginState(page: Page): Promise<void> {
     for (const key of await caches.keys()) await caches.delete(key);
   });
 }
+
+/**
+ * From a frozen package to a confirmed local registry receipt and the readable export, exactly as the
+ * full journey does it. Returns the downloaded file and the public receipt reference copied from the UI.
+ */
+export async function approveSendAndExport(
+  page: Page,
+  scratch: string,
+): Promise<{ exportPath: string; reference: string }> {
+  await page.getByTestId('preview-approval').click();
+  await page.getByTestId('approval-details').waitFor({ timeout: 30_000 });
+  await page.getByTestId('approve-package').click();
+  const send = page.getByTestId('send-transaction');
+  await send.waitFor({ timeout: 60_000 });
+  await send.click();
+  let outcome = '';
+  for (let attempt = 0; attempt < 40; attempt += 1) {
+    outcome = await page
+      .getByTestId('tx-outcome')
+      .innerText()
+      .catch(() => '');
+    if (/Execution was confirmed at a canonical block/.test(outcome)) break;
+    const refresh = page.getByTestId('refresh-status');
+    if ((await refresh.count()) > 0) await refresh.click();
+    await page.waitForTimeout(2_000);
+  }
+  if (!/Execution was confirmed at a canonical block/.test(outcome))
+    throw new Error('the local transaction was not confirmed');
+  await page
+    .getByRole('button', { name: /^Export readable review/ })
+    .first()
+    .click();
+  const preview = page.getByRole('group', { name: 'Export preview' });
+  await preview.waitFor({ timeout: 15_000 });
+  const downloaded = page.waitForEvent('download');
+  await preview.getByRole('button', { name: 'Download readable file' }).click();
+  const exportPath = join(scratch, `export-${String(Date.now())}.json`);
+  await (await downloaded).saveAs(exportPath);
+  await page.getByRole('button', { name: 'Copy public receipt reference' }).first().click();
+  const reference = await page.evaluate(() => navigator.clipboard.readText());
+  return { exportPath, reference };
+}

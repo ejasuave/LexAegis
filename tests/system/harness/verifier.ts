@@ -42,7 +42,13 @@ export function serveStatic(root: string): Promise<{ server: Server; origin: str
     try {
       if (!file.startsWith(`${root}/`)) throw new Error('outside');
       response
-        .writeHead(200, { 'content-type': TYPES[extname(file)] ?? 'application/octet-stream' })
+        .writeHead(200, {
+          'content-type': TYPES[extname(file)] ?? 'application/octet-stream',
+          // Hashed build output is immutable, as a real static host serves it.
+          ...(path.startsWith('/assets/') && {
+            'cache-control': 'public, max-age=31536000, immutable',
+          }),
+        })
         .end(readFileSync(file));
     } catch {
       response.writeHead(404).end();

@@ -6054,6 +6054,116 @@
       "outcome": "pass",
       "reasonCodes": [],
       "evidenceRefs": []
+    },
+    {
+      "id": "packages-check-20261012131702",
+      "subject": "packaged-consumer-check",
+      "sourceRevision": {
+        "commit": "3577c47843cf263f58a6faf366ae1172b2c061c9",
+        "dirtyWorktree": true,
+        "contentFingerprint": "8dfdaa12537aec932a21644db5dc74d738001f5b3860997d559712313fa80302"
+      },
+      "checkedAt": "2026-10-12T13:17:04.593Z",
+      "command": "pnpm packages:check",
+      "environment": { "node": "v24.21.0", "os": "linux-x64", "pnpm": "11.11.0" },
+      "evidenceClass": "local_scripted",
+      "outcome": "pass",
+      "reasonCodes": ["LOCAL_TARBALLS_NOT_PUBLISHED", "AUTHORED_EXAMPLE_NOT_ADOPTION"],
+      "evidenceRefs": [],
+      "facts": {
+        "checksPassed": "44",
+        "checksTotal": "44",
+        "protocolTarballBytes": "72014",
+        "sdkTarballBytes": "85117",
+        "cliTarballBytes": "21356",
+        "protocolTarballSha256": "53058f8a7694b581bdd1a305377470ee74a48b7b7f52d74628559ef0629cea34",
+        "sdkTarballSha256": "e970c2ce2df348244a867c4ab9233bf86d820f454c21b07e2a9c8d7857f57b2b",
+        "cliTarballSha256": "599cabd5756bcd50cde36860ec175fcbd0fdb5420c5e488dad4fed2cede32ecb",
+        "protocolFiles": "68",
+        "sdkFiles": "71",
+        "cliFiles": "28",
+        "browser": "chromium (playwright)",
+        "published": false
+      }
+    },
+    {
+      "id": "hud-browser-20261012131749",
+      "subject": "hud-browser-check",
+      "sourceRevision": {
+        "commit": "3577c47843cf263f58a6faf366ae1172b2c061c9",
+        "dirtyWorktree": true,
+        "contentFingerprint": "d39d66cf6dcfd42b222c8c4d8c9076ca6c242c14268dc74625ca10213173da19"
+      },
+      "checkedAt": "2026-10-12T13:17:50.839Z",
+      "command": "pnpm test:hud:browser",
+      "environment": { "node": "v24.21.0", "os": "linux-x64", "pnpm": "11.11.0" },
+      "evidenceClass": "virtual_authenticator",
+      "outcome": "pass",
+      "reasonCodes": [
+        "AUTHENTICATOR_MODE_VIRTUAL",
+        "SYNTHETIC_DOCUMENTS_ONLY",
+        "SCRIPTED_CHAIN_STATE",
+        "MOCK_SPEECH_ADAPTERS"
+      ],
+      "evidenceRefs": [
+        { "type": "path", "value": "docs/evidence/chapter10/01-command-centre-empty-1440x900.png" },
+        { "type": "path", "value": "docs/evidence/chapter10/02-review-1440x900.png" },
+        { "type": "path", "value": "docs/evidence/chapter10/03-approval-preview-1440x900.png" },
+        { "type": "path", "value": "docs/evidence/chapter10/04-transaction-unavailable-1440x900.png" },
+        { "type": "path", "value": "docs/evidence/chapter10/05-review-after-approval-1440x900.png" },
+        { "type": "path", "value": "docs/evidence/chapter10/06-command-centre-1440x900.png" },
+        { "type": "path", "value": "docs/evidence/chapter10/07-command-centre-1024x768.png" },
+        { "type": "path", "value": "docs/evidence/chapter10/08-review-package-390x844.png" },
+        { "type": "path", "value": "docs/evidence/chapter10/09-review-320x640.png" },
+        { "type": "path", "value": "docs/evidence/chapter10/10-locked-1440x900.png" }
+      ],
+      "facts": {
+        "browser": "chromium 153.0.8010.12",
+        "checksPassed": "69",
+        "checksTotal": "69",
+        "provider": "scripted-test (loopback, no model)",
+        "chain": "scripted live state, fixture registry address, no network",
+        "speech": "mock adapters, not a real device",
+        "storage": "postgresql + versitygw",
+        "authenticatorMode": "virtual",
+        "realDeviceEvidence": false,
+        "liveProviderEvidence": false,
+        "screenshotCount": "10"
+      }
+    },
+    {
+      "id": "verifier-browser-20261012131802",
+      "subject": "verifier-browser-check",
+      "sourceRevision": {
+        "commit": "3577c47843cf263f58a6faf366ae1172b2c061c9",
+        "dirtyWorktree": true,
+        "contentFingerprint": "d39d66cf6dcfd42b222c8c4d8c9076ca6c242c14268dc74625ca10213173da19"
+      },
+      "checkedAt": "2026-10-12T13:18:03.292Z",
+      "command": "pnpm test:verifier:browser",
+      "environment": { "node": "v24.21.0", "os": "linux-x64", "pnpm": "11.11.0" },
+      "evidenceClass": "virtual_authenticator",
+      "outcome": "pass",
+      "reasonCodes": [
+        "EXPORT_FROM_CHAPTER10_FLOW",
+        "SYNTHETIC_DOCUMENTS_ONLY",
+        "SCRIPTED_RPC_LOOPBACK_FOR_PRIVACY_CHECK"
+      ],
+      "evidenceRefs": [
+        { "type": "path", "value": "docs/evidence/chapter11/01-local-check-1280.png" },
+        { "type": "path", "value": "docs/evidence/chapter11/02-substituted-reference-1280.png" },
+        { "type": "path", "value": "docs/evidence/chapter11/03-live-status-scripted-rpc-1280.png" },
+        { "type": "path", "value": "docs/evidence/chapter11/04-local-check-390.png" },
+        { "type": "path", "value": "docs/evidence/chapter11/04-local-check-320.png" },
+        { "type": "path", "value": "docs/evidence/chapter11/05-live-testnet-superseded-1280.png" }
+      ],
+      "facts": {
+        "browser": "chromium 153.0.8010.12",
+        "checksPassed": "60",
+        "checksTotal": "60",
+        "liveReadOutcome": "pass",
+        "realDeviceEvidence": false
+      }
     }
   ],
   "appliedCuts": [],
@@ -9049,6 +9159,18 @@
           "indexer/test/engine.test.ts",
           "apps/web/src/server/chain/operation-store.pgtest.ts",
           "packages/sdk/src/transactions/monitor.test.ts"
+        ]
+      },
+      "11": {
+        "status": "complete",
+        "summary": "tests/system/verifier-independence.spec.ts (18 tests, pass) drives the standalone verifier, built for the loopback chain and served on its own origin, in fresh contexts with no LexAegis cookie, passkey, vault or backend, using the exact readable bundles and copied references downloaded from two complete local journeys (loopback Anvil, unchanged v1 registry). Offline: after one online check warmed the worker, the network was cut and a check against the independent reference still passed with no failed request. Disclosure: a registry check sent only POSTs to the one build-configured test RPC, none containing a private digest, nonce, label, artifact prefix or file name; a file-supplied rpcUrl, registry policy, trusted signers or nested endpoint is refused and nothing is contacted. Substitution: a changed artifact byte, manifest field, nonce, declared commitment, and the commitment, reviewer or registry field of the expected reference are each caught, and a whole consistent bundle from another journey is rejected by the original reference; with no independent reference the page says the expectation came from the file and never claims an authenticated origin. Inputs: encrypted backup, context export, wrong version, unrelated JSON, BOM, trailing text, duplicate key, depth, missing/extra/duplicate/reordered artifacts, count and per-artifact limits, non-canonical base64url, a >48 MiB file and a >1 MiB opening each fail with a specific message, no result and no request; Cancel stops a running worker job and no late result appears; reference-only and manifest-only never claim artifact verification, and an opening with no reference is refused. Registry (real records issued, revoked and superseded on the loopback chain with Anvil development reviewer key, one reciprocal successor and an eleven-receipt chain): Active with an unset signer rule stays unknown, a rejecting rule stays rejected beside Active, a foreign registry or chain is untrusted and nothing is read, RPC outage is unknown and a failed refresh keeps the last Active status labelled as of its time, a recheck that reports another block hash is rejected, revoked and superseded are reported, a successor is listed as an unverified separate reference and traversal stops at eight with an incomplete-history note. The downloaded result has the closed public field set and holds no private digest, opening, label, artifact content or endpoint. Export: the preview discloses before any download and cancelling downloads nothing; no cross-origin request, private URL field, iframe, window.open or postMessage handoff; locking and clearing the app leaves the downloaded file byte-identical and still verifiable; the verifier stores nothing (no storage, IndexedDB, caches or cookies). Reused, not rebuilt: pnpm packages:check (44/44, packed tarballs in a consumer with Chromium Web Crypto), pnpm test:protocol:browser (337), pnpm sdk:browser (192), pnpm test:verifier:browser (60/60, includes a read-only public Monad testnet check that wrote docs/evidence/chapter11-verifier-live-2026-10-12.json). LIMITS: this is LexAegis checking its own output with its own verifier, not an independent implementation or adoption. The app build has no verifier origin configured, so the configured-link path is not exercised here. Revoked/superseded are real chain records but written with Anvil development keys, not the passkey-derived account. Anvil is no evidence of Monad finality. Finding F-005 (worker fetched on first use) is open. Mixed-checkpoint test rewrites the recheck read at a proxy route in the browser: transport behaviour only.",
+        "files": [
+          "tests/system/verifier-independence.spec.ts",
+          "tests/system/harness/flows.ts",
+          "tests/system/harness/verifier.ts",
+          "tests/system/harness/cases.ts",
+          "docs/system-validation/findings.json",
+          "docs/evidence/chapter11-verifier-live-2026-10-12.json"
         ]
       }
     },
