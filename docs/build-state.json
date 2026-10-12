@@ -8991,6 +8991,15 @@
           "packages/vault/src/crypto/tamper.test.ts",
           "packages/vault/vitest.browser.config.ts"
         ]
+      },
+      "6": {
+        "status": "complete",
+        "summary": "tests/system/auth-and-ownership.spec.ts (16 tests, all pass) on the PRODUCTION build over real HTTP with two synthetic EOA accounts and an anonymous client, a real PostgreSQL, S3-compatible server and a loopback Anvil registry through the Task 3 seam. Four app processes: two from one build (shared database), one with an unreachable database, one configured as HTTPS (a second build). EIP-4361: server-built message for the configured origin/chain (wrong chain, extra fields, malformed address refused); a changed message or another account's signature gives one uniform 401 and no session; HttpOnly, SameSite=Strict, Path=/, no Domain cookie and the token never appears in a body or the database (only its hash); pre-auth cookie binding stops login swapping and a missing cookie; expired and consumed challenges refused; six parallel verifications create exactly one session; re-sign-in revokes the old token; logout revokes; expired session refused; spoofed X-Forwarded-*/Forwarded headers change neither message origin nor cookie policy. Ownership: another account's vault head/objects/writes, assistant run status/cancel (and no side effect: cancel_requested untouched), operation read/quote/submit all answer exactly like an unknown ID; anonymous gets 401; the owner is told what is true (MISSING for an object storage lacks); funding rejects recipient/amount/address fields and never grants to another account. HTTP policy: missing/null/foreign/wrong-scheme Origin, form content type and missing application header are refused; authenticated responses are no-store with nosniff and no credentialed CORS even for a foreign preflight; pages carry frame-ancestors 'none' and a nonce CSP without unsafe-inline/eval; exactly 16 KiB accepted and 16 KiB+1 refused with no challenge created; a streamed body without content-length is counted as read; assistant 128 KiB+1, raw transaction hex over 4 KiB and a 16 MiB+1 vault body refused; configured as HTTPS the cookies are Secure and __Host- with no Domain. Shared store: the session cookie works on the second process, challenge rate limits count across processes (10 accepted, 2 limited of 12), operation ownership holds across processes, and with the database unreachable protected routes give 5xx/401, a carried cookie does not authenticate, and only health and public chain status stay available. Plain EOA signing proves control of an address only. Harness additions: http.ts client with cookie jar; startWebApp sameBuildAs/configuredScheme.",
+        "files": [
+          "tests/system/auth-and-ownership.spec.ts",
+          "tests/system/harness/http.ts",
+          "tests/system/harness/services.ts"
+        ]
       }
     },
     "decisions": [],

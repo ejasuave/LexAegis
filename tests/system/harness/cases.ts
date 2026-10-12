@@ -118,4 +118,28 @@ export const SYSTEM_CASES: readonly SystemCaseV1[] = parseManifest([
     'Encrypted, readable and context exports round-trip through preview and confirm, previews persist nothing, malformed bundles persist nothing and a fresh destination encryption keeps the package identity.',
     'local_integration',
   ),
+  c(
+    'auth-siwe-challenge-session-and-cookies',
+    'tests/system/auth-and-ownership.spec.ts',
+    'Only a signature over the exact server-built EIP-4361 message by that address, from the browser holding the pre-auth cookie, creates exactly one session; replay, expiry, swapping and spoofed forwarding headers fail, and session tokens never appear in a body.',
+    'local_integration',
+  ),
+  c(
+    'ownership-cross-account-routes',
+    'tests/system/auth-and-ownership.spec.ts',
+    "Another account's vault, assistant run, operation and funding recipient answer exactly like an unknown ID, anonymous callers are refused, and authority comes from the session only.",
+    'local_integration',
+  ),
+  c(
+    'http-origin-headers-and-body-limits',
+    'tests/system/auth-and-ownership.spec.ts',
+    'State-changing routes need the configured Origin, JSON and the application header, authenticated responses are no-store with no credentialed CORS, route body limits reject limit+1 before work, and an HTTPS-configured app issues Secure __Host- cookies.',
+    'local_integration',
+  ),
+  c(
+    'shared-store-two-instances-and-outage',
+    'tests/system/auth-and-ownership.spec.ts',
+    'Sessions, rate limits and operation ownership are shared through the database across two application processes, and an unreachable database disables protected work without a bypass.',
+    'local_integration',
+  ),
 ]);

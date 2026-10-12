@@ -198,7 +198,10 @@ async function freePort(): Promise<number> {
 }
 
 export interface WebApp {
+  /** The configured application origin (what a request's Origin header must equal). */
   readonly origin: string;
+  /** Where the process actually listens. Equal to `origin` unless a scheme or build is overridden. */
+  readonly baseUrl: string;
   readonly port: number;
   readonly distDir: string;
   stop(): Promise<void>;
@@ -223,15 +226,26 @@ export async function startWebApp(options: {
   readonly name: string;
   readonly env: Readonly<Record<string, string>>;
   readonly reuseBuild?: boolean;
+  /** Present the application as HTTPS (cookies become Secure and `__Host-`) while listening on HTTP. */
+  readonly configuredScheme?: 'http' | 'https';
+  /**
+   * Start another process from the SAME build, on another port. It keeps the first app's configured
+   * origin (public values are baked into a build) but takes its own server-side environment.
+   */
+  readonly sameBuildAs?: WebApp;
 }): Promise<WebApp | Blocked> {
   // NEXT_PUBLIC_* values are baked into the build, so a reusable build needs a stable port per name.
   const stable = 3200 + (createHash('sha256').update(options.name).digest().readUInt16BE(0) % 700);
-  const stableFree = await portIsFree(stable);
+  const stableFree = options.sameBuildAs === undefined && (await portIsFree(stable));
   const reuse =
     stableFree && (options.reuseBuild === true || process.env.SYSTEM_REUSE_BUILD === '1');
   const port = stableFree ? stable : await freePort();
-  const origin = `http://localhost:${String(port)}`;
-  const distDir = `.next-system-${options.name}`;
+  const baseUrl = `http://localhost:${String(port)}`;
+  const origin =
+    options.sameBuildAs !== undefined
+      ? options.sameBuildAs.origin
+      : `${options.configuredScheme ?? 'http'}://localhost:${String(port)}`;
+  const distDir = options.sameBuildAs?.distDir ?? `.next-system-${options.name}`;
   const env: NodeJS.ProcessEnv = {
     ...process.env,
     NEXT_DIST_DIR: distDir,
@@ -241,7 +255,7 @@ export async function startWebApp(options: {
     WEB_PORT: String(port),
     ...options.env,
   };
-  if (!reuse && (await runNext(['build'], env)) !== 0)
+  if (options.sameBuildAs === undefined && !reuse && (await runNext(['build'], env)) !== 0)
     return { blocked: true, code: 'PREREQUISITE_MISSING', reason: 'START_FAILED' };
   const child: ChildProcess = spawn('pnpm', ['exec', 'next', 'start', '--port', String(port)], {
     cwd: join(repository, 'apps', 'web'),
@@ -254,7 +268,7 @@ export async function startWebApp(options: {
       'web application health',
       async () => {
         try {
-          return (await fetch(`${origin}/api/health`)).ok ? true : null;
+          return (await fetch(`${baseUrl}/api/health`)).ok ? true : null;
         } catch {
           return null;
         }
@@ -267,6 +281,7 @@ export async function startWebApp(options: {
   }
   return {
     origin,
+    baseUrl,
     port,
     distDir,
     stop: () => {
