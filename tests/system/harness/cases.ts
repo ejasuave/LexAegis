@@ -88,4 +88,34 @@ export const SYSTEM_CASES: readonly SystemCaseV1[] = parseManifest([
     'A head already observed in the active session cannot regress; a full replay of a valid old head after all local state is lost is a recorded, undetectable limitation.',
     'browser_scripted',
   ),
+  c(
+    'vault-browser-crypto-tamper',
+    'packages/vault/src/crypto/tamper.test.ts',
+    'In real browser Web Crypto, truncated, extended and cross-owner or cross-vault envelopes fail authentication and a failure never echoes plaintext, key or ciphertext.',
+    'browser_scripted',
+  ),
+  c(
+    'vault-storage-fault-matrix',
+    'tests/system/vault-storage.spec.ts',
+    'An interruption before or after each upload, the read-back, the catalog and the head commit never reports a save, and a retry reuses the identity and ends with exactly one review and one new revision.',
+    'local_integration',
+  ),
+  c(
+    'vault-storage-concurrency-and-immutability',
+    'tests/system/vault-storage.spec.ts',
+    'On a real PostgreSQL and S3-compatible store, a stale session conflicts and keeps its draft, objects are immutable and success needs a complete read-back reachable from the catalog.',
+    'local_integration',
+  ),
+  c(
+    'vault-storage-corruption-swaps-and-outage',
+    'tests/system/vault-storage.spec.ts',
+    'Missing, swapped-between-accounts and unreachable objects block readiness before any plaintext is used, a restart during a save never shows a pending capture as saved and a lock during decryption releases nothing.',
+    'local_integration',
+  ),
+  c(
+    'vault-exports-roundtrip-real-stores',
+    'tests/system/vault-storage.spec.ts',
+    'Encrypted, readable and context exports round-trip through preview and confirm, previews persist nothing, malformed bundles persist nothing and a fresh destination encryption keeps the package identity.',
+    'local_integration',
+  ),
 ]);

@@ -8982,6 +8982,15 @@
           "tests/system/harness/flows.ts",
           "docs/system-validation/findings.json"
         ]
+      },
+      "5": {
+        "status": "complete",
+        "summary": "Vault and storage validation. (a) packages/vault now runs its whole suite (58 tests incl. the independently produced HKDF/AES-GCM vectors from fixtures/vault-v1) in REAL headless Chromium Web Crypto via vitest.browser.config.ts (pnpm vault:browser); new tamper.test.ts adds truncation (including shorter than a tag), appended bytes, valid envelopes swapped between owners and between vaults (reference and ID presented as genuine, only the envelope binding refuses) and a rule that no failure echoes plaintext, key or ciphertext. (b) tests/system/vault-storage.spec.ts (19 tests) drives the real vault controller and service over a REAL PostgreSQL repository (compare-and-swap) and a REAL S3-compatible server, with test-only fault decorators: interruption before/after the first leaf, the capture, the catalog, during read-back, and a head commit that applied but whose response was lost - each leaves no saved claim, then a retry reuses the identity and ends with exactly one frozen review and exactly one new revision, bounded object growth; stale second session conflicts, keeps its draft and counters equal the sum of stored objects; same-key re-creation answers exists and keeps the first bytes; success only with all objects ready and the head's catalog ready; missing objects (each of the frozen record and three others) block readiness and restoring them restores it; an account A envelope served at account B's key with digests made consistent fails before plaintext use and B's genuine bytes are restored afterwards; a partial outage is a failure not 'missing'; a restart during a save shows no pending capture as saved; locking during decryption grants nothing; encrypted/readable/context exports round-trip with previews persisting nothing, the foreign reviewer kept, the same reference and artifact bytes after fresh destination encryption, a stranger account refused for an encrypted backup, context export without opening/documents, notes removal leaving captures verifying, and malformed/duplicate/unreferenced/missing/oversize bundles persisting nothing. A negative control (disabling one fault) was detected. Observation: VersityGW itself refuses to serve a file whose bytes changed behind its back, so bit-rot appears as a storage failure, never as an empty vault; a digest-consistent forgery is the case that reaches the AES-GCM check (Task 4).",
+        "files": [
+          "tests/system/vault-storage.spec.ts",
+          "packages/vault/src/crypto/tamper.test.ts",
+          "packages/vault/vitest.browser.config.ts"
+        ]
       }
     },
     "decisions": [],
