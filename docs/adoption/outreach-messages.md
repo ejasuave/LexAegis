@@ -29,7 +29,7 @@ adoption-docs` keeps them honest).
 > person approves an exact package of AI-assisted work, and a recipient can check it without trusting
 > the app. The registry is on Monad testnet; the SDK and a small checker work locally but are not
 > published yet. Could we talk for fifteen minutes about how your agents' outputs get approved and
-> checked today? If it fits, I'd gladly help you try the verification step in your own project.
+> checked today? If it fits, I'd gladly work with you on trying the verification step in your own project.
 > [YOUR NAME]
 
 ## Draft 3: email to a legal-technology builder or solicitor

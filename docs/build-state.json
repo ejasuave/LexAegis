@@ -8687,6 +8687,16 @@
           "docs/adoption/interview-guide.md",
           "tooling/src/adoption-docs.test.ts"
         ]
+      },
+      "10": {
+        "status": "complete",
+        "summary": "docs/adoption/traction-log.md and pnpm traction:summary. Path decision: the repository has no root scripts/ directory (tooling/scripts is the established location), so the command is tooling/scripts/traction-summary.ts with logic and tests in tooling/src/traction.ts(.test.ts). Log keeps the exact line 'No entries yet' and a header-only table; canonical row schema (Subject ID, Audience, Origin, Status, Observed, Evidence, Evidence review, Attribution) documented in the log with the five ladder statuses. Strict table reader (fenced examples ignored, second tables/wrong cells rejected); rejects duplicate IDs, same evidence across two relationships, unknown values, malformed/future dates, missing cells, placeholder/bare yes/NOT YET/consent-only evidence, http or credential/token URLs, long opaque signed-link segments, traversal/absolute/outside-folder/escaped-symlink paths, missing/empty/placeholder notes. Evidence is a safe https link, a note/screenshot under docs/adoption/evidence/, or private:<ID>; a human review record (reviewed:DATE:ID) is required to count as reviewed, otherwise pending and excluded from pitch-eligible totals; pitch-eligible = external + reviewed, per status, never summed. Offline/read-only; exit 0 valid (empty valid), 1 invalid (line + code only, nothing counted), 2 usage; prints no subject, link, path, name or quote. 34 tests with SYNTHETIC fixtures in temp dirs; real log verified unchanged and empty. The command validates records; it cannot prove a person or observation is genuine.",
+        "files": [
+          "docs/adoption/traction-log.md",
+          "tooling/src/traction.ts",
+          "tooling/src/traction.test.ts",
+          "tooling/scripts/traction-summary.ts"
+        ]
       }
     },
     "decisions": [],

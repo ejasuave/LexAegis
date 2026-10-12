@@ -7,7 +7,7 @@ paying customer or an integration.
 
 Related: [`outreach-messages.md`](./outreach-messages.md) (drafts, not sent),
 [`interview-guide.md`](./interview-guide.md), [`traction-log.md`](./traction-log.md) (the only place a
-count may come from) and [`ROADMAP.md`](./ROADMAP.md).
+count may come from) and `ROADMAP.md`.
 
 ## What exists today (checked 2026-10-12)
 
