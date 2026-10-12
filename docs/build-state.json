@@ -8622,12 +8622,25 @@
           "examples/ai-pr-signoff/src/inputs.ts",
           "examples/ai-pr-signoff/fixtures"
         ]
+      },
+      "7": {
+        "status": "complete",
+        "summary": "examples/ai-pr-signoff workflow: commands hash, keygen, prepare (build + ENCRYPTED preservation with a separate in-memory storage key through the vault's unchanged envelope primitives, read-back checked against the original reference, prints the public reference only), issue (needs --broadcast only to enable; two typed terminal confirmations; interactive terminal required for the public target; Monad Testnet chain 10143 + pinned genesis only, loopback test mode never the public network, no bypass switch; pending hash recorded before broadcast; decoded transaction checked for destination/selector/action fields/chain/zero value/fee ceiling; lost-response reconciliation of the exact transaction, same signed tx may be re-sent, no new opening/commitment), verify (read-only, no key), export (explicit full-disclosure flag). Interface note: a PreparedReviewPackage cannot be rebuilt from a stored opening (nonce generated once), so issue binds the ISSUE action from the verified reference via boundReviewActionSchema; a test proves it equals buildIssueAction. 16 unit tests plus 10 real-registry tests in contracts/integration/ai-pr-signoff.anvil.test.ts (happy path, ciphertext-only on disk, tamper in export and in ciphertext, decline at each confirmation, interrupted submit both ways, unresolved then recovery after the deadline with the same opening, wrong registry refused, target guards). eslint allows the vault import in storage.ts only. Operator-run testnet issue is NOT YET.",
+        "files": [
+          "examples/ai-pr-signoff/README.md",
+          "examples/ai-pr-signoff/src/issue.ts",
+          "examples/ai-pr-signoff/src/storage.ts",
+          "examples/ai-pr-signoff/src/guards.ts",
+          "examples/ai-pr-signoff/src/cli.ts",
+          "contracts/integration/ai-pr-signoff.anvil.test.ts"
+        ]
       }
     },
     "decisions": [],
     "limitations": [
       "NOT YET: external trials, external adoption and any live Monad testnet widget evidence. All widget results are local compatibility evidence (throwaway Anvil chain 31337, synthetic receipts).",
-      "Pre-existing: pnpm secrets:check reports 2 findings in the git-ignored local .env (dated 2026-10-11, not created by this chapter and not touched); every tracked file is clean."
+      "Pre-existing: pnpm secrets:check reports 2 findings in the git-ignored local .env (dated 2026-10-11, not created by this chapter and not touched); every tracked file is clean.",
+      "NOT YET: operator-run Monad Testnet issue for examples/ai-pr-signoff. Prerequisites: a dedicated funded synthetic testnet operator key, a public RPC endpoint and an operator at an interactive terminal. No deployment, reference, transaction or checkpoint is recorded."
     ]
   }
 }

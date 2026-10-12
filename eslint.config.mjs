@@ -384,6 +384,7 @@ export default tseslint.config(
   {
     // examples: public entry points only, never monorepo sources or reference-app code.
     files: ['examples/**/*.ts'],
+    ignores: ['examples/ai-pr-signoff/src/storage.ts'],
     rules: restrict([
       APPS_PRIVATE_SOURCE,
       {
@@ -399,6 +400,27 @@ export default tseslint.config(
           '**/apps/**',
         ],
         message: 'Examples use only the public protocol and SDK entry points.',
+      },
+    ]),
+  },
+  {
+    // The one example file that preserves the opening: it reuses the vault's unchanged encryption
+    // and envelope primitives (Chapter 18, Task 7) and nothing else beyond the public entry points.
+    files: ['examples/ai-pr-signoff/src/storage.ts'],
+    rules: restrict([
+      APPS_PRIVATE_SOURCE,
+      {
+        group: [
+          '@lexaegis/web',
+          '@lexaegis/verifier',
+          '@lexaegis/agent',
+          '@lexaegis/agent/*',
+          '@category-labs/*',
+          '@scure/*',
+          '**/apps/**',
+        ],
+        message:
+          'Examples use only the public protocol and SDK entry points (and the vault primitives here).',
       },
     ]),
   },
