@@ -12608,6 +12608,15 @@
           "tooling/scripts/hosted-smoke.ts",
           "package.json"
         ]
+      },
+      "11": {
+        "status": "complete",
+        "summary": "tooling/scripts/release-rollback.ts (pnpm release:rollback): --to <id> reads docs/release/releases.json and stops with a typed blocker (observed: NO_RELEASE_RECORD; activation not integrated). --restore-check is a SYNTHETIC LOCAL rehearsal on two throwaway PostgreSQL servers: head/catalog/object relationships, exact lengths and SHA-256, expired sessions; observed pass in 0.9 s, and the --corrupt negative control fails with a digest mismatch. Not evidence about any provider backup or a real restore; no restore objective claimed. deploy/README.md has the operator notes.",
+        "files": [
+          "tooling/scripts/release-rollback.ts",
+          "deploy/README.md",
+          "package.json"
+        ]
       }
     }
   }
