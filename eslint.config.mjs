@@ -85,6 +85,7 @@ export default tseslint.config(
       '**/.next-review-check/**',
       '**/.next-assistant-check/**',
       '**/.next-hud-check/**',
+      '**/.next-system-*/**',
       '**/.next-history-check/**',
       '**/dist/**',
       '**/coverage/**',

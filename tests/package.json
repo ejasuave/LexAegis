@@ -1,0 +1,23 @@
+{
+  "name": "@lexaegis/system-tests",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "End-to-end recovery, privacy and security validation (Chapter 12): a thin harness, the case manifest and the system specs. Test-only; never imported by a package or application.",
+  "scripts": {
+    "typecheck": "tsc --noEmit -p tsconfig.json",
+    "test": "vitest run --config vitest.config.ts",
+    "test:system": "vitest run --config vitest.system.config.ts"
+  },
+  "dependencies": {
+    "@lexaegis/protocol": "workspace:*",
+    "@lexaegis/sdk": "workspace:*",
+    "pg": "8.23.1",
+    "playwright": "1.63.0",
+    "viem": "2.57.3",
+    "zod": "4.6.5"
+  },
+  "devDependencies": {
+    "@types/pg": "8.23.1"
+  }
+}

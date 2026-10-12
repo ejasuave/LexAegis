@@ -341,6 +341,31 @@ importers:
         specifier: 4.6.5
         version: 4.6.5
 
+  tests:
+    dependencies:
+      '@lexaegis/protocol':
+        specifier: workspace:*
+        version: link:../packages/protocol
+      '@lexaegis/sdk':
+        specifier: workspace:*
+        version: link:../packages/sdk
+      pg:
+        specifier: 8.23.1
+        version: 8.23.1
+      playwright:
+        specifier: 1.63.0
+        version: 1.63.0
+      viem:
+        specifier: 2.57.3
+        version: 2.57.3(typescript@6.0.3)(zod@4.6.5)
+      zod:
+        specifier: 4.6.5
+        version: 4.6.5
+    devDependencies:
+      '@types/pg':
+        specifier: 8.23.1
+        version: 8.23.1
+
   tooling:
     dependencies:
       pg:

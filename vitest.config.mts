@@ -14,6 +14,7 @@ export default defineConfig({
       'apps/verifier',
       'examples/document-review',
       'tooling',
+      'tests',
       'indexer',
     ],
   },

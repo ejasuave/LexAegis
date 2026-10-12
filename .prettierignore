@@ -5,6 +5,7 @@ node_modules
 .next-review-check
 .next-assistant-check
 .next-hud-check
+.next-system-*
 dist
 coverage
 pnpm-lock.yaml

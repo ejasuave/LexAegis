@@ -4,6 +4,7 @@ packages:
   - examples/*
   - contracts
   - tooling
+  - tests
   - indexer
 allowBuilds:
   # Postinstall only recreates symlinks inside the package's own native/ directory (reviewed).

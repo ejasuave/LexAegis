@@ -8947,6 +8947,19 @@
         "status": "complete",
         "summary": "Integration contract. Source-to-task map: #2 harness + case manifest; #3 full journey; #4 account/vault recovery; #5 vault/storage; #6 auth/ownership; #7 disclosure matrix; #8 agent injection; #9 approval races; #10 registry/transactions/Envio; #11 verifier; #12 Aegis lifecycle/voice/a11y; #13 production build boundaries; #14 validate-mvp + CI + negative controls; #15 user-controlled device evidence; #16 handoff. Prerequisite Chapters 1-11 and 15-18 complete (Chapter 14 remains in-progress by owner decision; see docs/END-OF-BUILD-NOTES.md). Inspected: apps/web (features/*, server/{auth,vault,assistant,chain,db}, 15 route groups, test-support rigs: account-harness, review-rig, assistant-rig, fake-authenticator, local-s3, scripted-qwen-server), tooling browser journeys (hud/privacy/vault/account/verifier checks drive the production build with a CDP virtual authenticator, embedded PostgreSQL, local S3 and the scripted loopback provider; registry state is scripted there), contracts/integration Anvil harness (local-registry, embed fixture), packages/agent tests. Blocked prerequisite found: the production server resolves its registry from the committed Monad testnet record and an Alchemy-host-only endpoint, so a browser journey cannot broadcast to a local registry. Decision: add a narrow, explicitly test-mode-only server seam (LEXAEGIS_TEST_MODE=local-chain, loopback endpoint, local deployment record file) in Task 3 rather than any mock success; it is inert unless set and is recorded as a limitation. Established test location: vitest projects plus tooling/scripts browser programs; the chapter's tests/system and tests/privacy paths become a root tests/ workspace (vitest project 'system', run by pnpm test:system, outside default pnpm test); validate-mvp lives in tooling/scripts (the repository has no root scripts/).",
         "files": ["docs/build-state.json"]
+      },
+      "2": {
+        "status": "complete",
+        "summary": "tests/ workspace (@lexaegis/system-tests) with a thin harness: manifest.ts (closed SystemCaseV1 and SystemResultV1 schemas, evidence classes unit<local_integration<browser_scripted<live_read<live_human, issue codes, satisfies(): only a real, current, sufficiently strong, non-flaky pass satisfies a case), guards.ts (loopback-only endpoints, chain identity must be Anvil on loopback with public chain IDs 143/10143 refused unless the node identifies as Anvil and the journey opts in, test-namespaced database/bucket, wildcard refusal, per-run/worker namespace), ledger.ts (cleanup of only exact recorded resources, newest first, once, failures reported), poll.ts (bounded waitUntil, Barrier, ControlledClock), recorder.ts (validated JSONL results in ignored tests/.output, latest-wins case summaries, missing is never pass), services.ts (isolated PostgreSQL + S3-compatible server + scripted provider + loopback Anvil with node-identity proof + production web build/start; missing services are typed Blocked results, never in-memory fallbacks), cases.ts (manifest, owners must exist). Result derivation design: tests are titled [case-id]; validate-mvp maps real vitest JSON outcomes to cases. Two vitest configs: tests/vitest.config.ts (harness unit tests, part of pnpm test) and vitest.system.config.ts (heavy specs, serialized, pnpm test:system). 14 harness tests pass; lint, typecheck, format clean.",
+        "files": [
+          "tests/system/harness/manifest.ts",
+          "tests/system/harness/guards.ts",
+          "tests/system/harness/ledger.ts",
+          "tests/system/harness/poll.ts",
+          "tests/system/harness/recorder.ts",
+          "tests/system/harness/services.ts",
+          "tests/system/harness/cases.ts"
+        ]
       }
     },
     "decisions": [],
