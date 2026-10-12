@@ -32,7 +32,7 @@ export const CAPABILITIES: readonly CapabilityDefinition[] = [
   },
   {
     name: 'vault.storage',
-    implemented: false,
+    implemented: true,
     serverKeys: [
       'S3_ENDPOINT',
       'S3_BUCKET',
@@ -50,23 +50,23 @@ export const CAPABILITIES: readonly CapabilityDefinition[] = [
     serverKeys: ['QWEN_API_KEY', 'QWEN_BASE_URL', 'QWEN_MODEL', 'DATABASE_URL'],
     publicKeys: [],
   },
-  { name: 'chain.rpc', implemented: false, serverKeys: ['ALCHEMY_MONAD_RPC_URL'], publicKeys: [] },
+  { name: 'chain.rpc', implemented: true, serverKeys: ['ALCHEMY_MONAD_RPC_URL'], publicKeys: [] },
   {
     name: 'chain.registry',
-    implemented: false,
+    implemented: true,
     serverKeys: [],
     publicKeys: ['NEXT_PUBLIC_CHAIN_ID', 'NEXT_PUBLIC_REGISTRY_ADDRESS'],
   },
   {
     name: 'history.envio',
-    implemented: false,
+    implemented: true,
     serverKeys: ['ENVIO_GRAPHQL_URL'],
     publicKeys: [],
   },
   { name: 'database.postgres', implemented: true, serverKeys: ['DATABASE_URL'], publicKeys: [] },
   {
     name: 'storage.s3',
-    implemented: false,
+    implemented: true,
     serverKeys: [
       'S3_ENDPOINT',
       'S3_BUCKET',

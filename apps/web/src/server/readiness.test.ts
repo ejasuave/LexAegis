@@ -14,11 +14,16 @@ const SECRET_VALUES = {
 
 const IMPLEMENTED: ReadonlySet<string> = new Set([
   'account.mera',
+  'vault.storage',
   'assistant.qwen',
+  'chain.rpc',
+  'chain.registry',
+  'history.envio',
   'database.postgres',
+  'storage.s3',
 ]);
 
-describe('readiness (accounts, the assistant runtime and the database are implemented)', () => {
+describe('readiness (every capability has code; none is verified by configuration alone)', () => {
   it('stays unavailable with no credentials at all, and nothing is called verified', () => {
     const report = buildReadinessReport({ env: {} }, 'req_1');
     expect(report.status).toBe('unavailable');
@@ -31,8 +36,13 @@ describe('readiness (accounts, the assistant runtime and the database are implem
     }
     expect(CAPABILITIES.filter((item) => item.implemented).map((item) => item.name)).toEqual([
       'account.mera',
+      'vault.storage',
       'assistant.qwen',
+      'chain.rpc',
+      'chain.registry',
+      'history.envio',
       'database.postgres',
+      'storage.s3',
     ]);
     expect(readinessReportSchema.safeParse(report).success).toBe(true);
   });

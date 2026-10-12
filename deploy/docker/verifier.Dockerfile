@@ -5,7 +5,7 @@ ENV PNPM_HOME=/pnpm PATH=/pnpm:$PATH CI=true
 RUN corepack enable && corepack prepare pnpm@11.11.0 --activate
 WORKDIR /repo
 COPY . .
-RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --frozen-lockfile --filter @lexaegis/verifier...
+RUN pnpm install --frozen-lockfile --filter @lexaegis/verifier...
 ARG VITE_CHAIN_ID
 ARG VITE_REGISTRY_ADDRESS
 ARG VITE_RPC_URL

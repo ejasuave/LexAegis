@@ -9,7 +9,7 @@ WORKDIR /repo
 
 FROM base AS build
 COPY . .
-RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --frozen-lockfile --filter @lexaegis/web...
+RUN pnpm install --frozen-lockfile --filter @lexaegis/web...
 ARG NEXT_PUBLIC_APP_ORIGIN
 ARG NEXT_PUBLIC_VERIFIER_ORIGIN
 ARG NEXT_PUBLIC_WEBAUTHN_RP_ID
@@ -25,6 +25,8 @@ WORKDIR /srv
 COPY --from=build --chown=node:node /repo/apps/web/.next/standalone ./
 COPY --from=build --chown=node:node /repo/apps/web/.next/static ./apps/web/.next/static
 COPY --from=build --chown=node:node /repo/apps/web/public ./apps/web/public
+COPY --from=build --chown=node:node /repo/apps/web/src/server/db/migrations ./migrations
+COPY --chown=node:node deploy/migrate.mjs ./migrate.mjs
 USER node
 EXPOSE 3000
 CMD ["node", "apps/web/server.js"]
