@@ -1,0 +1,20 @@
+{
+  "schema": "lexaegis.deployment-projection.v1",
+  "note": "Secret-free projection shared by the web app, SDK, verifier and Envio. Derived from contracts/deployments/monad-testnet.json; edit nothing here by hand.",
+  "network": "monad-testnet",
+  "chainId": "10143",
+  "genesisHash": "0x298034669ee44327d2da9744b9b2782848e2f2a6959756b7b0471b09a404f5c9",
+  "registryAddress": "0x453bfd1602d8a8666f55bf9a8d87b127cb94048f",
+  "deploymentTransactionHash": "0xe6d0be40e8410df1d7dd87b18463a4dfc53fb839cf0036784c018a886ebea04a",
+  "deploymentBlock": "69534196",
+  "deploymentBlockHash": "0x9f9a11f3234202e24d6f0c50fe85301cf09fa97652dfa236c97aa5bd22cde0a8",
+  "runtimeCodeKeccak256": "0x2389a742aa78c6aad56162f42e300cf0fb8cee571c1e822cd3d8a7cffd00ed71",
+  "abiSha256": "0x3047ed805c7c2ec21be1e0377f952ecce50028e5e9e33a0cc6678a2c2bf0c0d6",
+  "profiles": ["lexaegis.evm.bip32-prf.v1", "lexaegis.vault.hkdf-sha256.aes-256-gcm.v1"],
+  "evidence": {
+    "alchemyRead": "docs/evidence/chapter17-deployment-verify-alchemy-2026-10-12.json",
+    "indexerBinding": "pnpm indexer:verify-binding: binding verified (2026-10-12)",
+    "explorerSourceVerification": "NOT YET (Monadscan)",
+    "audit": "unaudited"
+  }
+}
