@@ -3,19 +3,20 @@
   "note": "Chapter 12 readiness record. Separates the LOCAL software gate from live capability evidence and from deployment readiness. Author's assessment from recorded results; not an audit, a legal compliance certification or a production-ready badge.",
   "recordedOn": "2026-10-12",
   "testedRevision": {
-    "baseCommit": "e1faccef8f2c3cf94cfcfe05bd68446467433e9b",
+    "baseCommit": "0309224bf9ce1601ae07ca51e7cbfeae8c4ae118",
     "dirtyWorktree": true,
-    "sourceFingerprint": "aa87c6249562f2cf97baeca0bb076a2a628dda438558bcd83405f8f03198a073",
-    "testsFingerprint": "39dd53bfd0c652aee6d6ae1caec124e04dfc51f39398a1b3637372b8371bfc45",
+    "sourceFingerprint": "50d9162cc02c27b55c19430c637a5afcceedc14c3fd5a1e0a0c7decb053483f8",
+    "testsFingerprint": "d112def23c68ed77f86c3a5740389a59d9baeff08f757811dda32c9acb82da27",
     "lockfileSha256": "18876f443fb1d96d69633c59cb602bef92403e0d0826eb35a2d67b885911f1c5",
-    "configSha256": "f92b7f8e3499cb0401a6cfbeee0e6210d81a32fd18fe66a0bb40144d46c4c472",
+    "configSha256": "54f73fc23fbdf0adeb614cbda5c94e8bffb350bb2a3bf9caee4e4dfe74ce9d58",
     "manifestSha256": "6bff06f63f0c96682c8cd2473b898033cb1b9bc3634bed7afb8482047e2af8d5",
     "report": "docs/system-validation/report.json",
-    "verifyWith": "pnpm validate:mvp --check"
+    "verifyWith": "pnpm validate:mvp --check",
+    "howRun": "in an isolated clean git worktree of the commit (fresh install, fresh generated files), so the running indexer and local PostgreSQL were not touched"
   },
   "localSoftwareGate": {
     "outcome": "pass",
-    "stages": "18/18 pass",
+    "stages": "19/19 pass",
     "cases": "63/63 satisfied",
     "negativeControls": "5/5 detected",
     "evidenceClasses": "unit, local_integration, browser_scripted (virtual authenticator, scripted provider and chain, loopback Anvil, throwaway PostgreSQL and S3-compatible server, synthetic documents)"
@@ -54,7 +55,7 @@
     "secondDeviceRecovery": "not_run",
     "registryReadOnly": "verified live read: code matched source through Alchemy and the public RPC (2026-10-12, docs/evidence/chapter12/live-read-2026-10-12.json)",
     "envioHistoryRead": "verified live read (2026-10-12, after starting the indexer against HyperSync): isReady true, progress block 70489249, source lag 2 blocks, public-head lag 140 blocks; an earlier read the same day was unavailable because the local engine was not running (docs/evidence/chapter12/live-read-2026-10-12.json)",
-    "liveQwenRun": "blocked: QWEN_API_KEY is configured but QWEN_BASE_URL (the workspace-specific Model Studio endpoint) is not, so pnpm validate:live qwen --spend-tokens made no call (QWEN_NOT_CONFIGURED; docs/evidence/chapter09-qwen-smoke-2026-10-12.json)",
+    "liveQwenRun": "verified: one genuine paid run on a synthetic fixture (2026-10-12; 6 provider request IDs, 4 read-only tool requests, 4 validated citations, cancellation acknowledged), recorded as live_provider evidence (docs/evidence/chapter09-qwen-smoke-2026-10-12.json). Gate C1 reads it; C2 (the T0 browser journey) is still NOT YET",
     "newTestnetLifecycle": "not_run (operator: pnpm smoke:testnet --operator-start)",
     "localDictationAndReadAloud": "unavailable on a real device; text fallback tested with scripted stand-ins",
     "claimsNotMade": [
