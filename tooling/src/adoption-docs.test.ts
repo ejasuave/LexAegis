@@ -101,3 +101,29 @@ describe('interview guide', () => {
       expect(text).toContain(field);
   });
 });
+
+describe('README verification example', () => {
+  const readme = readFileSync(join(root, '..', '..', 'README.md'), 'utf8');
+  const quickstart = readFileSync(join(root, '..', 'QUICKSTART.md'), 'utf8');
+
+  it('shows the complete runnable script that the quickstart executes, verbatim', () => {
+    const script = /cat > verify-local\.mjs <<'JS'\n([\s\S]*?)\nJS\n/.exec(quickstart)?.[1];
+    expect(script).toBeDefined();
+    expect(readme).toContain(script ?? 'missing');
+  });
+
+  it('leads with the approval, the limits and LexAegis as the first reference application', () => {
+    const lead = readme.slice(0, 900);
+    expect(lead).toMatch(/exact package of AI-assisted work/);
+    expect(lead).toMatch(/does \*\*not\*\* establish that the work is correct/);
+    expect(lead).toMatch(/professionally qualified/);
+    expect(lead).toMatch(/enforceable/);
+    expect(lead).toMatch(/first reference application/);
+  });
+
+  it('keeps the honest empty state visible and offers no hosted widget', () => {
+    expect(readme).toMatch(/no external trials recorded yet/i);
+    expect(readme).toMatch(/no entries yet/i);
+    expect(readme + quickstart).not.toMatch(/<script[^>]*src=["']https?:/i);
+  });
+});

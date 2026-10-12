@@ -72,6 +72,12 @@ Create (after an absence check), unlock, recover, lock, matters, source files (1
 - No badge or label says audited, secure, legally correct or professionally verified. "Verified" source on an explorer is code correspondence only.
 - Observed: registry runtime equals the source build (2026-10-11); Sourcify match; two full invariant campaigns; 72 static findings triaged; disclosure checks pass with 13 negative controls. None is an audit. Blockers: no deployable signer, no hosted deployment, Monadscan and a private reporting contact NOT YET.
 
+## Adoption kit (Chapter 18)
+
+- The `proof-of-review-status` widget (`packages/verify-embed`) is read-only and outside the assistant: no model, chat or voice input drives it, and it never signs, approves or requests a wallet. It shows Receipt status (active, revoked, superseded, not found, unknown) and File integrity as separate lines with text and icon, never "valid" or "verified".
+- Trust comes only from host configuration; missing or untrusted configuration, a wrong network or a failed read is `unknown`, never `not found`. File checks run only on an explicit Check files press.
+- The ai-pr-signoff example is a second domain, not an assistant tool: issuing needs two typed terminal confirmations. Local evidence only; testnet issue NOT YET.
+
 ## Requirements still open
 
 Chapters 12 and 13 validation (cited output, cancellation, isolation, approval binding, injection, accessibility) and the real-transaction demo.

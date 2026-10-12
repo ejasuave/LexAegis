@@ -141,6 +141,9 @@ const markdownFiles = [
   join(ROOT, 'packages', 'protocol', 'test-vectors', 'README.md'),
   join(ROOT, 'examples', 'document-review', 'README.md'),
   join(ROOT, 'examples', 'python-verify', 'README.md'),
+  join(ROOT, 'examples', 'embed', 'README.md'),
+  join(ROOT, 'examples', 'ai-pr-signoff', 'README.md'),
+  join(ROOT, 'packages', 'verify-embed', 'README.md'),
   join(ROOT, 'contracts', 'REGISTRY_REFERENCE.md'),
 ].filter((file) => existsSync(file));
 
@@ -267,9 +270,15 @@ check(
   ].every((needle) => rootReadme.includes(needle)),
 );
 check(
-  'the embeddable widget is marked NOT YET and offered nowhere',
-  /widget[^\n]*\*\*NOT YET\*\*/i.test(rootReadme) &&
-    !/<script[^>]*widget|embed\.js/i.test(rootReadme + quickstart),
+  'the widget is documented as local and unpublished: linked from the README, no hosted script anywhere',
+  rootReadme.includes('packages/verify-embed') &&
+    rootReadme.includes('examples/embed') &&
+    /no hosted script/i.test(rootReadme) &&
+    !/<script[^>]*src=["']https?:/i.test(rootReadme + quickstart),
+);
+check(
+  'the README states the honest empty evidence: No external trials recorded yet, No entries yet',
+  rootReadme.includes('No external trials recorded yet') && rootReadme.includes('No entries yet'),
 );
 
 // ---- 5. generated documentation stays out of production artifacts ----------------------------------------------

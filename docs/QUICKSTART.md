@@ -110,7 +110,8 @@ review-export.json
 
 `verifyReviewExport` decodes the file strictly, checks every file's exact bytes against the receipt
 reference **you** supply, and, only if you pass `live`, reads the registry. This first run is local: no
-request is made.
+request is made. The script below is the complete version of the three-line example in the repository
+[README](../README.md); this guide runs it against the installed tarballs.
 
 ```sh quickstart:path1 execute
 cd "$QS"
@@ -118,10 +119,18 @@ cat > verify-local.mjs <<'JS'
 import { readFile } from 'node:fs/promises';
 import { verifyReviewExport } from '@lexaegis/sdk/verify';
 
-const [bundle, reference] = process.argv.slice(2);
-const file = new Uint8Array(await readFile(bundle));
-const expectedReference = JSON.parse(await readFile(reference, 'utf8'));
-const result = await verifyReviewExport({ file, expectedReference });
+const [bundle, reference, policyFile] = process.argv.slice(2);
+const file = new Uint8Array(await readFile(bundle)); // the package you were sent
+const expectedReference = JSON.parse(await readFile(reference, 'utf8')); // obtained separately, never from the package
+// Optional registry read: only with a deployment record YOU trust and a public endpoint you choose.
+const live =
+  policyFile && process.env.PROOF_OF_REVIEW_RPC_URL
+    ? {
+        policy: JSON.parse(await readFile(policyFile, 'utf8')),
+        transport: { kind: 'rpc', url: process.env.PROOF_OF_REVIEW_RPC_URL },
+      }
+    : undefined;
+const result = await verifyReviewExport({ file, expectedReference, ...(live && { live }) });
 if (!result.ok) throw new Error(result.error.source + ' ' + result.error.failure.code);
 const { referenceOrigin, manifestIntegrity, artifactIntegrity, chainStatus, signerAcceptance } = result.data.report;
 console.log(JSON.stringify({ referenceOrigin, manifestIntegrity, artifactIntegrity, chainStatus, signerAcceptance }));

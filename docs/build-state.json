@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
-  "currentChapter": "18",
-  "nextChapter": "18",
+  "currentChapter": "12",
+  "nextChapter": "12",
   "project": {
     "name": "LexAegis",
     "primitive": "Proof of Review",
@@ -154,8 +154,8 @@
       "id": "18",
       "title": "Adoption Kit and Traction Evidence",
       "additive": true,
-      "state": "pending",
-      "evidence": [],
+      "state": "complete",
+      "evidence": ["chapter18.checks"],
       "chapterPromptPath": "build_instructions/prompt_library/LexAegis_Prompt_Library_Chapter_18_Targeted_Build_Tasks_v1_0.md"
     },
     {
@@ -5895,6 +5895,165 @@
         "browser": "chromium (playwright)",
         "published": false
       }
+    },
+    {
+      "id": "packages-check-20261012085207",
+      "subject": "packaged-consumer-check",
+      "sourceRevision": {
+        "commit": "8a241916ceb524e3c76a634ada95ea468a9bdb67",
+        "dirtyWorktree": true,
+        "contentFingerprint": "a55a2813eed9793b9459041128f6b6616e67113a79c784c287a4040280b39acb"
+      },
+      "checkedAt": "2026-10-12T08:52:08.519Z",
+      "command": "pnpm packages:check",
+      "environment": { "node": "v24.21.0", "os": "linux-x64", "pnpm": "11.11.0" },
+      "evidenceClass": "local_scripted",
+      "outcome": "pass",
+      "reasonCodes": ["LOCAL_TARBALLS_NOT_PUBLISHED", "AUTHORED_EXAMPLE_NOT_ADOPTION"],
+      "evidenceRefs": [],
+      "facts": {
+        "checksPassed": "44",
+        "checksTotal": "44",
+        "protocolTarballBytes": "72014",
+        "sdkTarballBytes": "85117",
+        "cliTarballBytes": "21356",
+        "protocolTarballSha256": "53058f8a7694b581bdd1a305377470ee74a48b7b7f52d74628559ef0629cea34",
+        "sdkTarballSha256": "e970c2ce2df348244a867c4ab9233bf86d820f454c21b07e2a9c8d7857f57b2b",
+        "cliTarballSha256": "599cabd5756bcd50cde36860ec175fcbd0fdb5420c5e488dad4fed2cede32ecb",
+        "protocolFiles": "68",
+        "sdkFiles": "71",
+        "cliFiles": "28",
+        "browser": "chromium (playwright)",
+        "published": false
+      }
+    },
+    {
+      "id": "rd-20261012085535-0fe95c-check-typecheck",
+      "subject": "check-typecheck",
+      "sourceRevision": {
+        "commit": "8a241916ceb524e3c76a634ada95ea468a9bdb67",
+        "dirtyWorktree": true,
+        "contentFingerprint": "a55a2813eed9793b9459041128f6b6616e67113a79c784c287a4040280b39acb"
+      },
+      "checkedAt": "2026-10-12T08:55:35.346Z",
+      "command": "pnpm readiness",
+      "environment": { "node": "v24.21.0", "os": "linux-x64", "pnpm": "11.11.0" },
+      "evidenceClass": "local_scripted",
+      "outcome": "pass",
+      "reasonCodes": [],
+      "evidenceRefs": []
+    },
+    {
+      "id": "rd-20261012085535-0fe95c-check-unit-tests",
+      "subject": "check-unit-tests",
+      "sourceRevision": {
+        "commit": "8a241916ceb524e3c76a634ada95ea468a9bdb67",
+        "dirtyWorktree": true,
+        "contentFingerprint": "a55a2813eed9793b9459041128f6b6616e67113a79c784c287a4040280b39acb"
+      },
+      "checkedAt": "2026-10-12T08:55:35.346Z",
+      "command": "pnpm readiness",
+      "environment": { "node": "v24.21.0", "os": "linux-x64", "pnpm": "11.11.0" },
+      "evidenceClass": "local_scripted",
+      "outcome": "pass",
+      "reasonCodes": [],
+      "evidenceRefs": []
+    },
+    {
+      "id": "rd-20261012085535-0fe95c-check-forge-test",
+      "subject": "check-forge-test",
+      "sourceRevision": {
+        "commit": "8a241916ceb524e3c76a634ada95ea468a9bdb67",
+        "dirtyWorktree": true,
+        "contentFingerprint": "a55a2813eed9793b9459041128f6b6616e67113a79c784c287a4040280b39acb"
+      },
+      "checkedAt": "2026-10-12T08:55:35.346Z",
+      "command": "pnpm readiness",
+      "environment": { "node": "v24.21.0", "os": "linux-x64", "pnpm": "11.11.0" },
+      "evidenceClass": "local_scripted",
+      "outcome": "pass",
+      "reasonCodes": [],
+      "evidenceRefs": []
+    },
+    {
+      "id": "rd-20261012085535-0fe95c-check-secret-scan",
+      "subject": "check-secret-scan",
+      "sourceRevision": {
+        "commit": "8a241916ceb524e3c76a634ada95ea468a9bdb67",
+        "dirtyWorktree": true,
+        "contentFingerprint": "a55a2813eed9793b9459041128f6b6616e67113a79c784c287a4040280b39acb"
+      },
+      "checkedAt": "2026-10-12T08:55:35.346Z",
+      "command": "pnpm readiness",
+      "environment": { "node": "v24.21.0", "os": "linux-x64", "pnpm": "11.11.0" },
+      "evidenceClass": "local_scripted",
+      "outcome": "fail",
+      "reasonCodes": ["EXIT_1"],
+      "evidenceRefs": []
+    },
+    {
+      "id": "rd-20261012085535-0fe95c-check-protected-baselines",
+      "subject": "check-protected-baselines",
+      "sourceRevision": {
+        "commit": "8a241916ceb524e3c76a634ada95ea468a9bdb67",
+        "dirtyWorktree": true,
+        "contentFingerprint": "a55a2813eed9793b9459041128f6b6616e67113a79c784c287a4040280b39acb"
+      },
+      "checkedAt": "2026-10-12T08:55:35.346Z",
+      "command": "pnpm readiness",
+      "environment": { "node": "v24.21.0", "os": "linux-x64", "pnpm": "11.11.0" },
+      "evidenceClass": "local_scripted",
+      "outcome": "pass",
+      "reasonCodes": [],
+      "evidenceRefs": []
+    },
+    {
+      "id": "rd-20261012085535-0fe95c-check-build",
+      "subject": "check-build",
+      "sourceRevision": {
+        "commit": "8a241916ceb524e3c76a634ada95ea468a9bdb67",
+        "dirtyWorktree": true,
+        "contentFingerprint": "a55a2813eed9793b9459041128f6b6616e67113a79c784c287a4040280b39acb"
+      },
+      "checkedAt": "2026-10-12T08:55:35.346Z",
+      "command": "pnpm readiness",
+      "environment": { "node": "v24.21.0", "os": "linux-x64", "pnpm": "11.11.0" },
+      "evidenceClass": "local_scripted",
+      "outcome": "pass",
+      "reasonCodes": [],
+      "evidenceRefs": []
+    },
+    {
+      "id": "rd-20261012085535-0fe95c-check-exclusion",
+      "subject": "check-exclusion",
+      "sourceRevision": {
+        "commit": "8a241916ceb524e3c76a634ada95ea468a9bdb67",
+        "dirtyWorktree": true,
+        "contentFingerprint": "a55a2813eed9793b9459041128f6b6616e67113a79c784c287a4040280b39acb"
+      },
+      "checkedAt": "2026-10-12T08:55:35.346Z",
+      "command": "pnpm readiness",
+      "environment": { "node": "v24.21.0", "os": "linux-x64", "pnpm": "11.11.0" },
+      "evidenceClass": "local_scripted",
+      "outcome": "pass",
+      "reasonCodes": [],
+      "evidenceRefs": []
+    },
+    {
+      "id": "rd-20261012085535-0fe95c-chapters-1-3-checks",
+      "subject": "chapters-1-3-checks",
+      "sourceRevision": {
+        "commit": "8a241916ceb524e3c76a634ada95ea468a9bdb67",
+        "dirtyWorktree": true,
+        "contentFingerprint": "a55a2813eed9793b9459041128f6b6616e67113a79c784c287a4040280b39acb"
+      },
+      "checkedAt": "2026-10-12T08:55:35.346Z",
+      "command": "pnpm readiness",
+      "environment": { "node": "v24.21.0", "os": "linux-x64", "pnpm": "11.11.0" },
+      "evidenceClass": "local_scripted",
+      "outcome": "pass",
+      "reasonCodes": [],
+      "evidenceRefs": []
     }
   ],
   "appliedCuts": [],
@@ -5922,7 +6081,7 @@
             "id": "A1",
             "label": "Chapters 1–3 build and tests pass",
             "state": "satisfied",
-            "resultId": "rd-20261011212833-e42176-chapters-1-3-checks"
+            "resultId": "rd-20261012085535-0fe95c-chapters-1-3-checks"
           },
           {
             "id": "A2",
@@ -5932,7 +6091,7 @@
           }
         ],
         "reasons": ["MISSING:A2", "UNPROVEN_AT_CUTOFF"],
-        "observedAt": "2026-10-11T21:28:33.064Z"
+        "observedAt": "2026-10-12T08:55:35.346Z"
       },
       {
         "gate": "B",
@@ -5985,7 +6144,7 @@
       {
         "gate": "D",
         "target": "2026-10-11T23:59:59+01:00",
-        "outcome": "unknown",
+        "outcome": "fail",
         "requirements": [
           { "id": "D1", "label": "Feature freeze recorded", "state": "missing", "resultId": null },
           { "id": "D2", "label": "Verifier passes", "state": "missing", "resultId": null },
@@ -6005,7 +6164,8 @@
           "MISSING:D3",
           "MISSING:D4",
           "MISSING:D5",
-          "MISSING:D6"
+          "MISSING:D6",
+          "UNPROVEN_AT_CUTOFF"
         ],
         "observedAt": null
       }
@@ -6017,7 +6177,7 @@
         "HOSTED_T0_INCOMPLETE: dropping the bounties does not complete the hosted golden path"
       ]
     },
-    "evaluatedAt": "2026-10-11T21:28:33.064Z"
+    "evaluatedAt": "2026-10-12T08:55:35.346Z"
   },
   "cutLadder": {
     "order": [
@@ -6048,20 +6208,20 @@
     "fixtureTargets": { "required": 8, "stretch": 12 }
   },
   "readiness": {
-    "runId": "rd-20261011212833-e42176",
-    "generatedAt": "2026-10-11T21:28:33.064Z",
+    "runId": "rd-20261012085535-0fe95c",
+    "generatedAt": "2026-10-12T08:55:35.346Z",
     "live": false,
-    "fingerprint": "aa128e4e2da0af3504ccb58d689036631e0182d3dedb927bdcbea5b897d331ed",
-    "totalMs": 39473,
+    "fingerprint": "a55a2813eed9793b9459041128f6b6616e67113a79c784c287a4040280b39acb",
+    "totalMs": 43976,
     "versions": { "node": "v24.21.0", "pnpm": "11.11.0", "forge": "1.8.5" },
     "checks": [
-      { "id": "typecheck", "outcome": "pass", "reason": "OK", "durationMs": 28540 },
-      { "id": "unit-tests", "outcome": "pass", "reason": "OK", "durationMs": 19779 },
-      { "id": "forge-test", "outcome": "pass", "reason": "OK", "durationMs": 34324 },
-      { "id": "secret-scan", "outcome": "fail", "reason": "EXIT_1", "durationMs": 730 },
-      { "id": "protected-baselines", "outcome": "pass", "reason": "OK", "durationMs": 540 },
-      { "id": "build", "outcome": "pass", "reason": "OK", "durationMs": 4977 },
-      { "id": "exclusion", "outcome": "pass", "reason": "OK", "durationMs": 788 }
+      { "id": "typecheck", "outcome": "pass", "reason": "OK", "durationMs": 32329 },
+      { "id": "unit-tests", "outcome": "pass", "reason": "OK", "durationMs": 23265 },
+      { "id": "forge-test", "outcome": "pass", "reason": "OK", "durationMs": 37594 },
+      { "id": "secret-scan", "outcome": "fail", "reason": "EXIT_1", "durationMs": 781 },
+      { "id": "protected-baselines", "outcome": "pass", "reason": "OK", "durationMs": 646 },
+      { "id": "build", "outcome": "pass", "reason": "OK", "durationMs": 5398 },
+      { "id": "exclusion", "outcome": "pass", "reason": "OK", "durationMs": 790 }
     ]
   },
   "cutLadderChecks": {
@@ -8595,7 +8755,7 @@
   },
   "chapter18": {
     "startedOn": "2026-10-12",
-    "state": "in_progress",
+    "state": "complete",
     "tasks": {
       "1": {
         "status": "complete",
@@ -8708,13 +8868,75 @@
           ".github/ISSUE_TEMPLATE/integration-report.yml",
           "tooling/src/issue-forms.test.ts"
         ]
+      },
+      "12": {
+        "status": "complete",
+        "summary": "README first screen rewritten additively (one-sentence statement, signing account approved the committed package, correctness/qualification/enforceability not established, LexAegis the first reference application, three-line read-only SDK example plus the complete runnable script that pnpm quickstart:check runs against the packed packages, verbatim-equality tested), links to quickstart, spec, verifier, CLI, widget, second-domain example and deployment record (local paths only; no hosted URLs). Full verification matrix run (see chapter18.checks). docs-check updated (new READMEs scanned; widget documented as local and unpublished; honest empty-state strings required). Independent Python cross-check of the new profile added. Protected baselines, vectors, registry/ABI/EIP-712, exports, CLI defaults unchanged. Discrepancies and resolved choices recorded in chapter18.decisions; CLAUDE.md and docs/assistant-ui-contract.md updated within their budgets.",
+        "files": [
+          "README.md",
+          "tooling/scripts/docs-check.ts",
+          "tooling/src/adoption-docs.test.ts",
+          "examples/ai-pr-signoff/src/interop.test.ts",
+          "docs/QUICKSTART.md",
+          "CLAUDE.md",
+          "docs/assistant-ui-contract.md"
+        ]
       }
     },
-    "decisions": [],
+    "decisions": [
+      "Generic profile support, not legal-only coupling: lexaegis.ai-pr-signoff v1 uses the existing generic profile mechanism (profileIdSchema already accepts it, as the document-review example already did); no protocol, manifest, role, vector or schema change was needed or made.",
+      "Host-supplied trust for the widget: the only source of trust is the host configuration (RegistryPolicy records, RPC endpoint, approved origins). Markup, bundle values and RPC responses cannot establish a deployment, endpoint or origin; missing or unknown configuration shows unknown with a reason, and only an identity-checked read of the configured registry can show not found.",
+      "Explicit optional package retrieval: nothing is downloaded until Check files is pressed; the URL comes only from the host attribute on an approved origin; the fetch is credentials-omitted, redirect-refusing, no-referrer, no-store with a 30 s total and a 48 MiB decoded-byte cap (a transport limit equal to the existing export limit); the check is local so file integrity and chain status stay independent lines.",
+      "Public readable-package disclosure: package-url is for a deliberately published synthetic package; documented in the widget README and the guide, with confidential evidence directed to the local verifier or CLI.",
+      "Local versus live example evidence: every widget and ai-pr-signoff result is local compatibility evidence on a throwaway Anvil chain; the operator-run Monad Testnet issue is NOT YET and no real reference, transaction or checkpoint is recorded.",
+      "Counts are current evidence-backed relationship statuses: one row per relationship, five ladder statuses, internal separated from external, reviewed separated from pending, pitch-eligible = external and human-reviewed, statuses never summed into a customer count; empty log is valid.",
+      "Path decisions: the repository has no root scripts/ directory, so pnpm traction:summary is tooling/scripts/traction-summary.ts (logic in tooling/src/traction.ts); the quickstart evidence keeps its chapter15-quickstart-<date>.json name and each trial copy is preserved as chapter18-quickstart-trial<N>-<date>.json.",
+      "A PreparedReviewPackage cannot be rebuilt from a stored opening (its nonce is generated once at preparation), so the ai-pr-signoff issue command binds the ISSUE action from the independently retained reference through the SDK boundReviewActionSchema; a test proves it equals buildIssueAction. eslint permits the vault import in that one example file only (the task requires the unchanged vault primitives).",
+      "Outreach drafts measured after the final edit: 95, 91 and 92 words including placeholders (each under 120); an earlier note of 97/90/92 was superseded by the wording fix."
+    ],
     "limitations": [
-      "NOT YET: external trials, external adoption and any live Monad testnet widget evidence. All widget results are local compatibility evidence (throwaway Anvil chain 31337, synthetic receipts).",
-      "Pre-existing: pnpm secrets:check reports 2 findings in the git-ignored local .env (dated 2026-10-11, not created by this chapter and not touched); every tracked file is clean.",
-      "NOT YET: operator-run Monad Testnet issue for examples/ai-pr-signoff. Prerequisites: a dedicated funded synthetic testnet operator key, a public RPC endpoint and an operator at an interactive terminal. No deployment, reference, transaction or checkpoint is recorded."
-    ]
+      "NOT YET: external trials, external adoption, any outreach event, any practitioner conversation. No message was sent and no person was contacted.",
+      "NOT YET: operator-run Monad Testnet issue for examples/ai-pr-signoff (needs a dedicated funded synthetic testnet operator key, a public endpoint and an operator at a terminal). No live widget page and no hosted script exist; the GitHub repository is private and the packages are unpublished.",
+      "NOT YET: a hosted issue-form submission (the forms are validated locally by YAML shape only; no issue was opened).",
+      "NOT YET: roadmap start date (Day 0 depends on the hackathon result and the owner).",
+      "Pre-existing and carried forward: pnpm secrets:check reports two findings in the git-ignored local .env; every tracked file is clean.",
+      "Widget status is an observation of the configured registry at a block, not a verdict; Shadow DOM does not protect against the embedding page; package memory cleanup is best effort; browsers cannot pin DNS.",
+      "Automated trial durations are runner durations on an offline store; they are not a human time to understand the guide.",
+      "The Python cross-check of the new profile uses TypeScript-produced expected values (no frozen golden exists for it): it shows two implementations agree, not independent truth.",
+      "Chapter 12 has not run; real-device recovery (5), testnet credentials (6) and the live Qwen run (9) remain open from earlier chapters."
+    ],
+    "completedOn": "2026-10-12",
+    "ruleWaiver": "Chapter 17 is complete. Chapter 14 remains in-progress (owner decision) and Chapter 12 has not run: its validation plan exists only as a prompt, so no Chapter 12 result is reused or claimed.",
+    "checks": {
+      "note": "Observed 2026-10-12 on the final Chapter 18 source (commit 8a24191 plus the Task 12 edits, worktree dirty). Contract inputs unchanged: pnpm baselines:check reports 43 protected files and the compiled registry matching.",
+      "evidenceClasses": {
+        "localTests": "unit tests, tooling tests, real-Chromium tests on a throwaway Anvil chain (31337), packed-tarball trials",
+        "liveObservations": "none made by this chapter",
+        "internalTrials": "docs/integration-trials.md (trials 1 to 3), all internal",
+        "externalEvidence": "none: No external trials recorded yet; the traction log reads No entries yet",
+        "operatorRunTestnetIssue": "NOT YET"
+      },
+      "commands": {
+        "lint": "pnpm lint: clean",
+        "typecheck": "pnpm typecheck: clean (after pnpm indexer:codegen following the integration run)",
+        "format": "pnpm format:check: clean",
+        "unit": "pnpm test: 147 files, 1856 tests passed",
+        "build": "pnpm build: done",
+        "integration": "pnpm test:contracts:integration: 15 files, 137 tests passed (includes embed.anvil, embed-package.anvil, embed-example.anvil, ai-pr-signoff.anvil)",
+        "gates": "fixtures:check, baselines:check, spec:check, vectors:check, exclusion:check, packages:check (44/44), docs:check (15/15), state:validate all pass; secrets:check reports 2 findings in the git-ignored local .env only (carried forward from earlier chapters, not touched)",
+        "python": "pnpm interop:python: 138 cases passed, 0 failed, TypeScript compared; pnpm test:python: 20 passed; the new profile cross-check (examples/ai-pr-signoff/src/interop.test.ts) passed 5 of 5 cases in the independent Python checker (expected values from the TypeScript implementation)",
+        "quickstart": "pnpm quickstart:check: 13 of 13; installation 11631 ms, paths 1 and 2 local execution 1243 ms, path 3 7481 ms, path 4 4947 ms, manual or live 0 (runner durations on an offline store, not a human time)",
+        "traction": "pnpm traction:summary: valid empty log, zero counts, exit 0"
+      },
+      "widgetSizes": {
+        "tool": "vite 8.3.4 library mode, gzip level 9 via node:zlib, node v24.21.0",
+        "rawBytes": 407248,
+        "minifiedBytes": 260241,
+        "gzipBytes": 65991,
+        "note": "includes every bundled dependency; no target claimed"
+      },
+      "tarballs": "protocol 53058f8a…cea34, sdk e970c2ce…57b2b, cli 599cabd5…32ecb, verify-embed d44c2c60…2f08d (full values in docs/evidence/chapter18-quickstart-trial2-2026-10-12.json); identical across two runs"
+    },
+    "handoff": "Chapter 12 (or whichever chapter the owner chooses next in the run order 12, 19, 13) can rely on: packages/verify-embed (registerProofOfReviewStatus, bundle sizes, README), examples/embed (pnpm embed:example) and pnpm embed:harness / embed:check-page, examples/ai-pr-signoff (hash, keygen, prepare, issue, verify, export), docs/QUICKSTART.md paths 1 to 4 run by pnpm quickstart:check, docs/integration-trials.md (internal trials 1 to 3 and the external template), docs/adoption/{targets,outreach-messages,interview-guide,traction-log,ROADMAP}.md with pnpm traction:summary, docs/ROADMAP.md (pointer), .github/ISSUE_TEMPLATE/integration-{request,report}.yml. Honest states to keep: No external trials recorded yet; No entries yet; testnet issue NOT YET; nothing published."
   }
 }

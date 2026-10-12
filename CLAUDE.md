@@ -7,6 +7,7 @@ Status: `docs/build-state.json` (5 real-device recovery, 6 testnet credentials, 
 - `pnpm install --frozen-lockfile`, `lint`, `typecheck`, `test`, `build`
 - Gates: `fixtures:check`, `baselines:check`, `exclusion:check`, `secrets:check`, `packages:check`, `spec:check`, `vectors:check`, `docs:check`, `state:validate`, `readiness`
 - Security: `contracts:test:ci`, `contracts:static`, `verify:deployment`, `threat:check`, `test:privacy:browser`, `test:privacy:controls` (`SECURITY.md`).
+- Adoption kit: `quickstart:check` (runs docs/QUICKSTART.md, paths 1 to 4), `embed:example`, `embed:harness`, `embed:check-page`, `traction:summary`; local Anvil tests: `test:contracts:integration`.
 - Others: see `package.json`. TypeScript below 6.1.
 
 ## Workflow
@@ -29,6 +30,7 @@ Status: `docs/build-state.json` (5 real-device recovery, 6 testnet credentials, 
 
 - `protocol` (`/v1`), `sdk` (no hashing), `vault` (Web Crypto only, `/v1` frozen), `cli` (read-only), `agent` (server-only).
 - Web UI imports only `@/features/*/public`; server code never imports them, Mera or `@scure/bip32`. Test-only: `src/test-support`, `@lexaegis/agent/testing`.
+- `verify-embed` (browser only, no wallet/backend/app imports; trust only from host config). `examples/ai-pr-signoff` is generic-profile, issue only via typed terminal confirmations.
 - `apps/verifier` is standalone; `contracts`, `tooling`, `fixtures/*` never import `packages/`.
 
 ## Invariants
@@ -43,4 +45,5 @@ Status: `docs/build-state.json` (5 real-device recovery, 6 testnet credentials, 
 - Money is GBP minor units as decimal strings.
 - ERC-8004 identity: optional, inside hashed `agent-config` v2; never a manifest field; read-only.
 - Only real_device/live_testnet evidence passes live gates; gates are computed. Failed Gate B withdraws Mera bounty claims.
+- Adoption counts come only from `docs/adoption/traction-log.md` (evidence-reviewed external rows; internal trials never count). Keep `No external trials recorded yet` and `No entries yet` until real evidence exists. Widget/example results are local (Anvil); testnet issue NOT YET.
 - Registry code matched source 2026-10-11 (`docs/DEPLOYMENTS.md`); unaudited. Monadscan and a private reporting contact: NOT YET. `contracts/foundry.toml` is protected: campaign sizes via `FOUNDRY_*` only.

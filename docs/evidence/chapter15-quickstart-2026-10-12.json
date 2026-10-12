@@ -4,7 +4,7 @@
   "evidenceClass": "local_scripted",
   "command": "pnpm quickstart:check",
   "outcome": "pass",
-  "sourceRevision": "185a5c38252a929e43cd8ea763dd643084905d6f",
+  "sourceRevision": "8a241916ceb524e3c76a634ada95ea468a9bdb67",
   "workingTreeDirty": true,
   "environment": {
     "os": "linux 7.0.0-38-generic",
@@ -32,7 +32,7 @@
     {
       "file": "lexaegis-verify-embed-0.1.0.tgz",
       "bytes": 170064,
-      "sha256": "d44c2c60a64e30c7025e0c432af25370c7e1b3d98caf911baaa8ff9411f2f08d"
+      "sha256": "c9d2f94592db3cb79d76826d49ccd97dcd9108bb36449bc60a91570ca74a4a03"
     }
   ],
   "tools": {
@@ -43,34 +43,34 @@
       "id": "path1",
       "phase": "execute",
       "status": "pass",
-      "durationMs": 409
+      "durationMs": 395
     },
     "cli": {
       "id": "path2",
       "phase": "execute",
       "status": "pass",
-      "durationMs": 879
+      "durationMs": 848
     },
     "lifecycleLocal": {
       "id": "path3",
       "phase": "execute",
       "status": "pass",
-      "durationMs": 7293
+      "durationMs": 7481
     },
     "widgetLocal": {
       "id": "path4",
       "phase": "execute",
       "status": "pass",
-      "durationMs": 4876
+      "durationMs": 4947
     }
   },
   "timingsMs": {
-    "installation": 11776,
-    "localExecution": 1288,
-    "lifecycleLocalExecution": 7293,
-    "widgetLocalExecution": 4876,
+    "installation": 11631,
+    "localExecution": 1243,
+    "lifecycleLocalExecution": 7481,
+    "widgetLocalExecution": 4947,
     "liveStepsPerformedManually": 0,
-    "wallClockOfThisCheck": 25638
+    "wallClockOfThisCheck": 25687
   },
   "notRun": [],
   "liveSteps": "not performed: no check contacts a public network",
