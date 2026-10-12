@@ -1,0 +1,17 @@
+{
+  "schema": "lexaegis.system-findings.v1",
+  "note": "Findings from the Chapter 12 system validation. Severity is the author's assessment, not an audit rating. Safe reproduction cases use synthetic data only.",
+  "findings": [
+    {
+      "id": "F-001",
+      "severity": "low",
+      "invariant": "Saved, signed, confirmed, indexed and active are shown as separate readings; a failed server call is not shown as success.",
+      "case": "recovery-session-limits-and-late-callbacks",
+      "module": "apps/web account panel (Server sign-in reading)",
+      "reproduction": "Create an account and vault, expire every auth_sessions row in the test database, then create a matter. The vault reports 'Not signed in. Sign in to your account first' and 'Unsaved changes', but the header Server sign-in reading still says 'Signed in' until the next sign-in or sign-out.",
+      "status": "open",
+      "result": "No unauthorised access: the save is refused, the draft is kept and no session is silently created. The stale reading is a presentation inconsistency.",
+      "remaining": "Update the Server sign-in reading when a protected route answers 401, with a regression test."
+    }
+  ]
+}

@@ -1,4 +1,5 @@
 import { spawn, type ChildProcess } from 'node:child_process';
+import { createHash } from 'node:crypto';
 import { once } from 'node:events';
 import { createServer } from 'node:net';
 import { dirname, join } from 'node:path';
@@ -177,6 +178,14 @@ export async function startSystemChain(
 export const isBlocked = (value: unknown): value is Blocked =>
   typeof value === 'object' && value !== null && 'blocked' in value;
 
+async function portIsFree(port: number): Promise<boolean> {
+  const server = createServer();
+  return new Promise((resolve) => {
+    server.once('error', () => resolve(false));
+    server.listen(port, '127.0.0.1', () => server.close(() => resolve(true)));
+  });
+}
+
 async function freePort(): Promise<number> {
   const server = createServer();
   server.listen(0, '127.0.0.1');
@@ -215,7 +224,12 @@ export async function startWebApp(options: {
   readonly env: Readonly<Record<string, string>>;
   readonly reuseBuild?: boolean;
 }): Promise<WebApp | Blocked> {
-  const port = await freePort();
+  // NEXT_PUBLIC_* values are baked into the build, so a reusable build needs a stable port per name.
+  const stable = 3200 + (createHash('sha256').update(options.name).digest().readUInt16BE(0) % 700);
+  const stableFree = await portIsFree(stable);
+  const reuse =
+    stableFree && (options.reuseBuild === true || process.env.SYSTEM_REUSE_BUILD === '1');
+  const port = stableFree ? stable : await freePort();
   const origin = `http://localhost:${String(port)}`;
   const distDir = `.next-system-${options.name}`;
   const env: NodeJS.ProcessEnv = {
@@ -227,7 +241,7 @@ export async function startWebApp(options: {
     WEB_PORT: String(port),
     ...options.env,
   };
-  if (options.reuseBuild !== true && (await runNext(['build'], env)) !== 0)
+  if (!reuse && (await runNext(['build'], env)) !== 0)
     return { blocked: true, code: 'PREREQUISITE_MISSING', reason: 'START_FAILED' };
   const child: ChildProcess = spawn('pnpm', ['exec', 'next', 'start', '--port', String(port)], {
     cwd: join(repository, 'apps', 'web'),

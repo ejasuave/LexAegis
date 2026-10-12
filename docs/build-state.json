@@ -8972,6 +8972,16 @@
           "apps/web/src/server/chain/config.ts",
           "apps/web/src/server/chain/test-chain-seam.test.ts"
         ]
+      },
+      "4": {
+        "status": "complete",
+        "summary": "tests/system/account-and-vault-recovery.spec.ts (5 cases, all pass on the production build with a CDP VIRTUAL authenticator, real PostgreSQL and S3-compatible server; controller logic only, not authenticator synchronisation). (1) Frozen review recovery: after clearing ONLY the test origin's cookies/storage/IndexedDB/caches and keeping the credential, 'Recover vault' gives the same derived address, no new passkey, vault or object, an approval ticket is not restored, opening the saved review rebuilds the recoverable capture by retrieval and verification, and the exported readable file verifies with the SDK against the ORIGINAL independently copied reference (manifest and artifacts match). (2) A different authenticator, a PRF-less one and a cancelled ceremony each give a typed message ('The passkey prompt did not finish... Nothing was changed', 'does not support the PRF feature... use Recover account') and create no account, vault, session or passkey. (3) Storage faults never look empty: bytes changed behind VersityGW (the S3 server itself refuses to serve them: 'Storage is unavailable... does not mean it is empty'), a forged digest-consistent envelope (integrity check failed, not shown, not overwritten), a missing object and an unreadable bucket; ciphertext never overwritten, vault/object counts unchanged, genuine data recovers once restored. (4) Playwright clock: 5-minute idle (activity renews it) and 10-minute absolute limits lock signing, vault and account while the backend reading stays separate; clock rollback and a persisted pageshow lock; an expired backend session is refused with a typed message, the draft is kept ('Unsaved changes') and no session row is created. (5) Rollback: an already-observed head cannot regress (the refused save leaves the replayed head untouched); a full valid-head replay after ALL local state is lost is recorded as an undetectable limitation. Finding F-001 (stale 'Signed in' reading after a 401) recorded in docs/system-validation/findings.json. Harness additions: suite.ts, flows.ts, stable per-name port so NEXT_PUBLIC values match a reusable build (SYSTEM_REUSE_BUILD=1).",
+        "files": [
+          "tests/system/account-and-vault-recovery.spec.ts",
+          "tests/system/harness/suite.ts",
+          "tests/system/harness/flows.ts",
+          "docs/system-validation/findings.json"
+        ]
       }
     },
     "decisions": [],

@@ -58,4 +58,34 @@ export const SYSTEM_CASES: readonly SystemCaseV1[] = parseManifest([
     'The exported readable bundle verifies in a fresh verifier context against an independently supplied reference and the live registry, with no LexAegis backend contact.',
     'browser_scripted',
   ),
+  c(
+    'recovery-frozen-review-after-storage-clear',
+    'tests/system/account-and-vault-recovery.spec.ts',
+    "After only the test origin's storage and cookies are cleared, the same passkey recovers the same account, decrypted artifact bytes and original commitment without creating a passkey, vault or object; an approval ticket is never restored.",
+    'browser_scripted',
+  ),
+  c(
+    'recovery-wrong-credential-and-missing-prf',
+    'tests/system/account-and-vault-recovery.spec.ts',
+    'A different, PRF-less or cancelled authenticator yields a typed failure and never creates a replacement account, vault, session or silent passkey.',
+    'browser_scripted',
+  ),
+  c(
+    'recovery-storage-faults-are-not-an-empty-vault',
+    'tests/system/account-and-vault-recovery.spec.ts',
+    'Altered, forged, missing or unreachable ciphertext is reported as a specific failure, never as an empty vault, and nothing is overwritten or recreated.',
+    'browser_scripted',
+  ),
+  c(
+    'recovery-session-limits-and-late-callbacks',
+    'tests/system/account-and-vault-recovery.spec.ts',
+    'The 5-minute idle and 10-minute absolute limits lock the signing session and vault, a clock rollback and BFCache restoration lock them, and an expired backend session is never silently renewed.',
+    'browser_scripted',
+  ),
+  c(
+    'recovery-rollback-detection-and-limits',
+    'tests/system/account-and-vault-recovery.spec.ts',
+    'A head already observed in the active session cannot regress; a full replay of a valid old head after all local state is lost is a recorded, undetectable limitation.',
+    'browser_scripted',
+  ),
 ]);
