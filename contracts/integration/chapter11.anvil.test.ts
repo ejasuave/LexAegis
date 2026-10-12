@@ -162,7 +162,7 @@ afterAll(async () => {
   await local.stop();
 });
 
-describe('SDK verification against the real registry on local Anvil', () => {
+describe('[registry-supersession-and-successor-binding] SDK verification against the real registry on local Anvil', () => {
   let original: PreparedReviewPackage;
   let replacement: PreparedReviewPackage;
 

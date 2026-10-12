@@ -252,7 +252,7 @@ afterAll(async () => {
   );
 }, 60_000);
 
-describe('real engine rollback on a disposable chain', () => {
+describe('[indexer-projection-reorg-and-provenance] real engine rollback on a disposable chain', () => {
   it('removes an orphaned ISSUE and restores nonce and counters when another branch wins', async () => {
     const snapshot = (await rpc('evm_snapshot')) as string;
     const a = await pkg('legal', null);

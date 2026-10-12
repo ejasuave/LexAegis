@@ -208,4 +208,40 @@ export const SYSTEM_CASES: readonly SystemCaseV1[] = parseManifest([
     'The fee confirmation is its own step: a 30-second quote expires without sending, renewal re-quotes the same operation without re-signing and needs a new confirmation, and a double Send is one broadcast.',
     'browser_scripted',
   ),
+  c(
+    'chain-lost-response-and-restart-recovery',
+    'tests/system/chain-recovery.spec.ts',
+    'The public transaction identity is durable before bytes are sent; a lost response, lost bytes or a server restart is recovered from chain state with the exact bytes, and never triggers re-signing, a fee bump, funding, a second operation or a new commitment.',
+    'local_integration',
+  ),
+  c(
+    'chain-outage-and-inconsistent-observations',
+    'tests/system/chain-recovery.spec.ts',
+    'An RPC outage, a changed block hash after confirmation or a node on another chain is unknown or a contradiction, never failed, not_found or a second confirmation, and a stored confirmation is not downgraded.',
+    'local_integration',
+  ),
+  c(
+    'registry-lifecycle-and-replay-on-anvil',
+    'contracts/integration/registry.anvil.test.ts',
+    'ISSUE, REVOKE, SUPERSEDE, replay rejection and nonce invalidation run against the unchanged registry on isolated Anvil, through the SDK and the two-stage signer, with exact events and a separate executor.',
+    'local_integration',
+  ),
+  c(
+    'registry-supersession-and-successor-binding',
+    'contracts/integration/chapter11.anvil.test.ts',
+    'Supersession binds predecessor and successor, revoking a successor never reactivates its predecessor, undeclared and over-long chains are detected, and an unrelated executor is not the reviewer.',
+    'local_integration',
+  ),
+  c(
+    'funding-cooldown-reservations-and-crash-recovery',
+    'contracts/integration/chapter6.anvil.test.ts',
+    'Test-MON funding honours the cooldown, global value-plus-fee reservations and the single funder nonce, stores the signed outbox bytes before broadcast, retries identical bytes after a crash and never pays twice, with a local service key only.',
+    'local_integration',
+  ),
+  c(
+    'indexer-projection-reorg-and-provenance',
+    'indexer/test/engine.test.ts',
+    'Real indexer handlers project real local registry events deterministically, treat duplicates as no-ops, reject out-of-order and inconsistent input, roll back orphaned logs, and never override verified live lifecycle. The Envio runtime itself is not exercised.',
+    'local_integration',
+  ),
 ]);

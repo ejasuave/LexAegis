@@ -158,7 +158,7 @@ describe('operation coordination', () => {
   });
 });
 
-describe('funding coordination', () => {
+describe('[funding-cooldown-reservations-and-crash-recovery] funding coordination', () => {
   const grant = (over: Partial<Parameters<ChainStore['reserveGrant']>[0]> = {}) => ({
     id: uuid(),
     recipient: `0x${'cc'.repeat(20)}`,

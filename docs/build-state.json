@@ -9031,6 +9031,25 @@
           "apps/web/src/features/transactions/controller.test.ts",
           "docs/system-validation/findings.json"
         ]
+      },
+      "10": {
+        "status": "complete",
+        "summary": "tests/system/chain-recovery.spec.ts (6 tests, pass) on the production build with the unchanged registry on a loopback Anvil behind a NEW fault-injecting JSON-RPC proxy (tests/system/harness/fault-proxy.ts: lose_response after the node accepted a send, fail without forwarding, rewrite results; transport behaviour only, not evidence of Alchemy or Monad). Operations are nonce invalidations, the same outer-transaction pipeline as ISSUE/REVOKE/SUPERSEDE, which existing Anvil suites cover separately. Public identity first: the transaction hash and EOA nonce are in the database before the node sees bytes; a lost response after an accepted send leaves phase unknown with the hash recorded, different bytes for the same operation are refused, reconciliation from chain state alone confirms it, and the exact retry returns the same hash with no second send and one account transaction. Bytes lost before the node saw them: unknown outcome, the chain has no transaction, a refresh only observes (no send), a new operation is refused with ACCOUNT_BUSY, funding_grants is unchanged and no second operation exists; the identical bytes later complete it. Restart: a second process from the same build reads the stored hash and reconciles to confirmed. Outage during monitoring is unknown (never failed/cancelled/not_found/confirmed), the public state route says unknown under eth_call failure, and a later outage does not downgrade a confirmed row; a node reporting chain ID 1 produces no confirmed/active/not_found label. DEFECT FOUND AND FIXED (F-004, low): a refresh whose receipt reported a different block hash was returned as a plain confirmation because the remembered block hash was never passed to the monitor; it is now a CONTRADICTS_CONFIRMED observation while the stored confirmation does not move. Existing suites now tagged to cases: registry lifecycle and replay on Anvil (registry.anvil, chapter6 ISSUE/SUPERSEDE/REVOKE/invalidateNonce), supersession and successor binding on a real registry (chapter11), funding cooldown/reservation/nonce lease/crash retry (chapter6 and the PostgreSQL funding coordination tests), indexer projection, deterministic replay and real-engine rollback (indexer engine and indexer-rollback.anvil), SDK monitor outcomes. LIMITS: the Envio runtime and HyperSync are not run (handlers run in-process against real local logs; pagination and lag against a live indexer are not exercised: labelled simulated); Anvil is not evidence of Monad gas charging, execution delay or Alchemy; funding used a local service key only.",
+        "files": [
+          "tests/system/chain-recovery.spec.ts",
+          "tests/system/harness/fault-proxy.ts",
+          "tests/system/harness/suite.ts",
+          "tests/system/harness/cases.ts",
+          "apps/web/src/server/chain/operations.ts",
+          "docs/system-validation/findings.json",
+          "contracts/integration/registry.anvil.test.ts",
+          "contracts/integration/chapter6.anvil.test.ts",
+          "contracts/integration/chapter11.anvil.test.ts",
+          "contracts/integration/indexer-rollback.anvil.test.ts",
+          "indexer/test/engine.test.ts",
+          "apps/web/src/server/chain/operation-store.pgtest.ts",
+          "packages/sdk/src/transactions/monitor.test.ts"
+        ]
       }
     },
     "decisions": [],

@@ -18,6 +18,7 @@ import {
   type SystemServices,
   type WebApp,
 } from './services';
+import { startFaultProxy, type FaultProxy } from './fault-proxy';
 import { mkdtempSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
@@ -34,6 +35,10 @@ export interface Suite {
   /** Present when the suite was started with `localChain`: a loopback Anvil with the real registry. */
   readonly chain: SystemChain | null;
   readonly registry: DeployedRegistry | null;
+  /** Present with `faultProxy`: the application's only route to the node, with injectable faults. */
+  readonly proxy: FaultProxy | null;
+  /** The server environment the application was started with (non-secret, synthetic). */
+  readonly appEnv: Readonly<Record<string, string>>;
   /** A new context with a CDP virtual authenticator (PRF on by default). Simulated and labelled. */
   newSession(options?: {
     readonly prf?: boolean;
@@ -53,6 +58,8 @@ export interface SuiteOptions {
   readonly evidenceClass?: EvidenceClass;
   /** Run a loopback Anvil with the unchanged registry and point the application at it (test seam). */
   readonly localChain?: boolean;
+  /** Put a fault-injecting loopback proxy between the application and the local node. */
+  readonly faultProxy?: boolean;
   /** Extra server configuration, merged over the defaults. */
   readonly env?: (services: SystemServices) => Record<string, string>;
 }
@@ -75,6 +82,7 @@ export async function startSuite(options: SuiteOptions): Promise<Suite | Blocked
   if (isBlocked(services)) return block(services);
   let chain: SystemChain | null = null;
   let registry: DeployedRegistry | null = null;
+  let proxy: FaultProxy | null = null;
   let stopMiner: (() => void) | null = null;
   let scratch = '';
   let chainEnv: Record<string, string> = {};
@@ -90,37 +98,37 @@ export async function startSuite(options: SuiteOptions): Promise<Suite | Blocked
     const recordFile = join(scratch, 'local-deployment.json');
     writeLocalDeploymentRecord(recordFile, chain, registry);
     stopMiner = startMiner(chain);
+    if (options.faultProxy === true) proxy = await startFaultProxy(chain.local.rpcUrl);
     chainEnv = {
       LEXAEGIS_TEST_CHAIN: 'local-anvil',
       LEXAEGIS_TEST_CHAIN_DEPLOYMENT: recordFile,
-      ALCHEMY_MONAD_RPC_URL: chain.local.rpcUrl,
+      ALCHEMY_MONAD_RPC_URL: proxy?.url ?? chain.local.rpcUrl,
     };
   }
-  const app = await startWebApp({
-    name: options.name,
-    env: {
-      NEXT_PUBLIC_CHAIN_ID: '10143',
-      NEXT_PUBLIC_REGISTRY_ADDRESS: registry?.address ?? `0x${'ab'.repeat(20)}`,
-      DATABASE_URL: services.postgres.url,
-      S3_ENDPOINT: services.s3.endpoint,
-      S3_BUCKET: services.s3.bucket,
-      S3_REGION: services.s3.region,
-      S3_ACCESS_KEY_ID: services.s3.accessKeyId,
-      S3_SECRET_ACCESS_KEY: services.s3.secretAccessKey,
-      FEATURE_VOICE: 'false',
-      FEATURE_AGENT_IDENTITY: 'false',
-      FEATURE_REPUTATION_FEEDBACK: 'false',
-      LEXAEGIS_TEST_MODE: 'scripted-assistant',
-      ASSISTANT_TEST_PROVIDER_URL: services.provider.baseUrl,
-      QWEN_API_KEY: '',
-      QWEN_BASE_URL: '',
-      QWEN_OUTPUT_MODE: '',
-      ...chainEnv,
-      ...options.env?.(services),
-    },
-  });
+  const appEnv: Record<string, string> = {
+    NEXT_PUBLIC_CHAIN_ID: '10143',
+    NEXT_PUBLIC_REGISTRY_ADDRESS: registry?.address ?? `0x${'ab'.repeat(20)}`,
+    DATABASE_URL: services.postgres.url,
+    S3_ENDPOINT: services.s3.endpoint,
+    S3_BUCKET: services.s3.bucket,
+    S3_REGION: services.s3.region,
+    S3_ACCESS_KEY_ID: services.s3.accessKeyId,
+    S3_SECRET_ACCESS_KEY: services.s3.secretAccessKey,
+    FEATURE_VOICE: 'false',
+    FEATURE_AGENT_IDENTITY: 'false',
+    FEATURE_REPUTATION_FEEDBACK: 'false',
+    LEXAEGIS_TEST_MODE: 'scripted-assistant',
+    ASSISTANT_TEST_PROVIDER_URL: services.provider.baseUrl,
+    QWEN_API_KEY: '',
+    QWEN_BASE_URL: '',
+    QWEN_OUTPUT_MODE: '',
+    ...chainEnv,
+    ...options.env?.(services),
+  };
+  const app = await startWebApp({ name: options.name, env: appEnv });
   if (isBlocked(app)) {
     stopMiner?.();
+    await proxy?.stop();
     await chain?.stop();
     await services.stop();
     return block(app);
@@ -132,6 +140,8 @@ export async function startSuite(options: SuiteOptions): Promise<Suite | Blocked
     browser,
     chain,
     registry,
+    proxy,
+    appEnv,
     async newSession(sessionOptions = {}) {
       const context = await browser.newContext({
         reducedMotion: 'reduce',
@@ -149,6 +159,7 @@ export async function startSuite(options: SuiteOptions): Promise<Suite | Blocked
     },
     async stop() {
       stopMiner?.();
+      await proxy?.stop();
       await browser.close();
       await app.stop();
       await chain?.stop();

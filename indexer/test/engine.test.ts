@@ -23,7 +23,7 @@ import {
 const summaryOf = async (f: ReturnType<typeof fresh>, reviewer = ALICE) =>
   f.indexer.ReviewerSummary.getOrThrow(reviewerKey(reviewer));
 
-describe('lifecycle projections against the real handlers', () => {
+describe('[indexer-projection-reorg-and-provenance] lifecycle projections against the real handlers', () => {
   it('projects the first ISSUE as one active receipt and one action', async () => {
     const f = fresh();
     await f.run([issued({ block: 1 }, { commitment: C1, nonce: 0n })]);
@@ -314,7 +314,7 @@ describe('rejected transitions publish nothing', () => {
   });
 });
 
-describe('deterministic replay', () => {
+describe('[indexer-projection-reorg-and-provenance] deterministic replay', () => {
   const sequence = () => [
     issued({ block: 1 }, { commitment: C1, nonce: 0n }),
     issued({ block: 2 }, { reviewer: BOB, commitment: C1, nonce: 0n }),

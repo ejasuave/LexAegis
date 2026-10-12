@@ -34,6 +34,17 @@
       "status": "fixed",
       "result": "requote now asks the same operation for a fresh quote and falls back to a new reservation only if that quote is refused. Nothing is re-signed or sent by renewal. Regression: controller.test.ts (two tests) and the system spec, which waits out a real 30-second quote, renews, and sends exactly one transaction.",
       "remaining": "None for this case."
+    },
+    {
+      "id": "F-004",
+      "severity": "low",
+      "invariant": "A confirmed block that a later reading contradicts is reported as a contradiction, never as a second confirmation on another block.",
+      "case": "chain-outage-and-inconsistent-observations",
+      "module": "apps/web server chain operations (reconcileOperation)",
+      "reproduction": "Confirm an operation, then refresh while the node reports the receipt under a different block hash. The stored record was protected (a confirmed row never changes), but the refresh response described the new reading as a plain confirmation with no mismatch, because the remembered block hash was never passed to the monitor.",
+      "status": "fixed",
+      "result": "reconcileOperation passes the stored block hash as previouslyConfirmedBlockHash for a confirmed operation, so the observation is 'unknown' with mismatch CONTRADICTS_CONFIRMED while the stored confirmation neither moves nor disappears. Regression: the system case 'a changed block hash after confirmation'.",
+      "remaining": "The browser panel's presentation of a contradicting observation is not separately tested here."
     }
   ]
 }

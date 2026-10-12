@@ -367,7 +367,15 @@ export async function reconcileOperation(
     return { ok: true, data: { operation: toRecord(row, deps.policy), observation: null } };
   }
   const observation = await observeTransaction(
-    { client: deps.client.monitor, policy: deps.policy, now: deps.now },
+    {
+      client: deps.client.monitor,
+      policy: deps.policy,
+      now: deps.now,
+      // A confirmed block is remembered: a later reading that disagrees is a contradiction to show,
+      // never a quiet second confirmation on another block.
+      ...(row.phase === 'confirmed' &&
+        row.blockHash !== null && { previouslyConfirmedBlockHash: row.blockHash.toLowerCase() }),
+    },
     monitorTarget(row.transactionHash as Hex, owner, row.transactionNonce, row, request),
   );
   // A submitted-but-unseen transaction stays as it was; stronger phases are recorded.

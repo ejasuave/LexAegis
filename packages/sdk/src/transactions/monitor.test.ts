@@ -92,7 +92,7 @@ const observe = (w: World, extra: Partial<Parameters<typeof observeTransaction>[
     target,
   );
 
-describe('transaction outcomes', () => {
+describe('[chain-outage-and-inconsistent-observations] transaction outcomes', () => {
   it('confirms only when the block is covered by the execution checkpoint', async () => {
     expect(await observe(world({ finalized: 60n }))).toMatchObject({
       outcome: 'confirmed',

@@ -213,7 +213,7 @@ describe('chain access and capabilities', () => {
   });
 });
 
-describe('bounded test-MON funding', () => {
+describe('[funding-cooldown-reservations-and-crash-recovery] bounded test-MON funding', () => {
   it('funds the authenticated account once and confirms arrival at the execution checkpoint', async () => {
     const result = await requestTestnetFunding(fundingDeps(), reviewer);
     expect(result).toMatchObject({ status: 'confirmed', amountWei: DEFAULT_GRANT_WEI.toString() });
@@ -345,7 +345,7 @@ async function runExecute(bound: BoundReviewAction, prepared: PreparedReviewPack
   return { id, request, input, raw: raw.data, sent: sent.data, settled: settled.data };
 }
 
-describe('ISSUE, SUPERSEDE and REVOKE through Mera, the two-stage signer and Alchemy-shaped RPC', () => {
+describe('[registry-lifecycle-and-replay-on-anvil] ISSUE, SUPERSEDE and REVOKE through Mera, the two-stage signer and Alchemy-shaped RPC', () => {
   const state: { original?: Package; replacement?: Package } = {};
 
   it('ISSUE: both confirmations, durable hash, execution-checkpoint confirmation and exact events', async () => {
@@ -569,7 +569,7 @@ describe('browser-side restrictions', () => {
   });
 });
 
-describe('server-side restrictions on a user-signed transaction', () => {
+describe('[approval-server-rejects-forged-transactions] server-side restrictions on a user-signed transaction', () => {
   it('rejects wrong sender, extra calldata, value, recipient, EIP-7702, fee-cap bypass and wrong nonce', async () => {
     await tick();
     const owner = tester.address.toLowerCase();

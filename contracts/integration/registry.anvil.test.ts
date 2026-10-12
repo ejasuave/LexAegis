@@ -202,7 +202,7 @@ afterAll(async () => {
   await local.stop();
 });
 
-describe('local Anvil compatibility', () => {
+describe('[registry-lifecycle-and-replay-on-anvil] local Anvil compatibility', () => {
   it('deploys the committed build, which has no constructor arguments or privileged account', async () => {
     const bytecode = creationCode('ProofOfReviewRegistry.sol', 'ProofOfReviewRegistry');
     expect(keccak256(bytecode)).toBe(buildDescriptor.bytecode.creationCodeKeccak256);
