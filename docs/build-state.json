@@ -9196,6 +9196,44 @@
       "outcome": "pass",
       "reasonCodes": [],
       "evidenceRefs": []
+    },
+    {
+      "id": "packages-check-20261012222327",
+      "subject": "packaged-consumer-check",
+      "sourceRevision": {
+        "commit": "f07eccd875074153a5564875c83e5a7606796a33",
+        "dirtyWorktree": true,
+        "contentFingerprint": "5afabc0dbfef0e5f0a590c17d444b05e42718da2466225bd5439354184ee15a5"
+      },
+      "checkedAt": "2026-10-12T22:23:27.822Z",
+      "command": "pnpm packages:check",
+      "environment": {
+        "node": "v24.21.0",
+        "os": "linux-x64",
+        "pnpm": "11.11.0"
+      },
+      "evidenceClass": "local_scripted",
+      "outcome": "pass",
+      "reasonCodes": [
+        "LOCAL_TARBALLS_NOT_PUBLISHED",
+        "AUTHORED_EXAMPLE_NOT_ADOPTION"
+      ],
+      "evidenceRefs": [],
+      "facts": {
+        "checksPassed": "44",
+        "checksTotal": "44",
+        "protocolTarballBytes": "72014",
+        "sdkTarballBytes": "85117",
+        "cliTarballBytes": "21356",
+        "protocolTarballSha256": "53058f8a7694b581bdd1a305377470ee74a48b7b7f52d74628559ef0629cea34",
+        "sdkTarballSha256": "e970c2ce2df348244a867c4ab9233bf86d820f454c21b07e2a9c8d7857f57b2b",
+        "cliTarballSha256": "599cabd5756bcd50cde36860ec175fcbd0fdb5420c5e488dad4fed2cede32ecb",
+        "protocolFiles": "68",
+        "sdkFiles": "71",
+        "cliFiles": "28",
+        "browser": "chromium (playwright)",
+        "published": false
+      }
     }
   ],
   "appliedCuts": [],
@@ -12515,6 +12553,15 @@
           "deploy/static-server.mjs",
           ".dockerignore",
           "apps/web/next.config.ts"
+        ]
+      },
+      "4": {
+        "status": "complete",
+        "summary": "README gains an honest hosted/registry/limits section (no hosted links: NOT YET); deploy/README.md. Observed: secrets:check clean, 144-commit history scan found no real secret (the only match is Envio's public local default), packages:check 44/44 on local tarballs. BLOCKED: repository is PRIVATE with no licence; anonymous read returns 404, so visibility change, licence and judge access are left to the owner (no invite sent, no history rewrite).",
+        "files": [
+          "README.md",
+          "deploy/README.md",
+          "docs/release/publication.json"
         ]
       }
     }

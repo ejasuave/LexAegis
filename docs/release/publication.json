@@ -1,0 +1,25 @@
+{
+  "schema": "lexaegis.publication-status.v1",
+  "checkedAt": "2026-10-12",
+  "repository": {
+    "url": "https://github.com/ejasuave/LexAegis",
+    "visibility": "PRIVATE",
+    "anonymousReadObserved": false,
+    "anonymousHttpStatus": 404,
+    "state": "blocked",
+    "blocker": "Repository visibility is private and no licence is chosen. Changing visibility and choosing a licence are owner decisions that no instruction in this repository grants. The judge address metropolis@hackathon.monad.xyz was not invited."
+  },
+  "licence": {
+    "chosen": null,
+    "note": "Not established. No copyright holder or licence text has been invented."
+  },
+  "scan": {
+    "files": "pnpm secrets:check: clean",
+    "history": "144 commits scanned for each non-empty secret value in the local environment file: zero matches, except ENVIO_GRAPHQL_ADMIN_SECRET, whose 7-character value is Envio's documented local-development default, not a credential. PEM matches in history are scanner test strings.",
+    "largeMedia": "UI_UX_Instructions/ui_reference-video.mp4 (32 MB, a design reference) is in history since the first commit. History was not rewritten; if size matters, it needs an owner decision."
+  },
+  "packages": {
+    "check": "pnpm packages:build && pnpm packages:check: 44 of 44 checks passed on local tarballs (observed 2026-10-12)",
+    "npm": "not published; no owned namespace or publication intent recorded"
+  }
+}

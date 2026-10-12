@@ -76,6 +76,17 @@ the pull-request example were verified on a throwaway local chain; an operator-r
 any live widget page are **NOT YET**. **No external trials recorded yet.** The traction log's entries read: **No entries yet**. An honest empty log
 is not a failure, and it is not traction.
 
+## Hosted application and registry
+
+- **Registry:** Monad Testnet (chain `10143`), `0x453bfd1602d8a8666f55bf9a8d87b127cb94048f`, unaudited,
+  non-upgradeable. Deployment record and read-back evidence: [`docs/DEPLOYMENTS.md`](docs/DEPLOYMENTS.md).
+- **Hosted application and verifier:** **NOT YET.** No production origin exists, so there are no
+  hosted links on this page. Container files and the release procedure are in [`deploy/`](deploy/README.md);
+  release status is recorded in `docs/build-state.json` and `docs/release/`.
+- **Known limits:** testnet only; supported text documents; rules are draft until reviewed; the
+  assistant sends selected plaintext to a model provider; a receipt proves package and account
+  binding, not legal validity or practitioner qualification. No licence has been chosen yet.
+
 ## Working in this repository
 
 Node 24+ and pnpm 11. `pnpm install --frozen-lockfile`, then `pnpm lint`, `pnpm typecheck`,
