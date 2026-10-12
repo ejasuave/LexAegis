@@ -8591,6 +8591,15 @@
           "contracts/integration/embed-fixture.ts",
           "contracts/integration/embed.anvil.test.ts"
         ]
+      },
+      "4": {
+        "status": "complete",
+        "summary": "Optional package-url path (packages/verify-embed/src/package-check.ts): explicit Check files click only; fetch with mode cors, credentials omit, redirect error, referrerPolicy no-referrer, cache no-store, approved origin only (checked before any request); 30 s total timeout; streamed/decompressed byte count capped at the ReviewExportV1 encoded limit (48 MiB, documented as a transport limit); verifyReviewExport against the reference built from the host attributes (local only, no registry call), so chain status and file integrity stay independent lines. Outcomes matching/mismatched/incomplete/unsupported/unavailable. Real-Chromium tests (contracts/integration/embed-package.anvil.test.ts, 16 pass) cover no fetch before click, exact match, altered bytes, missing evidence, encrypted export, malformed, 404, refused redirect, CORS failure, wrong expected reference, 48 MiB chunked and gzip-bomb bodies, disallowed origin without a request, timeout via fake clock, RPC failure after a completed local check, and no artifact hash/label/nonce in RPC bodies, DOM or console. 38 unit tests in the package pass.",
+        "files": [
+          "packages/verify-embed/src/package-check.ts",
+          "packages/verify-embed/src/package-check.test.ts",
+          "contracts/integration/embed-package.anvil.test.ts"
+        ]
       }
     },
     "decisions": [],

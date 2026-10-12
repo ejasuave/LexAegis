@@ -50,6 +50,8 @@ export interface EmbedFixture {
       status?: number;
       redirectTo?: string;
       delayMs?: number;
+      noCors?: boolean;
+      chunked?: boolean;
       headers?: Record<string, string>;
     }
   >;
@@ -127,13 +129,28 @@ export async function startEmbedFixture(): Promise<EmbedFixture> {
           response.writeHead(302, { ...CORS, location: item.redirectTo }).end();
           return;
         }
-        response
-          .writeHead(item.status ?? 200, {
-            ...CORS,
-            'content-type': 'application/json',
-            ...item.headers,
-          })
-          .end(item.body);
+        const headers = {
+          ...(item.noCors === true ? {} : CORS),
+          'content-type': 'application/json',
+          ...item.headers,
+        };
+        if (item.chunked === true) {
+          // No content-length: the widget must count the bytes it actually reads.
+          response.writeHead(item.status ?? 200, headers);
+          const bytes = typeof item.body === 'string' ? Buffer.from(item.body) : item.body;
+          let offset = 0;
+          const pump = (): void => {
+            if (response.destroyed || offset >= bytes.length) {
+              response.end();
+              return;
+            }
+            response.write(bytes.subarray(offset, offset + 1_048_576), () => pump());
+            offset += 1_048_576;
+          };
+          pump();
+          return;
+        }
+        response.writeHead(item.status ?? 200, headers).end(item.body);
       };
       if (item.delayMs !== undefined) setTimeout(send, item.delayMs);
       else send();
