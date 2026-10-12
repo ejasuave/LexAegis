@@ -37,6 +37,7 @@
     "secrets:check": "tsx tooling/scripts/secrets-scan.ts",
     "prf:probe": "tsx tooling/scripts/prf-probe.ts",
     "readiness": "tsx tooling/scripts/readiness.ts",
+    "release": "tsx tooling/scripts/release.ts",
     "validate:mvp": "tsx tooling/scripts/validate-mvp.ts",
     "validate:live": "tsx tooling/scripts/live-evidence.ts",
     "smoke:local": "tsx tooling/scripts/smoke-local.ts",

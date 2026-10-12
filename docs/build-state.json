@@ -12592,6 +12592,14 @@
         "files": [
           "deploy/ingress.json"
         ]
+      },
+      "9": {
+        "status": "complete",
+        "summary": "tooling/scripts/release.ts (pnpm release prepare|deploy|verify; placed under tooling/scripts per repo convention, not a new scripts/ dir). prepare writes a secret-free candidate manifest (revision, config digest, migration, registry, indexer, verifier static digest). deploy refuses on stale candidate, incomplete Chapter 12, unprovisioned target or missing provider token and exits 3 with typed blockers; observed: BLOCKED TARGET_UNPROVISIONED, NO_PROVIDER_ACCESS. Provider mutation NOT implemented (no provider CLI/token to verify against). verify reports unconfigured origins as blocked. No release IDs, URLs or deployments exist.",
+        "files": [
+          "tooling/scripts/release.ts",
+          "package.json"
+        ]
       }
     }
   }
