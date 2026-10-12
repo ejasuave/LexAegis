@@ -12642,6 +12642,16 @@
           "submission/technical-demo.md",
           "submission/pitch.md"
         ]
+      },
+      "15": {
+        "status": "complete",
+        "summary": "submission/qwen-article.md (703 words, mirrored from apps/web/src/content/qwen-article.ts) and a static /build/qwen route (apps/web/src/app/build/qwen/page.tsx), marked Draft. Every figure is from docs/evidence/chapter09-qwen-smoke-2026-10-12.json (4 tools, differencePence 200000, 6 evidence gaps, 6 request IDs, one cancellation); a test pins the mirror and the figures (3 passed); eslint and tsc clean. No token/cost claim (usage not captured), no HUD screenshots (existing captures are scripted-provider runs). NOT published: nothing is deployed, so no public canonical URL; the bounty publication gate stays incomplete.",
+        "files": [
+          "submission/qwen-article.md",
+          "apps/web/src/content/qwen-article.ts",
+          "apps/web/src/content/qwen-article.test.ts",
+          "apps/web/src/app/build/qwen/page.tsx"
+        ]
       }
     }
   }
