@@ -23,6 +23,17 @@
       "status": "fixed",
       "result": "setSelection now discards a preview that was built under a different selection ('The selection changed, so the preview was discarded. Nothing was sent.'). Regression: controller.test.ts 'discards a preview when the selection changes' and the system privacy spec, which confirms only the newly consented excerpt reaches the provider.",
       "remaining": "None for this case. The preview still names an excerpt by page and size, not by its text."
+    },
+    {
+      "id": "F-003",
+      "severity": "medium",
+      "invariant": "Renewing an expired fee quote re-quotes the same unsent operation and needs a new confirmation; it never strands the account.",
+      "case": "approval-send-confirmation-and-quote-races",
+      "module": "apps/web transaction controller (requote)",
+      "reproduction": "Sign the approval, wait 30 seconds without pressing Send, then press Renew quote. The controller created a NEW reservation for an account that still held the earlier quoted operation (one unresolved operation per account), so the server answered ACCOUNT_BUSY and the panel showed 'Not sent'. The only way forward was waiting out the five-minute unsigned lease. The controller test used a fake API that had no such limit, so it passed.",
+      "status": "fixed",
+      "result": "requote now asks the same operation for a fresh quote and falls back to a new reservation only if that quote is refused. Nothing is re-signed or sent by renewal. Regression: controller.test.ts (two tests) and the system spec, which waits out a real 30-second quote, renews, and sends exactly one transaction.",
+      "remaining": "None for this case."
     }
   ]
 }

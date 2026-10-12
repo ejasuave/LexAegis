@@ -9019,6 +9019,18 @@
           "packages/agent/src/runtime/hostile-boundaries.test.ts",
           "tests/system/harness/cases.ts"
         ]
+      },
+      "9": {
+        "status": "complete",
+        "summary": "tests/system/approval-races.spec.ts (3 tests, pass) on the production build with the unchanged registry on a loopback Anvil under chain ID 10143 (new startSuite localChain option). Outer-transaction identity: the real submit route rejects, with the specific reason and without any broadcast (account transaction count unchanged, operation still quoted), a different destination, trailing calldata, non-zero value, contract creation, legacy type, a delegation-type payload, an access list, another chain ID, another sender (SENDER_MISMATCH), a higher fee cap, a different gas limit, a different account nonce, a different invalidation argument and an execute call for an invalidation operation; the exact transaction is accepted, its exact retry returns the same hash and adds no second transaction, and a changed transaction after one began is refused. Approval races through rendered controls: Cancel preview discards the ticket; a registry nonce changed in flight and an unreadable network (status unknown) each produce the typed failure and sign nothing; a double click on Approve gives one signing and one operation. Quote races with a real 30-second wait: Send is replaced by an expired notice and nothing is sent, Renew quote re-quotes without a second action signature or any send, a double click on Send is one broadcast and one transaction. Existing unit tests keep the per-ticket, trusted-click, lock, deadline and one-use checks. DEFECT FOUND AND FIXED (F-003, medium): Renew quote created a new reservation while the earlier unsent operation still held the account's single unresolved slot, so the server answered ACCOUNT_BUSY and the panel showed Not sent for up to five minutes; the controller now re-quotes the same operation and falls back to a new reservation only if that is refused (two controller tests plus the system case). Note: the 15-second freshness limit is applied at preview and the approve click re-reads live state rather than refusing, so a stale preview is refreshed not rejected; the 600-second deadline and 30-second quote limits are unit-covered. Evidence is local (Anvil, controller-scoped EOA key, virtual authenticator): not Monad timing, not Mera hardware.",
+        "files": [
+          "tests/system/approval-races.spec.ts",
+          "tests/system/harness/suite.ts",
+          "tests/system/harness/cases.ts",
+          "apps/web/src/features/transactions/controller.ts",
+          "apps/web/src/features/transactions/controller.test.ts",
+          "docs/system-validation/findings.json"
+        ]
       }
     },
     "decisions": [],

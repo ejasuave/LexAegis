@@ -109,31 +109,40 @@ export class TransactionController {
   }
 
   /** Reserve, quote and preview. For `execute`, `authorization` is the stage-one signature. */
-  async begin(request: PublicRequest, authorization: SignedReviewAction | null): Promise<void> {
+  async begin(
+    request: PublicRequest,
+    authorization: SignedReviewAction | null,
+    /** An operation of this account that is reserved or quoted and not yet sent: quote it again. */
+    renew: OperationView | null = null,
+  ): Promise<void> {
     const epoch = ++this.#epoch;
     this.#signed = null;
     this.#request = request;
     this.#authorisation = authorization;
     this.#set({ ...INITIAL, stage: 'checking_network' });
-    const created = await this.#deps.api.create(this.#deps.newIdempotencyKey(), request);
-    if (epoch !== this.#epoch) return;
-    if (!created.ok) {
-      this.#set({ stage: 'failed', reason: created.reason });
-      return;
-    }
-
     const signature = authorization?.signature ?? null;
-    const quoted = await this.#deps.api.quote(
-      created.data.operation.operationId,
-      request,
-      signature,
-    );
+    // Renewing asks the same operation for a fresh quote. A new reservation would collide with it:
+    // an account may hold only one unresolved operation until its unsigned lease lapses.
+    let operation: OperationView | null = renew;
+    let quoted =
+      renew === null ? null : await this.#deps.api.quote(renew.operationId, request, signature);
     if (epoch !== this.#epoch) return;
-    if (!quoted.ok) {
+    if (quoted === null || !quoted.ok) {
+      const created = await this.#deps.api.create(this.#deps.newIdempotencyKey(), request);
+      if (epoch !== this.#epoch) return;
+      if (!created.ok) {
+        this.#set({ stage: 'failed', reason: created.reason });
+        return;
+      }
+      operation = created.data.operation;
+      quoted = await this.#deps.api.quote(operation.operationId, request, signature);
+      if (epoch !== this.#epoch) return;
+    }
+    if (!quoted.ok || operation === null) {
       this.#set({
         stage: 'failed',
-        reason: quoted.reason,
-        operation: created.data.operation,
+        reason: quoted.ok ? 'UNAVAILABLE' : quoted.reason,
+        operation,
       });
       return;
     }
@@ -158,7 +167,7 @@ export class TransactionController {
       intent,
       ticket: ticket.data,
       quote: quoted.data.quote,
-      operationId: created.data.operation.operationId,
+      operationId: operation.operationId,
     };
     const q = quoted.data.quote as Record<string, unknown>;
     this.#set({
@@ -181,9 +190,14 @@ export class TransactionController {
     const request = this.#request;
     if (request === null || this.#state.mayHaveBroadcast) return;
     if (request.kind === 'execute' && this.#authorisation === null) return;
+    const held = this.#state.operation;
     this.#deps.signing.invalidateAll();
     this.#pending = null;
-    await this.begin(request, this.#authorisation);
+    await this.begin(
+      request,
+      this.#authorisation,
+      held !== null && (held.phase === 'quoted' || held.phase === 'reserved') ? held : null,
+    );
   }
 
   /** The explicit "Send transaction" confirmation. Consumes the single-use ticket. */

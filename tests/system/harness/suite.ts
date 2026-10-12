@@ -3,13 +3,24 @@ import { addVirtualAuthenticator, launch } from './browser';
 import { recordResult } from './recorder';
 import type { EvidenceClass } from './manifest';
 import {
+  deployRegistry,
+  startMiner,
+  writeLocalDeploymentRecord,
+  type DeployedRegistry,
+} from './chain';
+import {
   isBlocked,
+  startSystemChain,
   startSystemServices,
   startWebApp,
   type Blocked,
+  type SystemChain,
   type SystemServices,
   type WebApp,
 } from './services';
+import { mkdtempSync, rmSync } from 'node:fs';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
 
 /*
  * A spec's shared environment: isolated services, the production web build and a browser. If any piece
@@ -20,6 +31,9 @@ export interface Suite {
   readonly services: SystemServices;
   readonly app: WebApp;
   readonly browser: Browser;
+  /** Present when the suite was started with `localChain`: a loopback Anvil with the real registry. */
+  readonly chain: SystemChain | null;
+  readonly registry: DeployedRegistry | null;
   /** A new context with a CDP virtual authenticator (PRF on by default). Simulated and labelled. */
   newSession(options?: {
     readonly prf?: boolean;
@@ -37,6 +51,8 @@ export interface SuiteOptions {
   readonly name: string;
   readonly cases: readonly string[];
   readonly evidenceClass?: EvidenceClass;
+  /** Run a loopback Anvil with the unchanged registry and point the application at it (test seam). */
+  readonly localChain?: boolean;
   /** Extra server configuration, merged over the defaults. */
   readonly env?: (services: SystemServices) => Record<string, string>;
 }
@@ -57,11 +73,34 @@ export async function startSuite(options: SuiteOptions): Promise<Suite | Blocked
   };
   const services = await startSystemServices();
   if (isBlocked(services)) return block(services);
+  let chain: SystemChain | null = null;
+  let registry: DeployedRegistry | null = null;
+  let stopMiner: (() => void) | null = null;
+  let scratch = '';
+  let chainEnv: Record<string, string> = {};
+  if (options.localChain === true) {
+    const started2 = await startSystemChain(10143, { allowPublicChainId: true });
+    if (isBlocked(started2)) {
+      await services.stop();
+      return block(started2);
+    }
+    chain = started2;
+    registry = await deployRegistry(chain);
+    scratch = mkdtempSync(join(tmpdir(), 'system-suite-'));
+    const recordFile = join(scratch, 'local-deployment.json');
+    writeLocalDeploymentRecord(recordFile, chain, registry);
+    stopMiner = startMiner(chain);
+    chainEnv = {
+      LEXAEGIS_TEST_CHAIN: 'local-anvil',
+      LEXAEGIS_TEST_CHAIN_DEPLOYMENT: recordFile,
+      ALCHEMY_MONAD_RPC_URL: chain.local.rpcUrl,
+    };
+  }
   const app = await startWebApp({
     name: options.name,
     env: {
       NEXT_PUBLIC_CHAIN_ID: '10143',
-      NEXT_PUBLIC_REGISTRY_ADDRESS: `0x${'ab'.repeat(20)}`,
+      NEXT_PUBLIC_REGISTRY_ADDRESS: registry?.address ?? `0x${'ab'.repeat(20)}`,
       DATABASE_URL: services.postgres.url,
       S3_ENDPOINT: services.s3.endpoint,
       S3_BUCKET: services.s3.bucket,
@@ -76,10 +115,13 @@ export async function startSuite(options: SuiteOptions): Promise<Suite | Blocked
       QWEN_API_KEY: '',
       QWEN_BASE_URL: '',
       QWEN_OUTPUT_MODE: '',
+      ...chainEnv,
       ...options.env?.(services),
     },
   });
   if (isBlocked(app)) {
+    stopMiner?.();
+    await chain?.stop();
     await services.stop();
     return block(app);
   }
@@ -88,6 +130,8 @@ export async function startSuite(options: SuiteOptions): Promise<Suite | Blocked
     services,
     app,
     browser,
+    chain,
+    registry,
     async newSession(sessionOptions = {}) {
       const context = await browser.newContext({
         reducedMotion: 'reduce',
@@ -104,9 +148,12 @@ export async function startSuite(options: SuiteOptions): Promise<Suite | Blocked
       return { context, page, cdp };
     },
     async stop() {
+      stopMiner?.();
       await browser.close();
       await app.stop();
+      await chain?.stop();
       await services.stop();
+      if (scratch !== '') rmSync(scratch, { recursive: true, force: true });
     },
   };
 }

@@ -190,4 +190,22 @@ export const SYSTEM_CASES: readonly SystemCaseV1[] = parseManifest([
     'Exactly one real terminal outcome results from completion and cancel races, Stop is not cancellation until acknowledged, and partial, duplicate, gapped or lost event streams never become a completed result.',
     'unit',
   ),
+  c(
+    'approval-server-rejects-forged-transactions',
+    'tests/system/approval-races.spec.ts',
+    'The server parses the outer transaction itself: a different destination, calldata, value, creation, type, chain, sender, fee cap, gas, nonce or operation is rejected and nothing is broadcast; the exact transaction and its exact retry are one transaction.',
+    'local_integration',
+  ),
+  c(
+    'approval-ticket-and-state-races',
+    'tests/system/approval-races.spec.ts',
+    'Cancelling a preview, a changed registry nonce, an unreadable network and a double click never sign twice or sign an action that is not the previewed one; one approval gives one signing and one operation.',
+    'browser_scripted',
+  ),
+  c(
+    'approval-send-confirmation-and-quote-races',
+    'tests/system/approval-races.spec.ts',
+    'The fee confirmation is its own step: a 30-second quote expires without sending, renewal re-quotes the same operation without re-signing and needs a new confirmation, and a double Send is one broadcast.',
+    'browser_scripted',
+  ),
 ]);

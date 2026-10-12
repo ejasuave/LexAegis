@@ -34,17 +34,19 @@ const quote = {
   expiresAt: '2026-10-11T10:00:30.000Z',
 };
 
-function rig() {
+function rig(options: { failRenewalQuote?: boolean } = {}) {
   const calls = { create: 0, quote: 0, submit: 0, refresh: 0, sign: 0, preview: 0 };
   const api: ChainApi = {
     create: () => (
       calls.create++,
       Promise.resolve({ ok: true, data: { operation: operation({ phase: 'reserved' }) } })
     ),
-    quote: () => (
-      calls.quote++,
-      Promise.resolve({ ok: true, data: { quote, operation: operation() } })
-    ),
+    quote: () => {
+      calls.quote++;
+      return options.failRenewalQuote === true && calls.quote === 2
+        ? Promise.resolve({ ok: false as const, reason: 'STATE_CHANGED', network: false })
+        : Promise.resolve({ ok: true, data: { quote, operation: operation() } });
+    },
     submit: () => (
       calls.submit++,
       Promise.resolve({
@@ -139,6 +141,24 @@ describe('transaction stage', () => {
     await controller.requote();
     expect(calls.quote).toBe(2);
     expect(calls.sign).toBe(0);
+    expect(controller.getSnapshot().stage).toBe('awaiting_confirmation');
+  });
+
+  it('renews by quoting the SAME operation: a new reservation would collide with it (ACCOUNT_BUSY)', async () => {
+    const { controller, calls } = rig();
+    await controller.begin(request, authorisation);
+    expect(calls.create).toBe(1);
+    await controller.requote();
+    expect(calls.create).toBe(1);
+    expect(calls.quote).toBe(2);
+  });
+
+  it('falls back to a new reservation only when the earlier operation can no longer be quoted', async () => {
+    const { controller, calls } = rig({ failRenewalQuote: true });
+    await controller.begin(request, authorisation);
+    await controller.requote();
+    expect(calls.create).toBe(2);
+    expect(calls.quote).toBe(3);
     expect(controller.getSnapshot().stage).toBe('awaiting_confirmation');
   });
 
