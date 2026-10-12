@@ -12617,6 +12617,16 @@
           "deploy/README.md",
           "package.json"
         ]
+      },
+      "12": {
+        "status": "complete",
+        "summary": "submission/judge-guide.md states the honest status: no hosted origin, no live URL invented. Synthetic sample PDFs added as public assets (copies of existing fixtures: GBP 24,000 with 10,000+12,000 original, and 10,000+14,000 corrected; SHA-256 recorded). The GBP 14,000 what-if stays SIMULATED until the corrected file is imported. NOT available: pre-existing readable package, public receipt reference and tampered copy (no real completed export against the deployed registry exists; none fabricated). Guide NOT tested in a clean browser or with a fresh account (no deployment).",
+        "files": [
+          "submission/judge-guide.md",
+          "apps/web/public/sample/settlement-original.pdf",
+          "apps/web/public/sample/settlement-corrected.pdf",
+          "apps/web/public/sample/README.txt"
+        ]
       }
     }
   }
