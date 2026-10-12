@@ -1,0 +1,32 @@
+{
+  "schema": "lexaegis.storage-policy.v1",
+  "status": "unprovisioned",
+  "note": "Policy to apply when the hosted PostgreSQL and S3-compatible store exist. Nothing is provisioned or observed yet.",
+  "database": {
+    "roles": [
+      "lexaegis_app (read/write operational tables only)",
+      "lexaegis_indexer (separate database or role; no access to operational tables)"
+    ],
+    "publicAccess": false,
+    "tls": "verify certificates through the maintained pg client configuration; never disable verification",
+    "migrations": "once, from the controlled release job (pnpm release migrate), under pg_advisory_lock(4172001), additive only; no down migrations, resets or recreation",
+    "backups": {
+      "enabled": false,
+      "retentionDays": null,
+      "note": "Enable the provider's backup facility and record a bounded retention before launch. Not enabled."
+    }
+  },
+  "objectStore": {
+    "publicAccess": false,
+    "listingPublic": false,
+    "permissions": ["PutObject (conditional create)", "GetObject", "HeadObject"],
+    "withheld": ["DeleteObject", "bucket policy changes"],
+    "versioningOrRetention": {
+      "enabled": false,
+      "note": "Enable provider versioning with a bounded retention; not enabled."
+    },
+    "capabilityProbe": "the existing conditional-create probe (apps/web/src/server/vault/object-store.ts): identical retry succeeds, conflicting overwrite fails, read-back digest/length matches. An ETag is not the application's SHA-256. Unknown capability keeps the vault unavailable.",
+    "limits": { "wireObjectBytes": 16777216 }
+  },
+  "recovery": "Account and vault recovery needs the original credential on the original rpId. Restoring ciphertext cannot recreate a deleted credential. No key escrow."
+}
