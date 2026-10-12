@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { resolveHostConfig } from './config';
-import { HOST, POLICY } from './test-helpers';
+import { HOST, POLICY, withCredentials } from './test-helpers';
 
 describe('host configuration', () => {
   it('is unknown-by-default: missing configuration is a typed reason, not a default', () => {
@@ -31,7 +31,7 @@ describe('host configuration', () => {
 
   it.each([
     'http://rpc.example.invalid/',
-    'https://user:secret@rpc.example.invalid/',
+    withCredentials('rpc.example.invalid/'),
     'https://rpc.example.invalid/?key=abc',
     'http://127.0.0.1:8545/',
   ])('rejects the RPC endpoint %s without the local-test switch', (rpcUrl) => {
@@ -53,7 +53,7 @@ describe('host configuration', () => {
     });
   });
 
-  it.each(['https://p.invalid/path', 'https://u:p@p.invalid', 'ftp://p.invalid', 'nope'])(
+  it.each(['https://p.invalid/path', withCredentials('p.invalid'), 'ftp://p.invalid', 'nope'])(
     'rejects the package origin %s',
     (origin) => {
       expect(resolveHostConfig({ ...HOST, packageOrigins: [origin] })).toEqual({

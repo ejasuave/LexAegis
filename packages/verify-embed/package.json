@@ -8,7 +8,7 @@
     ".": "./src/index.ts"
   },
   "scripts": {
-    "build": "vite build && EMBED_MINIFY=1 vite build && tsc -p tsconfig.build.json",
+    "build": "vite build && EMBED_MINIFY=1 vite build && tsc -p tsconfig.build.json && tsx scripts/fix-declarations.ts",
     "typecheck": "tsc --noEmit -p tsconfig.json",
     "test": "vitest run",
     "size": "tsx scripts/measure-size.ts"

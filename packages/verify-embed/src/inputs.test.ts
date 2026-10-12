@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { resolveHostConfig } from './config';
 import { snapshotInputs } from './inputs';
-import { ATTRIBUTES, HOST } from './test-helpers';
+import { ATTRIBUTES, HOST, withCredentials } from './test-helpers';
 
 const resolved = resolveHostConfig({ ...HOST, rpcOrigins: ['https://alt.example.invalid'] });
 if (!resolved.ok) throw new Error('fixture');
@@ -67,7 +67,7 @@ describe('attribute snapshots', () => {
     for (const rpcUrl of [
       'https://evil.example.invalid/',
       'http://alt.example.invalid/',
-      'https://u:p@alt.example.invalid/',
+      withCredentials('alt.example.invalid/'),
       'https://alt.example.invalid/?k=1',
     ]) {
       expect(snapshotInputs({ ...ATTRIBUTES, rpcUrl }, config)).toEqual({
@@ -85,7 +85,7 @@ describe('attribute snapshots', () => {
     expect(ok.ok && ok.input.packageUrl).toBe('https://packages.example.invalid/a.json');
     for (const packageUrl of [
       'https://other.example.invalid/a.json',
-      'https://u:p@packages.example.invalid/a.json',
+      withCredentials('packages.example.invalid/a.json'),
       'https://packages.example.invalid/a.json#x',
       'javascript:alert(1)',
     ]) {

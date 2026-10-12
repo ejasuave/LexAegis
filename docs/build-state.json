@@ -8600,9 +8600,24 @@
           "packages/verify-embed/src/package-check.test.ts",
           "contracts/integration/embed-package.anvil.test.ts"
         ]
+      },
+      "5": {
+        "status": "complete",
+        "summary": "examples/embed (template index.html + generated/ from pnpm embed:example, which builds the widget, starts Anvil, deploys the unchanged registry, issues active/revoked/superseded receipts with the published Anvil development key held only in contracts/integration, and writes register.js + filled page + one public synthetic package). 3 real-Chromium suites, 38 tests pass (embed, embed-package, embed-example) incl. network boundary (page origin + RPC only, only the four read methods, no wallet/analytics/font/image/agent-card traffic) and no private data in RPC, DOM or console. Measured sizes (vite 8.3.4, gzip level 9): raw 407248 B, minified 260241 B, gzip 65991 B, recorded in packages/verify-embed/README.md. packages/verify-embed added to exclusion:check (dist + import graph); tarball inspected: dist js/min.js/types + README only; declarations rewritten to explicit specifiers. Embed README documents install, attributes, trusted configuration, browser requirements, result meanings, public-package disclosure, CSS properties, local setup.",
+        "files": [
+          "packages/verify-embed/README.md",
+          "examples/embed/index.html",
+          "examples/embed/README.md",
+          "contracts/scripts/embed-example.ts",
+          "contracts/integration/embed-example.anvil.test.ts",
+          "tooling/scripts/exclusion-scan.ts"
+        ]
       }
     },
     "decisions": [],
-    "limitations": []
+    "limitations": [
+      "NOT YET: external trials, external adoption and any live Monad testnet widget evidence. All widget results are local compatibility evidence (throwaway Anvil chain 31337, synthetic receipts).",
+      "Pre-existing: pnpm secrets:check reports 2 findings in the git-ignored local .env (dated 2026-10-11, not created by this chapter and not touched); every tracked file is clean."
+    ]
   }
 }

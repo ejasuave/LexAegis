@@ -1,0 +1,7 @@
+{
+  "name": "@lexaegis/example-embed",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "A plain HTML page that uses the proof-of-review-status widget against a throwaway local registry. Local example only: no application, backend or live deployment is involved."
+}

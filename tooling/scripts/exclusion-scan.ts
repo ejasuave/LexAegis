@@ -4,9 +4,12 @@ import { join } from 'node:path';
 import { scanArtifacts, scanImportGraph, type Finding } from '../src/exclusion';
 import { ROOT } from './lib';
 
-const artifactRoots = ['apps/web/.next/static', 'apps/web/.next/server', 'apps/verifier/dist'].map(
-  (p) => join(ROOT, p),
-);
+const artifactRoots = [
+  'apps/web/.next/static',
+  'apps/web/.next/server',
+  'apps/verifier/dist',
+  'packages/verify-embed/dist',
+].map((p) => join(ROOT, p));
 const missing = artifactRoots.filter((root) => !existsSync(root));
 if (missing.length > 0) {
   console.error(
@@ -40,7 +43,7 @@ findings.push(
   ...scanImportGraph({ root: ROOT, entries: [join(ROOT, 'apps/verifier/src/main.tsx')] }),
 );
 
-for (const pkg of ['protocol', 'sdk', 'cli', 'vault', 'agent']) {
+for (const pkg of ['protocol', 'sdk', 'cli', 'vault', 'agent', 'verify-embed']) {
   const manifest = JSON.parse(
     readFileSync(join(ROOT, 'packages', pkg, 'package.json'), 'utf8'),
   ) as { exports: Record<string, unknown> };

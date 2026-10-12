@@ -1,3 +1,4 @@
+import type { ReceiptReferenceV1 } from '@lexaegis/protocol/v1';
 import { gzipSync } from 'node:zlib';
 import { chromium, type Browser, type Locator, type Page } from 'playwright';
 import { afterAll, beforeAll, beforeEach, describe, expect, it } from 'vitest';
@@ -39,12 +40,7 @@ const checkFiles = (): Promise<void> =>
     .click();
 
 async function open(
-  reference: {
-    readonly chainId: string;
-    readonly registryAddress: string;
-    readonly reviewerAddress: string;
-    readonly commitment: string;
-  },
+  reference: ReceiptReferenceV1,
   packageUrl: string,
   config: unknown = fixture.hostConfig(),
 ): Promise<void> {
@@ -233,7 +229,7 @@ describe('package integrity mode', () => {
     const secrets = [
       ...manifest.artifacts.map((artifact) => artifact.sha256),
       ...manifest.artifacts.map((artifact) => artifact.label),
-      fixture.receipts.active.opening.nonce,
+      fixture.receipts.active.opening.blindingNonce,
     ].filter((value): value is string => typeof value === 'string' && value.length > 4);
     const rpcText = fixture.rpcRecords.map((record) => record.body).join('\n');
     const dom = await page.evaluate(() => {

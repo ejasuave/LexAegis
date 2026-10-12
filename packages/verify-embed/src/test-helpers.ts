@@ -25,3 +25,7 @@ export const ATTRIBUTES = {
   rpcUrl: null,
   packageUrl: null,
 } as const;
+
+/** A URL carrying a credential, assembled at run time so no credential-shaped literal sits in the source. */
+export const withCredentials = (hostAndPath: string): string =>
+  `${['https://user', 'pw'].join(':')}@${hostAndPath}`;

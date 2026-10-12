@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Proof of Review widget: local example</title>
+    <style>
+      body {
+        font:
+          16px/1.5 system-ui,
+          sans-serif;
+        max-width: 42rem;
+        margin: 2rem auto;
+        padding: 0 1rem;
+      }
+      proof-of-review-status {
+        margin: 0 0 1rem;
+      }
+      code {
+        overflow-wrap: anywhere;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Proof of Review widget</h1>
+    <p>
+      <strong>Local example.</strong> This page is a TEMPLATE. Run <code>pnpm embed:example</code>
+      from the repository root: it starts a throwaway local chain, deploys the unchanged registry,
+      issues synthetic receipts, fills in the values below, and serves the result. These values are
+      not a live deployment and the receipts do not exist anywhere else.
+    </p>
+
+    <h2>The integration: two lines</h2>
+    <!-- 1. Register the element once. register.js holds the explicit host configuration (the trusted deployment). -->
+    <script type="module" src="./register.js"></script>
+    <!-- 2. Place the element with the receipt reference you were given. -->
+    <proof-of-review-status
+      chain-id="{{active.chainId}}"
+      registry="{{active.registry}}"
+      reviewer="{{active.reviewer}}"
+      commitment="{{active.commitment}}"
+    ></proof-of-review-status>
+
+    <h2>With the optional file check</h2>
+    <p>
+      The package is a deliberately published SYNTHETIC export. Nothing is downloaded until you
+      press Check files.
+    </p>
+    <proof-of-review-status
+      chain-id="{{active.chainId}}"
+      registry="{{active.registry}}"
+      reviewer="{{active.reviewer}}"
+      commitment="{{active.commitment}}"
+      package-url="{{packageUrl.active}}"
+    ></proof-of-review-status>
+
+    <h2>Other lifecycle states (real local transactions)</h2>
+    <p>Revoked:</p>
+    <proof-of-review-status
+      chain-id="{{revoked.chainId}}"
+      registry="{{revoked.registry}}"
+      reviewer="{{revoked.reviewer}}"
+      commitment="{{revoked.commitment}}"
+    ></proof-of-review-status>
+    <p>Superseded (replaced by a later receipt):</p>
+    <proof-of-review-status
+      chain-id="{{superseded.chainId}}"
+      registry="{{superseded.registry}}"
+      reviewer="{{superseded.reviewer}}"
+      commitment="{{superseded.commitment}}"
+    ></proof-of-review-status>
+    <p>Never issued, so the registry has no record:</p>
+    <proof-of-review-status
+      chain-id="{{notFound.chainId}}"
+      registry="{{notFound.registry}}"
+      reviewer="{{notFound.reviewer}}"
+      commitment="{{notFound.commitment}}"
+    ></proof-of-review-status>
+  </body>
+</html>
