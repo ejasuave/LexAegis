@@ -129,6 +129,7 @@ const evidenceSchema = z.strictObject({
         'partial_provider_run_article_unpublished',
         'partial_live_rpc',
         'not_established',
+        'withdrawn_gate_b_failed',
       ]),
     }),
   ),

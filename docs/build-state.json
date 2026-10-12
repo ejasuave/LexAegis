@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "currentChapter": "19",
+  "currentChapter": "13",
   "nextChapter": "19",
   "project": {
     "name": "LexAegis",
@@ -9234,6 +9234,233 @@
         "browser": "chromium (playwright)",
         "published": false
       }
+    },
+    {
+      "id": "packages-check-20261012223713",
+      "subject": "packaged-consumer-check",
+      "sourceRevision": {
+        "commit": "9565a67cefe1c445bf37fda0b3a9332863b458e7",
+        "dirtyWorktree": true,
+        "contentFingerprint": "3af71f74ba2acb10b5d1f5525d1a23abef855525b699f51b2c483be6c657f96b"
+      },
+      "checkedAt": "2026-10-12T22:37:13.792Z",
+      "command": "pnpm packages:check",
+      "environment": {
+        "node": "v24.21.0",
+        "os": "linux-x64",
+        "pnpm": "11.11.0"
+      },
+      "evidenceClass": "local_scripted",
+      "outcome": "pass",
+      "reasonCodes": [
+        "LOCAL_TARBALLS_NOT_PUBLISHED",
+        "AUTHORED_EXAMPLE_NOT_ADOPTION"
+      ],
+      "evidenceRefs": [],
+      "facts": {
+        "checksPassed": "44",
+        "checksTotal": "44",
+        "protocolTarballBytes": "72014",
+        "sdkTarballBytes": "85117",
+        "cliTarballBytes": "21356",
+        "protocolTarballSha256": "53058f8a7694b581bdd1a305377470ee74a48b7b7f52d74628559ef0629cea34",
+        "sdkTarballSha256": "e970c2ce2df348244a867c4ab9233bf86d820f454c21b07e2a9c8d7857f57b2b",
+        "cliTarballSha256": "599cabd5756bcd50cde36860ec175fcbd0fdb5420c5e488dad4fed2cede32ecb",
+        "protocolFiles": "68",
+        "sdkFiles": "71",
+        "cliFiles": "28",
+        "browser": "chromium (playwright)",
+        "published": false
+      }
+    },
+    {
+      "id": "cutladder-20261012223715",
+      "subject": "cut-ladder-matrix",
+      "sourceRevision": {
+        "commit": "9565a67cefe1c445bf37fda0b3a9332863b458e7",
+        "dirtyWorktree": true,
+        "contentFingerprint": "3af71f74ba2acb10b5d1f5525d1a23abef855525b699f51b2c483be6c657f96b"
+      },
+      "checkedAt": "2026-10-12T22:37:15.121Z",
+      "command": "pnpm cutladder:check",
+      "environment": {
+        "node": "v24.21.0",
+        "os": "linux-x64",
+        "pnpm": "11.11.0"
+      },
+      "evidenceClass": "local_scripted",
+      "outcome": "blocked",
+      "reasonCodes": [
+        "T0_JOURNEY_PENDING",
+        "OPTIONAL_FEATURES_UNIMPLEMENTED"
+      ],
+      "evidenceRefs": [],
+      "facts": {
+        "configurations": "13",
+        "distinctEffective": "4",
+        "appliedProjectCuts": "0",
+        "fingerprint": "3af71f74ba2acb10"
+      }
+    },
+    {
+      "id": "rd-20261012223735-31a9b3-check-typecheck",
+      "subject": "check-typecheck",
+      "sourceRevision": {
+        "commit": "9565a67cefe1c445bf37fda0b3a9332863b458e7",
+        "dirtyWorktree": true,
+        "contentFingerprint": "3af71f74ba2acb10b5d1f5525d1a23abef855525b699f51b2c483be6c657f96b"
+      },
+      "checkedAt": "2026-10-12T22:37:35.452Z",
+      "command": "pnpm readiness",
+      "environment": {
+        "node": "v24.21.0",
+        "os": "linux-x64",
+        "pnpm": "11.11.0"
+      },
+      "evidenceClass": "local_scripted",
+      "outcome": "pass",
+      "reasonCodes": [],
+      "evidenceRefs": []
+    },
+    {
+      "id": "rd-20261012223735-31a9b3-check-unit-tests",
+      "subject": "check-unit-tests",
+      "sourceRevision": {
+        "commit": "9565a67cefe1c445bf37fda0b3a9332863b458e7",
+        "dirtyWorktree": true,
+        "contentFingerprint": "3af71f74ba2acb10b5d1f5525d1a23abef855525b699f51b2c483be6c657f96b"
+      },
+      "checkedAt": "2026-10-12T22:37:35.452Z",
+      "command": "pnpm readiness",
+      "environment": {
+        "node": "v24.21.0",
+        "os": "linux-x64",
+        "pnpm": "11.11.0"
+      },
+      "evidenceClass": "local_scripted",
+      "outcome": "pass",
+      "reasonCodes": [],
+      "evidenceRefs": []
+    },
+    {
+      "id": "rd-20261012223735-31a9b3-check-forge-test",
+      "subject": "check-forge-test",
+      "sourceRevision": {
+        "commit": "9565a67cefe1c445bf37fda0b3a9332863b458e7",
+        "dirtyWorktree": true,
+        "contentFingerprint": "3af71f74ba2acb10b5d1f5525d1a23abef855525b699f51b2c483be6c657f96b"
+      },
+      "checkedAt": "2026-10-12T22:37:35.452Z",
+      "command": "pnpm readiness",
+      "environment": {
+        "node": "v24.21.0",
+        "os": "linux-x64",
+        "pnpm": "11.11.0"
+      },
+      "evidenceClass": "local_scripted",
+      "outcome": "pass",
+      "reasonCodes": [],
+      "evidenceRefs": []
+    },
+    {
+      "id": "rd-20261012223735-31a9b3-check-secret-scan",
+      "subject": "check-secret-scan",
+      "sourceRevision": {
+        "commit": "9565a67cefe1c445bf37fda0b3a9332863b458e7",
+        "dirtyWorktree": true,
+        "contentFingerprint": "3af71f74ba2acb10b5d1f5525d1a23abef855525b699f51b2c483be6c657f96b"
+      },
+      "checkedAt": "2026-10-12T22:37:35.452Z",
+      "command": "pnpm readiness",
+      "environment": {
+        "node": "v24.21.0",
+        "os": "linux-x64",
+        "pnpm": "11.11.0"
+      },
+      "evidenceClass": "local_scripted",
+      "outcome": "pass",
+      "reasonCodes": [],
+      "evidenceRefs": []
+    },
+    {
+      "id": "rd-20261012223735-31a9b3-check-protected-baselines",
+      "subject": "check-protected-baselines",
+      "sourceRevision": {
+        "commit": "9565a67cefe1c445bf37fda0b3a9332863b458e7",
+        "dirtyWorktree": true,
+        "contentFingerprint": "3af71f74ba2acb10b5d1f5525d1a23abef855525b699f51b2c483be6c657f96b"
+      },
+      "checkedAt": "2026-10-12T22:37:35.452Z",
+      "command": "pnpm readiness",
+      "environment": {
+        "node": "v24.21.0",
+        "os": "linux-x64",
+        "pnpm": "11.11.0"
+      },
+      "evidenceClass": "local_scripted",
+      "outcome": "pass",
+      "reasonCodes": [],
+      "evidenceRefs": []
+    },
+    {
+      "id": "rd-20261012223735-31a9b3-check-build",
+      "subject": "check-build",
+      "sourceRevision": {
+        "commit": "9565a67cefe1c445bf37fda0b3a9332863b458e7",
+        "dirtyWorktree": true,
+        "contentFingerprint": "3af71f74ba2acb10b5d1f5525d1a23abef855525b699f51b2c483be6c657f96b"
+      },
+      "checkedAt": "2026-10-12T22:37:35.452Z",
+      "command": "pnpm readiness",
+      "environment": {
+        "node": "v24.21.0",
+        "os": "linux-x64",
+        "pnpm": "11.11.0"
+      },
+      "evidenceClass": "local_scripted",
+      "outcome": "pass",
+      "reasonCodes": [],
+      "evidenceRefs": []
+    },
+    {
+      "id": "rd-20261012223735-31a9b3-check-exclusion",
+      "subject": "check-exclusion",
+      "sourceRevision": {
+        "commit": "9565a67cefe1c445bf37fda0b3a9332863b458e7",
+        "dirtyWorktree": true,
+        "contentFingerprint": "3af71f74ba2acb10b5d1f5525d1a23abef855525b699f51b2c483be6c657f96b"
+      },
+      "checkedAt": "2026-10-12T22:37:35.452Z",
+      "command": "pnpm readiness",
+      "environment": {
+        "node": "v24.21.0",
+        "os": "linux-x64",
+        "pnpm": "11.11.0"
+      },
+      "evidenceClass": "local_scripted",
+      "outcome": "pass",
+      "reasonCodes": [],
+      "evidenceRefs": []
+    },
+    {
+      "id": "rd-20261012223735-31a9b3-chapters-1-3-checks",
+      "subject": "chapters-1-3-checks",
+      "sourceRevision": {
+        "commit": "9565a67cefe1c445bf37fda0b3a9332863b458e7",
+        "dirtyWorktree": true,
+        "contentFingerprint": "3af71f74ba2acb10b5d1f5525d1a23abef855525b699f51b2c483be6c657f96b"
+      },
+      "checkedAt": "2026-10-12T22:37:35.452Z",
+      "command": "pnpm readiness",
+      "environment": {
+        "node": "v24.21.0",
+        "os": "linux-x64",
+        "pnpm": "11.11.0"
+      },
+      "evidenceClass": "local_scripted",
+      "outcome": "pass",
+      "reasonCodes": [],
+      "evidenceRefs": []
     }
   ],
   "appliedCuts": [],
@@ -9259,9 +9486,9 @@
         "requirements": [
           {
             "id": "A1",
-            "label": "Chapters 1–3 build and tests pass",
+            "label": "Chapters 1\u20133 build and tests pass",
             "state": "satisfied",
-            "resultId": "rd-20261012221232-bf37e9-chapters-1-3-checks"
+            "resultId": "rd-20261012223735-31a9b3-chapters-1-3-checks"
           },
           {
             "id": "A2",
@@ -9274,7 +9501,7 @@
           "MISSING:A2",
           "UNPROVEN_AT_CUTOFF"
         ],
-        "observedAt": "2026-10-12T22:12:32.142Z"
+        "observedAt": "2026-10-12T22:37:35.452Z"
       },
       {
         "gate": "B",
@@ -9394,7 +9621,7 @@
         "HOSTED_T0_INCOMPLETE: dropping the bounties does not complete the hosted golden path"
       ]
     },
-    "evaluatedAt": "2026-10-12T22:12:32.142Z"
+    "evaluatedAt": "2026-10-12T22:37:35.452Z"
   },
   "cutLadder": {
     "order": [
@@ -9428,11 +9655,11 @@
     }
   },
   "readiness": {
-    "runId": "rd-20261012221232-bf37e9",
-    "generatedAt": "2026-10-12T22:12:32.142Z",
+    "runId": "rd-20261012223735-31a9b3",
+    "generatedAt": "2026-10-12T22:37:35.452Z",
     "live": false,
-    "fingerprint": "50d9162cc02c27b55c19430c637a5afcceedc14c3fd5a1e0a0c7decb053483f8",
-    "totalMs": 45500,
+    "fingerprint": "3af71f74ba2acb10b5d1f5525d1a23abef855525b699f51b2c483be6c657f96b",
+    "totalMs": 41414,
     "versions": {
       "node": "v24.21.0",
       "pnpm": "11.11.0",
@@ -9443,43 +9670,43 @@
         "id": "typecheck",
         "outcome": "pass",
         "reason": "OK",
-        "durationMs": 35837
+        "durationMs": 33149
       },
       {
         "id": "unit-tests",
         "outcome": "pass",
         "reason": "OK",
-        "durationMs": 24250
+        "durationMs": 20595
       },
       {
         "id": "forge-test",
         "outcome": "pass",
         "reason": "OK",
-        "durationMs": 39346
+        "durationMs": 35532
       },
       {
         "id": "secret-scan",
         "outcome": "pass",
         "reason": "OK",
-        "durationMs": 756
+        "durationMs": 669
       },
       {
         "id": "protected-baselines",
         "outcome": "pass",
         "reason": "OK",
-        "durationMs": 622
+        "durationMs": 575
       },
       {
         "id": "build",
         "outcome": "pass",
         "reason": "OK",
-        "durationMs": 5858
+        "durationMs": 4781
       },
       {
         "id": "exclusion",
         "outcome": "pass",
         "reason": "OK",
-        "durationMs": 842
+        "durationMs": 776
       }
     ]
   },
@@ -9806,7 +10033,7 @@
         "outcome": "pass",
         "evidenceClass": "real_device",
         "resultId": "mera-device-20261010000926",
-        "notes": "Operator-reported: sign-in without a second unlock, lock then fresh ceremony, and recovery of 0x7e03648f…2cc1 from the same existing passkey after clearing storage. Not shown: prompt count and seconds at create (unknown), second-device recovery (not available), browser version."
+        "notes": "Operator-reported: sign-in without a second unlock, lock then fresh ceremony, and recovery of 0x7e03648f\u20262cc1 from the same existing passkey after clearing storage. Not shown: prompt count and seconds at create (unknown), second-device recovery (not available), browser version."
       },
       "ci": {
         "outcome": "unverified",
@@ -10004,7 +10231,7 @@
         "command": "pnpm test",
         "outcome": "pass",
         "evidenceClass": "local_scripted",
-        "notes": "795 of 795. The earlier 2 failures were a stale pair of PRF salt constants in derivation-profile.ts (old lexjarvis-label hashes); on the owner's instruction they now equal SHA256 of lexaegis:account:evm:v1 (0x21a6805c…) and lexaegis:vault:root:v1 (0xde6e035a…), matching fixtures/account-v1/vectors.json, which was not edited. Accounts created with the old constants would derive differently; none was real-device verified."
+        "notes": "795 of 795. The earlier 2 failures were a stale pair of PRF salt constants in derivation-profile.ts (old lexjarvis-label hashes); on the owner's instruction they now equal SHA256 of lexaegis:account:evm:v1 (0x21a6805c\u2026) and lexaegis:vault:root:v1 (0xde6e035a\u2026), matching fixtures/account-v1/vectors.json, which was not edited. Accounts created with the old constants would derive differently; none was real-device verified."
       },
       "workflow": {
         "command": "pnpm test:contracts:integration",
@@ -11844,7 +12071,7 @@
       },
       "5": {
         "status": "complete",
-        "summary": "contracts/test/Authorization.t.sol extended for gaps only (Chapter 3 AuthorizationTest unchanged): AuthorizationBoundaryTest, 14 tests of which 9 are fuzz properties (deadline-1/deadline/deadline+1 for every action shape with overflow-safe generation, equality succeeds; the largest deadline; zero deadline at any time; any other key for an EOA and for a contract account; another chain with the chain context restored; replay on a second local registry; any other domain name or version; each individually altered signed field; a signature over another nonce; replay after issue, revoke, supersede and invalidation; an unrelated executor submitting an unchanged valid action first gets exactly the authorised result; rollback when a valid signature reaches an invalid transition for both account kinds; malformed and high-s signatures for a contract account; a swallowed nested mutation lets the outer action succeed exactly once) and NonceExhaustionBoundaryTest, 2 local boundary tests that use a storage cheatcode outside any campaign. Test-only security profile: pnpm contracts:campaign (tooling/scripts/security-campaign.ts, tooling/src/security-campaign.ts with unit tests) supplies sizes as FOUNDRY_* environment overrides because contracts/foundry.toml is a protected baseline; it compares 20 bytecode-affecting settings with and without the profile and refuses to run on a difference; it checks effective counts in the forge JSON output (11 required suites, cases per property, runs and calls per campaign, 8 handler operations, zero reverts), not the exit code. Observed full campaigns on commit 458d3c5 (clean), contract inputs sha256 2001781f576486f5…, Foundry 1.8.5, solc 0.8.37: recorded seed 0x4c657841656769732e50726f6f664f665265766965772e7631 and additional seed 0x4c657841656769732e4368617074657231372e63616d706169676e2e32, each 105 of 105 tests, 15 fuzz properties x 10,000 = 150,000 cases, 2 campaigns x 1,000 runs x depth 256 = 512,000 calls, 0 reverts, fail_on_revert true, no per-test timeout, 3,999 s and 4,006 s (run together): both PASS, no counterexample, registry unchanged. Routine profile pnpm contracts:test:ci (1,000 cases, 256 x 128, one worker, 45-minute limit) observed 2026-10-11 on 640ea65 with uncommitted tooling and the same contract inputs: 105 of 105, 15,000 cases, 65,536 calls, 198 s, PASS; recorded as contract-campaign-ci, never as full. docs/security/invariants.md records source identity, toolchain, commands, counts, operation coverage, durations, outcomes and reproduction; no key, signature or trace is kept.",
+        "summary": "contracts/test/Authorization.t.sol extended for gaps only (Chapter 3 AuthorizationTest unchanged): AuthorizationBoundaryTest, 14 tests of which 9 are fuzz properties (deadline-1/deadline/deadline+1 for every action shape with overflow-safe generation, equality succeeds; the largest deadline; zero deadline at any time; any other key for an EOA and for a contract account; another chain with the chain context restored; replay on a second local registry; any other domain name or version; each individually altered signed field; a signature over another nonce; replay after issue, revoke, supersede and invalidation; an unrelated executor submitting an unchanged valid action first gets exactly the authorised result; rollback when a valid signature reaches an invalid transition for both account kinds; malformed and high-s signatures for a contract account; a swallowed nested mutation lets the outer action succeed exactly once) and NonceExhaustionBoundaryTest, 2 local boundary tests that use a storage cheatcode outside any campaign. Test-only security profile: pnpm contracts:campaign (tooling/scripts/security-campaign.ts, tooling/src/security-campaign.ts with unit tests) supplies sizes as FOUNDRY_* environment overrides because contracts/foundry.toml is a protected baseline; it compares 20 bytecode-affecting settings with and without the profile and refuses to run on a difference; it checks effective counts in the forge JSON output (11 required suites, cases per property, runs and calls per campaign, 8 handler operations, zero reverts), not the exit code. Observed full campaigns on commit 458d3c5 (clean), contract inputs sha256 2001781f576486f5\u2026, Foundry 1.8.5, solc 0.8.37: recorded seed 0x4c657841656769732e50726f6f664f665265766965772e7631 and additional seed 0x4c657841656769732e4368617074657231372e63616d706169676e2e32, each 105 of 105 tests, 15 fuzz properties x 10,000 = 150,000 cases, 2 campaigns x 1,000 runs x depth 256 = 512,000 calls, 0 reverts, fail_on_revert true, no per-test timeout, 3,999 s and 4,006 s (run together): both PASS, no counterexample, registry unchanged. Routine profile pnpm contracts:test:ci (1,000 cases, 256 x 128, one worker, 45-minute limit) observed 2026-10-11 on 640ea65 with uncommitted tooling and the same contract inputs: 105 of 105, 15,000 cases, 65,536 calls, 198 s, PASS; recorded as contract-campaign-ci, never as full. docs/security/invariants.md records source identity, toolchain, commands, counts, operation coverage, durations, outcomes and reproduction; no key, signature or trace is kept.",
         "files": [
           "contracts/test/Authorization.t.sol",
           "contracts/package.json",
@@ -11884,7 +12111,7 @@
       },
       "8": {
         "status": "complete",
-        "summary": "docs/DEPLOYMENTS.md created with five separate records: (1) the Chapter 6 registry deployment, unchanged, with every field evidence-backed and the chain values read back on 2026-10-11 (chain 10143, genesis, registry 0x453bfd16…048f, transaction 0xe6d0be40…a04a, sender 0xcaef8dd2…7d18 at nonce 0, plain CREATE by an externally owned transaction with the address equal to the CREATE address for that sender and nonce, block 69534196 hash 0x9f9a11f3…e0a8 canonical, block time 2026-10-09T12:01:18Z, creation code 5,033 bytes, runtime 4,118 bytes, solc 0.8.37+commit.f401782d, osaka, optimizer 200, viaIR false, bytecodeHash none, OpenZeppelin 5.6.1 with lockfile integrity, Foundry 1.8.5, source sha256 values); deployment source commit is NOT YET and not recoverable as a commit because the deployment block predates the repository's first commit (496c655, 2026-10-09T23:45:35Z), while the first-commit sources, unchanged since, compile to exactly the deployed creation code; the current verification commit is identified separately. (2) Read-only bytecode comparison: pnpm verify:deployment on the real Monad testnet registry returned MATCH, exit 0, exact_match of 4,118 bytes under the exact policy, on the configured Alchemy endpoint (checkpoint block 70156819, finalized minus 3, re-checked) and corroborated on the public endpoint https://testnet-rpc.monad.xyz (block 70156845); the recorded code pin equals the observed hash; all seven EIP-712 immutables were derived from context and listed; no links; deployment transaction consistent in 7 of 7 checks; five read methods, 9 requests each. Evidence: docs/evidence/chapter17-deployment-verify-{alchemy,public}-2026-10-11.json, both recorded as live_testnet results. (3) Explorer source verification, separate from (2): Monad's guide re-read on 2026-10-11 documents the Sourcify route for testnet (chain 10143, no API key, verifier https://sourcify-api-monad.blockvision.org/) and a Monadscan route that needs an API key. pnpm verify:explorer (tooling/scripts/explorer-verify.ts, tooling/src/explorer-verify.ts with 4 tests) builds the payload in an isolated copy holding only sources and build settings, checks the allowlist (18 Solidity sources: 3 registry, 15 pinned OpenZeppelin; settings keys) and scans for credentials before sending, then runs the pinned forge verify-contract with the recorded settings (no flattening, no metadata change, no key, no transaction). Submitted once; job bbb479c7-1513-4da3-8873-bff3924d9a3c completed 2026-10-11T16:19:21Z; the service's status endpoint reports match=match, runtimeMatch=match, creationMatch=null for chain 10143 and this address: VERIFIED at Sourcify's non-exact level (exact_match is unavailable because the build appends no metadata hash). The rendered MonadVision page could not be checked by tooling (bot challenge, HTTP 403) and is recorded as unchecked; Monadscan verification is NOT YET (no API key configured, not attempted). (4) Optional agent registration: none. (5) Local chains, mainnet and replacement deployments: none. No replacement was deployed, no account funded, no transaction sent. Source verification is described as code correspondence, never as an audit.",
+        "summary": "docs/DEPLOYMENTS.md created with five separate records: (1) the Chapter 6 registry deployment, unchanged, with every field evidence-backed and the chain values read back on 2026-10-11 (chain 10143, genesis, registry 0x453bfd16\u2026048f, transaction 0xe6d0be40\u2026a04a, sender 0xcaef8dd2\u20267d18 at nonce 0, plain CREATE by an externally owned transaction with the address equal to the CREATE address for that sender and nonce, block 69534196 hash 0x9f9a11f3\u2026e0a8 canonical, block time 2026-10-09T12:01:18Z, creation code 5,033 bytes, runtime 4,118 bytes, solc 0.8.37+commit.f401782d, osaka, optimizer 200, viaIR false, bytecodeHash none, OpenZeppelin 5.6.1 with lockfile integrity, Foundry 1.8.5, source sha256 values); deployment source commit is NOT YET and not recoverable as a commit because the deployment block predates the repository's first commit (496c655, 2026-10-09T23:45:35Z), while the first-commit sources, unchanged since, compile to exactly the deployed creation code; the current verification commit is identified separately. (2) Read-only bytecode comparison: pnpm verify:deployment on the real Monad testnet registry returned MATCH, exit 0, exact_match of 4,118 bytes under the exact policy, on the configured Alchemy endpoint (checkpoint block 70156819, finalized minus 3, re-checked) and corroborated on the public endpoint https://testnet-rpc.monad.xyz (block 70156845); the recorded code pin equals the observed hash; all seven EIP-712 immutables were derived from context and listed; no links; deployment transaction consistent in 7 of 7 checks; five read methods, 9 requests each. Evidence: docs/evidence/chapter17-deployment-verify-{alchemy,public}-2026-10-11.json, both recorded as live_testnet results. (3) Explorer source verification, separate from (2): Monad's guide re-read on 2026-10-11 documents the Sourcify route for testnet (chain 10143, no API key, verifier https://sourcify-api-monad.blockvision.org/) and a Monadscan route that needs an API key. pnpm verify:explorer (tooling/scripts/explorer-verify.ts, tooling/src/explorer-verify.ts with 4 tests) builds the payload in an isolated copy holding only sources and build settings, checks the allowlist (18 Solidity sources: 3 registry, 15 pinned OpenZeppelin; settings keys) and scans for credentials before sending, then runs the pinned forge verify-contract with the recorded settings (no flattening, no metadata change, no key, no transaction). Submitted once; job bbb479c7-1513-4da3-8873-bff3924d9a3c completed 2026-10-11T16:19:21Z; the service's status endpoint reports match=match, runtimeMatch=match, creationMatch=null for chain 10143 and this address: VERIFIED at Sourcify's non-exact level (exact_match is unavailable because the build appends no metadata hash). The rendered MonadVision page could not be checked by tooling (bot challenge, HTTP 403) and is recorded as unchecked; Monadscan verification is NOT YET (no API key configured, not attempted). (4) Optional agent registration: none. (5) Local chains, mainnet and replacement deployments: none. No replacement was deployed, no account funded, no transaction sent. Source verification is described as code correspondence, never as an audit.",
         "files": [
           "docs/DEPLOYMENTS.md",
           "docs/evidence/chapter17-deployment-verify-alchemy-2026-10-11.json",
@@ -11938,7 +12165,7 @@
       },
       "11": {
         "status": "complete",
-        "summary": "SECURITY.md created from implemented behaviour, docs/SPEC.md, docs/THREAT-MODEL.md and docs/DEPLOYMENTS.md. States that the testnet demonstration is unaudited, uses synthetic matters and is not for client data, and that local tests, invariant/fuzz campaigns, static analysis, deployment (source) verification and the disclosure-boundary checks are five different evidence types, none an independent audit or legal certification. Versions named separately: protocol v1 (frozen); the one Monad testnet registry 0x453bfd16…048f on chain 10143 (no mainnet); packages protocol/sdk/cli 0.1.0 built from this repository and not published; the reference application and verifier on main, run locally, with a hosted reference deployment NOT YET. No tagged release exists and none is invented; forks and older commits are not maintained. Scope by actual component (registry, protocol/SDK, verifier/CLI, account and vault, analysis and approval boundary, reference application); optional ERC-8004 identity is discovery only and no agent is registered. Ten stated limits: public account/timing/history linkability, full-package disclosure to a verification recipient, selected plaintext visible to the server and Qwen incl. the source-reference digests that reach the server only, hashes bind bytes, approval by a signing account, same-origin compromise, passkey origin and recovery limits, RPC trust and unknown on failure, irreversible external disclosures, replay of old encrypted snapshots. Known unresolved: no deployable signer, hosted deployment NOT YET, real-device evidence incomplete (one operator-reported account check passed; the real-device vault check is recorded as failed), Monadscan verification NOT YET, unread response bodies in the disclosure checks, NO TEST YET cases. Reporting: the repository (private, github.com/ejasuave/LexAegis) has no security policy URL and private vulnerability reporting returned 404 on 2026-10-11, so the private reporting contact is marked NOT YET and reporters are asked not to put sensitive details in a public issue; no email address, response time, reward or safe harbour is invented. Reports should carry version, environment, impact and a minimal synthetic reproduction, and never client documents, openings, keys, session tokens or usable signatures.",
+        "summary": "SECURITY.md created from implemented behaviour, docs/SPEC.md, docs/THREAT-MODEL.md and docs/DEPLOYMENTS.md. States that the testnet demonstration is unaudited, uses synthetic matters and is not for client data, and that local tests, invariant/fuzz campaigns, static analysis, deployment (source) verification and the disclosure-boundary checks are five different evidence types, none an independent audit or legal certification. Versions named separately: protocol v1 (frozen); the one Monad testnet registry 0x453bfd16\u2026048f on chain 10143 (no mainnet); packages protocol/sdk/cli 0.1.0 built from this repository and not published; the reference application and verifier on main, run locally, with a hosted reference deployment NOT YET. No tagged release exists and none is invented; forks and older commits are not maintained. Scope by actual component (registry, protocol/SDK, verifier/CLI, account and vault, analysis and approval boundary, reference application); optional ERC-8004 identity is discovery only and no agent is registered. Ten stated limits: public account/timing/history linkability, full-package disclosure to a verification recipient, selected plaintext visible to the server and Qwen incl. the source-reference digests that reach the server only, hashes bind bytes, approval by a signing account, same-origin compromise, passkey origin and recovery limits, RPC trust and unknown on failure, irreversible external disclosures, replay of old encrypted snapshots. Known unresolved: no deployable signer, hosted deployment NOT YET, real-device evidence incomplete (one operator-reported account check passed; the real-device vault check is recorded as failed), Monadscan verification NOT YET, unread response bodies in the disclosure checks, NO TEST YET cases. Reporting: the repository (private, github.com/ejasuave/LexAegis) has no security policy URL and private vulnerability reporting returned 404 on 2026-10-11, so the private reporting contact is marked NOT YET and reporters are asked not to put sensitive details in a public issue; no email address, response time, reward or safe harbour is invented. Reports should carry version, environment, impact and a minimal synthetic reproduction, and never client documents, openings, keys, session tokens or usable signatures.",
         "files": [
           "SECURITY.md"
         ]
@@ -11967,7 +12194,7 @@
       "Negative controls run in a disposable git worktree in the user's cache directory, never in the working tree."
     ],
     "checks": {
-      "note": "Observed 2026-10-11 on the final Chapter 17 source: commit f49f2e7, with only generated evidence and state changes in the worktree. Contract inputs unchanged (sha256 2001781f576486f5…).",
+      "note": "Observed 2026-10-11 on the final Chapter 17 source: commit f49f2e7, with only generated evidence and state changes in the worktree. Contract inputs unchanged (sha256 2001781f576486f5\u2026).",
       "contracts": {
         "command": "pnpm contracts:fmt:check; contracts:build; contracts:test; contracts:artifacts:check; contracts:reference:check",
         "outcome": "pass",
@@ -12175,7 +12402,7 @@
       },
       "8": {
         "status": "complete",
-        "summary": "docs/integration-trials.md plus clean packed-package trials. pnpm quickstart:check (extended) packs protocol, sdk, cli and verify-embed from the pinned toolchain, installs only the tarballs into a fresh consumer outside the repository, proves every @lexaegis package resolves inside the consumer and no tsconfig/path alias/repo source exists, records tarball sha256 and tool versions, and runs the guide verbatim: path 1 SDK, path 2 CLI text+JSON, path 3 local lifecycle, new path 4 plain HTML widget (status-only and explicit Check files, local harness via pnpm embed:harness, headless driver pnpm embed:check-page). QUICKSTART widget section replaced with the implemented path; local and public paths labelled separately. Internal trial 1: 13/13 pass; runner durations installation 10880 ms, path1 409, path2 946, path3 8027, path4 6524, manual 0 (evidence docs/evidence/chapter18-quickstart-trial1-2026-10-12.json). Gaps found by review (path 4 assumed path 3's Foundry install, fixed sleeps) corrected in the guide first; trial 2 pass 13/13 with identical tarball hashes (…trial2…json). Trial 3: ai-pr-signoff README commands from a fresh directory. packages:check extended to inspect and exclusion-scan the verify-embed tarball (44/44). No external trial: 'No external trials recorded yet' retained with an external-trial template. All trials are internal, offline-store, automated-runner durations, not a human's time.",
+        "summary": "docs/integration-trials.md plus clean packed-package trials. pnpm quickstart:check (extended) packs protocol, sdk, cli and verify-embed from the pinned toolchain, installs only the tarballs into a fresh consumer outside the repository, proves every @lexaegis package resolves inside the consumer and no tsconfig/path alias/repo source exists, records tarball sha256 and tool versions, and runs the guide verbatim: path 1 SDK, path 2 CLI text+JSON, path 3 local lifecycle, new path 4 plain HTML widget (status-only and explicit Check files, local harness via pnpm embed:harness, headless driver pnpm embed:check-page). QUICKSTART widget section replaced with the implemented path; local and public paths labelled separately. Internal trial 1: 13/13 pass; runner durations installation 10880 ms, path1 409, path2 946, path3 8027, path4 6524, manual 0 (evidence docs/evidence/chapter18-quickstart-trial1-2026-10-12.json). Gaps found by review (path 4 assumed path 3's Foundry install, fixed sleeps) corrected in the guide first; trial 2 pass 13/13 with identical tarball hashes (\u2026trial2\u2026json). Trial 3: ai-pr-signoff README commands from a fresh directory. packages:check extended to inspect and exclusion-scan the verify-embed tarball (44/44). No external trial: 'No external trials recorded yet' retained with an external-trial template. All trials are internal, offline-store, automated-runner durations, not a human's time.",
         "files": [
           "docs/integration-trials.md",
           "docs/QUICKSTART.md",
@@ -12282,7 +12509,7 @@
         "gzipBytes": 65991,
         "note": "includes every bundled dependency; no target claimed"
       },
-      "tarballs": "protocol 53058f8a…cea34, sdk e970c2ce…57b2b, cli 599cabd5…32ecb, verify-embed d44c2c60…2f08d (full values in docs/evidence/chapter18-quickstart-trial2-2026-10-12.json); identical across two runs"
+      "tarballs": "protocol 53058f8a\u2026cea34, sdk e970c2ce\u202657b2b, cli 599cabd5\u202632ecb, verify-embed d44c2c60\u20262f08d (full values in docs/evidence/chapter18-quickstart-trial2-2026-10-12.json); identical across two runs"
     },
     "handoff": "Chapter 12 (or whichever chapter the owner chooses next in the run order 12, 19, 13) can rely on: packages/verify-embed (registerProofOfReviewStatus, bundle sizes, README), examples/embed (pnpm embed:example) and pnpm embed:harness / embed:check-page, examples/ai-pr-signoff (hash, keygen, prepare, issue, verify, export), docs/QUICKSTART.md paths 1 to 4 run by pnpm quickstart:check, docs/integration-trials.md (internal trials 1 to 3 and the external template), docs/adoption/{targets,outreach-messages,interview-guide,traction-log,ROADMAP}.md with pnpm traction:summary, docs/ROADMAP.md (pointer), .github/ISSUE_TEMPLATE/integration-{request,report}.yml. Honest states to keep: No external trials recorded yet; No entries yet; testnet issue NOT YET; nothing published."
   },
@@ -12414,7 +12641,7 @@
       },
       "12": {
         "status": "complete",
-        "summary": "Three new browser specs against the real app with scripted stand-ins, all passing: aegis-lifecycle.spec.ts (10), voice-local-speech.spec.ts (9), accessibility-and-reflow.spec.ts (5); harness/aegis.ts is the shared helper and the ten case IDs are registered in cases.ts (tests: pnpm test 14/14). Lifecycle: Lock, Sign out, matter switch, late run events after Lock, pagehide/pageshow, session expiry and a cut stream leave no private pane, signing authority or success indicator; a storage scan after Lock finds no private text; Stop is coordinated through the acknowledgement contract, and after a lost response it keeps read-only reconciliation instead of labelling the matter cancelled. Voice: speech support is independent of PRF; unavailable speech keeps full text function; start and play are explicit, recognition must be verified on-device with no cloud fallback, the transcript is editable and sent only by an explicit Send; permission denial, missing language pack, voice disappearance, the 30 s capture limit, manual-edit races and late results are covered; spoken yes/approve authorises nothing. Accessibility and reflow: Command centre and Review at 1440x900, 1024x768, 390x844 and 320x640; keyboard-only navigation, drawers (focus moves in, Escape closes and restores focus, nothing is confirmed), disclosure, approval and fee confirmation; accessible control trees, a contrast probe with a negative control, and reduced motion. Synthetic screenshots and control-tree text are in docs/evidence/chapter12/. App fixes: a 'starting' read-aloud state and an honest 'Starting…' microphone label (F-006); the dock status notice is no longer clamped to one line unless it is the idle hint (F-007). Re-run after the fixes: apps/web unit tests 553/553, pnpm test:hud:browser 69/69, pnpm test:assistant:browser 61/61, eslint and typecheck clean. LIMITS: speech objects are scripted stand-ins, so real OS/browser speech locality and the real recognition call are unproven (F-008 open: SpeechRecognition.available({ processLocally: true }) crashed headless Chromium 153 here); the 4,000-character playback bound is covered only by the controller unit test (model text is capped at 2,000); pagehide/pageshow are dispatched events, not a real back-forward cache restore; drawers are non-modal by design, so focus containment means focus moves in, Escape closes and restores focus, and Tab can leave; automated accessibility checks are evidence for the tested controls, not WCAG certification; state cleanup is best effort, not a guarantee of physical memory erasure.",
+        "summary": "Three new browser specs against the real app with scripted stand-ins, all passing: aegis-lifecycle.spec.ts (10), voice-local-speech.spec.ts (9), accessibility-and-reflow.spec.ts (5); harness/aegis.ts is the shared helper and the ten case IDs are registered in cases.ts (tests: pnpm test 14/14). Lifecycle: Lock, Sign out, matter switch, late run events after Lock, pagehide/pageshow, session expiry and a cut stream leave no private pane, signing authority or success indicator; a storage scan after Lock finds no private text; Stop is coordinated through the acknowledgement contract, and after a lost response it keeps read-only reconciliation instead of labelling the matter cancelled. Voice: speech support is independent of PRF; unavailable speech keeps full text function; start and play are explicit, recognition must be verified on-device with no cloud fallback, the transcript is editable and sent only by an explicit Send; permission denial, missing language pack, voice disappearance, the 30 s capture limit, manual-edit races and late results are covered; spoken yes/approve authorises nothing. Accessibility and reflow: Command centre and Review at 1440x900, 1024x768, 390x844 and 320x640; keyboard-only navigation, drawers (focus moves in, Escape closes and restores focus, nothing is confirmed), disclosure, approval and fee confirmation; accessible control trees, a contrast probe with a negative control, and reduced motion. Synthetic screenshots and control-tree text are in docs/evidence/chapter12/. App fixes: a 'starting' read-aloud state and an honest 'Starting\u2026' microphone label (F-006); the dock status notice is no longer clamped to one line unless it is the idle hint (F-007). Re-run after the fixes: apps/web unit tests 553/553, pnpm test:hud:browser 69/69, pnpm test:assistant:browser 61/61, eslint and typecheck clean. LIMITS: speech objects are scripted stand-ins, so real OS/browser speech locality and the real recognition call are unproven (F-008 open: SpeechRecognition.available({ processLocally: true }) crashed headless Chromium 153 here); the 4,000-character playback bound is covered only by the controller unit test (model text is capped at 2,000); pagehide/pageshow are dispatched events, not a real back-forward cache restore; drawers are non-modal by design, so focus containment means focus moves in, Escape closes and restores focus, and Tab can leave; automated accessibility checks are evidence for the tested controls, not WCAG certification; state cleanup is best effort, not a guarantee of physical memory erasure.",
         "files": [
           "tests/system/aegis-lifecycle.spec.ts",
           "tests/system/voice-local-speech.spec.ts",
@@ -12666,7 +12893,24 @@
           "tooling/scripts/render-logo.ts",
           "tooling/src/submission-validate.test.ts"
         ]
+      },
+      "17": {
+        "status": "complete",
+        "summary": "Final local verification and honest handoff. Observed: lint, format, typecheck, test (155 files/1917 tests), build and the static gates pass; readiness computes Gates A-D fail (B: NO_DEPLOYABLE_SIGNER, so Mera bounty claims are withdrawn); cutladder:check exits 1 (pre-existing blocked result). docs/release/status.json keeps authored/locally_passed/deployed/live_verified/published/submitted apart: deployed false, live_verified blocked, published false, submitted false. submission:validate overall blocked. CLAUDE.md 449 words, assistant-ui-contract 1194 words.",
+        "files": [
+          "docs/release/status.json",
+          "project_brief/LexAegis Refined Project Brief v3.md",
+          "README.md",
+          "submission/sponsor-evidence.json"
+        ]
       }
-    }
+    },
+    "limitations": [
+      "No hosting target, provider access, Docker daemon, ffmpeg or real passkey device in this environment",
+      "Repository private with no licence",
+      "No hosted application, verifier, indexer, videos or published article",
+      "Mera bounty claims withdrawn by failed Gate B"
+    ],
+    "handoff": "Chapter 13 is NOT complete: required hosted, recording and publication checks did not run. Resume with provider access and an HTTPS origin: pnpm release prepare/deploy/verify, pnpm hosted:smoke --evidence, record videos, publish the article, pnpm submission:validate --check-links. Run order was changed by the user (13 before 19); chapter 14 remains in-progress."
   }
 }

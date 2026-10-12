@@ -1,0 +1,62 @@
+{
+  "schema": "lexaegis.release-status.v1",
+  "recordedAt": "2026-10-12",
+  "baseRevision": "9565a67",
+  "note": "Separate records. A commit is not a deployment; a published site is not a submitted entry. Nothing here was changed by an assistant summary.",
+  "authored": true,
+  "locally_passed": {
+    "state": "pass",
+    "observed": [
+      "lint",
+      "format:check",
+      "typecheck",
+      "test (155 files, 1917 tests)",
+      "build",
+      "secrets:check",
+      "exclusion:check",
+      "baselines:check",
+      "docs:check",
+      "scope:docs:check",
+      "fixtures:check",
+      "protocol:check",
+      "sdk:check",
+      "packages:check (44/44)",
+      "state:validate",
+      "test:auth:db (56/56)",
+      "release:rollback --restore-check (synthetic) and its --corrupt negative control",
+      "submission validator unit tests"
+    ],
+    "notPassing": [
+      "cutladder:check exits 1 with 'result is blocked' (features unimplemented; pre-existing, Chapter 14 in progress)"
+    ]
+  },
+  "container_images": {
+    "state": "not_run",
+    "reason": "Docker daemon was not running; standalone web output and the static verifier server were exercised directly instead"
+  },
+  "deployed": false,
+  "live_verified": {
+    "state": "blocked",
+    "reason": "no deployment, no origins; registry identity itself was rechecked read-only through Alchemy (match)"
+  },
+  "published": { "repository": false, "article": false, "videos": false },
+  "submitted": false,
+  "submission": {
+    "state": "blocked",
+    "validator": "pnpm submission:validate",
+    "reasons": [
+      "repository private, no licence",
+      "no hosted application or verifier",
+      "videos not recorded",
+      "Qwen article unpublished",
+      "Mera bounty claims withdrawn (Gate B fail)",
+      "team facts and portal fields unverified"
+    ]
+  },
+  "gates": "Computed by pnpm readiness: A fail, B fail, C fail, D fail (2026-10-12T22:37Z)",
+  "deadline": {
+    "hardDeadline": "2026-10-14T04:59:00+01:00",
+    "recheckedFromOrganiser": false,
+    "note": "Carried from the supplied brief; not rechecked against an organiser source, and no portal was inspected."
+  }
+}

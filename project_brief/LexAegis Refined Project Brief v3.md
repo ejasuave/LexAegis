@@ -303,7 +303,7 @@ Each chapter follows the Dual-Layer Rule: a short everyday explanation, followed
 | 10      | Aegis HUD, Legal Workspace and Human Approval                        | Authored.          |
 | 11      | Protocol SDK, Independent Verifier and Developer Integration          | Authored.          |
 | 12      | End-to-End Recovery, Privacy and Security Validation                  | Authored.          |
-| 13      | Production Deployment and Hackathon Submission Assets                 | Authored.          |
+| 13      | Production Deployment and Hackathon Submission Assets                 | Local assets done; hosting, recording, publication blocked (`docs/release/status.json`). |
 | 14      | Scope Gates, Feature Flags and Golden-Path Smoke Test                 | **New, additive.** |
 | 15      | Developer Experience: Specification, Test Vectors, Quickstart and CLI | **New, additive.** |
 | 16      | Agent Identity: ERC-8004 Link, Availability-Gated                     | **New, additive.** |

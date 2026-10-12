@@ -3,6 +3,8 @@
 import { createServer } from 'node:http';
 import { readFile, stat } from 'node:fs/promises';
 import { extname, join, normalize, sep } from 'node:path';
+import process from 'node:process';
+import { URL } from 'node:url';
 
 const root = join(process.cwd(), 'dist');
 const port = Number(process.env.PORT ?? 8080);

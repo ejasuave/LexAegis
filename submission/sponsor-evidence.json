@@ -2,7 +2,7 @@
   "schema": "lexaegis.sponsor-evidence.v1",
   "version": 1,
   "recordedAt": "2026-10-12",
-  "sourceCommit": "be57cda",
+  "sourceCommit": "9565a67",
   "note": "Claims are limited to what the linked evidence shows. Links are repository paths because the repository is private and nothing is hosted; none is a public URL. No eligibility, award or external user is implied. Qwen and Alchemy awards, if mentioned elsewhere, are credits, not prize money.",
   "bounties": [
     {
@@ -22,7 +22,8 @@
       "observed": "Account, session and recovery flows pass in a Chromium virtual-authenticator journey and scripted local runs. The Chapter 6 testnet transactions were signed by a scripted account, not a real Mera device.",
       "limitations": [
         "no real-device ceremony counts recorded",
-        "universal single-prompt onboarding is not claimed"
+        "universal single-prompt onboarding is not claimed",
+        "Gate B is computed as fail (no real Mera account signed the exact action; NO_DEPLOYABLE_SIGNER), which withdraws this bounty claim until real-device evidence exists."
       ],
       "missing": [
         "real_device onboarding and signing-session expiry/re-prompt",
@@ -30,7 +31,7 @@
         "storage-cleared recovery at the final rpId on a real device",
         "tap/prompt counts from real ceremonies"
       ],
-      "claimStatus": "not_established"
+      "claimStatus": "withdrawn_gate_b_failed"
     },
     {
       "name": "Mera: One Passkey, Many Keys",
@@ -49,13 +50,14 @@
       "observed": "Separate account and vault PRF namespaces with browser-side encryption; recovery and decryption pass in the virtual-authenticator and scripted-storage journeys. A fresh key or cached plaintext is not counted as recovery.",
       "limitations": [
         "a virtual authenticator is not a real device",
-        "ciphertext restore cannot recreate a deleted credential"
+        "ciphertext restore cannot recreate a deleted credential",
+        "Gate B is computed as fail (no real Mera account signed the exact action; NO_DEPLOYABLE_SIGNER), which withdraws this bounty claim until real-device evidence exists."
       ],
       "missing": [
         "same-credential decryption on a second real device",
         "recovery after clearing storage at the final rpId"
       ],
-      "claimStatus": "not_established"
+      "claimStatus": "withdrawn_gate_b_failed"
     },
     {
       "name": "Best Use of Envio",
