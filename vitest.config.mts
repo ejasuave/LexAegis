@@ -7,6 +7,7 @@ export default defineConfig({
       'packages/sdk',
       'packages/cli',
       'packages/vault',
+      'packages/verify-embed',
       'packages/agent',
       'apps/web',
       'apps/verifier',

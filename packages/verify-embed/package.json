@@ -1,0 +1,41 @@
+{
+  "name": "@lexaegis/verify-embed",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Framework-neutral Proof of Review status widget: a proof-of-review-status custom element that reads a receipt's registry status and, on request, checks a deliberately published package. It signs nothing and needs no backend.",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "build": "vite build && EMBED_MINIFY=1 vite build && tsc -p tsconfig.build.json",
+    "typecheck": "tsc --noEmit -p tsconfig.json",
+    "test": "vitest run",
+    "size": "tsx scripts/measure-size.ts"
+  },
+  "sideEffects": false,
+  "engines": {
+    "node": ">=24.0.0"
+  },
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "publishConfig": {
+    "exports": {
+      ".": {
+        "types": "./dist/types/index.d.ts",
+        "default": "./dist/proof-of-review-embed.js"
+      },
+      "./browser": "./dist/proof-of-review-embed.min.js"
+    }
+  },
+  "devDependencies": {
+    "@lexaegis/protocol": "workspace:*",
+    "@lexaegis/sdk": "workspace:*",
+    "tsx": "4.23.15",
+    "viem": "2.57.3",
+    "vite": "8.3.4",
+    "zod": "4.6.5"
+  }
+}

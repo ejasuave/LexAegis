@@ -5833,6 +5833,37 @@
       "outcome": "pass",
       "reasonCodes": [],
       "evidenceRefs": []
+    },
+    {
+      "id": "packages-check-20261012080822",
+      "subject": "packaged-consumer-check",
+      "sourceRevision": {
+        "commit": "0fbdc498a4aed63d7109fb855ef2b3e827412243",
+        "dirtyWorktree": true,
+        "contentFingerprint": "6ac12f34bd18e717538f93e447955f317cd0079d19dc9655109b8ca915eb8b18"
+      },
+      "checkedAt": "2026-10-12T08:08:23.174Z",
+      "command": "pnpm packages:check",
+      "environment": { "node": "v24.21.0", "os": "linux-x64", "pnpm": "11.11.0" },
+      "evidenceClass": "local_scripted",
+      "outcome": "pass",
+      "reasonCodes": ["LOCAL_TARBALLS_NOT_PUBLISHED", "AUTHORED_EXAMPLE_NOT_ADOPTION"],
+      "evidenceRefs": [],
+      "facts": {
+        "checksPassed": "40",
+        "checksTotal": "40",
+        "protocolTarballBytes": "72014",
+        "sdkTarballBytes": "85117",
+        "cliTarballBytes": "21356",
+        "protocolTarballSha256": "53058f8a7694b581bdd1a305377470ee74a48b7b7f52d74628559ef0629cea34",
+        "sdkTarballSha256": "e970c2ce2df348244a867c4ab9233bf86d820f454c21b07e2a9c8d7857f57b2b",
+        "cliTarballSha256": "599cabd5756bcd50cde36860ec175fcbd0fdb5420c5e488dad4fed2cede32ecb",
+        "protocolFiles": "68",
+        "sdkFiles": "71",
+        "cliFiles": "28",
+        "browser": "chromium (playwright)",
+        "published": false
+      }
     }
   ],
   "appliedCuts": [],
@@ -8539,6 +8570,16 @@
         "status": "complete",
         "summary": "Compatibility contract. Mapping: #2-5=18.1 widget [Must]; #6-7=18.2 second-domain example [Should]; #8=18.3 packed-package trials [Must]; #9-11=18.4 adoption docs/log/roadmap [Must]; #12=18.5 README + handoff [Should]. Prerequisites inspected at commit 492d554: SDK verifyReceipt (mode reference-only + live RPC, LiveBudget 20s/64 attempts default), verifyReviewExport, parseRpcEndpoint/createRpcLiveClient, registryPolicySchema; protocol profileIdSchema accepts lexaegis.ai-pr-signoff v1 (generic profiles already used by examples/document-review), so no additive protocol change is needed; existing roles source/analysis/decision-log suffice. Chapter 15 packed-consumer harness (tooling/src/packed-consumer.ts packs protocol/sdk/cli); docs/QUICKSTART.md widget section NOT YET; apps/verifier uses Vite 8.3.4. Protected baselines (registry, ABI, EIP-712, vectors, protocol v1) are not edited by this chapter.",
         "files": ["docs/build-state.json"]
+      },
+      "2": {
+        "status": "complete",
+        "summary": "packages/verify-embed created: framework-neutral, typed ESM + self-contained Vite lib bundle (proof-of-review-embed.js and .min.js, everything bundled, no CDN/React/server import). Interfaces: registerProofOfReviewStatus(hostConfig) (sets config, defines element lazily, no network I/O, safe to repeat, reports TAG_TAKEN_BY_OTHER_DEFINITION instead of replacing, NOT_A_BROWSER in Node); resolveHostConfig/hostConfigSchema (deployments[{policy:RegistryPolicy,rpcUrl}], rpcOrigins, packageOrigins, allowLoopbackHttp); snapshotInputs (chain-id/registry/reviewer/commitment via parseReceiptReference, rpc-url and package-url only on host-approved origins); EMBED_LIMITS refresh 15s/12 attempts, package 30s. 30 unit tests pass (config, inputs, SSR import). lint, typecheck, packages:check (40/40) and exclusion:check pass.",
+        "files": [
+          "packages/verify-embed/package.json",
+          "packages/verify-embed/src/config.ts",
+          "packages/verify-embed/src/inputs.ts",
+          "packages/verify-embed/src/proof-of-review-status.ts"
+        ]
       }
     },
     "decisions": [],
