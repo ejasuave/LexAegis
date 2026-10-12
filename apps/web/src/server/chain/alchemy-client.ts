@@ -3,7 +3,7 @@ import { createPublicClient, http, type Hex, type PublicClient } from 'viem';
 import { liveClientFromViem, type LiveChainClient } from '@lexaegis/sdk/registry';
 import type { MonitorClient } from '@lexaegis/sdk/transactions';
 import { loadServerConfig } from '../env';
-import { CHAIN } from './config';
+import { CHAIN, localTestChainRequested } from './config';
 
 /*
  * One server-only viem client with an explicit HTTP transport to the configured Alchemy Monad
@@ -190,6 +190,14 @@ export function getChainClient(): ServerChainClient | null {
   if (cached !== undefined) return cached;
   const loaded = loadServerConfig(process.env);
   const rpcUrl = loaded.ok ? loaded.config.alchemy.rpcUrl : undefined;
-  cached = rpcUrl === undefined ? null : createChainClient({ rpcUrl, chainId: Number(CHAIN.id) });
+  cached =
+    rpcUrl === undefined
+      ? null
+      : createChainClient({
+          rpcUrl,
+          chainId: Number(CHAIN.id),
+          // Only the Chapter 12 loopback test chain may use a plain-HTTP loopback endpoint.
+          allowLoopback: localTestChainRequested(),
+        });
   return cached;
 }

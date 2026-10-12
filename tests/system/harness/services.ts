@@ -14,7 +14,9 @@ import {
   startScriptedQwenServer,
   type ScriptedQwenServer,
 } from '../../../apps/web/src/test-support/scripted-qwen-server';
-import { startAnvil, type LocalChain } from '../../../contracts/scripts/lib/anvil';
+import type { LocalChain } from '../../../contracts/scripts/lib/anvil';
+import { createLocalTransport } from '../../../contracts/scripts/lib/local-rpc';
+import { resolveFoundryTool } from '../../../contracts/scripts/lib/toolchain';
 import { startLocalPostgres, type LocalPostgres } from '../../../test-support/embedded-pg';
 import {
   checkBucket,
@@ -103,29 +105,71 @@ export interface SystemChain {
 }
 
 /**
- * Starts a throwaway Anvil and proves, by asking the node, that it is Anvil on a loopback endpoint
- * before anything is deployed to it. `chainId` 10143 is permitted only because the node identifies
- * itself as Anvil: the application's unchanged configuration expects that chain ID.
+ * Starts a throwaway Anvil on a free loopback port and proves, by asking the node, that it IS Anvil on
+ * loopback before anything is deployed to it. The shared contracts tooling refuses the public Monad
+ * chain IDs outright; this harness may run Anvil under 10143 only because the application's unchanged
+ * configuration expects that ID, only when the caller opts in, and only after the node identifies as
+ * Anvil. Nothing here can reach a public network: the endpoint is loopback by construction.
  */
 export async function startSystemChain(
   chainId = 31337,
   options: { readonly allowPublicChainId?: boolean } = {},
 ): Promise<SystemChain | Blocked> {
+  let child: ChildProcess | undefined;
   try {
-    const local = await startAnvil(chainId);
-    const reported = String(BigInt((await local.transport.request('eth_chainId', [])) as string));
-    const clientVersion = String(await local.transport.request('web3_clientVersion', []));
-    const guard = checkLocalChain(
-      local.rpcUrl,
-      { chainId: reported, clientVersion },
-      { allowPublicChainIdOnAnvil: options.allowPublicChainId === true },
+    const port = await freePort();
+    const rpcUrl = `http://127.0.0.1:${String(port)}`;
+    child = spawn(
+      resolveFoundryTool('anvil'),
+      [
+        '--host',
+        '127.0.0.1',
+        '--port',
+        String(port),
+        '--chain-id',
+        String(chainId),
+        '--network',
+        'monad',
+        '--silent',
+      ],
+      { stdio: 'ignore' },
     );
+    const exited = once(child, 'exit');
+    const transport = createLocalTransport(rpcUrl);
+    const probe = await waitUntil(
+      'anvil ready',
+      async () => {
+        try {
+          const reported = BigInt(
+            (await transport.request('eth_chainId', [])) as string,
+          ).toString();
+          const clientVersion = String(await transport.request('web3_clientVersion', []));
+          return { chainId: reported, clientVersion };
+        } catch {
+          return null;
+        }
+      },
+      { timeoutMs: 20_000, intervalMs: 100 },
+    );
+    const guard = checkLocalChain(rpcUrl, probe, {
+      allowPublicChainIdOnAnvil: options.allowPublicChainId === true,
+    });
+    const stop = async (): Promise<void> => {
+      if (child !== undefined && child.exitCode === null && child.signalCode === null)
+        child.kill('SIGTERM');
+      await exited;
+    };
     if (!guard.ok) {
-      await local.stop();
+      await stop();
       return { blocked: true, code: 'SERVICE_UNAVAILABLE', reason: guard.code };
     }
-    return { local, chainId: reported, stop: () => local.stop() };
+    return {
+      local: { rpcUrl, chainId: BigInt(probe.chainId), transport, stop },
+      chainId: probe.chainId,
+      stop,
+    };
   } catch {
+    child?.kill('SIGTERM');
     return { blocked: true, code: 'PREREQUISITE_MISSING', reason: 'START_FAILED' };
   }
 }

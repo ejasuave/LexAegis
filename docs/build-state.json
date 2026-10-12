@@ -8960,6 +8960,18 @@
           "tests/system/harness/services.ts",
           "tests/system/harness/cases.ts"
         ]
+      },
+      "3": {
+        "status": "complete",
+        "summary": "tests/system/full-review-journey.spec.ts: one complete synthetic browser journey on the REAL production web build, real PostgreSQL, real S3-compatible server, a real registry on a loopback Anvil (run under chain ID 10143 after the harness proved by node identity that it is Anvil), the standalone verifier built for the loopback test chain and served from its own origin. Simulated and labelled: scripted provider (not Qwen) and a CDP virtual authenticator with PRF. Flow through rendered controls only: account -> explicit vault unlock -> matter/source -> disclosure preview (nothing sent before Send) -> Send to Aegis -> exact citation reopens '24,000' -> four facts confirmed -> deterministic checks (oracle 2400000-(1000000+1200000)=200000 pence) -> decisions never preselected, recording refused until all decided -> freeze, encrypted save and read-back (server holds ciphertext only) -> scripted approval click refused, trusted click signs ('Approval signed; publication not confirmed') -> exact fee confirmation (separate Send) -> real local broadcast -> confirmed observation -> receipt lifecycle read as its own fact (Active) with indexer shown separately -> readable export -> fresh verifier context, no cookies, independent expected reference, live registry read via configured test RPC, no LexAegis backend contact. Production seam added (apps/web/src/server/chain/config.ts, alchemy-client.ts): LEXAEGIS_TEST_CHAIN=local-anvil + LEXAEGIS_TEST_MODE + LEXAEGIS_TEST_CHAIN_DEPLOYMENT, all three required, loopback only, an unreadable record is invalid never the public artifact; 5 unit tests prove it is inert otherwise. Harness: Anvil spawned by the harness itself (shared contracts tooling refuses public chain IDs by design), typed blocked results (verified by forcing a blocked run) are recorded and tests skip. Local journey proves integrated behaviour, not Mera hardware, Monad timing, live Qwen quality or sponsor eligibility.",
+        "files": [
+          "tests/system/full-review-journey.spec.ts",
+          "tests/system/harness/chain.ts",
+          "tests/system/harness/browser.ts",
+          "tests/system/harness/verifier.ts",
+          "apps/web/src/server/chain/config.ts",
+          "apps/web/src/server/chain/test-chain-seam.test.ts"
+        ]
       }
     },
     "decisions": [],

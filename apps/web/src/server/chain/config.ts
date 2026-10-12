@@ -15,6 +15,7 @@ import {
   DEFAULT_MAX_REGISTRY_FEE_WEI,
   parseMon,
 } from '@lexaegis/sdk/transactions';
+import { readFileSync } from 'node:fs';
 import deploymentFile from '../../../../../contracts/deployments/monad-testnet.json';
 import type { ServerConfig } from '../env';
 
@@ -55,8 +56,40 @@ export function isAllowedMutationChain(chainId: string): boolean {
   );
 }
 
+/**
+ * Test-only seam for the Chapter 12 browser journey: a throwaway loopback Anvil chain, run under chain
+ * ID 10143, with a locally generated deployment record. It is active ONLY when the test chain flag, a
+ * test mode and a record path are all set; the endpoint must still be loopback (the chain client
+ * refuses anything else) and the record must still validate as a testnet record. A deployed
+ * environment sets none of these, so production always uses the committed Monad Testnet artifact.
+ */
+export function localTestChainRequested(
+  env: Readonly<Record<string, string | undefined>> = process.env,
+): boolean {
+  return (
+    env.LEXAEGIS_TEST_CHAIN === 'local-anvil' &&
+    (env.LEXAEGIS_TEST_MODE ?? '') !== '' &&
+    (env.LEXAEGIS_TEST_CHAIN_DEPLOYMENT ?? '') !== ''
+  );
+}
+
+/** The deployment record in force: the committed artifact, or (tests only) the local record. */
+export function activeDeploymentFile(
+  env: Readonly<Record<string, string | undefined>> = process.env,
+): unknown {
+  if (!localTestChainRequested(env)) return deploymentFile;
+  try {
+    return JSON.parse(
+      readFileSync(/*turbopackIgnore: true*/ env.LEXAEGIS_TEST_CHAIN_DEPLOYMENT ?? '', 'utf8'),
+    ) as unknown;
+  } catch {
+    // An unreadable test record is an invalid record, never a fallback to the public artifact.
+    return null;
+  }
+}
+
 /** The committed public deployment artifact, validated. A `not_deployed` record enables nothing. */
-export function loadDeployment(file: unknown = deploymentFile): RegistryDeployment | null {
+export function loadDeployment(file: unknown = activeDeploymentFile()): RegistryDeployment | null {
   const parsed = registryDeploymentSchema.safeParse(file);
   return parsed.success ? parsed.data : null;
 }
@@ -66,7 +99,7 @@ export type DeploymentReadiness =
   | { readonly state: 'not_deployed' | 'invalid' | 'wrong_chain' };
 
 /** A deployed testnet record becomes a chain policy; nothing else does. */
-export function resolveDeployment(file: unknown = deploymentFile): DeploymentReadiness {
+export function resolveDeployment(file: unknown = activeDeploymentFile()): DeploymentReadiness {
   const record = loadDeployment(file);
   if (record === null) return { state: 'invalid' };
   if (record.status !== 'deployed') return { state: 'not_deployed' };
@@ -87,7 +120,10 @@ export function resolveDeployment(file: unknown = deploymentFile): DeploymentRea
 }
 
 /** Public subset only: chain, address, deployment block/hash, protocol version, explorer. */
-export function publicChainInfo(readiness: DeploymentReadiness, file: unknown = deploymentFile) {
+export function publicChainInfo(
+  readiness: DeploymentReadiness,
+  file: unknown = activeDeploymentFile(),
+) {
   const record = loadDeployment(file);
   return {
     chainId: CHAIN.id,
