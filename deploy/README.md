@@ -16,5 +16,5 @@ Operator notes for the release assets. Nothing here has been deployed: see `depl
 `pnpm release:rollback --to <releaseId>` selects a previously recorded, tested release on the same
 services, origins and rpId. It checks schema/configuration compatibility first and never downgrades a
 database, restores chain state or overwrites private captures. Restore checks run in a disposable
-namespace: `pnpm release:rollback --restore-check`. Backups are private and bounded by the provider's
+namespace: `pnpm release:rollback --restore-check` (a synthetic local rehearsal of the verification logic on throwaway servers; `--corrupt` is its negative control). During an operational restore keep funding, broadcasts and new assistant work disabled, expire restored sessions and challenges, and reconcile pending operations read-only before allowing mutations. Rebuilding Envio state uses a new generation from the real start block; restoring ciphertext cannot recreate a deleted credential. Backups are private and bounded by the provider's
 retention setting; none has been enabled yet.
