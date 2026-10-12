@@ -1,0 +1,21 @@
+{
+  "schema": "lexaegis.indexer-hosting.v1",
+  "status": "not_deployed",
+  "note": "Files are ready for the Envio hosted service; no hosted deployment, plan or GraphQL URL exists. Live indexing is blocked on service access. caught_up is never claimed from files.",
+  "root": "indexer",
+  "runtime": { "envio": "3.13.0", "mode": "hypersync", "hypersync": "https://10143.hypersync.xyz" },
+  "chain": { "id": 10143, "startBlock": "69534196", "maxReorgDepth": 200 },
+  "registry": "0x453bfd1602d8a8666f55bf9a8d87b127cb94048f",
+  "projection": "lexaegis.history-projection.v1",
+  "configFingerprint": "0xc9320a65d58d42061c881c2e0fc064865e1ef5ba00cb1fd36392070d436afd93",
+  "buildContext": "self-contained: handlers import only envio and files under indexer/ (checked 2026-10-12); ABI and config are generated from the deployment record and verified by pnpm indexer:check",
+  "secrets": ["ENVIO_API_TOKEN", "ENVIO_GRAPHQL_ADMIN_SECRET"],
+  "browserAccess": "none: named queries only, through the server; generic/admin GraphQL stays out of the browser",
+  "selfHostedFallback": "pnpm --filter @lexaegis/indexer start on the selected host with a dedicated PostgreSQL; use only if the hosted runtime cannot run the pinned implementation. Schema and handler semantics are never downgraded.",
+  "required_before_claim": [
+    "initial sync from the real start block",
+    "coverage coherent",
+    "named queries validated against the deployed schema",
+    "canonical Alchemy comparison at compatible checkpoints"
+  ]
+}

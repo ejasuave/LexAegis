@@ -12573,10 +12573,17 @@
       },
       "6": {
         "status": "complete",
-        "summary": "Rechecked the registry through the configured Alchemy endpoint (read-only, no key loaded): outcome match, chain 10143, genesis, deployment block 69534196, creation and runtime code, tx consistent, checkpoint block 70515710 (evidence chapter17-deployment-verify-alchemy-2026-10-12.json). indexer verify:binding verified; verifier:policy:check current. Secret-free projection in docs/release/deployment-projection.json. No redeploy. Explorer verification stays NOT YET. NOT probed: Alchemy simulation/fee/monitor capabilities and the funder (would involve fee-paying or key use; not run).",
+        "summary": "Rechecked the registry through the configured Alchemy endpoint (read-only, no key loaded): outcome match, chain 10143, genesis, deployment block 69534196, creation and runtime code, tx consistent, checkpoint block 70515733 (evidence chapter17-deployment-verify-alchemy-2026-10-12.json). indexer verify:binding verified; verifier:policy:check current. Secret-free projection in docs/release/deployment-projection.json. No redeploy. Explorer verification stays NOT YET. NOT probed: Alchemy simulation/fee/monitor capabilities and the funder (would involve fee-paying or key use; not run).",
         "files": [
           "docs/release/deployment-projection.json",
           "docs/evidence/chapter17-deployment-verify-alchemy-2026-10-12.json"
+        ]
+      },
+      "7": {
+        "status": "complete",
+        "summary": "deploy/indexer.json: hosting record for the existing Envio v3.13.0 HyperIndex project. Observed: indexer:check matches the deployment record, indexer codegen and typecheck pass, verify:binding verified against Alchemy, handlers import only envio and indexer/ files (self-contained). NOT done: hosted deployment, initial sync, caught_up, GraphQL URL, plan/quota (no Envio hosting access in this environment). Live indexing is blocked.",
+        "files": [
+          "deploy/indexer.json"
         ]
       }
     }
