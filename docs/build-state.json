@@ -8626,6 +8626,213 @@
       "outcome": "pass",
       "reasonCodes": [],
       "evidenceRefs": []
+    },
+    {
+      "id": "live-read-20261012195454",
+      "subject": "live-read-observation",
+      "sourceRevision": {
+        "commit": "8f58a19cc2b484479079017ae083f9eb5c0b82e1",
+        "dirtyWorktree": true,
+        "contentFingerprint": "aa87c6249562f2cf97baeca0bb076a2a628dda438558bcd83405f8f03198a073"
+      },
+      "checkedAt": "2026-10-12T19:54:54.863Z",
+      "command": "pnpm validate:live read",
+      "environment": {
+        "node": "v24.21.0",
+        "os": "linux-x64",
+        "pnpm": "11.11.0"
+      },
+      "evidenceClass": "live_testnet",
+      "outcome": "unknown",
+      "reasonCodes": [
+        "READ_ONLY",
+        "PROVIDER_UNAVAILABLE"
+      ],
+      "evidenceRefs": [
+        {
+          "type": "path",
+          "value": "docs/evidence/chapter12/live-read-2026-10-12.json"
+        }
+      ],
+      "facts": {
+        "chainId": "10143",
+        "envioReadable": false,
+        "providers": "public-rpc:match,alchemy:match,envio:unavailable"
+      }
+    },
+    {
+      "id": "live-read-20261012200009",
+      "subject": "live-read-observation",
+      "sourceRevision": {
+        "commit": "8f58a19cc2b484479079017ae083f9eb5c0b82e1",
+        "dirtyWorktree": true,
+        "contentFingerprint": "341c06e803ec1200d28bcbcdc89f36ccab5d8a7e88d21f8c1e0af966a83cd716"
+      },
+      "checkedAt": "2026-10-12T20:00:10.068Z",
+      "command": "pnpm validate:live read",
+      "environment": {
+        "node": "v24.21.0",
+        "os": "linux-x64",
+        "pnpm": "11.11.0"
+      },
+      "evidenceClass": "live_testnet",
+      "outcome": "unknown",
+      "reasonCodes": [
+        "READ_ONLY",
+        "PROVIDER_UNAVAILABLE"
+      ],
+      "evidenceRefs": [
+        {
+          "type": "path",
+          "value": "docs/evidence/chapter12/live-read-2026-10-12.json"
+        }
+      ],
+      "facts": {
+        "chainId": "10143",
+        "envioReadable": false,
+        "providers": "public-rpc:match,alchemy:match,envio:unavailable"
+      }
+    },
+    {
+      "id": "live-read-20261012200734",
+      "subject": "live-read-observation",
+      "sourceRevision": {
+        "commit": "8f58a19cc2b484479079017ae083f9eb5c0b82e1",
+        "dirtyWorktree": true,
+        "contentFingerprint": "341c06e803ec1200d28bcbcdc89f36ccab5d8a7e88d21f8c1e0af966a83cd716"
+      },
+      "checkedAt": "2026-10-12T20:07:35.624Z",
+      "command": "pnpm validate:live read",
+      "environment": {
+        "node": "v24.21.0",
+        "os": "linux-x64",
+        "pnpm": "11.11.0"
+      },
+      "evidenceClass": "live_testnet",
+      "outcome": "pass",
+      "reasonCodes": [
+        "READ_ONLY"
+      ],
+      "evidenceRefs": [
+        {
+          "type": "path",
+          "value": "docs/evidence/chapter12/live-read-2026-10-12.json"
+        }
+      ],
+      "facts": {
+        "chainId": "10143",
+        "envioReadable": true,
+        "providers": "public-rpc:match,alchemy:match,envio:readable"
+      }
+    },
+    {
+      "id": "live-read-20261012201048",
+      "subject": "live-read-observation",
+      "sourceRevision": {
+        "commit": "8f58a19cc2b484479079017ae083f9eb5c0b82e1",
+        "dirtyWorktree": true,
+        "contentFingerprint": "eac3e7c70e1e290e0551fc11334c26f77e78af96b672bce0dfe7264dcda05f04"
+      },
+      "checkedAt": "2026-10-12T20:10:49.262Z",
+      "command": "pnpm validate:live read",
+      "environment": {
+        "node": "v24.21.0",
+        "os": "linux-x64",
+        "pnpm": "11.11.0"
+      },
+      "evidenceClass": "live_testnet",
+      "outcome": "pass",
+      "reasonCodes": [
+        "READ_ONLY"
+      ],
+      "evidenceRefs": [
+        {
+          "type": "path",
+          "value": "docs/evidence/chapter12/live-read-2026-10-12.json"
+        }
+      ],
+      "facts": {
+        "chainId": "10143",
+        "envioReadable": true,
+        "envioReady": true,
+        "providers": "public-rpc:match,alchemy:match,envio:readable"
+      }
+    },
+    {
+      "id": "packages-check-20261012201432",
+      "subject": "packaged-consumer-check",
+      "sourceRevision": {
+        "commit": "8f58a19cc2b484479079017ae083f9eb5c0b82e1",
+        "dirtyWorktree": true,
+        "contentFingerprint": "eac3e7c70e1e290e0551fc11334c26f77e78af96b672bce0dfe7264dcda05f04"
+      },
+      "checkedAt": "2026-10-12T20:14:33.644Z",
+      "command": "pnpm packages:check",
+      "environment": {
+        "node": "v24.21.0",
+        "os": "linux-x64",
+        "pnpm": "11.11.0"
+      },
+      "evidenceClass": "local_scripted",
+      "outcome": "pass",
+      "reasonCodes": [
+        "LOCAL_TARBALLS_NOT_PUBLISHED",
+        "AUTHORED_EXAMPLE_NOT_ADOPTION"
+      ],
+      "evidenceRefs": [],
+      "facts": {
+        "checksPassed": "44",
+        "checksTotal": "44",
+        "protocolTarballBytes": "72014",
+        "sdkTarballBytes": "85117",
+        "cliTarballBytes": "21356",
+        "protocolTarballSha256": "53058f8a7694b581bdd1a305377470ee74a48b7b7f52d74628559ef0629cea34",
+        "sdkTarballSha256": "e970c2ce2df348244a867c4ab9233bf86d820f454c21b07e2a9c8d7857f57b2b",
+        "cliTarballSha256": "599cabd5756bcd50cde36860ec175fcbd0fdb5420c5e488dad4fed2cede32ecb",
+        "protocolFiles": "68",
+        "sdkFiles": "71",
+        "cliFiles": "28",
+        "browser": "chromium (playwright)",
+        "published": false
+      }
+    },
+    {
+      "id": "packages-check-20261012203018",
+      "subject": "packaged-consumer-check",
+      "sourceRevision": {
+        "commit": "8f58a19cc2b484479079017ae083f9eb5c0b82e1",
+        "dirtyWorktree": true,
+        "contentFingerprint": "526a62ce9c42531e1376f9bc44efec064da9962b47d4fb4a7cec626e51660b52"
+      },
+      "checkedAt": "2026-10-12T20:30:20.982Z",
+      "command": "pnpm packages:check",
+      "environment": {
+        "node": "v24.21.0",
+        "os": "linux-x64",
+        "pnpm": "11.11.0"
+      },
+      "evidenceClass": "local_scripted",
+      "outcome": "pass",
+      "reasonCodes": [
+        "LOCAL_TARBALLS_NOT_PUBLISHED",
+        "AUTHORED_EXAMPLE_NOT_ADOPTION"
+      ],
+      "evidenceRefs": [],
+      "facts": {
+        "checksPassed": "44",
+        "checksTotal": "44",
+        "protocolTarballBytes": "72014",
+        "sdkTarballBytes": "85117",
+        "cliTarballBytes": "21356",
+        "protocolTarballSha256": "53058f8a7694b581bdd1a305377470ee74a48b7b7f52d74628559ef0629cea34",
+        "sdkTarballSha256": "e970c2ce2df348244a867c4ab9233bf86d820f454c21b07e2a9c8d7857f57b2b",
+        "cliTarballSha256": "599cabd5756bcd50cde36860ec175fcbd0fdb5420c5e488dad4fed2cede32ecb",
+        "protocolFiles": "68",
+        "sdkFiles": "71",
+        "cliFiles": "28",
+        "browser": "chromium (playwright)",
+        "published": false
+      }
     }
   ],
   "appliedCuts": [],
@@ -11894,13 +12101,13 @@
     "limitations": [
       "Local software gate on synthetic data with scripted stand-ins: a virtual authenticator, a scripted provider, a loopback Anvil. It is not real-device, live-provider or deployment evidence, not an audit and not a legal compliance certification.",
       "Real-device recovery: create/recover verified once (operator reported); vault recovery on a device unverified; second-device recovery not run. Voice on a real device unavailable (F-008: SpeechRecognition.available crashed headless Chromium 153 here).",
-      "The Envio history index was unreachable on 2026-10-12; live Qwen and a new testnet lifecycle were not run (explicit opt-in).",
+      "Live Qwen is blocked (QWEN_BASE_URL not configured; no call made) and a new testnet lifecycle was not run. The Envio history read was verified later on 2026-10-12 with the indexer running.",
       "Open findings: F-001, F-005 (verifier needs its worker script online first), F-008, F-014 (verifier framing protection needs host headers). Hosting, headers on a deployed edge, HSTS and ciphertext body limits are Chapter 13.",
       "Passing scans are not proof of no vulnerability; same-origin JavaScript reach into unlocked material is not excluded; the Envio runtime under the patched express is not exercised."
     ],
     "completedOn": "2026-10-12",
     "checks": {
-      "note": "Observed 2026-10-12 on the final Chapter 12 source (base commit e1facce, worktree dirty). Fingerprints in docs/system-validation/report.json.",
+      "note": "Observed 2026-10-12 on the final Chapter 12 source (base commit e1facce, worktree dirty). Fingerprints in docs/system-validation/report.json. Re-run 2026-10-12 after the live-evidence fixes (F-022): 18/18 stages, 63/63 cases.",
       "gate": "pnpm validate:mvp: outcome pass, 18/18 stages, 63/63 cases, 5/5 negative controls",
       "report": "docs/system-validation/report.json",
       "readiness": "docs/system-validation/readiness.json",

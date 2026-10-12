@@ -129,6 +129,13 @@ beforeAll(async () => {
       QWEN_API_KEY: '',
       QWEN_BASE_URL: '',
       QWEN_OUTPUT_MODE: '',
+      // A developer's local .env must never reach the app under test: a reachable local indexer or a real key
+      // would be a destination the journey did not choose (finding F-022).
+      ENVIO_GRAPHQL_URL: '',
+      ENVIO_GRAPHQL_ADMIN_SECRET: '',
+      ENVIO_API_TOKEN: '',
+      QWEN_DASHSCOPE_API_KEY: '',
+      DASHSCOPE_API_KEY: '',
       LEXAEGIS_TEST_CHAIN: 'local-anvil',
       LEXAEGIS_TEST_CHAIN_DEPLOYMENT: recordFile,
       ALCHEMY_MONAD_RPC_URL: c.local.rpcUrl,

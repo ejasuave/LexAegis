@@ -1,43 +1,49 @@
 {
   "schema": "lexaegis.live-read-observation.v1",
   "class": "live_read",
-  "observedAt": "2026-10-12T18:15:57.040Z",
-  "commit": "fa6e53a2b552851c094056bc6b0809833669ff78",
+  "observedAt": "2026-10-12T20:10:48.421Z",
+  "commit": "8f58a19cc2b484479079017ae083f9eb5c0b82e1",
   "dirtyWorktree": true,
   "note": "Read-only. Endpoints are named by provider, never by URL. A match is code identity at the stated checkpoint, not live state.",
   "results": [
     {
       "provider": "public-rpc",
       "status": "match",
-      "durationMs": 1627,
+      "durationMs": 1670,
       "detail": {
         "registryAddress": "0x453bfd1602d8a8666f55bf9a8d87b127cb94048f",
         "deploymentBlock": "69534196",
         "chainId": "10143",
-        "checkpointBlock": "70466546",
-        "finalizedBlock": "70466549",
+        "checkpointBlock": "70489378",
+        "finalizedBlock": "70489381",
         "rechecked": true
       }
     },
     {
       "provider": "alchemy",
       "status": "match",
-      "durationMs": 1691,
+      "durationMs": 1663,
       "detail": {
         "registryAddress": "0x453bfd1602d8a8666f55bf9a8d87b127cb94048f",
         "deploymentBlock": "69534196",
         "chainId": "10143",
-        "checkpointBlock": "70466551",
-        "finalizedBlock": "70466554",
+        "checkpointBlock": "70489383",
+        "finalizedBlock": "70489386",
         "rechecked": true
       }
     },
     {
       "provider": "envio",
-      "status": "unavailable",
-      "durationMs": 2,
+      "status": "readable",
+      "durationMs": 12,
       "detail": {
-        "reason": "fetch failed"
+        "envioReadable": true,
+        "envioReady": true,
+        "isReady": true,
+        "progressBlock": "70489249",
+        "sourceBlock": "70489251",
+        "sourceLagBlocks": "2",
+        "publicHeadLagBlocks": "140"
       }
     }
   ]

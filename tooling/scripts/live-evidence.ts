@@ -87,7 +87,7 @@ const ROWS: readonly Row[] = [
     capability: 'Envio history index read, with lag stated separately',
     subjects: ['live-read-observation'],
     next: 'pnpm validate:live read --env-file .env --write (needs ENVIO_GRAPHQL_URL)',
-    requires: (facts) => facts.envioReadable === true,
+    requires: (facts) => facts.envioReady === true,
   },
   {
     capability: 'Genuine Qwen run (paid model)',
@@ -429,6 +429,7 @@ async function readEnvio(publicHead: bigint | null): Promise<LiveReadResult> {
       durationMs: Date.now() - started,
       detail: {
         envioReadable: true,
+        envioReady: meta.isReady === true,
         isReady: meta.isReady === true,
         progressBlock: progress.toString(),
         sourceBlock: source.toString(),
@@ -519,6 +520,7 @@ if (command === 'read') {
           facts: {
             chainId: '10143',
             envioReadable: envio?.status === 'readable',
+            envioReady: envio?.detail.envioReady === true,
             providers: results
               .filter((r) => r.status !== 'not_configured')
               .map((r) => `${r.provider}:${r.status}`)

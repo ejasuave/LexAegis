@@ -2,7 +2,7 @@
   - /url: "#main"
 - banner "System status":
   - term: Matter
-  - definition: SYSTEM-a11y-names-7c04, version 55853b6f
+  - definition: SYSTEM-a11y-names-7c04, version 78a190ea
   - term: Network
   - definition: Monad Testnet (10143)
   - term: Passkey session
@@ -44,7 +44,7 @@
     - heading "Documents" [level=3]
     - list:
       - listitem: discrepancy-2000.pdf
-      - listitem: lexaegis:extraction:v1:55853b6f-ffa1-4c3e-bfc7-303a4177086a
+      - listitem: lexaegis:extraction:v1:78a190ea-1502-4781-a234-ddc5ce6d3dcc
     - heading "Saved context" [level=3]
     - list:
       - listitem: "Confirmed: Fact: payment total (total) is £24,000.00"
@@ -233,7 +233,7 @@
     - region "Review package":
       - heading "Review package" [level=2]
       - heading "Saved and checked" [level=3]
-      - paragraph: "Public commitment: 0xcfd0f1d4ff22dd63e457f74c3c5486f533f3cf8de10e956e02b091b6ce202d09"
+      - paragraph: "Public commitment: 0x5c895e3618c836ac9eb5f08b5f9d885f9e7202051088997de4cfe02c4ee8fc38"
       - paragraph: Read-only. This is not approved, signed or an active receipt.
       - group: Technical details
       - status: Frozen and saved. This is not approval, a signature or a receipt.
@@ -261,8 +261,8 @@
       - heading "Saved reviews" [level=2]
       - list:
         - listitem:
-          - paragraph: "0xcfd0f1d4ff22dd63e457f74c3c5486f533f3cf8de10e956e02b091b6ce202d09"
-          - paragraph: Saved 2026-10-12T19:24:27.594Z
+          - paragraph: "0x5c895e3618c836ac9eb5f08b5f9d885f9e7202051088997de4cfe02c4ee8fc38"
+          - paragraph: Saved 2026-10-12T20:38:46.742Z
           - paragraph: "Frozen package, verified in this unlock: 8 artifacts. 8 recorded decision(s)."
           - paragraph: This is how the package was when it was frozen. Your current working results are separate, and removing a working note does not change it.
           - button "Copy public receipt reference"
@@ -271,8 +271,8 @@
         - heading "Export and import" [level=3]
         - paragraph: Files are made in this browser and never sent anywhere. Readable files expose private material to anyone who holds them.
         - button "Export saved context…"
-        - button "Export encrypted review a6a2cb47…"
-        - button "Export readable review a6a2cb47…"
+        - button "Export encrypted review e94c2d84…"
+        - button "Export readable review e94c2d84…"
         - text: Import a review or context file
         - button "Import a review or context file"
       - paragraph: Checking a package is done in the independent verifier, a separate application that needs no LexAegis account, passkey or backend. This app does not report anything as verified.

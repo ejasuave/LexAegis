@@ -232,6 +232,17 @@
       "status": "fixed",
       "result": "The unit-test, contracts-integration, vault-browser and indexer stages now emit JSON that is read by the [case-id] tag, and each case is bound to the stage that owns it, with that stage's evidence class. No requirement was lowered.",
       "remaining": "A case tagged in a test that no stage runs stays not_run."
+    },
+    {
+      "id": "F-022",
+      "severity": "medium",
+      "invariant": "Tests are isolated from the developer's local environment: the app under test reaches only the destinations the journey chose.",
+      "case": "privacy-observed-journey-disclosure-matrix",
+      "module": "tests/system/harness/suite.ts, tests/privacy/disclosure-boundaries.spec.ts",
+      "reproduction": "Start the local Envio engine (its GraphQL endpoint on localhost:8080 is named in the git-ignored .env) and run the disclosure matrix: the app under test, which loads .env, opened a socket to localhost:8080 and the egress rule failed.",
+      "status": "fixed",
+      "result": "Both app launchers now blank the Envio, Qwen and DashScope variables explicitly, so nothing from .env reaches the app under test; the egress check did its job in catching it.",
+      "remaining": "Any other variable in .env that an app feature reads would have the same effect; the launchers blank the ones the app knows about today."
     }
   ]
 }

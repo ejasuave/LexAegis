@@ -53,8 +53,8 @@
     "realDeviceVaultRecovery": "unverified: the 2026-10-10 vault record did not show second-device recovery or export/import",
     "secondDeviceRecovery": "not_run",
     "registryReadOnly": "verified live read: code matched source through Alchemy and the public RPC (2026-10-12, docs/evidence/chapter12/live-read-2026-10-12.json)",
-    "envioHistoryRead": "unverified: the history endpoint was unavailable on 2026-10-12 (fetch failed)",
-    "liveQwenRun": "not_run (opt-in: pnpm validate:live qwen --spend-tokens)",
+    "envioHistoryRead": "verified live read (2026-10-12, after starting the indexer against HyperSync): isReady true, progress block 70489249, source lag 2 blocks, public-head lag 140 blocks; an earlier read the same day was unavailable because the local engine was not running (docs/evidence/chapter12/live-read-2026-10-12.json)",
+    "liveQwenRun": "blocked: QWEN_API_KEY is configured but QWEN_BASE_URL (the workspace-specific Model Studio endpoint) is not, so pnpm validate:live qwen --spend-tokens made no call (QWEN_NOT_CONFIGURED; docs/evidence/chapter09-qwen-smoke-2026-10-12.json)",
     "newTestnetLifecycle": "not_run (operator: pnpm smoke:testnet --operator-start)",
     "localDictationAndReadAloud": "unavailable on a real device; text fallback tested with scripted stand-ins",
     "claimsNotMade": [

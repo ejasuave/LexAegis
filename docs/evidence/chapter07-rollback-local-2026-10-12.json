@@ -2,7 +2,7 @@
   "engine": "envio 3.13.0 (HyperIndex), RPC source, loopback Anvil chain 31337, embedded PostgreSQL, ENVIO_HASURA=false",
   "branchA": {
     "receipts": {
-      "0xd1229d2b70": "ACTIVE"
+      "0x25b0d1a1eb": "ACTIVE"
     },
     "state": {
       "rawEventCount": 1,
@@ -20,7 +20,7 @@
   },
   "branchB": {
     "receipts": {
-      "0xdd073bec2b": "ACTIVE"
+      "0xbd862f3323": "ACTIVE"
     },
     "state": {
       "rawEventCount": 1,
@@ -38,8 +38,8 @@
   },
   "supersedeBranch": {
     "receipts": {
-      "0x4a0bb2d939": "ACTIVE",
-      "0xdd073bec2b": "SUPERSEDED"
+      "0xa3833c7465": "ACTIVE",
+      "0xbd862f3323": "SUPERSEDED"
     },
     "state": {
       "rawEventCount": 3,
@@ -57,7 +57,7 @@
   },
   "revokeBranch": {
     "receipts": {
-      "0xdd073bec2b": "REVOKED"
+      "0xbd862f3323": "REVOKED"
     },
     "state": {
       "rawEventCount": 2,
