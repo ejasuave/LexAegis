@@ -370,4 +370,34 @@ export const SYSTEM_CASES: readonly SystemCaseV1[] = parseManifest([
     'The production audit reports no known vulnerability (an unreachable registry is blocked, never clean), no committable file or build output holds a credential shape, and the scanner detects planted secrets. A git-ignored .env is outside this case.',
     'local_integration',
   ),
+  c(
+    'negctl-tampered-artifact-is-detected',
+    'tests/system/negative-controls.spec.ts',
+    'A sealed artifact with one changed byte is not opened by the real vault, and the oracle behind the vault and recovery tests flags an opener that skips authentication.',
+    'local_integration',
+  ),
+  c(
+    'negctl-cross-account-request-is-detected',
+    'tests/system/negative-controls.spec.ts',
+    'The ownership oracle used by the cross-account route test flags a served foreign resource, an existence leak and an unrefused anonymous caller.',
+    'local_integration',
+  ),
+  c(
+    'negctl-forged-approval-flag-is-detected',
+    'tests/system/negative-controls.spec.ts',
+    'The oracle used by the approval tests flags a client-set approval flag that was accepted, advanced an operation or broadcast a transaction.',
+    'local_integration',
+  ),
+  c(
+    'negctl-outbound-canary-is-detected',
+    'tests/system/negative-controls.spec.ts',
+    'The disclosure-boundary analyser flags a canary sent to another origin, written to a log or placed in a URL, and passes the consented route.',
+    'local_integration',
+  ),
+  c(
+    'negctl-inconsistent-chain-observation-is-detected',
+    'tests/system/negative-controls.spec.ts',
+    'The oracle used by the chain recovery tests flags a missing contradiction, a re-confirmation, and a moved or removed stored confirmation.',
+    'local_integration',
+  ),
 ]);

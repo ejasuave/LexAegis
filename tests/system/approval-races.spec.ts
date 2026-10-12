@@ -11,6 +11,7 @@ import {
   decideRecordAndFreeze,
 } from './harness/flows';
 import { Client } from './harness/http';
+import { forgedApprovalViolations } from './harness/oracles';
 import { isBlocked } from './harness/services';
 import { startSuite, type Suite } from './harness/suite';
 
@@ -165,6 +166,32 @@ describe('[approval-server-rejects-forged-transactions] the server parses the ou
         [operationId],
       );
       expect(phase.rows[0]?.phase).toBe('quoted');
+
+      // A client-supplied "approved" flag, ticket or signature field is not an approval: the closed
+      // request schema refuses it, whatever else the body holds, and nothing advances or broadcasts.
+      // The same oracle is shown to fire on a faulted observation (negative-controls).
+      const flagged = await client.postJson(`/api/chain/operations/${operationId}/submit`, {
+        request,
+        quote,
+        signedTransaction: await sign({}),
+        approved: true,
+        approvalTicket: 'forged',
+      });
+      const phaseAfterFlag = await s.services.pool.query<{ phase: string }>(
+        'select phase from chain_operations where id = $1',
+        [operationId],
+      );
+      expect(
+        forgedApprovalViolations({
+          status: flagged.status,
+          phaseBefore: 'quoted',
+          phaseAfter: phaseAfterFlag.rows[0]?.phase ?? '',
+          transactionCountBefore: countBefore,
+          transactionCountAfter: await publicClient(s).getTransactionCount({
+            address: client.address as Hex,
+          }),
+        }),
+      ).toEqual([]);
 
       // The exact transaction is accepted; an exact retry is the same transaction, never a second one.
       const good = await sign({});

@@ -11375,6 +11375,23 @@
           "pnpm-lock.yaml",
           "docs/system-validation/findings.json"
         ]
+      },
+      "14": {
+        "status": "complete",
+        "summary": "pnpm validate:mvp (tooling/scripts/validate-mvp.ts, rules and closed schema in tooling/src/validation.ts, 14 unit tests): one bounded entry point that runs the existing lint, typecheck, unit, fixtures, protocol-schema, agent-prompt, state, secrets, exclusion, build, packed-consumer and Foundry/Anvil contract commands, then the system harness and the system cases, one at a time with a deadline each, a lock against concurrent runs, and the whole process tree stopped on a timeout or signal. Cases are derived from the JSON a real vitest run wrote, mapped by the [case-id] tag, against the manifest; a case passes only with at least one test, every test passed and sufficient evidence class; skipped, missing, blocked, flaky and unselected are non-passing; an exit 0 with no selected tests is a failure (NO_TESTS_SELECTED). A failed spec file is re-run once for diagnosis only and a failure that then passes stays a failure carrying FLAKY_RESULT. Negative controls: tests/system/negative-controls.spec.ts (5 cases) feeds the oracles in tests/system/harness/oracles.ts a faulted observation (tampered artifact, cross-account request, forged approval flag, prohibited outbound canary, inconsistent chain observation) and requires detection; the owning specs auth-and-ownership, approval-races and chain-recovery now call the same oracles on real observations. The versioned report (docs/system-validation/report.json, lexaegis.validation-report.v1) binds results to the commit, dirty-worktree state, source/tests/lockfile/schema/prompt/config/manifest digests and fixture versions (allowlisted non-secret inputs only), is validated for schema, completeness, paths and outcome consistency, and is sanitised (redaction, no home paths, no key-shaped values, secret scan) before it is written. --check re-validates a report and marks it stale against the current source. Exit codes: 0 pass, 1 fail, 2 usage, 3 blocked or incomplete, 4 invalid or stale report. CI: a validate job (synthetic only, no secret) checks and uploads the sanitised report. LIMITS: the full run has not been recorded yet (task 16); the report is a local software gate, not live evidence, an audit or deployment readiness.",
+        "files": [
+          "tooling/scripts/validate-mvp.ts",
+          "tooling/src/validation.ts",
+          "tooling/src/validation.test.ts",
+          "tests/system/negative-controls.spec.ts",
+          "tests/system/harness/oracles.ts",
+          "tests/system/harness/cases.ts",
+          "tests/system/auth-and-ownership.spec.ts",
+          "tests/system/approval-races.spec.ts",
+          "tests/system/chain-recovery.spec.ts",
+          "package.json",
+          ".github/workflows/ci.yml"
+        ]
       }
     },
     "decisions": [],

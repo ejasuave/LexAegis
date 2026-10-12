@@ -4,6 +4,7 @@ import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 import { encodeInvalidateNonceCalldata } from '@lexaegis/sdk/transactions';
 import { chainDefinition, fund } from './harness/chain';
 import { Client } from './harness/http';
+import { chainContradictionViolations } from './harness/oracles';
 import { isBlocked, startWebApp } from './harness/services';
 import { waitUntil } from './harness/poll';
 import { startSuite, type Suite } from './harness/suite';
@@ -359,13 +360,20 @@ describe('[chain-outage-and-inconsistent-observations] an unreadable or contradi
           [p.operationId],
         )
       ).rows[0]?.block_hash;
-      // Whatever the label, the forged hash must not have replaced the recorded canonical block.
-      expect(stored).toBe(before);
-      // The disagreement is reported as a contradiction, not as a second confirmation, and the stored
-      // confirmation neither moves nor disappears.
-      expect(reply.observation.mismatch).toBe('CONTRADICTS_CONFIRMED');
-      expect(reply.observation.outcome).not.toBe('confirmed');
-      expect(reply.operation.phase).toBe('confirmed');
+      // Whatever the label, the forged hash must not have replaced the recorded canonical block. The
+      // disagreement is reported as a contradiction, not as a second confirmation, and the stored
+      // confirmation neither moves nor disappears. The same oracle is shown to fire on a faulted
+      // observation (negative-controls).
+      expect(
+        chainContradictionViolations({
+          mismatch:
+            typeof reply.observation.mismatch === 'string' ? reply.observation.mismatch : null,
+          outcome: reply.observation.outcome,
+          storedPhase: reply.operation.phase,
+          storedBlockHashBefore: before ?? '',
+          storedBlockHashAfter: stored ?? '',
+        }),
+      ).toEqual([]);
       proxy.clear();
     },
   );

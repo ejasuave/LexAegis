@@ -7,6 +7,7 @@ import {
   type DeployedRegistry,
 } from './harness/chain';
 import { Client, sessionCookie, type Target } from './harness/http';
+import { ownershipViolations } from './harness/oracles';
 import { recordResult } from './harness/recorder';
 import {
   isBlocked,
@@ -436,11 +437,16 @@ describe("[ownership-cross-account-routes] one account never reaches another acc
       )) {
         const asBob = await bob.send(foreign);
         const asUnknown = await bob.send(missing);
-        expect(asBob.status).toBe(asUnknown.status);
-        expect(codeOf(asBob)).toBe(codeOf(asUnknown));
-        expect(asBob.status).not.toBe(200);
-        // Anonymous is refused before any lookup.
-        expect((await anonymous.send(foreign)).status).toBe(401);
+        const asAnonymous = await anonymous.send(foreign);
+        // Another account's resource answers exactly like an unknown one, and anonymous is refused
+        // before any lookup. The same oracle is shown to fire on a faulted observation (negative-controls).
+        expect(
+          ownershipViolations({
+            foreign: { status: asBob.status, code: codeOf(asBob) ?? null },
+            unknown: { status: asUnknown.status, code: codeOf(asUnknown) ?? null },
+            anonymous: { status: asAnonymous.status, code: codeOf(asAnonymous) ?? null },
+          }),
+        ).toEqual([]);
         // The owner reads it normally.
         const mine = await alice.send(foreign);
         // The owner is told what is true: the head reads, and a recorded object that storage lacks is MISSING.

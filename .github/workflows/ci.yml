@@ -101,6 +101,37 @@ jobs:
       - run: pnpm packages:build && pnpm build # the packed entry points and the verifier that the asset scan reads
       - run: pnpm test:privacy:browser --no-record
 
+  # Chapter 12: the bounded local validation gate (`pnpm validate:mvp`). Synthetic data, throwaway
+  # database, S3-compatible server and Anvil, a scripted provider: no sponsor secret, no paid model and
+  # no live network. Stages and cases run one at a time with a deadline each; a stage that hangs is
+  # stopped with its process tree. The report is checked and sanitised BEFORE it is uploaded, and a
+  # failing, blocked or incomplete run fails the job: nothing is retried to green.
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 150
+    concurrency:
+      group: validate-${{ github.ref }}
+      cancel-in-progress: true
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm exec playwright install --with-deps chromium
+      - run: pnpm tools:s3
+      - run: pnpm validate:mvp
+      - if: always()
+        run: pnpm validate:mvp --check # schema, completeness, paths and source binding; runs nothing
+      - if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: validation-report
+          path: docs/system-validation/report.json
+          if-no-files-found: ignore
+
   # READ-ONLY live gate, kept apart from the local checks: reads the existing Monad testnet registry
   # over the public endpoint and compares its runtime code with a fresh build. No key, no signature
   # and no transaction. Exit 10 is a mismatch, 12 an unavailable network. A failed or skipped run of
