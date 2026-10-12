@@ -303,6 +303,11 @@ process.on('exit', () => rmSync(lockFile, { force: true }));
 const childEnv = (extra: Record<string, string>): NodeJS.ProcessEnv => ({
   ...process.env,
   CI: process.env.CI ?? '1',
+  // The gate never spends: a local .env or shell must not hand a paid provider key to anything it starts.
+  QWEN_API_KEY: '',
+  QWEN_BASE_URL: '',
+  QWEN_DASHSCOPE_API_KEY: '',
+  DASHSCOPE_API_KEY: '',
   ...extra,
 });
 

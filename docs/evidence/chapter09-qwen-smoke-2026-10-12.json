@@ -1,13 +1,388 @@
 {
   "schema": "lexaegis.qwen-smoke.v1",
-  "evidenceKind": "blocked",
-  "executedAt": "2026-10-12T20:06:39.089Z",
+  "evidenceKind": "live",
+  "executedAt": "2026-10-12T21:23:55.249Z",
   "command": "pnpm qwen:smoke",
-  "outcome": "blocked",
-  "reasons": [
-    "QWEN_NOT_CONFIGURED"
+  "provider": {
+    "id": "qwen",
+    "region": "ap-southeast-1",
+    "requestedModel": "qwen3.8-max",
+    "outputMode": "json_schema"
+  },
+  "fixture": {
+    "path": "fixtures/documents-v1/pdfs/discrepancy-2000.pdf",
+    "kind": "synthetic_fixture"
+  },
+  "capability": {
+    "schema": "lexaegis.assistant-capability.v1",
+    "fingerprint": "0xa594afdfe503ce8501596b349d77bba7ab1ac01ec2f1b4e5950a12b4e35085e1",
+    "provider": "qwen",
+    "model": "qwen3.8-max",
+    "region": "ap-southeast-1",
+    "outputMode": "json_schema",
+    "nativeToolCalls": true,
+    "structuredOutput": true,
+    "usageReported": true,
+    "cancellation": true,
+    "returnedModel": "qwen3.8-max",
+    "requestIds": [
+      "chatcmpl-8889a933-549f-9813-a10f-eb2fe742890c",
+      "chatcmpl-2fdf275a-c979-96be-8995-e3c3ca769728"
+    ],
+    "failures": [],
+    "checkedAt": "2026-10-12T21:23:55.245Z",
+    "verified": true,
+    "storedForApplication": true,
+    "note": "Stored by configuration fingerprint. A changed endpoint, model or output mode has no record."
+  },
+  "outcome": "pass",
+  "run": {
+    "runId": "8be94b7c-18ec-48d3-84c9-474c968421ea",
+    "intent": "brief_matter",
+    "terminalEvent": "run_completed",
+    "failure": null,
+    "agentConfig": {
+      "schema": "lexaegis.agent-config.v1",
+      "profile": {
+        "id": "lexaegis.employment-settlement.ew",
+        "version": "1"
+      },
+      "runtimeVersion": "lexaegis.agent-runtime.v1",
+      "modelExecution": "qwen",
+      "provider": {
+        "id": "qwen",
+        "region": "ap-southeast-1",
+        "requestedModel": "qwen3.8-max",
+        "returnedModel": "qwen3.8-max",
+        "modelSnapshot": {
+          "status": "unknown",
+          "id": null
+        },
+        "outputMode": "json_schema",
+        "capability": {
+          "state": "verified",
+          "checkedAt": "2026-10-12T21:23:55.245Z"
+        },
+        "requestIds": [
+          "chatcmpl-bd25022e-dfd1-9d07-a50c-c6ac11477f11",
+          "chatcmpl-b0bfd0e4-cf6f-9485-a54e-99008afba367",
+          "chatcmpl-f97e2cc0-877e-9e54-a184-bffee44fe4bf",
+          "chatcmpl-72cc8c5e-f967-9f85-8a4c-cffbe8d6d153",
+          "chatcmpl-305cb404-5f1b-95e8-8aef-bb2bb9a0c26f",
+          "chatcmpl-045ead70-2e81-96be-b95b-01aaee051495"
+        ]
+      },
+      "prompts": {
+        "manifestVersion": "1",
+        "commonPolicySha256": "0xa5a7b5b5574d3842dbde73ba3793a14d37f9b2da95e0c345a940e9e53739db2e",
+        "intent": "brief_matter",
+        "intentAssetSha256": "0xd0be677750793e44940a45d89219e6e00f56a06716e6bf4a4be7bd60694199bd",
+        "outputSchemaSha256": "0xa86427e66d5c7cd413eb7fbd9561ac2619ed1cce069c7b3cfec21c320695549a",
+        "tools": [
+          {
+            "name": "read_sources",
+            "version": "1",
+            "schemaSha256": "0x298ee9ba4f87f7416431101571059aac73baeb39cf7cbaf6b3db9b0b011a214d"
+          },
+          {
+            "name": "check_payments",
+            "version": "1",
+            "schemaSha256": "0x32297c952ac985b0c771f363cc982c3bcb4ee888efd2218c4adf4d5b9913bb13"
+          },
+          {
+            "name": "check_evidence",
+            "version": "1",
+            "schemaSha256": "0x57f17fcfaa8c38a008e87524b770342bd4381be1cf391f33a50f42df51b3e085"
+          },
+          {
+            "name": "get_status",
+            "version": "1",
+            "schemaSha256": "0x4570a7d2f41e14f40ee325f31379976c3c8392bc64b181e9777d4f81d4da9f76"
+          }
+        ]
+      },
+      "parameters": {
+        "enableThinking": false,
+        "parallelToolCalls": false,
+        "enableSearch": false,
+        "stream": false,
+        "temperature": "0"
+      },
+      "budget": {
+        "providerAttempts": 6,
+        "toolExecutions": 8,
+        "totalMs": 120000,
+        "attemptMs": 25000,
+        "completionTokensPerAttempt": 2048,
+        "completionTokensPerRun": 8192,
+        "inputTokensPerAttempt": 65536,
+        "inputTokensPerRun": 196608
+      },
+      "usage": {
+        "provenance": "provider_reported",
+        "providerAttempts": 6,
+        "toolExecutions": 4,
+        "reservedInputTokens": 75627,
+        "reservedOutputTokens": 4608,
+        "inputEstimate": "conservative_utf8_bytes",
+        "reportedInputTokens": 12683,
+        "reportedOutputTokens": 538
+      },
+      "run": {
+        "runId": "8be94b7c-18ec-48d3-84c9-474c968421ea",
+        "intent": "brief_matter",
+        "startedAt": "2026-10-12T21:23:55.659Z",
+        "finishedAt": "2026-10-12T21:24:11.797Z",
+        "outcome": "completed"
+      }
+    },
+    "functionCalls": [
+      {
+        "handle": "T1",
+        "name": "read_sources",
+        "version": "1",
+        "outcome": "succeeded",
+        "code": "OK",
+        "result": {
+          "handles": [
+            "S1",
+            "S2",
+            "S3",
+            "S4"
+          ]
+        }
+      },
+      {
+        "handle": "T2",
+        "name": "check_payments",
+        "version": "1",
+        "outcome": "succeeded",
+        "code": "OK",
+        "result": {
+          "schema": "lexaegis.payment-reconciliation.v1",
+          "engineVersion": "lexaegis.review-engine.v1",
+          "mode": "review",
+          "group": "settlement",
+          "outcome": "mismatch",
+          "currency": "GBP",
+          "basis": "gross",
+          "statedTotalPence": "2400000",
+          "includedItems": [
+            {
+              "lineItemId": "i1",
+              "amountPence": "1000000",
+              "factId": "8ade5eaf-ffb4-4de2-ad1b-16025963d897"
+            },
+            {
+              "lineItemId": "i2",
+              "amountPence": "1200000",
+              "factId": "85ba9c6e-6288-41ef-8d4c-7c560a1d3a93"
+            }
+          ],
+          "comparableSumPence": "2200000",
+          "differencePence": "200000",
+          "formula": "statedTotal - sum(included instalments)",
+          "reasons": [],
+          "incompleteSubtotalPence": null
+        }
+      },
+      {
+        "handle": "T3",
+        "name": "check_evidence",
+        "version": "1",
+        "outcome": "succeeded",
+        "code": "OK",
+        "result": {
+          "assessed": true,
+          "items": [
+            {
+              "ruleId": "written-agreement",
+              "requirement": "written-agreement",
+              "state": "missing",
+              "linkedArtifacts": 0
+            },
+            {
+              "ruleId": "complaints-identified",
+              "requirement": "complaints-identified",
+              "state": "missing",
+              "linkedArtifacts": 0
+            },
+            {
+              "ruleId": "independent-advice",
+              "requirement": "independent-advice",
+              "state": "missing",
+              "linkedArtifacts": 0
+            },
+            {
+              "ruleId": "adviser-identified",
+              "requirement": "adviser-identified",
+              "state": "missing",
+              "linkedArtifacts": 0
+            },
+            {
+              "ruleId": "adviser-insurance",
+              "requirement": "adviser-insurance",
+              "state": "missing",
+              "linkedArtifacts": 0
+            },
+            {
+              "ruleId": "conditions-statement",
+              "requirement": "conditions-statement",
+              "state": "missing",
+              "linkedArtifacts": 0
+            }
+          ]
+        }
+      },
+      {
+        "handle": "T4",
+        "name": "get_status",
+        "version": "1",
+        "outcome": "succeeded",
+        "code": "OK",
+        "result": {
+          "tool": "get_status",
+          "status": {
+            "scope": "matter",
+            "assistant": {
+              "provenance": "server",
+              "provider": "qwen",
+              "capability": "verified"
+            },
+            "session": {
+              "provenance": "server",
+              "signedIn": true
+            },
+            "client": null,
+            "liveChain": {
+              "provenance": "server",
+              "state": "unknown"
+            },
+            "indexedHistory": {
+              "state": "not_connected"
+            },
+            "receipt": {
+              "lifecycle": "not_selected",
+              "provenance": "none"
+            }
+          }
+        }
+      }
+    ],
+    "response": {
+      "intent": "brief_matter",
+      "outcome": "completed",
+      "modelExecution": "qwen",
+      "factProposals": [],
+      "unresolved": [
+        {
+          "code": "MISSING_INPUT",
+          "text": "A 2,000 shortfall exists between the stated total and the sum of the two instalments. It is unknown whether a third instalment or other payment term exists in unselected text."
+        }
+      ],
+      "questions": [],
+      "scopeLimitations": [
+        "Only the selected excerpts were read. Nothing can be concluded about text that was not selected.",
+        "Only excerpts from page 2 of document D1 were selected and read. The remainder of document D1 and any other documents in the matter were not selected, so the full payment clause, dates, conditions, tax provisions and any additional instalments could not be reviewed."
+      ],
+      "nextActions": [],
+      "blockCount": 4,
+      "blocks": [
+        {
+          "kind": "explanation",
+          "text": "The selected excerpts from page 2 of document D1 state a total settlement figure of 24,000, two instalments of 10,000 and 12,000, and that the payment basis is gross. No further clause text (such as dates, conditions or tax treatment) was selected.",
+          "basis": "supported",
+          "sources": [
+            "S1",
+            "S2",
+            "S3",
+            "S4"
+          ],
+          "rules": [],
+          "tools": [
+            "T1"
+          ]
+        },
+        {
+          "kind": "calculation",
+          "tool": "T2",
+          "comment": "The reconciliation tool reports a mismatch: the stated total is 24,000 but the sum of the two recorded instalments is 22,000, leaving a shortfall of 2,000."
+        },
+        {
+          "kind": "explanation",
+          "text": "No evidence artifacts are linked for this matter. The evidence check identifies six missing requirements: written agreement, complaints identified, independent advice, adviser identified, adviser insurance, and conditions statement.",
+          "basis": "supported",
+          "sources": [],
+          "rules": [],
+          "tools": [
+            "T3"
+          ]
+        },
+        {
+          "kind": "status",
+          "tool": "T4",
+          "comment": "Matter status: client is not set; live chain state is unknown; indexed history is not connected; receipt lifecycle is not selected."
+        }
+      ]
+    }
+  },
+  "cancellation": {
+    "admitted": true,
+    "runId": "96ff0bd9-9121-4320-a07f-8197ccb792e3",
+    "cancelState": "cancelled",
+    "terminalEvent": "run_cancelled",
+    "usage": {
+      "provenance": "unknown",
+      "providerAttempts": 1,
+      "toolExecutions": 0,
+      "reservedInputTokens": 9094,
+      "reservedOutputTokens": 512,
+      "inputEstimate": "conservative_utf8_bytes",
+      "reportedInputTokens": null,
+      "reportedOutputTokens": null
+    },
+    "note": "A request already submitted may still be billed. Cancellation cannot retract text already sent."
+  },
+  "assertions": [
+    {
+      "id": "run_completed_with_validated_output",
+      "ok": true,
+      "detail": "run_completed"
+    },
+    {
+      "id": "model_requested_two_read_only_tools",
+      "ok": true,
+      "detail": "T1:read_sources:succeeded, T2:check_payments:succeeded, T3:check_evidence:succeeded, T4:get_status:succeeded"
+    },
+    {
+      "id": "answer_cites_resolvable_sources",
+      "ok": true,
+      "detail": "4 validated blocks"
+    },
+    {
+      "id": "payment_discrepancy_or_evidence_gap_from_code",
+      "ok": true,
+      "detail": "differencePence=200000; evidenceGaps=6"
+    },
+    {
+      "id": "scope_limitations_stated",
+      "ok": true,
+      "detail": "2 limitation(s)"
+    },
+    {
+      "id": "user_input_requirement",
+      "ok": true,
+      "detail": "outcome=completed; unresolved=1; questions=0"
+    },
+    {
+      "id": "cancellation_acknowledged",
+      "ok": true,
+      "detail": "terminal=run_cancelled"
+    }
   ],
-  "detail": "QWEN_API_KEY and QWEN_BASE_URL are required for a live check.",
-  "providerCalls": 0,
-  "note": "No provider was called. This is not a pass, a mocked result or live evidence."
+  "limits": [
+    "One run and one cancellation on one synthetic fixture. This is not evidence of production reliability or of real users.",
+    "Validation shows reference integrity and schema conformance, not that an answer is right.",
+    "Model output is not reproducible; another run may differ."
+  ]
 }

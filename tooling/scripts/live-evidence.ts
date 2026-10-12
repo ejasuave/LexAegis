@@ -31,7 +31,7 @@
  * legal accuracy; "not-available" is recorded as unverified, never as a pass.
  */
 import { spawnSync } from 'node:child_process';
-import { existsSync, mkdirSync, writeFileSync } from 'node:fs';
+import { existsSync, mkdirSync, readdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { join, relative } from 'node:path';
 import { readState, recordEvidence } from '../src/evidence-writer';
 import { redact } from '../src/redact';
@@ -114,12 +114,69 @@ function latest(results: readonly EvidenceResult[], subject: string): EvidenceRe
     .at(-1);
 }
 
+/**
+ * The paid-model run is recorded by `pnpm qwen:smoke` in its own evidence file, not in build-state. It
+ * counts only when a LIVE file shows a passing run with a verified capability and every assertion ok.
+ */
+function qwenEvidence(): { state: string; detail: string } {
+  const directory = join(ROOT, 'docs', 'evidence');
+  const files = readdirSync(directory).filter((name) =>
+    /^chapter09-qwen-smoke-\d{4}-\d{2}-\d{2}\.json$/.test(name),
+  );
+  const parsed = files
+    .map((name) => {
+      try {
+        return {
+          name,
+          doc: JSON.parse(readFileSync(join(directory, name), 'utf8')) as {
+            evidenceKind?: string;
+            outcome?: string;
+            executedAt?: string;
+            capability?: { verified?: boolean };
+            assertions?: { ok?: boolean }[];
+          },
+        };
+      } catch {
+        return null;
+      }
+    })
+    .filter((item): item is NonNullable<typeof item> => item !== null)
+    .sort((a, b) => (a.doc.executedAt ?? '').localeCompare(b.doc.executedAt ?? ''));
+  const last = parsed.at(-1);
+  if (last === undefined) return { state: 'not_run', detail: 'no record' };
+  const { doc, name } = last;
+  const ok =
+    doc.evidenceKind === 'live' &&
+    doc.outcome === 'pass' &&
+    doc.capability?.verified === true &&
+    (doc.assertions?.length ?? 0) > 0 &&
+    doc.assertions?.every((a) => a.ok === true) === true;
+  if (ok)
+    return {
+      state: 'verified',
+      detail: `live provider run ${doc.executedAt?.slice(0, 10) ?? ''} (docs/evidence/${name}); one synthetic fixture, not production reliability`,
+    };
+  return {
+    state: doc.outcome === 'blocked' ? 'blocked' : 'unverified',
+    detail: `${doc.outcome ?? 'unknown'} ${doc.executedAt?.slice(0, 10) ?? ''} (docs/evidence/${name})`,
+  };
+}
+
 function statusTable(): {
   rows: { capability: string; state: string; detail: string; next: string }[];
 } {
   const state = readState(ROOT);
   const results = Array.isArray(state.results) ? (state.results as EvidenceResult[]) : [];
   const rows = ROWS.map((row) => {
+    if (row.subjects.includes('qwen-run')) {
+      const qwen = qwenEvidence();
+      return {
+        capability: row.capability,
+        state: qwen.state,
+        detail: qwen.detail,
+        next: qwen.state === 'verified' ? '-' : row.next,
+      };
+    }
     const seen = row.subjects
       .map((subject) => latest(results, subject))
       .filter((result): result is EvidenceResult => result !== undefined);
