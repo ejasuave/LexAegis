@@ -1,0 +1,1346 @@
+{
+  "schema": "lexaegis.validation-report.v1",
+  "scope": "local_software_gate",
+  "limits": "Local synthetic software gate. Not live-capability evidence, not a security audit, not deployment readiness and not permission to publish or deploy.",
+  "generatedAt": "2026-10-12T19:26:35.780Z",
+  "durationMs": 744797,
+  "complete": true,
+  "source": {
+    "commit": "e1faccef8f2c3cf94cfcfe05bd68446467433e9b",
+    "dirtyWorktree": true,
+    "sourceFingerprint": "aa87c6249562f2cf97baeca0bb076a2a628dda438558bcd83405f8f03198a073",
+    "testsFingerprint": "39dd53bfd0c652aee6d6ae1caec124e04dfc51f39398a1b3637372b8371bfc45",
+    "lockfileSha256": "18876f443fb1d96d69633c59cb602bef92403e0d0826eb35a2d67b885911f1c5",
+    "manifestSha256": "6bff06f63f0c96682c8cd2473b898033cb1b9bc3634bed7afb8482047e2af8d5",
+    "schemasSha256": "e24cc52d8831211e1ef81409f934869edb668783bd08e5e045e6649acafcbb1c",
+    "promptsSha256": "f24da314285675dcdc4056b81db6c7a55a420a9e8638bc8491de9e59feba4c0b",
+    "configSha256": "f92b7f8e3499cb0401a6cfbeee0e6210d81a32fd18fe66a0bb40144d46c4c472",
+    "fixtures": [
+      {
+        "name": "fixtures/account-v1",
+        "sha256": "1f2735b586c8a8b86847b3d07a5635079605cec282ee5fa8b6008b7e5adb7f98"
+      },
+      {
+        "name": "fixtures/documents-v1",
+        "sha256": "5c33acff8e81a30a24acb1907bb329d80181aba1b7ea5c30b37a98034143019f"
+      },
+      {
+        "name": "fixtures/protocol-interop-v1",
+        "sha256": "04a4b3dd1b328f406ac85d8de5a988fa9a18bfbcddde0300bedbb7c291434c4a"
+      },
+      {
+        "name": "fixtures/protocol-v1",
+        "sha256": "0f2f034e0b7c2fcdcb0c0c47be707115ecd3d00f2db0bed2f76dcb5874361606"
+      },
+      {
+        "name": "fixtures/registry-v1",
+        "sha256": "7c7f35901c6b31dec950cf10e809295c4c0386a77b9d3f9aad238f0c425a04d2"
+      },
+      {
+        "name": "fixtures/vault-v1",
+        "sha256": "18f6a9cdbe25a97cbb8ece6007ec522a68011d9ea22138bf78d85bbaa86bf778"
+      }
+    ]
+  },
+  "environment": {
+    "node": "v24.21.0",
+    "os": "linux-x64"
+  },
+  "stages": [
+    {
+      "id": "lint",
+      "required": true,
+      "evidenceClass": "unit",
+      "timeoutMs": 900000,
+      "command": "pnpm lint",
+      "status": "pass",
+      "durationMs": 39132,
+      "exitCode": 0,
+      "issueCodes": []
+    },
+    {
+      "id": "typecheck",
+      "required": true,
+      "evidenceClass": "unit",
+      "timeoutMs": 900000,
+      "command": "pnpm typecheck",
+      "status": "pass",
+      "durationMs": 20217,
+      "exitCode": 0,
+      "issueCodes": []
+    },
+    {
+      "id": "unit-tests",
+      "required": true,
+      "evidenceClass": "unit",
+      "timeoutMs": 1200000,
+      "command": "pnpm test",
+      "status": "pass",
+      "durationMs": 14703,
+      "exitCode": 0,
+      "issueCodes": []
+    },
+    {
+      "id": "fixtures",
+      "required": true,
+      "evidenceClass": "unit",
+      "timeoutMs": 300000,
+      "command": "pnpm fixtures:check",
+      "status": "pass",
+      "durationMs": 710,
+      "exitCode": 0,
+      "issueCodes": []
+    },
+    {
+      "id": "protocol-schemas",
+      "required": true,
+      "evidenceClass": "unit",
+      "timeoutMs": 300000,
+      "command": "pnpm protocol:check",
+      "status": "pass",
+      "durationMs": 878,
+      "exitCode": 0,
+      "issueCodes": []
+    },
+    {
+      "id": "agent-prompts",
+      "required": true,
+      "evidenceClass": "unit",
+      "timeoutMs": 300000,
+      "command": "pnpm agent:prompts:check",
+      "status": "pass",
+      "durationMs": 860,
+      "exitCode": 0,
+      "issueCodes": []
+    },
+    {
+      "id": "state",
+      "required": true,
+      "evidenceClass": "unit",
+      "timeoutMs": 120000,
+      "command": "pnpm state:validate",
+      "status": "pass",
+      "durationMs": 708,
+      "exitCode": 0,
+      "issueCodes": []
+    },
+    {
+      "id": "secrets",
+      "required": true,
+      "evidenceClass": "unit",
+      "timeoutMs": 300000,
+      "command": "pnpm secrets:check",
+      "status": "pass",
+      "durationMs": 625,
+      "exitCode": 0,
+      "issueCodes": []
+    },
+    {
+      "id": "exclusion",
+      "required": true,
+      "evidenceClass": "unit",
+      "timeoutMs": 300000,
+      "command": "pnpm exclusion:check",
+      "status": "pass",
+      "durationMs": 908,
+      "exitCode": 0,
+      "issueCodes": []
+    },
+    {
+      "id": "build",
+      "required": true,
+      "evidenceClass": "local_integration",
+      "timeoutMs": 1200000,
+      "command": "pnpm build",
+      "status": "pass",
+      "durationMs": 5620,
+      "exitCode": 0,
+      "issueCodes": []
+    },
+    {
+      "id": "packages",
+      "required": true,
+      "evidenceClass": "local_integration",
+      "timeoutMs": 1200000,
+      "command": "pnpm packages:check",
+      "status": "pass",
+      "durationMs": 23362,
+      "exitCode": 0,
+      "issueCodes": []
+    },
+    {
+      "id": "contracts-toolchain",
+      "required": true,
+      "evidenceClass": "unit",
+      "timeoutMs": 600000,
+      "command": "pnpm contracts:toolchain",
+      "status": "pass",
+      "durationMs": 844,
+      "exitCode": 0,
+      "issueCodes": []
+    },
+    {
+      "id": "contracts-tests",
+      "required": true,
+      "evidenceClass": "local_integration",
+      "timeoutMs": 1200000,
+      "command": "pnpm contracts:test",
+      "status": "pass",
+      "durationMs": 20815,
+      "exitCode": 0,
+      "issueCodes": []
+    },
+    {
+      "id": "contracts-integration",
+      "required": true,
+      "evidenceClass": "local_integration",
+      "timeoutMs": 1200000,
+      "command": "pnpm test:contracts:integration",
+      "status": "pass",
+      "durationMs": 79651,
+      "exitCode": 0,
+      "issueCodes": []
+    },
+    {
+      "id": "vault-browser",
+      "required": true,
+      "evidenceClass": "browser_scripted",
+      "timeoutMs": 600000,
+      "command": "pnpm --filter @lexaegis/vault exec vitest run --config vitest.browser.config.ts",
+      "status": "pass",
+      "durationMs": 1801,
+      "exitCode": 0,
+      "issueCodes": []
+    },
+    {
+      "id": "indexer-tests",
+      "required": true,
+      "evidenceClass": "local_integration",
+      "timeoutMs": 600000,
+      "command": "pnpm --filter @lexaegis/indexer exec vitest run --config vitest.config.ts",
+      "status": "pass",
+      "durationMs": 1347,
+      "exitCode": 0,
+      "issueCodes": []
+    },
+    {
+      "id": "system-harness",
+      "required": true,
+      "evidenceClass": "unit",
+      "timeoutMs": 300000,
+      "command": "pnpm vitest (tests-unit)",
+      "status": "pass",
+      "durationMs": 837,
+      "exitCode": 0,
+      "issueCodes": []
+    },
+    {
+      "id": "system-cases",
+      "required": true,
+      "evidenceClass": "browser_scripted",
+      "timeoutMs": 5400000,
+      "command": "pnpm vitest (tests-system)",
+      "status": "pass",
+      "durationMs": 531779,
+      "exitCode": 0,
+      "issueCodes": []
+    }
+  ],
+  "cases": [
+    {
+      "caseId": "harness-refuses-public-targets",
+      "owner": "tests/system/harness/harness.test.ts",
+      "requiredForMvp": true,
+      "requiredEvidence": "unit",
+      "evidenceClass": "unit",
+      "status": "pass",
+      "satisfied": true,
+      "durationMs": 8,
+      "tests": {
+        "passed": 10,
+        "failed": 0,
+        "skipped": 0
+      },
+      "evidencePaths": [],
+      "issueCodes": []
+    },
+    {
+      "caseId": "harness-non-pass-is-never-pass",
+      "owner": "tests/system/harness/harness.test.ts",
+      "requiredForMvp": true,
+      "requiredEvidence": "unit",
+      "evidenceClass": "unit",
+      "status": "pass",
+      "satisfied": true,
+      "durationMs": 20,
+      "tests": {
+        "passed": 12,
+        "failed": 0,
+        "skipped": 0
+      },
+      "evidencePaths": [],
+      "issueCodes": []
+    },
+    {
+      "caseId": "journey-setup-aegis-and-checks",
+      "owner": "tests/system/full-review-journey.spec.ts",
+      "requiredForMvp": true,
+      "requiredEvidence": "browser_scripted",
+      "evidenceClass": "browser_scripted",
+      "status": "pass",
+      "satisfied": true,
+      "durationMs": 2192,
+      "tests": {
+        "passed": 1,
+        "failed": 0,
+        "skipped": 0
+      },
+      "evidencePaths": [],
+      "issueCodes": []
+    },
+    {
+      "caseId": "journey-decisions-freeze-and-save",
+      "owner": "tests/system/full-review-journey.spec.ts",
+      "requiredForMvp": true,
+      "requiredEvidence": "browser_scripted",
+      "evidenceClass": "browser_scripted",
+      "status": "pass",
+      "satisfied": true,
+      "durationMs": 3192,
+      "tests": {
+        "passed": 1,
+        "failed": 0,
+        "skipped": 0
+      },
+      "evidencePaths": [],
+      "issueCodes": []
+    },
+    {
+      "caseId": "journey-approval-and-local-broadcast",
+      "owner": "tests/system/full-review-journey.spec.ts",
+      "requiredForMvp": true,
+      "requiredEvidence": "browser_scripted",
+      "evidenceClass": "browser_scripted",
+      "status": "pass",
+      "satisfied": true,
+      "durationMs": 24603,
+      "tests": {
+        "passed": 1,
+        "failed": 0,
+        "skipped": 0
+      },
+      "evidencePaths": [],
+      "issueCodes": []
+    },
+    {
+      "caseId": "journey-export-and-independent-verification",
+      "owner": "tests/system/full-review-journey.spec.ts",
+      "requiredForMvp": true,
+      "requiredEvidence": "browser_scripted",
+      "evidenceClass": "browser_scripted",
+      "status": "pass",
+      "satisfied": true,
+      "durationMs": 760,
+      "tests": {
+        "passed": 1,
+        "failed": 0,
+        "skipped": 0
+      },
+      "evidencePaths": [],
+      "issueCodes": []
+    },
+    {
+      "caseId": "recovery-frozen-review-after-storage-clear",
+      "owner": "tests/system/account-and-vault-recovery.spec.ts",
+      "requiredForMvp": true,
+      "requiredEvidence": "browser_scripted",
+      "evidenceClass": "browser_scripted",
+      "status": "pass",
+      "satisfied": true,
+      "durationMs": 6126,
+      "tests": {
+        "passed": 1,
+        "failed": 0,
+        "skipped": 0
+      },
+      "evidencePaths": [],
+      "issueCodes": []
+    },
+    {
+      "caseId": "recovery-wrong-credential-and-missing-prf",
+      "owner": "tests/system/account-and-vault-recovery.spec.ts",
+      "requiredForMvp": true,
+      "requiredEvidence": "browser_scripted",
+      "evidenceClass": "browser_scripted",
+      "status": "pass",
+      "satisfied": true,
+      "durationMs": 746,
+      "tests": {
+        "passed": 1,
+        "failed": 0,
+        "skipped": 0
+      },
+      "evidencePaths": [],
+      "issueCodes": []
+    },
+    {
+      "caseId": "recovery-storage-faults-are-not-an-empty-vault",
+      "owner": "tests/system/account-and-vault-recovery.spec.ts",
+      "requiredForMvp": true,
+      "requiredEvidence": "browser_scripted",
+      "evidenceClass": "browser_scripted",
+      "status": "pass",
+      "satisfied": true,
+      "durationMs": 2203,
+      "tests": {
+        "passed": 1,
+        "failed": 0,
+        "skipped": 0
+      },
+      "evidencePaths": [],
+      "issueCodes": []
+    },
+    {
+      "caseId": "recovery-session-limits-and-late-callbacks",
+      "owner": "tests/system/account-and-vault-recovery.spec.ts",
+      "requiredForMvp": true,
+      "requiredEvidence": "browser_scripted",
+      "evidenceClass": "browser_scripted",
+      "status": "pass",
+      "satisfied": true,
+      "durationMs": 4812,
+      "tests": {
+        "passed": 1,
+        "failed": 0,
+        "skipped": 0
+      },
+      "evidencePaths": [],
+      "issueCodes": []
+    },
+    {
+      "caseId": "recovery-rollback-detection-and-limits",
+      "owner": "tests/system/account-and-vault-recovery.spec.ts",
+      "requiredForMvp": true,
+      "requiredEvidence": "browser_scripted",
+      "evidenceClass": "browser_scripted",
+      "status": "pass",
+      "satisfied": true,
+      "durationMs": 1722,
+      "tests": {
+        "passed": 1,
+        "failed": 0,
+        "skipped": 0
+      },
+      "evidencePaths": [],
+      "issueCodes": []
+    },
+    {
+      "caseId": "vault-browser-crypto-tamper",
+      "owner": "packages/vault/src/crypto/tamper.test.ts",
+      "requiredForMvp": true,
+      "requiredEvidence": "browser_scripted",
+      "evidenceClass": "browser_scripted",
+      "status": "pass",
+      "satisfied": true,
+      "durationMs": 68,
+      "tests": {
+        "passed": 12,
+        "failed": 0,
+        "skipped": 0
+      },
+      "evidencePaths": [],
+      "issueCodes": []
+    },
+    {
+      "caseId": "vault-storage-fault-matrix",
+      "owner": "tests/system/vault-storage.spec.ts",
+      "requiredForMvp": true,
+      "requiredEvidence": "local_integration",
+      "evidenceClass": "browser_scripted",
+      "status": "pass",
+      "satisfied": true,
+      "durationMs": 1142,
+      "tests": {
+        "passed": 8,
+        "failed": 0,
+        "skipped": 0
+      },
+      "evidencePaths": [],
+      "issueCodes": []
+    },
+    {
+      "caseId": "vault-storage-concurrency-and-immutability",
+      "owner": "tests/system/vault-storage.spec.ts",
+      "requiredForMvp": true,
+      "requiredEvidence": "local_integration",
+      "evidenceClass": "browser_scripted",
+      "status": "pass",
+      "satisfied": true,
+      "durationMs": 188,
+      "tests": {
+        "passed": 3,
+        "failed": 0,
+        "skipped": 0
+      },
+      "evidencePaths": [],
+      "issueCodes": []
+    },
+    {
+      "caseId": "vault-storage-corruption-swaps-and-outage",
+      "owner": "tests/system/vault-storage.spec.ts",
+      "requiredForMvp": true,
+      "requiredEvidence": "local_integration",
+      "evidenceClass": "browser_scripted",
+      "status": "pass",
+      "satisfied": true,
+      "durationMs": 675,
+      "tests": {
+        "passed": 5,
+        "failed": 0,
+        "skipped": 0
+      },
+      "evidencePaths": [],
+      "issueCodes": []
+    },
+    {
+      "caseId": "vault-exports-roundtrip-real-stores",
+      "owner": "tests/system/vault-storage.spec.ts",
+      "requiredForMvp": true,
+      "requiredEvidence": "local_integration",
+      "evidenceClass": "browser_scripted",
+      "status": "pass",
+      "satisfied": true,
+      "durationMs": 845,
+      "tests": {
+        "passed": 3,
+        "failed": 0,
+        "skipped": 0
+      },
+      "evidencePaths": [],
+      "issueCodes": []
+    },
+    {
+      "caseId": "auth-siwe-challenge-session-and-cookies",
+      "owner": "tests/system/auth-and-ownership.spec.ts",
+      "requiredForMvp": true,
+      "requiredEvidence": "local_integration",
+      "evidenceClass": "browser_scripted",
+      "status": "pass",
+      "satisfied": true,
+      "durationMs": 288,
+      "tests": {
+        "passed": 7,
+        "failed": 0,
+        "skipped": 0
+      },
+      "evidencePaths": [],
+      "issueCodes": []
+    },
+    {
+      "caseId": "ownership-cross-account-routes",
+      "owner": "tests/system/auth-and-ownership.spec.ts",
+      "requiredForMvp": true,
+      "requiredEvidence": "local_integration",
+      "evidenceClass": "browser_scripted",
+      "status": "pass",
+      "satisfied": true,
+      "durationMs": 272,
+      "tests": {
+        "passed": 3,
+        "failed": 0,
+        "skipped": 0
+      },
+      "evidencePaths": [],
+      "issueCodes": []
+    },
+    {
+      "caseId": "http-origin-headers-and-body-limits",
+      "owner": "tests/system/auth-and-ownership.spec.ts",
+      "requiredForMvp": true,
+      "requiredEvidence": "local_integration",
+      "evidenceClass": "browser_scripted",
+      "status": "pass",
+      "satisfied": true,
+      "durationMs": 323,
+      "tests": {
+        "passed": 4,
+        "failed": 0,
+        "skipped": 0
+      },
+      "evidencePaths": [],
+      "issueCodes": []
+    },
+    {
+      "caseId": "shared-store-two-instances-and-outage",
+      "owner": "tests/system/auth-and-ownership.spec.ts",
+      "requiredForMvp": true,
+      "requiredEvidence": "local_integration",
+      "evidenceClass": "browser_scripted",
+      "status": "pass",
+      "satisfied": true,
+      "durationMs": 383,
+      "tests": {
+        "passed": 2,
+        "failed": 0,
+        "skipped": 0
+      },
+      "evidencePaths": [],
+      "issueCodes": []
+    },
+    {
+      "caseId": "privacy-observed-journey-disclosure-matrix",
+      "owner": "tests/privacy/disclosure-boundaries.spec.ts",
+      "requiredForMvp": true,
+      "requiredEvidence": "browser_scripted",
+      "evidenceClass": "browser_scripted",
+      "status": "pass",
+      "satisfied": true,
+      "durationMs": 26268,
+      "tests": {
+        "passed": 1,
+        "failed": 0,
+        "skipped": 0
+      },
+      "evidencePaths": [],
+      "issueCodes": []
+    },
+    {
+      "caseId": "privacy-assistant-consent-and-failure-boundaries",
+      "owner": "tests/privacy/disclosure-boundaries.spec.ts",
+      "requiredForMvp": true,
+      "requiredEvidence": "browser_scripted",
+      "evidenceClass": "browser_scripted",
+      "status": "pass",
+      "satisfied": true,
+      "durationMs": 10580,
+      "tests": {
+        "passed": 3,
+        "failed": 0,
+        "skipped": 0
+      },
+      "evidencePaths": [],
+      "issueCodes": []
+    },
+    {
+      "caseId": "privacy-logging-and-evidence-hygiene",
+      "owner": "tests/privacy/disclosure-boundaries.spec.ts",
+      "requiredForMvp": true,
+      "requiredEvidence": "browser_scripted",
+      "evidenceClass": "browser_scripted",
+      "status": "pass",
+      "satisfied": true,
+      "durationMs": 3,
+      "tests": {
+        "passed": 2,
+        "failed": 0,
+        "skipped": 0
+      },
+      "evidencePaths": [],
+      "issueCodes": []
+    },
+    {
+      "caseId": "aegis-injection-capability-boundaries",
+      "owner": "packages/agent/src/runtime/hostile-boundaries.test.ts",
+      "requiredForMvp": true,
+      "requiredEvidence": "unit",
+      "evidenceClass": "unit",
+      "status": "pass",
+      "satisfied": true,
+      "durationMs": 99,
+      "tests": {
+        "passed": 4,
+        "failed": 0,
+        "skipped": 0
+      },
+      "evidencePaths": [],
+      "issueCodes": []
+    },
+    {
+      "caseId": "aegis-handles-and-forged-results",
+      "owner": "packages/agent/src/runtime/hostile-boundaries.test.ts",
+      "requiredForMvp": true,
+      "requiredEvidence": "unit",
+      "evidenceClass": "unit",
+      "status": "pass",
+      "satisfied": true,
+      "durationMs": 39,
+      "tests": {
+        "passed": 5,
+        "failed": 0,
+        "skipped": 0
+      },
+      "evidencePaths": [],
+      "issueCodes": []
+    },
+    {
+      "caseId": "aegis-oracle-arithmetic",
+      "owner": "packages/agent/src/runtime/hostile-boundaries.test.ts",
+      "requiredForMvp": true,
+      "requiredEvidence": "unit",
+      "evidenceClass": "unit",
+      "status": "pass",
+      "satisfied": true,
+      "durationMs": 4,
+      "tests": {
+        "passed": 1,
+        "failed": 0,
+        "skipped": 0
+      },
+      "evidencePaths": [],
+      "issueCodes": []
+    },
+    {
+      "caseId": "aegis-run-ceilings-and-admission",
+      "owner": "packages/agent/src/runtime/run-agent.hardening.test.ts",
+      "requiredForMvp": true,
+      "requiredEvidence": "unit",
+      "evidenceClass": "unit",
+      "status": "pass",
+      "satisfied": true,
+      "durationMs": 1696,
+      "tests": {
+        "passed": 22,
+        "failed": 0,
+        "skipped": 0
+      },
+      "evidencePaths": [],
+      "issueCodes": []
+    },
+    {
+      "caseId": "aegis-cancellation-races-and-streams",
+      "owner": "packages/agent/src/runtime/run-agent.test.ts",
+      "requiredForMvp": true,
+      "requiredEvidence": "unit",
+      "evidenceClass": "unit",
+      "status": "pass",
+      "satisfied": true,
+      "durationMs": 1307,
+      "tests": {
+        "passed": 19,
+        "failed": 0,
+        "skipped": 0
+      },
+      "evidencePaths": [],
+      "issueCodes": []
+    },
+    {
+      "caseId": "approval-server-rejects-forged-transactions",
+      "owner": "tests/system/approval-races.spec.ts",
+      "requiredForMvp": true,
+      "requiredEvidence": "local_integration",
+      "evidenceClass": "browser_scripted",
+      "status": "pass",
+      "satisfied": true,
+      "durationMs": 384,
+      "tests": {
+        "passed": 2,
+        "failed": 0,
+        "skipped": 0
+      },
+      "evidencePaths": [],
+      "issueCodes": []
+    },
+    {
+      "caseId": "approval-ticket-and-state-races",
+      "owner": "tests/system/approval-races.spec.ts",
+      "requiredForMvp": true,
+      "requiredEvidence": "browser_scripted",
+      "evidenceClass": "browser_scripted",
+      "status": "pass",
+      "satisfied": true,
+      "durationMs": 5631,
+      "tests": {
+        "passed": 1,
+        "failed": 0,
+        "skipped": 0
+      },
+      "evidencePaths": [],
+      "issueCodes": []
+    },
+    {
+      "caseId": "approval-send-confirmation-and-quote-races",
+      "owner": "tests/system/approval-races.spec.ts",
+      "requiredForMvp": true,
+      "requiredEvidence": "browser_scripted",
+      "evidenceClass": "browser_scripted",
+      "status": "pass",
+      "satisfied": true,
+      "durationMs": 36748,
+      "tests": {
+        "passed": 1,
+        "failed": 0,
+        "skipped": 0
+      },
+      "evidencePaths": [],
+      "issueCodes": []
+    },
+    {
+      "caseId": "chain-lost-response-and-restart-recovery",
+      "owner": "tests/system/chain-recovery.spec.ts",
+      "requiredForMvp": true,
+      "requiredEvidence": "local_integration",
+      "evidenceClass": "browser_scripted",
+      "status": "pass",
+      "satisfied": true,
+      "durationMs": 62214,
+      "tests": {
+        "passed": 3,
+        "failed": 0,
+        "skipped": 0
+      },
+      "evidencePaths": [],
+      "issueCodes": []
+    },
+    {
+      "caseId": "chain-outage-and-inconsistent-observations",
+      "owner": "tests/system/chain-recovery.spec.ts",
+      "requiredForMvp": true,
+      "requiredEvidence": "local_integration",
+      "evidenceClass": "browser_scripted",
+      "status": "pass",
+      "satisfied": true,
+      "durationMs": 42032,
+      "tests": {
+        "passed": 9,
+        "failed": 0,
+        "skipped": 0
+      },
+      "evidencePaths": [],
+      "issueCodes": []
+    },
+    {
+      "caseId": "verifier-local-checks-offline-and-no-disclosure",
+      "owner": "tests/system/verifier-independence.spec.ts",
+      "requiredForMvp": true,
+      "requiredEvidence": "browser_scripted",
+      "evidenceClass": "browser_scripted",
+      "status": "pass",
+      "satisfied": true,
+      "durationMs": 3505,
+      "tests": {
+        "passed": 3,
+        "failed": 0,
+        "skipped": 0
+      },
+      "evidencePaths": [],
+      "issueCodes": []
+    },
+    {
+      "caseId": "verifier-substitution-and-expectation-provenance",
+      "owner": "tests/system/verifier-independence.spec.ts",
+      "requiredForMvp": true,
+      "requiredEvidence": "browser_scripted",
+      "evidenceClass": "browser_scripted",
+      "status": "pass",
+      "satisfied": true,
+      "durationMs": 7558,
+      "tests": {
+        "passed": 3,
+        "failed": 0,
+        "skipped": 0
+      },
+      "evidencePaths": [],
+      "issueCodes": []
+    },
+    {
+      "caseId": "verifier-malformed-inputs-and-modes",
+      "owner": "tests/system/verifier-independence.spec.ts",
+      "requiredForMvp": true,
+      "requiredEvidence": "browser_scripted",
+      "evidenceClass": "browser_scripted",
+      "status": "pass",
+      "satisfied": true,
+      "durationMs": 12481,
+      "tests": {
+        "passed": 4,
+        "failed": 0,
+        "skipped": 0
+      },
+      "evidencePaths": [],
+      "issueCodes": []
+    },
+    {
+      "caseId": "verifier-registry-failures-and-public-report",
+      "owner": "tests/system/verifier-independence.spec.ts",
+      "requiredForMvp": true,
+      "requiredEvidence": "browser_scripted",
+      "evidenceClass": "browser_scripted",
+      "status": "pass",
+      "satisfied": true,
+      "durationMs": 10828,
+      "tests": {
+        "passed": 5,
+        "failed": 0,
+        "skipped": 0
+      },
+      "evidencePaths": [],
+      "issueCodes": []
+    },
+    {
+      "caseId": "verifier-export-handoff-and-persistence",
+      "owner": "tests/system/verifier-independence.spec.ts",
+      "requiredForMvp": true,
+      "requiredEvidence": "browser_scripted",
+      "evidenceClass": "browser_scripted",
+      "status": "pass",
+      "satisfied": true,
+      "durationMs": 3249,
+      "tests": {
+        "passed": 3,
+        "failed": 0,
+        "skipped": 0
+      },
+      "evidencePaths": [],
+      "issueCodes": []
+    },
+    {
+      "caseId": "lifecycle-lock-signout-and-switch-clear-private-state",
+      "owner": "tests/system/aegis-lifecycle.spec.ts",
+      "requiredForMvp": true,
+      "requiredEvidence": "browser_scripted",
+      "evidenceClass": "browser_scripted",
+      "status": "pass",
+      "satisfied": true,
+      "durationMs": 12540,
+      "tests": {
+        "passed": 4,
+        "failed": 0,
+        "skipped": 0
+      },
+      "evidencePaths": [],
+      "issueCodes": []
+    },
+    {
+      "caseId": "lifecycle-session-expiry-pagehide-and-interrupted-network",
+      "owner": "tests/system/aegis-lifecycle.spec.ts",
+      "requiredForMvp": true,
+      "requiredEvidence": "browser_scripted",
+      "evidenceClass": "browser_scripted",
+      "status": "pass",
+      "satisfied": true,
+      "durationMs": 11016,
+      "tests": {
+        "passed": 3,
+        "failed": 0,
+        "skipped": 0
+      },
+      "evidencePaths": [],
+      "issueCodes": []
+    },
+    {
+      "caseId": "lifecycle-stop-coordinates-every-part-without-sending",
+      "owner": "tests/system/aegis-lifecycle.spec.ts",
+      "requiredForMvp": true,
+      "requiredEvidence": "browser_scripted",
+      "evidenceClass": "browser_scripted",
+      "status": "pass",
+      "satisfied": true,
+      "durationMs": 9892,
+      "tests": {
+        "passed": 2,
+        "failed": 0,
+        "skipped": 0
+      },
+      "evidencePaths": [],
+      "issueCodes": []
+    },
+    {
+      "caseId": "lifecycle-stop-after-possible-broadcast-keeps-reconciliation",
+      "owner": "tests/system/aegis-lifecycle.spec.ts",
+      "requiredForMvp": true,
+      "requiredEvidence": "browser_scripted",
+      "evidenceClass": "browser_scripted",
+      "status": "pass",
+      "satisfied": true,
+      "durationMs": 27319,
+      "tests": {
+        "passed": 1,
+        "failed": 0,
+        "skipped": 0
+      },
+      "evidencePaths": [],
+      "issueCodes": []
+    },
+    {
+      "caseId": "voice-capability-adapters-and-text-fallback",
+      "owner": "tests/system/voice-local-speech.spec.ts",
+      "requiredForMvp": true,
+      "requiredEvidence": "browser_scripted",
+      "evidenceClass": "browser_scripted",
+      "status": "pass",
+      "satisfied": true,
+      "durationMs": 3898,
+      "tests": {
+        "passed": 3,
+        "failed": 0,
+        "skipped": 0
+      },
+      "evidencePaths": [],
+      "issueCodes": []
+    },
+    {
+      "caseId": "voice-dictation-controls-limits-and-races",
+      "owner": "tests/system/voice-local-speech.spec.ts",
+      "requiredForMvp": true,
+      "requiredEvidence": "browser_scripted",
+      "evidenceClass": "browser_scripted",
+      "status": "pass",
+      "satisfied": true,
+      "durationMs": 11081,
+      "tests": {
+        "passed": 4,
+        "failed": 0,
+        "skipped": 0
+      },
+      "evidencePaths": [],
+      "issueCodes": []
+    },
+    {
+      "caseId": "voice-read-aloud-local-voices-and-bounds",
+      "owner": "tests/system/voice-local-speech.spec.ts",
+      "requiredForMvp": true,
+      "requiredEvidence": "browser_scripted",
+      "evidenceClass": "browser_scripted",
+      "status": "pass",
+      "satisfied": true,
+      "durationMs": 3903,
+      "tests": {
+        "passed": 2,
+        "failed": 0,
+        "skipped": 0
+      },
+      "evidencePaths": [],
+      "issueCodes": []
+    },
+    {
+      "caseId": "a11y-reflow-matrix-and-screenshots",
+      "owner": "tests/system/accessibility-and-reflow.spec.ts",
+      "requiredForMvp": true,
+      "requiredEvidence": "browser_scripted",
+      "evidenceClass": "browser_scripted",
+      "status": "pass",
+      "satisfied": true,
+      "durationMs": 12955,
+      "tests": {
+        "passed": 1,
+        "failed": 0,
+        "skipped": 0
+      },
+      "evidencePaths": [],
+      "issueCodes": []
+    },
+    {
+      "caseId": "a11y-keyboard-only-flows-focus-and-escape",
+      "owner": "tests/system/accessibility-and-reflow.spec.ts",
+      "requiredForMvp": true,
+      "requiredEvidence": "browser_scripted",
+      "evidenceClass": "browser_scripted",
+      "status": "pass",
+      "satisfied": true,
+      "durationMs": 12409,
+      "tests": {
+        "passed": 2,
+        "failed": 0,
+        "skipped": 0
+      },
+      "evidencePaths": [],
+      "issueCodes": []
+    },
+    {
+      "caseId": "a11y-names-status-contrast-and-motion",
+      "owner": "tests/system/accessibility-and-reflow.spec.ts",
+      "requiredForMvp": true,
+      "requiredEvidence": "browser_scripted",
+      "evidenceClass": "browser_scripted",
+      "status": "pass",
+      "satisfied": true,
+      "durationMs": 9203,
+      "tests": {
+        "passed": 2,
+        "failed": 0,
+        "skipped": 0
+      },
+      "evidencePaths": [],
+      "issueCodes": []
+    },
+    {
+      "caseId": "registry-lifecycle-and-replay-on-anvil",
+      "owner": "contracts/integration/registry.anvil.test.ts",
+      "requiredForMvp": true,
+      "requiredEvidence": "local_integration",
+      "evidenceClass": "local_integration",
+      "status": "pass",
+      "satisfied": true,
+      "durationMs": 924,
+      "tests": {
+        "passed": 16,
+        "failed": 0,
+        "skipped": 0
+      },
+      "evidencePaths": [],
+      "issueCodes": []
+    },
+    {
+      "caseId": "registry-supersession-and-successor-binding",
+      "owner": "contracts/integration/chapter11.anvil.test.ts",
+      "requiredForMvp": true,
+      "requiredEvidence": "local_integration",
+      "evidenceClass": "local_integration",
+      "status": "pass",
+      "satisfied": true,
+      "durationMs": 1309,
+      "tests": {
+        "passed": 6,
+        "failed": 0,
+        "skipped": 0
+      },
+      "evidencePaths": [],
+      "issueCodes": []
+    },
+    {
+      "caseId": "funding-cooldown-reservations-and-crash-recovery",
+      "owner": "contracts/integration/chapter6.anvil.test.ts",
+      "requiredForMvp": true,
+      "requiredEvidence": "local_integration",
+      "evidenceClass": "local_integration",
+      "status": "pass",
+      "satisfied": true,
+      "durationMs": 47,
+      "tests": {
+        "passed": 3,
+        "failed": 0,
+        "skipped": 0
+      },
+      "evidencePaths": [],
+      "issueCodes": []
+    },
+    {
+      "caseId": "indexer-projection-reorg-and-provenance",
+      "owner": "indexer/test/engine.test.ts",
+      "requiredForMvp": true,
+      "requiredEvidence": "local_integration",
+      "evidenceClass": "local_integration",
+      "status": "pass",
+      "satisfied": true,
+      "durationMs": 5610,
+      "tests": {
+        "passed": 33,
+        "failed": 0,
+        "skipped": 0
+      },
+      "evidencePaths": [],
+      "issueCodes": []
+    },
+    {
+      "caseId": "prod-bundles-carry-no-server-test-or-private-material",
+      "owner": "tests/system/production-boundaries.spec.ts",
+      "requiredForMvp": true,
+      "requiredEvidence": "local_integration",
+      "evidenceClass": "browser_scripted",
+      "status": "pass",
+      "satisfied": true,
+      "durationMs": 1092,
+      "tests": {
+        "passed": 2,
+        "failed": 0,
+        "skipped": 0
+      },
+      "evidencePaths": [],
+      "issueCodes": []
+    },
+    {
+      "caseId": "prod-csp-nonce-and-framing-hold-on-the-running-build",
+      "owner": "tests/system/production-boundaries.spec.ts",
+      "requiredForMvp": true,
+      "requiredEvidence": "browser_scripted",
+      "evidenceClass": "browser_scripted",
+      "status": "pass",
+      "satisfied": true,
+      "durationMs": 6023,
+      "tests": {
+        "passed": 3,
+        "failed": 0,
+        "skipped": 0
+      },
+      "evidencePaths": [],
+      "issueCodes": []
+    },
+    {
+      "caseId": "prod-headers-no-store-and-no-private-caches",
+      "owner": "tests/system/production-boundaries.spec.ts",
+      "requiredForMvp": true,
+      "requiredEvidence": "browser_scripted",
+      "evidenceClass": "browser_scripted",
+      "status": "pass",
+      "satisfied": true,
+      "durationMs": 1752,
+      "tests": {
+        "passed": 2,
+        "failed": 0,
+        "skipped": 0
+      },
+      "evidencePaths": [],
+      "issueCodes": []
+    },
+    {
+      "caseId": "prod-hostile-text-renders-inert",
+      "owner": "tests/system/production-boundaries.spec.ts",
+      "requiredForMvp": true,
+      "requiredEvidence": "browser_scripted",
+      "evidenceClass": "browser_scripted",
+      "status": "pass",
+      "satisfied": true,
+      "durationMs": 3105,
+      "tests": {
+        "passed": 2,
+        "failed": 0,
+        "skipped": 0
+      },
+      "evidencePaths": [],
+      "issueCodes": []
+    },
+    {
+      "caseId": "prod-test-seams-inert-and-redirects-refused",
+      "owner": "tests/system/production-boundaries.spec.ts",
+      "requiredForMvp": true,
+      "requiredEvidence": "local_integration",
+      "evidenceClass": "browser_scripted",
+      "status": "pass",
+      "satisfied": true,
+      "durationMs": 3167,
+      "tests": {
+        "passed": 2,
+        "failed": 0,
+        "skipped": 0
+      },
+      "evidencePaths": [],
+      "issueCodes": []
+    },
+    {
+      "caseId": "prod-dependency-and-committable-secret-scans",
+      "owner": "tests/system/production-boundaries.spec.ts",
+      "requiredForMvp": true,
+      "requiredEvidence": "local_integration",
+      "evidenceClass": "browser_scripted",
+      "status": "pass",
+      "satisfied": true,
+      "durationMs": 1127,
+      "tests": {
+        "passed": 3,
+        "failed": 0,
+        "skipped": 0
+      },
+      "evidencePaths": [],
+      "issueCodes": []
+    },
+    {
+      "caseId": "negctl-tampered-artifact-is-detected",
+      "owner": "tests/system/negative-controls.spec.ts",
+      "requiredForMvp": true,
+      "requiredEvidence": "local_integration",
+      "evidenceClass": "browser_scripted",
+      "status": "pass",
+      "satisfied": true,
+      "durationMs": 10,
+      "tests": {
+        "passed": 1,
+        "failed": 0,
+        "skipped": 0
+      },
+      "evidencePaths": [],
+      "issueCodes": []
+    },
+    {
+      "caseId": "negctl-cross-account-request-is-detected",
+      "owner": "tests/system/negative-controls.spec.ts",
+      "requiredForMvp": true,
+      "requiredEvidence": "local_integration",
+      "evidenceClass": "browser_scripted",
+      "status": "pass",
+      "satisfied": true,
+      "durationMs": 0,
+      "tests": {
+        "passed": 1,
+        "failed": 0,
+        "skipped": 0
+      },
+      "evidencePaths": [],
+      "issueCodes": []
+    },
+    {
+      "caseId": "negctl-forged-approval-flag-is-detected",
+      "owner": "tests/system/negative-controls.spec.ts",
+      "requiredForMvp": true,
+      "requiredEvidence": "local_integration",
+      "evidenceClass": "browser_scripted",
+      "status": "pass",
+      "satisfied": true,
+      "durationMs": 0,
+      "tests": {
+        "passed": 1,
+        "failed": 0,
+        "skipped": 0
+      },
+      "evidencePaths": [],
+      "issueCodes": []
+    },
+    {
+      "caseId": "negctl-outbound-canary-is-detected",
+      "owner": "tests/system/negative-controls.spec.ts",
+      "requiredForMvp": true,
+      "requiredEvidence": "local_integration",
+      "evidenceClass": "browser_scripted",
+      "status": "pass",
+      "satisfied": true,
+      "durationMs": 3,
+      "tests": {
+        "passed": 1,
+        "failed": 0,
+        "skipped": 0
+      },
+      "evidencePaths": [],
+      "issueCodes": []
+    },
+    {
+      "caseId": "negctl-inconsistent-chain-observation-is-detected",
+      "owner": "tests/system/negative-controls.spec.ts",
+      "requiredForMvp": true,
+      "requiredEvidence": "local_integration",
+      "evidenceClass": "browser_scripted",
+      "status": "pass",
+      "satisfied": true,
+      "durationMs": 0,
+      "tests": {
+        "passed": 1,
+        "failed": 0,
+        "skipped": 0
+      },
+      "evidencePaths": [],
+      "issueCodes": []
+    }
+  ],
+  "negativeControls": [
+    {
+      "caseId": "negctl-tampered-artifact-is-detected",
+      "detected": true
+    },
+    {
+      "caseId": "negctl-cross-account-request-is-detected",
+      "detected": true
+    },
+    {
+      "caseId": "negctl-forged-approval-flag-is-detected",
+      "detected": true
+    },
+    {
+      "caseId": "negctl-outbound-canary-is-detected",
+      "detected": true
+    },
+    {
+      "caseId": "negctl-inconsistent-chain-observation-is-detected",
+      "detected": true
+    }
+  ],
+  "outcome": "pass",
+  "blockers": []
+}

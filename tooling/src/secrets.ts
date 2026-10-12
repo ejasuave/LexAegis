@@ -1,3 +1,4 @@
+import { execFileSync } from 'node:child_process';
 import { existsSync, readFileSync, readdirSync, statSync } from 'node:fs';
 import { join, relative, sep } from 'node:path';
 
@@ -35,6 +36,8 @@ export const SECRET_ALLOWLIST: Readonly<Record<string, string>> = {
     'deliberately credential-bearing database URLs as invalid-input cases',
   'tooling/src/exclusion.test.ts': 'fake credentials the scanner must detect (negative controls)',
   'tooling/src/readiness.test.ts': 'fake credentials the redactor must remove',
+  'tooling/src/validation.test.ts':
+    'a deliberately credential-bearing URL the report sanitiser must flag (negative control)',
 };
 
 const PATTERNS: readonly { rule: string; pattern: RegExp }[] = [
@@ -83,11 +86,43 @@ export function scanSecretFiles(
   return findings;
 }
 
-/** Finds likely credentials in source and configuration. Values are never returned. */
+/** Files git would commit: tracked, plus untracked and not ignored. Null when `root` is not a work tree. */
+function committableFiles(root: string): string[] | null {
+  try {
+    const listed = execFileSync(
+      'git',
+      ['ls-files', '--cached', '--others', '--exclude-standard', '-z'],
+      {
+        cwd: root,
+        encoding: 'utf8',
+        stdio: ['ignore', 'pipe', 'ignore'],
+        maxBuffer: 64 * 1024 * 1024,
+      },
+    );
+    // A directory that is not itself a repository root must not borrow an enclosing one.
+    const top = execFileSync('git', ['rev-parse', '--show-toplevel'], {
+      cwd: root,
+      encoding: 'utf8',
+      stdio: ['ignore', 'pipe', 'ignore'],
+    }).trim();
+    if (relative(top, root) !== '') return null;
+    return listed.split('\0').filter((name) => name !== '');
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * Finds likely credentials in source and configuration. Values are never returned. In a git work tree
+ * only what could be COMMITTED is scanned: a git-ignored local `.env` is by design where credentials
+ * live, and git (not this scanner) keeps it out of the repository. Elsewhere every file is scanned.
+ */
 export function scanSecrets(
   root: string,
   allowlist: Readonly<Record<string, string>> = SECRET_ALLOWLIST,
 ): SecretFinding[] {
-  const names = [...walk(root)].map((file) => relative(root, file).split(sep).join('/'));
+  const names =
+    committableFiles(root) ??
+    [...walk(root)].map((file) => relative(root, file).split(sep).join('/'));
   return scanSecretFiles(root, names, allowlist);
 }

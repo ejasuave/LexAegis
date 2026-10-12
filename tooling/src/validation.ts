@@ -207,7 +207,7 @@ export function deriveCases(
   manifest: readonly ManifestCase[],
   outcomes: readonly TestOutcome[],
   recorded: readonly RecordedResult[],
-  runnerEvidence: Evidence,
+  runnerEvidence: Evidence | ((item: ManifestCase) => Evidence),
   diagnosticRerunPassed: ReadonlySet<string> = new Set(),
 ): CaseResult[] {
   const byCase = new Map<string, TestOutcome[]>();
@@ -219,6 +219,7 @@ export function deriveCases(
   const latest = new Map<string, RecordedResult>();
   for (const item of recorded) latest.set(item.caseId, item);
   return manifest.map((item) => {
+    const evidence = typeof runnerEvidence === 'function' ? runnerEvidence(item) : runnerEvidence;
     const tests = byCase.get(item.id) ?? [];
     const passed = tests.filter((t) => t.status === 'passed').length;
     const failed = tests.filter((t) => t.status === 'failed').length;
@@ -245,7 +246,7 @@ export function deriveCases(
     }
     if (status === 'fail' && diagnosticRerunPassed.has(item.id)) issues.add('FLAKY_RESULT');
     // A runner that cannot produce the required evidence class never satisfies the case.
-    const enough = RANK[runnerEvidence] >= RANK[item.requiredEvidence];
+    const enough = RANK[evidence] >= RANK[item.requiredEvidence];
     if (status === 'pass' && !enough) {
       status = 'not_run';
       issues.add(
@@ -259,7 +260,7 @@ export function deriveCases(
       owner: item.owner,
       requiredForMvp: item.requiredForMvp,
       requiredEvidence: item.requiredEvidence,
-      evidenceClass: runnerEvidence,
+      evidenceClass: evidence,
       status,
       satisfied: status === 'pass' && !issues.has('FLAKY_RESULT'),
       durationMs: tests.reduce((sum, t) => sum + t.durationMs, 0),

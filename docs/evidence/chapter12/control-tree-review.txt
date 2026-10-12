@@ -2,7 +2,7 @@
   - /url: "#main"
 - banner "System status":
   - term: Matter
-  - definition: SYSTEM-a11y-names-7c04, version 8b659d6e
+  - definition: SYSTEM-a11y-names-7c04, version 55853b6f
   - term: Network
   - definition: Monad Testnet (10143)
   - term: Passkey session
@@ -44,7 +44,7 @@
     - heading "Documents" [level=3]
     - list:
       - listitem: discrepancy-2000.pdf
-      - listitem: lexaegis:extraction:v1:8b659d6e-d092-474d-9bfb-221ddd4d06f7
+      - listitem: lexaegis:extraction:v1:55853b6f-ffa1-4c3e-bfc7-303a4177086a
     - heading "Saved context" [level=3]
     - list:
       - listitem: "Confirmed: Fact: payment total (total) is £24,000.00"
@@ -77,7 +77,7 @@
             - text: discrepancy-2000.pdf 2 pages · text coverage complete · text order may differ from layout
       - region "Document status":
         - list:
-          - listitem: discrepancy-2000.pdf · version 8b659d6e · 2 pages, text coverage complete
+          - listitem: discrepancy-2000.pdf · version 55853b6f · 2 pages, text coverage complete
         - status: "Working copy: unsaved changes. Sources open only against the verified original bytes."
       - region "Source viewer":
         - heading "Source" [level=2]
@@ -348,7 +348,7 @@
     - region "Review package":
       - heading "Review package" [level=2]
       - heading "Saved and checked" [level=3]
-      - paragraph: "Public commitment: 0xa450c31731d2846282ce2f35f753b7e7844ccbaa365907ff8c143cdb19177159"
+      - paragraph: "Public commitment: 0xcfd0f1d4ff22dd63e457f74c3c5486f533f3cf8de10e956e02b091b6ce202d09"
       - paragraph: Read-only. This is not approved, signed or an active receipt.
       - group: Technical details
       - status: Frozen and saved. This is not approval, a signature or a receipt.
@@ -376,8 +376,8 @@
       - heading "Saved reviews" [level=2]
       - list:
         - listitem:
-          - paragraph: "0xa450c31731d2846282ce2f35f753b7e7844ccbaa365907ff8c143cdb19177159"
-          - paragraph: Saved 2026-10-12T17:33:57.260Z
+          - paragraph: "0xcfd0f1d4ff22dd63e457f74c3c5486f533f3cf8de10e956e02b091b6ce202d09"
+          - paragraph: Saved 2026-10-12T19:24:27.594Z
           - paragraph: "Frozen package, verified in this unlock: 8 artifacts. 8 recorded decision(s)."
           - paragraph: This is how the package was when it was frozen. Your current working results are separate, and removing a working note does not change it.
           - button "Copy public receipt reference"
@@ -386,8 +386,8 @@
         - heading "Export and import" [level=3]
         - paragraph: Files are made in this browser and never sent anywhere. Readable files expose private material to anyone who holds them.
         - button "Export saved context…"
-        - button "Export encrypted review 7db89966…"
-        - button "Export readable review 7db89966…"
+        - button "Export encrypted review a6a2cb47…"
+        - button "Export readable review a6a2cb47…"
         - text: Import a review or context file
         - button "Import a review or context file"
       - paragraph: Checking a package is done in the independent verifier, a separate application that needs no LexAegis account, passkey or backend. This app does not report anything as verified.

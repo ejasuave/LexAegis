@@ -1,0 +1,98 @@
+{
+  "schema": "lexaegis.system-readiness.v1",
+  "note": "Chapter 12 readiness record. Separates the LOCAL software gate from live capability evidence and from deployment readiness. Author's assessment from recorded results; not an audit, a legal compliance certification or a production-ready badge.",
+  "recordedOn": "2026-10-12",
+  "testedRevision": {
+    "baseCommit": "e1faccef8f2c3cf94cfcfe05bd68446467433e9b",
+    "dirtyWorktree": true,
+    "sourceFingerprint": "aa87c6249562f2cf97baeca0bb076a2a628dda438558bcd83405f8f03198a073",
+    "testsFingerprint": "39dd53bfd0c652aee6d6ae1caec124e04dfc51f39398a1b3637372b8371bfc45",
+    "lockfileSha256": "18876f443fb1d96d69633c59cb602bef92403e0d0826eb35a2d67b885911f1c5",
+    "configSha256": "f92b7f8e3499cb0401a6cfbeee0e6210d81a32fd18fe66a0bb40144d46c4c472",
+    "manifestSha256": "6bff06f63f0c96682c8cd2473b898033cb1b9bc3634bed7afb8482047e2af8d5",
+    "report": "docs/system-validation/report.json",
+    "verifyWith": "pnpm validate:mvp --check"
+  },
+  "localSoftwareGate": {
+    "outcome": "pass",
+    "stages": "18/18 pass",
+    "cases": "63/63 satisfied",
+    "negativeControls": "5/5 detected",
+    "evidenceClasses": "unit, local_integration, browser_scripted (virtual authenticator, scripted provider and chain, loopback Anvil, throwaway PostgreSQL and S3-compatible server, synthetic documents)"
+  },
+  "mvpReadinessBlockers": {
+    "unauthorisedAccessOrSigning": "none observed",
+    "keyOrPlaintextLeakage": "none observed in the tested boundaries",
+    "corruptedOrLostRecoverableEvidence": "none observed",
+    "bypassedHumanGates": "none observed",
+    "incorrectDeterministicCalculations": "none observed",
+    "falseConfirmedOrVerifiedStates": "none observed",
+    "reachableUnresolvedHighOrCritical": "none: F-013 (high) fixed, pnpm audit --prod clean when the registry is reachable",
+    "missingRequiredCoreFlowEvidence": "local core flow present; live core-flow evidence is NOT YET (see liveCapability)"
+  },
+  "openFindings": [
+    {
+      "id": "F-001",
+      "severity": "low"
+    },
+    {
+      "id": "F-005",
+      "severity": "low"
+    },
+    {
+      "id": "F-008",
+      "severity": "medium"
+    },
+    {
+      "id": "F-014",
+      "severity": "low"
+    }
+  ],
+  "liveCapability": {
+    "realDeviceCreateRecover": "verified (operator reported, Linux desktop, Chrome, phone passkey over hybrid, 2026-10-10); ceremony counts and timings not recorded",
+    "realDeviceVaultRecovery": "unverified: the 2026-10-10 vault record did not show second-device recovery or export/import",
+    "secondDeviceRecovery": "not_run",
+    "registryReadOnly": "verified live read: code matched source through Alchemy and the public RPC (2026-10-12, docs/evidence/chapter12/live-read-2026-10-12.json)",
+    "envioHistoryRead": "unverified: the history endpoint was unavailable on 2026-10-12 (fetch failed)",
+    "liveQwenRun": "not_run (opt-in: pnpm validate:live qwen --spend-tokens)",
+    "newTestnetLifecycle": "not_run (operator: pnpm smoke:testnet --operator-start)",
+    "localDictationAndReadAloud": "unavailable on a real device; text fallback tested with scripted stand-ins",
+    "claimsNotMade": [
+      "cross-device recovery",
+      "Mera or sponsor bounty eligibility beyond recorded gates",
+      "sponsor-side retention",
+      "practitioner validation",
+      "external adoption",
+      "legal accuracy"
+    ]
+  },
+  "supportedRealDeviceMatrix": [
+    {
+      "browser": "Chrome (version not noted)",
+      "os": "Linux desktop",
+      "authenticator": "phone passkey via QR/hybrid",
+      "createRecover": "verified",
+      "vault": "unverified",
+      "secondDevice": "not_run"
+    }
+  ],
+  "deploymentIdentity": {
+    "network": "Monad testnet",
+    "chainId": "10143",
+    "registryAddress": "0x453bfd1602d8a8666f55bf9a8d87b127cb94048f",
+    "deploymentTransaction": "0xe6d0be40e8410df1d7dd87b18463a4dfc53fb839cf0036784c018a886ebea04a",
+    "codeMatchedSource": "2026-10-11 and again 2026-10-12 (read-only)",
+    "audited": false,
+    "monadscan": "NOT YET"
+  },
+  "hostingRequirementsForChapter13": [
+    "a stable HTTPS origin and rpId: the passkey and vault are bound to it, and changing it breaks recovery",
+    "verified ciphertext request-body limits at the edge (vault objects up to the envelope maximum) and a bounded assistant stream duration (the run ceiling is 120 s)",
+    "security headers on the deployed edge: the nonce CSP, frame-ancestors/X-Frame-Options, HSTS, no-store on authenticated responses, referrer and permissions policies; the standalone verifier needs frame-ancestors from host headers (F-014)",
+    "private object storage for ciphertext and a private PostgreSQL; no public bucket listing",
+    "secret separation: server-only Qwen, Alchemy and database credentials; only NEXT_PUBLIC_ values in the browser; the sponsor token only in the indexer process",
+    "no test seam in the deployed process (LEXAEGIS_TEST_* unset), checked against the running deployment",
+    "a re-run of pnpm validate:mvp --check and pnpm verify:deployment against the deployed configuration"
+  ],
+  "notClaimed": "No independent audit, legal compliance certification or zero-knowledge AI is claimed. Chapter 13 hosting checks have not run, so there is no production-ready badge."
+}

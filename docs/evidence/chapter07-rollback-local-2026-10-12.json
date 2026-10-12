@@ -1,0 +1,93 @@
+{
+  "engine": "envio 3.13.0 (HyperIndex), RPC source, loopback Anvil chain 31337, embedded PostgreSQL, ENVIO_HASURA=false",
+  "branchA": {
+    "receipts": {
+      "0xd1229d2b70": "ACTIVE"
+    },
+    "state": {
+      "rawEventCount": 1,
+      "actionCount": 1,
+      "pendingSupersessions": 0
+    },
+    "summary": {
+      "nextNonce": "1",
+      "totalReceipts": 1,
+      "activeReceipts": 1,
+      "revokedReceipts": 0,
+      "supersededReceipts": 0,
+      "actionCount": 1
+    }
+  },
+  "branchB": {
+    "receipts": {
+      "0xdd073bec2b": "ACTIVE"
+    },
+    "state": {
+      "rawEventCount": 1,
+      "actionCount": 1,
+      "pendingSupersessions": 0
+    },
+    "summary": {
+      "nextNonce": "1",
+      "totalReceipts": 1,
+      "activeReceipts": 1,
+      "revokedReceipts": 0,
+      "supersededReceipts": 0,
+      "actionCount": 1
+    }
+  },
+  "supersedeBranch": {
+    "receipts": {
+      "0x4a0bb2d939": "ACTIVE",
+      "0xdd073bec2b": "SUPERSEDED"
+    },
+    "state": {
+      "rawEventCount": 3,
+      "actionCount": 2,
+      "pendingSupersessions": 0
+    },
+    "summary": {
+      "nextNonce": "2",
+      "totalReceipts": 2,
+      "activeReceipts": 1,
+      "revokedReceipts": 0,
+      "supersededReceipts": 1,
+      "actionCount": 2
+    }
+  },
+  "revokeBranch": {
+    "receipts": {
+      "0xdd073bec2b": "REVOKED"
+    },
+    "state": {
+      "rawEventCount": 2,
+      "actionCount": 2,
+      "pendingSupersessions": 0
+    },
+    "summary": {
+      "nextNonce": "2",
+      "totalReceipts": 1,
+      "activeReceipts": 0,
+      "revokedReceipts": 1,
+      "supersededReceipts": 0,
+      "actionCount": 2
+    }
+  },
+  "invalidateNonce": {
+    "action": {
+      "kind": "INVALIDATE_NONCE",
+      "consumedNonce": "2",
+      "nextNonce": "3",
+      "commitment": null
+    },
+    "summary": {
+      "nextNonce": "3",
+      "totalReceipts": 1,
+      "activeReceipts": 0,
+      "revokedReceipts": 1,
+      "supersededReceipts": 0,
+      "actionCount": 3
+    },
+    "receiptsUnchanged": true
+  }
+}

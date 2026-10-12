@@ -530,9 +530,35 @@ describe('[privacy-logging-and-evidence-hygiene] allowlisted logs and evidence t
           'page' + '\\.screenshot',
         ].join('|'),
       );
+      // The one exception: the accessibility spec photographs SYNTHETIC pages for the public evidence
+      // set. It may use a screenshot and nothing else on this list, and only into docs/evidence/chapter12.
+      const photographs = /accessibility-and-reflow\.spec\.ts$/;
       for (const file of sources(join(repository, 'tests')))
-        if (!/disclosure-boundaries\.spec\.ts$/.test(file) && !/harness\.test\.ts$/.test(file))
-          expect(readFileSync(file, 'utf8'), file).not.toMatch(own);
+        if (!/disclosure-boundaries\.spec\.ts$/.test(file) && !/harness\.test\.ts$/.test(file)) {
+          const text = readFileSync(file, 'utf8');
+          if (!photographs.test(file)) {
+            expect(text, file).not.toMatch(own);
+            continue;
+          }
+          expect(text, file).not.toMatch(
+            new RegExp(
+              [
+                'storage' + 'State',
+                'record' + 'Har',
+                'tracing' + '\\.start',
+                'record' + 'Video',
+              ].join('|'),
+            ),
+          );
+          const targets = [...text.matchAll(/page\.screenshot\(\{\s*path:\s*([^,}]+)/g)].map(
+            (m) => m[1],
+          );
+          expect(targets.length, file).toBeGreaterThan(0);
+          for (const target of targets) expect(target, file).toMatch(/^join\(EVIDENCE$/);
+          expect(text, file).toMatch(
+            /const EVIDENCE = join\(repository, 'docs', 'evidence', 'chapter12'\)/,
+          );
+        }
       const ignore = readFileSync(join(repository, '.gitignore'), 'utf8');
       expect(ignore).toMatch(/^tests\/\.output\/$/m);
       expect(ignore).toMatch(/^\.env$/m);

@@ -185,9 +185,53 @@
       "case": "prod-dependency-and-committable-secret-scans",
       "module": "tooling/src/secrets.ts, local .env",
       "reproduction": "pnpm secrets:check reports KEY_ASSIGNMENT and PROVIDER_KEY_URL in the git-ignored local .env. It also read tests/system/harness/harness.test.ts (deliberate credential-bearing database URLs) and, for minified build output, mistook `https://host\\\",...ox@` for a URL credential.",
-      "status": "open",
-      "result": "Committable files (tracked and untracked-not-ignored) and both build outputs are clean by shape, and planted secrets are detected. The harness test is allowlisted with a reason, as the other deliberate invalid-input tests are. Build output is scanned with the stricter asset-scanner shapes, not the source scanner.",
-      "remaining": "secrets:check still fails on the real, git-ignored .env, so the secret-scan readiness check stays failing. Decide whether the scanner skips ignored files or the values move; do not commit .env."
+      "status": "fixed",
+      "result": "secrets:check (tooling/src/secrets.ts) now scans what git could commit (tracked plus untracked-not-ignored) when run in a work tree, so a git-ignored local .env, where credentials belong, is outside the scan while a force-added or unignored .env would be inside it. Elsewhere every file is scanned. The harness test and the validation test, which hold deliberate credential-bearing inputs, are allowlisted with reasons. The negative control still detects planted secrets. pnpm secrets:check: clean.",
+      "remaining": "The real .env still holds live credentials on this machine; keep it ignored and rotate any key that was ever shared. The scan does not read ignored files, so a credential pasted into one is not detected here."
+    },
+    {
+      "id": "F-018",
+      "severity": "medium",
+      "invariant": "The one bounded gate runs from a clean checkout of what is committed.",
+      "case": "validate:mvp (lint stage)",
+      "module": "apps/web/public, eslint.config.mjs",
+      "reproduction": "pnpm lint on the tree after the CSP work: the new static script apps/web/public/zod-jitless.js is outside every TypeScript project, so the type-aware parser stops with a parsing error.",
+      "status": "fixed",
+      "result": "apps/web/public/** is a static-asset directory and is ignored by ESLint (it is still Prettier-checked). The first full gate run found this, which the earlier targeted runs had not.",
+      "remaining": "None known."
+    },
+    {
+      "id": "F-019",
+      "severity": "low",
+      "invariant": "No test saves a screenshot, trace, HAR, video or auth state, except the public synthetic evidence set.",
+      "case": "privacy-logging-and-evidence-hygiene",
+      "module": "tests/privacy/disclosure-boundaries.spec.ts, tests/system/accessibility-and-reflow.spec.ts",
+      "reproduction": "The hygiene case forbade page.screenshot anywhere in tests/, while the accessibility spec writes synthetic screenshots for docs/evidence/chapter12.",
+      "status": "fixed",
+      "result": "The hygiene case now allows page.screenshot in that one spec only, requires every screenshot path to be under the public evidence directory, and still forbids storage state, HAR, tracing and video there. It remains a source check, not proof that no screenshot shows private content.",
+      "remaining": "Screenshots are of synthetic pages only; a reviewer should still look at new ones before commit."
+    },
+    {
+      "id": "F-020",
+      "severity": "low",
+      "invariant": "The gate does not depend on leftover generated files.",
+      "case": "validate:mvp (typecheck stage)",
+      "module": "indexer/.envio (generated, git-ignored), contracts/integration/indexer-rollback.anvil.test.ts",
+      "reproduction": "Run the local-chain indexer rollback integration test, then typecheck the indexer: the test's `envio start` regenerated the Envio types for chain 31337 and its teardown restored only the config, so indexer/test/helpers.ts (chain 10143) failed to typecheck. The full gate hit this on its second and fourth runs.",
+      "status": "fixed",
+      "result": "The test's teardown now also runs `envio codegen` against the restored testnet config. pnpm indexer:codegen regenerates the types by hand.",
+      "remaining": "Generated files are local state; a crashed run that skips teardown leaves them stale until pnpm indexer:codegen."
+    },
+    {
+      "id": "F-021",
+      "severity": "low",
+      "invariant": "A required case is run by the stage that can actually produce its evidence class.",
+      "case": "validate:mvp (case mapping)",
+      "module": "tooling/scripts/validate-mvp.ts",
+      "reproduction": "The first full run reported 12 cases not run: their owning tests live under packages/, contracts/ and indexer/ and the runner read only the tests/ output; the vault tamper case needs a real-browser run and the indexer case a local-integration run.",
+      "status": "fixed",
+      "result": "The unit-test, contracts-integration, vault-browser and indexer stages now emit JSON that is read by the [case-id] tag, and each case is bound to the stage that owns it, with that stage's evidence class. No requirement was lowered.",
+      "remaining": "A case tagged in a test that no stage runs stays not_run."
     }
   ]
 }

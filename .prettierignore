@@ -42,3 +42,6 @@ packages/sdk/RESULT_CODES.md
 .doc-snippets-test/
 packages/cli/src/known-deployments.generated.ts
 contracts/REGISTRY_REFERENCE.md
+
+# Machine-written by the tooling (docs/build-state.json is rewritten by scripts and read with jq)
+docs/build-state.json

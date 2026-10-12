@@ -63,13 +63,15 @@ interface StageDef {
   readonly needs?: string;
   /** The id of the test group it reports into, for stages that run test files. */
   readonly kind?: 'tests-unit' | 'tests-system';
+  /** A package script that runs vitest: add the JSON reporter so its tagged cases are read from real outcomes. */
+  readonly json?: boolean;
 }
 
 const MINUTE = 60_000;
 export const STAGES: readonly StageDef[] = [
   { id: 'lint', args: ['lint'], timeoutMs: 15 * MINUTE, evidenceClass: 'unit' },
   { id: 'typecheck', args: ['typecheck'], timeoutMs: 15 * MINUTE, evidenceClass: 'unit' },
-  { id: 'unit-tests', args: ['test'], timeoutMs: 20 * MINUTE, evidenceClass: 'unit' },
+  { id: 'unit-tests', args: ['test'], timeoutMs: 20 * MINUTE, evidenceClass: 'unit', json: true },
   { id: 'fixtures', args: ['fixtures:check'], timeoutMs: 5 * MINUTE, evidenceClass: 'unit' },
   {
     id: 'protocol-schemas',
@@ -112,6 +114,37 @@ export const STAGES: readonly StageDef[] = [
     timeoutMs: 20 * MINUTE,
     evidenceClass: 'local_integration',
     needs: 'contracts-toolchain',
+    json: true,
+  },
+  {
+    id: 'vault-browser',
+    args: [
+      '--filter',
+      '@lexaegis/vault',
+      'exec',
+      'vitest',
+      'run',
+      '--config',
+      'vitest.browser.config.ts',
+    ],
+    timeoutMs: 10 * MINUTE,
+    evidenceClass: 'browser_scripted',
+    json: true,
+  },
+  {
+    id: 'indexer-tests',
+    args: [
+      '--filter',
+      '@lexaegis/indexer',
+      'exec',
+      'vitest',
+      'run',
+      '--config',
+      'vitest.config.ts',
+    ],
+    timeoutMs: 10 * MINUTE,
+    evidenceClass: 'local_integration',
+    json: true,
   },
   {
     id: 'system-harness',
@@ -196,8 +229,9 @@ if (argv.includes('--check')) {
   if (parsed.success) {
     const now = source();
     // A report describes the source it ran against: any other source makes it stale, never "still true".
+    // The commit is recorded but not compared: a run on a dirty tree names its BASE commit, and the
+    // fingerprints below are what bind the report to the content that was actually tested.
     for (const key of [
-      'commit',
       'sourceFingerprint',
       'testsFingerprint',
       'lockfileSha256',
@@ -340,7 +374,12 @@ for (const stage of STAGES) {
   }
   console.log(`${stage.id}: running`);
   const outputFile = join(runDirectory, `${stage.id}.json`);
-  const args = stage.kind === undefined ? stage.args : vitestArgs(stage.kind, outputFile, []);
+  const args =
+    stage.kind !== undefined
+      ? vitestArgs(stage.kind, outputFile, [])
+      : stage.json === true
+        ? [...stage.args, '--reporter=json', `--outputFile=${outputFile}`]
+        : stage.args;
   const env = childEnv(
     stage.kind === 'tests-system' ? { SYSTEM_TEST_OUTPUT: join(runDirectory, 'system') } : {},
   );
@@ -350,7 +389,7 @@ for (const stage of STAGES) {
     run.status === 0 && !run.timedOut ? 'pass' : 'fail';
   let code: Issue = 'ASSERTION_FAILED';
 
-  if (stage.kind !== undefined) {
+  if (stage.kind !== undefined || stage.json === true) {
     const found = existsSync(outputFile) ? readVitestJson(readFileSync(outputFile, 'utf8')) : [];
     // Never infer success from an exit status with no selected tests.
     if (found.length === 0 && status === 'pass') {
@@ -383,10 +422,28 @@ function resultsFrom(file: string): RecordedResult[] {
 
 // ---- cases, with a diagnostic (never pass-hiding) re-run of failed spec files ------------------------------
 
-let cases: CaseResult[] = deriveCases(SYSTEM_CASES, outcomes, recorded, 'browser_scripted');
+/** The stage whose real test run can produce a case's result, from where its owning test lives. */
+const stageOf = (owner: string): string =>
+  owner.endsWith('harness.test.ts')
+    ? 'system-harness'
+    : owner.startsWith('contracts/integration/')
+      ? 'contracts-integration'
+      : owner === 'packages/vault/src/crypto/tamper.test.ts'
+        ? 'vault-browser'
+        : owner.startsWith('indexer/')
+          ? 'indexer-tests'
+          : owner.startsWith('tests/')
+            ? 'system-cases'
+            : 'unit-tests';
+const evidenceOf = (item: { owner: string }): Evidence =>
+  STAGES.find((stage) => stage.id === stageOf(item.owner))?.evidenceClass ?? 'unit';
+
+let cases: CaseResult[] = deriveCases(SYSTEM_CASES, outcomes, recorded, evidenceOf);
 const rerunPassed = new Set<string>();
 if (rerunEnabled && selected('system-cases')) {
-  const failed = cases.filter((c) => c.status === 'fail' && c.owner.endsWith('.spec.ts'));
+  const failed = cases.filter(
+    (c) => c.status === 'fail' && c.owner.startsWith('tests/') && c.owner.endsWith('.spec.ts'),
+  );
   for (const owner of new Set(failed.map((c) => c.owner))) {
     console.log(`diagnostic re-run of ${owner} (the failure stays recorded)`);
     const outputFile = join(runDirectory, `rerun-${owner.replaceAll('/', '_')}.json`);
@@ -400,18 +457,16 @@ if (rerunEnabled && selected('system-cases')) {
       },
     );
     const again = existsSync(outputFile) ? readVitestJson(readFileSync(outputFile, 'utf8')) : [];
-    const rerun = deriveCases(SYSTEM_CASES, again, [], 'browser_scripted');
+    const rerun = deriveCases(SYSTEM_CASES, again, [], evidenceOf);
     for (const c of failed.filter((f) => f.owner === owner))
       if (run.status === 0 && rerun.find((r) => r.caseId === c.caseId)?.status === 'pass')
         rerunPassed.add(c.caseId);
   }
-  cases = deriveCases(SYSTEM_CASES, outcomes, recorded, 'browser_scripted', rerunPassed);
+  cases = deriveCases(SYSTEM_CASES, outcomes, recorded, evidenceOf, rerunPassed);
 }
 // A case whose runner stage did not run is not run, whatever an old results file says.
 const caseStageRan = (c: CaseResult): boolean =>
-  stageResults.find(
-    (s) => s.id === (c.owner.endsWith('harness.test.ts') ? 'system-harness' : 'system-cases'),
-  )?.status !== 'not_run';
+  stageResults.find((s) => s.id === stageOf(c.owner))?.status !== 'not_run';
 cases = cases.map((c) =>
   caseStageRan(c) || c.status === 'not_run'
     ? c.status === 'not_run' && !caseStageRan(c)

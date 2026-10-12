@@ -227,12 +227,15 @@ afterAll(async () => {
   await Promise.resolve()
     .then(() => local.stop())
     .catch(() => undefined);
-  // Restore the generated deployment-bound files for the real deployment.
+  // Restore the generated deployment-bound files for the real deployment, and the generated types that
+  // describe them: `envio start` regenerated those for the local chain, and a later typecheck of the
+  // indexer would fail against chain 31337 (finding F-020).
   spawnSync(
     'pnpm',
     ['--filter', '@lexaegis/indexer', 'exec', 'tsx', 'scripts/generate-config.ts'],
     { cwd: ROOT },
   );
+  spawnSync('pnpm', ['--filter', '@lexaegis/indexer', 'exec', 'envio', 'codegen'], { cwd: ROOT });
   writeFileSync(
     join(
       ROOT,

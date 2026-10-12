@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
-  "currentChapter": "12",
-  "nextChapter": "12",
+  "currentChapter": "19",
+  "nextChapter": "19",
   "project": {
     "name": "LexAegis",
     "primitive": "Proof of Review",
@@ -128,8 +128,10 @@
       "id": "12",
       "title": "End-to-End Recovery, Privacy and Security Validation",
       "additive": false,
-      "state": "in-progress",
-      "evidence": [],
+      "state": "complete",
+      "evidence": [
+        "chapter12.checks"
+      ],
       "chapterPromptPath": "build_instructions/prompt_library/LexAegis_Prompt_Library_Chapter_12_Targeted_Build_Tasks_v1_0.md"
     },
     {
@@ -8195,6 +8197,435 @@
         "envioReadable": false,
         "providers": "public-rpc:match,alchemy:match,envio:unavailable"
       }
+    },
+    {
+      "id": "hud-browser-20261012181620",
+      "subject": "hud-browser-check",
+      "sourceRevision": {
+        "commit": "e1faccef8f2c3cf94cfcfe05bd68446467433e9b",
+        "dirtyWorktree": true,
+        "contentFingerprint": "be3a16ada54d96f3d0295d2f9ddf2380418734aef64ca30f042473e12fcb6aa3"
+      },
+      "checkedAt": "2026-10-12T18:16:21.396Z",
+      "command": "pnpm test:hud:browser",
+      "environment": {
+        "node": "v24.21.0",
+        "os": "linux-x64",
+        "pnpm": "11.11.0"
+      },
+      "evidenceClass": "virtual_authenticator",
+      "outcome": "pass",
+      "reasonCodes": [
+        "AUTHENTICATOR_MODE_VIRTUAL",
+        "SYNTHETIC_DOCUMENTS_ONLY",
+        "SCRIPTED_CHAIN_STATE",
+        "MOCK_SPEECH_ADAPTERS"
+      ],
+      "evidenceRefs": [
+        {
+          "type": "path",
+          "value": "docs/evidence/chapter10/01-command-centre-empty-1440x900.png"
+        },
+        {
+          "type": "path",
+          "value": "docs/evidence/chapter10/02-review-1440x900.png"
+        },
+        {
+          "type": "path",
+          "value": "docs/evidence/chapter10/03-approval-preview-1440x900.png"
+        },
+        {
+          "type": "path",
+          "value": "docs/evidence/chapter10/04-transaction-unavailable-1440x900.png"
+        },
+        {
+          "type": "path",
+          "value": "docs/evidence/chapter10/05-review-after-approval-1440x900.png"
+        },
+        {
+          "type": "path",
+          "value": "docs/evidence/chapter10/06-command-centre-1440x900.png"
+        },
+        {
+          "type": "path",
+          "value": "docs/evidence/chapter10/07-command-centre-1024x768.png"
+        },
+        {
+          "type": "path",
+          "value": "docs/evidence/chapter10/08-review-package-390x844.png"
+        },
+        {
+          "type": "path",
+          "value": "docs/evidence/chapter10/09-review-320x640.png"
+        },
+        {
+          "type": "path",
+          "value": "docs/evidence/chapter10/10-locked-1440x900.png"
+        }
+      ],
+      "facts": {
+        "browser": "chromium 153.0.8010.12",
+        "checksPassed": "69",
+        "checksTotal": "69",
+        "provider": "scripted-test (loopback, no model)",
+        "chain": "scripted live state, fixture registry address, no network",
+        "speech": "mock adapters, not a real device",
+        "storage": "postgresql + versitygw",
+        "authenticatorMode": "virtual",
+        "realDeviceEvidence": false,
+        "liveProviderEvidence": false,
+        "screenshotCount": "10"
+      }
+    },
+    {
+      "id": "packages-check-20261012182022",
+      "subject": "packaged-consumer-check",
+      "sourceRevision": {
+        "commit": "e1faccef8f2c3cf94cfcfe05bd68446467433e9b",
+        "dirtyWorktree": true,
+        "contentFingerprint": "c05496cef934e4a9284ea8837d147685b5cd101008fd81a8b67174d24bf38af2"
+      },
+      "checkedAt": "2026-10-12T18:20:22.988Z",
+      "command": "pnpm packages:check",
+      "environment": {
+        "node": "v24.21.0",
+        "os": "linux-x64",
+        "pnpm": "11.11.0"
+      },
+      "evidenceClass": "local_scripted",
+      "outcome": "pass",
+      "reasonCodes": [
+        "LOCAL_TARBALLS_NOT_PUBLISHED",
+        "AUTHORED_EXAMPLE_NOT_ADOPTION"
+      ],
+      "evidenceRefs": [],
+      "facts": {
+        "checksPassed": "44",
+        "checksTotal": "44",
+        "protocolTarballBytes": "72014",
+        "sdkTarballBytes": "85117",
+        "cliTarballBytes": "21356",
+        "protocolTarballSha256": "53058f8a7694b581bdd1a305377470ee74a48b7b7f52d74628559ef0629cea34",
+        "sdkTarballSha256": "e970c2ce2df348244a867c4ab9233bf86d820f454c21b07e2a9c8d7857f57b2b",
+        "cliTarballSha256": "599cabd5756bcd50cde36860ec175fcbd0fdb5420c5e488dad4fed2cede32ecb",
+        "protocolFiles": "68",
+        "sdkFiles": "71",
+        "cliFiles": "28",
+        "browser": "chromium (playwright)",
+        "published": false
+      }
+    },
+    {
+      "id": "packages-check-20261012183555",
+      "subject": "packaged-consumer-check",
+      "sourceRevision": {
+        "commit": "e1faccef8f2c3cf94cfcfe05bd68446467433e9b",
+        "dirtyWorktree": true,
+        "contentFingerprint": "df0ae5b43654e2331559a26fd9c04291d6ee6444614b9a3b5ec15d6ae9938bac"
+      },
+      "checkedAt": "2026-10-12T18:35:57.338Z",
+      "command": "pnpm packages:check",
+      "environment": {
+        "node": "v24.21.0",
+        "os": "linux-x64",
+        "pnpm": "11.11.0"
+      },
+      "evidenceClass": "local_scripted",
+      "outcome": "pass",
+      "reasonCodes": [
+        "LOCAL_TARBALLS_NOT_PUBLISHED",
+        "AUTHORED_EXAMPLE_NOT_ADOPTION"
+      ],
+      "evidenceRefs": [],
+      "facts": {
+        "checksPassed": "44",
+        "checksTotal": "44",
+        "protocolTarballBytes": "72014",
+        "sdkTarballBytes": "85117",
+        "cliTarballBytes": "21356",
+        "protocolTarballSha256": "53058f8a7694b581bdd1a305377470ee74a48b7b7f52d74628559ef0629cea34",
+        "sdkTarballSha256": "e970c2ce2df348244a867c4ab9233bf86d820f454c21b07e2a9c8d7857f57b2b",
+        "cliTarballSha256": "599cabd5756bcd50cde36860ec175fcbd0fdb5420c5e488dad4fed2cede32ecb",
+        "protocolFiles": "68",
+        "sdkFiles": "71",
+        "cliFiles": "28",
+        "browser": "chromium (playwright)",
+        "published": false
+      }
+    },
+    {
+      "id": "packages-check-20261012185002",
+      "subject": "packaged-consumer-check",
+      "sourceRevision": {
+        "commit": "e1faccef8f2c3cf94cfcfe05bd68446467433e9b",
+        "dirtyWorktree": true,
+        "contentFingerprint": "4b63a41545b39bde3f47c642d14b7aa6bae658cb3cbb1663e55566267e612461"
+      },
+      "checkedAt": "2026-10-12T18:50:04.290Z",
+      "command": "pnpm packages:check",
+      "environment": {
+        "node": "v24.21.0",
+        "os": "linux-x64",
+        "pnpm": "11.11.0"
+      },
+      "evidenceClass": "local_scripted",
+      "outcome": "pass",
+      "reasonCodes": [
+        "LOCAL_TARBALLS_NOT_PUBLISHED",
+        "AUTHORED_EXAMPLE_NOT_ADOPTION"
+      ],
+      "evidenceRefs": [],
+      "facts": {
+        "checksPassed": "44",
+        "checksTotal": "44",
+        "protocolTarballBytes": "72014",
+        "sdkTarballBytes": "85117",
+        "cliTarballBytes": "21356",
+        "protocolTarballSha256": "53058f8a7694b581bdd1a305377470ee74a48b7b7f52d74628559ef0629cea34",
+        "sdkTarballSha256": "e970c2ce2df348244a867c4ab9233bf86d820f454c21b07e2a9c8d7857f57b2b",
+        "cliTarballSha256": "599cabd5756bcd50cde36860ec175fcbd0fdb5420c5e488dad4fed2cede32ecb",
+        "protocolFiles": "68",
+        "sdkFiles": "71",
+        "cliFiles": "28",
+        "browser": "chromium (playwright)",
+        "published": false
+      }
+    },
+    {
+      "id": "packages-check-20261012190258",
+      "subject": "packaged-consumer-check",
+      "sourceRevision": {
+        "commit": "e1faccef8f2c3cf94cfcfe05bd68446467433e9b",
+        "dirtyWorktree": true,
+        "contentFingerprint": "6f5dbbff31801fbc62cee330ce310308438b3d1de4d76a882db6038419fa1fc3"
+      },
+      "checkedAt": "2026-10-12T19:03:00.728Z",
+      "command": "pnpm packages:check",
+      "environment": {
+        "node": "v24.21.0",
+        "os": "linux-x64",
+        "pnpm": "11.11.0"
+      },
+      "evidenceClass": "local_scripted",
+      "outcome": "pass",
+      "reasonCodes": [
+        "LOCAL_TARBALLS_NOT_PUBLISHED",
+        "AUTHORED_EXAMPLE_NOT_ADOPTION"
+      ],
+      "evidenceRefs": [],
+      "facts": {
+        "checksPassed": "44",
+        "checksTotal": "44",
+        "protocolTarballBytes": "72014",
+        "sdkTarballBytes": "85117",
+        "cliTarballBytes": "21356",
+        "protocolTarballSha256": "53058f8a7694b581bdd1a305377470ee74a48b7b7f52d74628559ef0629cea34",
+        "sdkTarballSha256": "e970c2ce2df348244a867c4ab9233bf86d820f454c21b07e2a9c8d7857f57b2b",
+        "cliTarballSha256": "599cabd5756bcd50cde36860ec175fcbd0fdb5420c5e488dad4fed2cede32ecb",
+        "protocolFiles": "68",
+        "sdkFiles": "71",
+        "cliFiles": "28",
+        "browser": "chromium (playwright)",
+        "published": false
+      }
+    },
+    {
+      "id": "packages-check-20261012191555",
+      "subject": "packaged-consumer-check",
+      "sourceRevision": {
+        "commit": "e1faccef8f2c3cf94cfcfe05bd68446467433e9b",
+        "dirtyWorktree": true,
+        "contentFingerprint": "abbed2bc039e60c86edc9dd200eccc089e5ab5f828f444240e677d203bedd39d"
+      },
+      "checkedAt": "2026-10-12T19:15:58.022Z",
+      "command": "pnpm packages:check",
+      "environment": {
+        "node": "v24.21.0",
+        "os": "linux-x64",
+        "pnpm": "11.11.0"
+      },
+      "evidenceClass": "local_scripted",
+      "outcome": "pass",
+      "reasonCodes": [
+        "LOCAL_TARBALLS_NOT_PUBLISHED",
+        "AUTHORED_EXAMPLE_NOT_ADOPTION"
+      ],
+      "evidenceRefs": [],
+      "facts": {
+        "checksPassed": "44",
+        "checksTotal": "44",
+        "protocolTarballBytes": "72014",
+        "sdkTarballBytes": "85117",
+        "cliTarballBytes": "21356",
+        "protocolTarballSha256": "53058f8a7694b581bdd1a305377470ee74a48b7b7f52d74628559ef0629cea34",
+        "sdkTarballSha256": "e970c2ce2df348244a867c4ab9233bf86d820f454c21b07e2a9c8d7857f57b2b",
+        "cliTarballSha256": "599cabd5756bcd50cde36860ec175fcbd0fdb5420c5e488dad4fed2cede32ecb",
+        "protocolFiles": "68",
+        "sdkFiles": "71",
+        "cliFiles": "28",
+        "browser": "chromium (playwright)",
+        "published": false
+      }
+    },
+    {
+      "id": "rd-20261012192730-2770f0-check-typecheck",
+      "subject": "check-typecheck",
+      "sourceRevision": {
+        "commit": "e1faccef8f2c3cf94cfcfe05bd68446467433e9b",
+        "dirtyWorktree": true,
+        "contentFingerprint": "aa87c6249562f2cf97baeca0bb076a2a628dda438558bcd83405f8f03198a073"
+      },
+      "checkedAt": "2026-10-12T19:27:30.517Z",
+      "command": "pnpm readiness",
+      "environment": {
+        "node": "v24.21.0",
+        "os": "linux-x64",
+        "pnpm": "11.11.0"
+      },
+      "evidenceClass": "local_scripted",
+      "outcome": "pass",
+      "reasonCodes": [],
+      "evidenceRefs": []
+    },
+    {
+      "id": "rd-20261012192730-2770f0-check-unit-tests",
+      "subject": "check-unit-tests",
+      "sourceRevision": {
+        "commit": "e1faccef8f2c3cf94cfcfe05bd68446467433e9b",
+        "dirtyWorktree": true,
+        "contentFingerprint": "aa87c6249562f2cf97baeca0bb076a2a628dda438558bcd83405f8f03198a073"
+      },
+      "checkedAt": "2026-10-12T19:27:30.517Z",
+      "command": "pnpm readiness",
+      "environment": {
+        "node": "v24.21.0",
+        "os": "linux-x64",
+        "pnpm": "11.11.0"
+      },
+      "evidenceClass": "local_scripted",
+      "outcome": "pass",
+      "reasonCodes": [],
+      "evidenceRefs": []
+    },
+    {
+      "id": "rd-20261012192730-2770f0-check-forge-test",
+      "subject": "check-forge-test",
+      "sourceRevision": {
+        "commit": "e1faccef8f2c3cf94cfcfe05bd68446467433e9b",
+        "dirtyWorktree": true,
+        "contentFingerprint": "aa87c6249562f2cf97baeca0bb076a2a628dda438558bcd83405f8f03198a073"
+      },
+      "checkedAt": "2026-10-12T19:27:30.517Z",
+      "command": "pnpm readiness",
+      "environment": {
+        "node": "v24.21.0",
+        "os": "linux-x64",
+        "pnpm": "11.11.0"
+      },
+      "evidenceClass": "local_scripted",
+      "outcome": "pass",
+      "reasonCodes": [],
+      "evidenceRefs": []
+    },
+    {
+      "id": "rd-20261012192730-2770f0-check-secret-scan",
+      "subject": "check-secret-scan",
+      "sourceRevision": {
+        "commit": "e1faccef8f2c3cf94cfcfe05bd68446467433e9b",
+        "dirtyWorktree": true,
+        "contentFingerprint": "aa87c6249562f2cf97baeca0bb076a2a628dda438558bcd83405f8f03198a073"
+      },
+      "checkedAt": "2026-10-12T19:27:30.517Z",
+      "command": "pnpm readiness",
+      "environment": {
+        "node": "v24.21.0",
+        "os": "linux-x64",
+        "pnpm": "11.11.0"
+      },
+      "evidenceClass": "local_scripted",
+      "outcome": "pass",
+      "reasonCodes": [],
+      "evidenceRefs": []
+    },
+    {
+      "id": "rd-20261012192730-2770f0-check-protected-baselines",
+      "subject": "check-protected-baselines",
+      "sourceRevision": {
+        "commit": "e1faccef8f2c3cf94cfcfe05bd68446467433e9b",
+        "dirtyWorktree": true,
+        "contentFingerprint": "aa87c6249562f2cf97baeca0bb076a2a628dda438558bcd83405f8f03198a073"
+      },
+      "checkedAt": "2026-10-12T19:27:30.517Z",
+      "command": "pnpm readiness",
+      "environment": {
+        "node": "v24.21.0",
+        "os": "linux-x64",
+        "pnpm": "11.11.0"
+      },
+      "evidenceClass": "local_scripted",
+      "outcome": "pass",
+      "reasonCodes": [],
+      "evidenceRefs": []
+    },
+    {
+      "id": "rd-20261012192730-2770f0-check-build",
+      "subject": "check-build",
+      "sourceRevision": {
+        "commit": "e1faccef8f2c3cf94cfcfe05bd68446467433e9b",
+        "dirtyWorktree": true,
+        "contentFingerprint": "aa87c6249562f2cf97baeca0bb076a2a628dda438558bcd83405f8f03198a073"
+      },
+      "checkedAt": "2026-10-12T19:27:30.517Z",
+      "command": "pnpm readiness",
+      "environment": {
+        "node": "v24.21.0",
+        "os": "linux-x64",
+        "pnpm": "11.11.0"
+      },
+      "evidenceClass": "local_scripted",
+      "outcome": "pass",
+      "reasonCodes": [],
+      "evidenceRefs": []
+    },
+    {
+      "id": "rd-20261012192730-2770f0-check-exclusion",
+      "subject": "check-exclusion",
+      "sourceRevision": {
+        "commit": "e1faccef8f2c3cf94cfcfe05bd68446467433e9b",
+        "dirtyWorktree": true,
+        "contentFingerprint": "aa87c6249562f2cf97baeca0bb076a2a628dda438558bcd83405f8f03198a073"
+      },
+      "checkedAt": "2026-10-12T19:27:30.517Z",
+      "command": "pnpm readiness",
+      "environment": {
+        "node": "v24.21.0",
+        "os": "linux-x64",
+        "pnpm": "11.11.0"
+      },
+      "evidenceClass": "local_scripted",
+      "outcome": "pass",
+      "reasonCodes": [],
+      "evidenceRefs": []
+    },
+    {
+      "id": "rd-20261012192730-2770f0-chapters-1-3-checks",
+      "subject": "chapters-1-3-checks",
+      "sourceRevision": {
+        "commit": "e1faccef8f2c3cf94cfcfe05bd68446467433e9b",
+        "dirtyWorktree": true,
+        "contentFingerprint": "aa87c6249562f2cf97baeca0bb076a2a628dda438558bcd83405f8f03198a073"
+      },
+      "checkedAt": "2026-10-12T19:27:30.517Z",
+      "command": "pnpm readiness",
+      "environment": {
+        "node": "v24.21.0",
+        "os": "linux-x64",
+        "pnpm": "11.11.0"
+      },
+      "evidenceClass": "local_scripted",
+      "outcome": "pass",
+      "reasonCodes": [],
+      "evidenceRefs": []
     }
   ],
   "appliedCuts": [],
@@ -8222,7 +8653,7 @@
             "id": "A1",
             "label": "Chapters 1–3 build and tests pass",
             "state": "satisfied",
-            "resultId": "rd-20261012085535-0fe95c-chapters-1-3-checks"
+            "resultId": "rd-20261012192730-2770f0-chapters-1-3-checks"
           },
           {
             "id": "A2",
@@ -8235,7 +8666,7 @@
           "MISSING:A2",
           "UNPROVEN_AT_CUTOFF"
         ],
-        "observedAt": "2026-10-12T08:55:35.346Z"
+        "observedAt": "2026-10-12T19:27:30.517Z"
       },
       {
         "gate": "B",
@@ -8355,7 +8786,7 @@
         "HOSTED_T0_INCOMPLETE: dropping the bounties does not complete the hosted golden path"
       ]
     },
-    "evaluatedAt": "2026-10-12T08:55:35.346Z"
+    "evaluatedAt": "2026-10-12T19:27:30.517Z"
   },
   "cutLadder": {
     "order": [
@@ -8389,11 +8820,11 @@
     }
   },
   "readiness": {
-    "runId": "rd-20261012085535-0fe95c",
-    "generatedAt": "2026-10-12T08:55:35.346Z",
+    "runId": "rd-20261012192730-2770f0",
+    "generatedAt": "2026-10-12T19:27:30.517Z",
     "live": false,
-    "fingerprint": "a55a2813eed9793b9459041128f6b6616e67113a79c784c287a4040280b39acb",
-    "totalMs": 43976,
+    "fingerprint": "aa87c6249562f2cf97baeca0bb076a2a628dda438558bcd83405f8f03198a073",
+    "totalMs": 49804,
     "versions": {
       "node": "v24.21.0",
       "pnpm": "11.11.0",
@@ -8404,43 +8835,43 @@
         "id": "typecheck",
         "outcome": "pass",
         "reason": "OK",
-        "durationMs": 32329
+        "durationMs": 32273
       },
       {
         "id": "unit-tests",
         "outcome": "pass",
         "reason": "OK",
-        "durationMs": 23265
+        "durationMs": 21386
       },
       {
         "id": "forge-test",
         "outcome": "pass",
         "reason": "OK",
-        "durationMs": 37594
+        "durationMs": 36527
       },
       {
         "id": "secret-scan",
-        "outcome": "fail",
-        "reason": "EXIT_1",
-        "durationMs": 781
+        "outcome": "pass",
+        "reason": "OK",
+        "durationMs": 704
       },
       {
         "id": "protected-baselines",
         "outcome": "pass",
         "reason": "OK",
-        "durationMs": 646
+        "durationMs": 574
       },
       {
         "id": "build",
         "outcome": "pass",
         "reason": "OK",
-        "durationMs": 5398
+        "durationMs": 5455
       },
       {
         "id": "exclusion",
         "outcome": "pass",
         "reason": "OK",
-        "durationMs": 790
+        "durationMs": 801
       }
     ]
   },
@@ -11249,7 +11680,7 @@
   },
   "chapter12": {
     "startedOn": "2026-10-12",
-    "state": "in-progress",
+    "state": "complete",
     "tasks": {
       "1": {
         "status": "complete",
@@ -11434,9 +11865,55 @@
           "package.json",
           "docs/evidence/chapter12/live-read-2026-10-12.json"
         ]
+      },
+      "16": {
+        "status": "complete",
+        "summary": "Ran the complete bounded gate (pnpm validate:mvp, 12.4 minutes of stage time): 18 of 18 stages and 63 of 63 manifest cases pass, 5 of 5 negative controls detected; the report is docs/system-validation/report.json and pnpm validate:mvp --check confirms it matches the current source. The gate found and the chapter fixed, each with a regression guard: F-018 ESLint failed on the new static script in apps/web/public; F-019 the privacy hygiene case forbade the accessibility spec's synthetic evidence screenshots (now an exact, path-checked exception); F-020 the indexer rollback integration test left generated Envio types for chain 31337 (teardown now runs envio codegen); F-021 cases owned by package, contract and indexer tests were not read (the unit-test, contracts-integration, vault-browser and indexer stages now emit JSON); F-017 secrets:check read the git-ignored local .env (it now scans what git could commit). Two earlier gate runs failed and were repaired, not retried to green. Findings and readiness: docs/system-validation/findings.json (21 findings: high F-013 fixed; open F-001, F-005, F-008, F-014) and docs/system-validation/readiness.json (local gate, live capability, supported device matrix, deployment identity, Chapter 13 hosting requirements). CLAUDE.md is 444 words and docs/assistant-ui-contract.md 1,194, with the privacy and limits text replaced concisely. pnpm baselines:check, spec:check, vectors:check, docs:check, threat:check, scope:docs:check, format:check pass; pnpm readiness still fails Gates B, C and D for missing live evidence, which is the honest state.",
+        "files": [
+          "docs/system-validation/report.json",
+          "docs/system-validation/readiness.json",
+          "docs/system-validation/findings.json",
+          "CLAUDE.md",
+          "docs/assistant-ui-contract.md",
+          "eslint.config.mjs",
+          "tooling/src/secrets.ts",
+          "tooling/scripts/validate-mvp.ts",
+          "tooling/src/validation.ts",
+          "contracts/integration/indexer-rollback.anvil.test.ts",
+          "tests/privacy/disclosure-boundaries.spec.ts"
+        ]
       }
     },
-    "decisions": [],
-    "limitations": []
+    "decisions": [
+      "Controls are oracles, not fault switches: tests/system/harness/oracles.ts holds the detection logic the owning specs call on real observations, and negative-controls.spec.ts feeds it faulted observations. No product code carries a fault switch.",
+      "A failed spec file is re-run once for diagnosis only; a failure that then passes stays a failure with FLAKY_RESULT.",
+      "The validation report compares fingerprints, not the commit: a run on a dirty tree names its base commit, and the fingerprints bind the report to the content tested.",
+      "pnpm audit findings under envio were fixed with narrow pnpm overrides (only the vulnerable ranges), documented in pnpm-workspace.yaml; remove them when envio ships fixed versions.",
+      "validate:live records operator-reported device observations as real_device evidence under its own subject and never touches the gate subjects."
+    ],
+    "limitations": [
+      "Local software gate on synthetic data with scripted stand-ins: a virtual authenticator, a scripted provider, a loopback Anvil. It is not real-device, live-provider or deployment evidence, not an audit and not a legal compliance certification.",
+      "Real-device recovery: create/recover verified once (operator reported); vault recovery on a device unverified; second-device recovery not run. Voice on a real device unavailable (F-008: SpeechRecognition.available crashed headless Chromium 153 here).",
+      "The Envio history index was unreachable on 2026-10-12; live Qwen and a new testnet lifecycle were not run (explicit opt-in).",
+      "Open findings: F-001, F-005 (verifier needs its worker script online first), F-008, F-014 (verifier framing protection needs host headers). Hosting, headers on a deployed edge, HSTS and ciphertext body limits are Chapter 13.",
+      "Passing scans are not proof of no vulnerability; same-origin JavaScript reach into unlocked material is not excluded; the Envio runtime under the patched express is not exercised."
+    ],
+    "completedOn": "2026-10-12",
+    "checks": {
+      "note": "Observed 2026-10-12 on the final Chapter 12 source (base commit e1facce, worktree dirty). Fingerprints in docs/system-validation/report.json.",
+      "gate": "pnpm validate:mvp: outcome pass, 18/18 stages, 63/63 cases, 5/5 negative controls",
+      "report": "docs/system-validation/report.json",
+      "readiness": "docs/system-validation/readiness.json",
+      "findings": "docs/system-validation/findings.json",
+      "sourceFingerprint": "aa87c6249562f2cf97baeca0bb076a2a628dda438558bcd83405f8f03198a073",
+      "testsFingerprint": "39dd53bfd0c652aee6d6ae1caec124e04dfc51f39398a1b3637372b8371bfc45",
+      "evidenceClasses": {
+        "local": "unit, local_integration, browser_scripted",
+        "liveRead": "docs/evidence/chapter12/live-read-2026-10-12.json (registry matched through Alchemy and the public RPC; Envio unavailable)",
+        "deviceObserved": "operator-reported, 2026-10-10 (earlier chapters); none new",
+        "paidModel": "none"
+      }
+    },
+    "handoff": "Chapter 19 can rely on: pnpm validate:mvp (bounded local gate; --check; --only/--skip; exit codes 0/1/3/4), the closed report docs/system-validation/report.json, pnpm validate:live (status, device, device-record, read, qwen --spend-tokens), the case manifest tests/system/harness/cases.ts and oracles.ts, readiness.json (hosting requirements for Chapter 13) and findings.json. Honest states to keep: real-device second-device recovery, live Qwen run and new testnet lifecycle are NOT YET; Envio history unverified; no production-ready badge before Chapter 13."
   }
 }
