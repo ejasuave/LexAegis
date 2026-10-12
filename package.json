@@ -38,6 +38,7 @@
     "prf:probe": "tsx tooling/scripts/prf-probe.ts",
     "readiness": "tsx tooling/scripts/readiness.ts",
     "release": "tsx tooling/scripts/release.ts",
+    "hosted:smoke": "tsx tooling/scripts/hosted-smoke.ts",
     "validate:mvp": "tsx tooling/scripts/validate-mvp.ts",
     "validate:live": "tsx tooling/scripts/live-evidence.ts",
     "smoke:local": "tsx tooling/scripts/smoke-local.ts",

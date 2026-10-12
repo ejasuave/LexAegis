@@ -12600,6 +12600,14 @@
           "tooling/scripts/release.ts",
           "package.json"
         ]
+      },
+      "10": {
+        "status": "complete",
+        "summary": "tooling/scripts/hosted-smoke.ts (pnpm hosted:smoke): liveness, readiness shape, headers, no-store, static asset, oversized control body, verifier page/CSP/no-cookie/health; eight journey checks reported not_run with reasons. Self-test against LOCAL production servers (http, --allow-http, no evidence written): 8 of 9 checks pass; oversize reports blocked because auth is unavailable without a database. With no origins configured the real run is blocked (exit 3). NOT done: any hosted-origin check, passkey recovery at the final rpId, second device, SSE, Envio history, tamper/lifecycle journeys; those product claims stay open.",
+        "files": [
+          "tooling/scripts/hosted-smoke.ts",
+          "package.json"
+        ]
       }
     }
   }
