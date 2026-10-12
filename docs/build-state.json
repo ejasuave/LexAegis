@@ -106,7 +106,7 @@
       "id": "12",
       "title": "End-to-End Recovery, Privacy and Security Validation",
       "additive": false,
-      "state": "pending",
+      "state": "in-progress",
       "evidence": [],
       "chapterPromptPath": "build_instructions/prompt_library/LexAegis_Prompt_Library_Chapter_12_Targeted_Build_Tasks_v1_0.md"
     },
@@ -8938,5 +8938,18 @@
       "tarballs": "protocol 53058f8a…cea34, sdk e970c2ce…57b2b, cli 599cabd5…32ecb, verify-embed d44c2c60…2f08d (full values in docs/evidence/chapter18-quickstart-trial2-2026-10-12.json); identical across two runs"
     },
     "handoff": "Chapter 12 (or whichever chapter the owner chooses next in the run order 12, 19, 13) can rely on: packages/verify-embed (registerProofOfReviewStatus, bundle sizes, README), examples/embed (pnpm embed:example) and pnpm embed:harness / embed:check-page, examples/ai-pr-signoff (hash, keygen, prepare, issue, verify, export), docs/QUICKSTART.md paths 1 to 4 run by pnpm quickstart:check, docs/integration-trials.md (internal trials 1 to 3 and the external template), docs/adoption/{targets,outreach-messages,interview-guide,traction-log,ROADMAP}.md with pnpm traction:summary, docs/ROADMAP.md (pointer), .github/ISSUE_TEMPLATE/integration-{request,report}.yml. Honest states to keep: No external trials recorded yet; No entries yet; testnet issue NOT YET; nothing published."
+  },
+  "chapter12": {
+    "startedOn": "2026-10-12",
+    "state": "in-progress",
+    "tasks": {
+      "1": {
+        "status": "complete",
+        "summary": "Integration contract. Source-to-task map: #2 harness + case manifest; #3 full journey; #4 account/vault recovery; #5 vault/storage; #6 auth/ownership; #7 disclosure matrix; #8 agent injection; #9 approval races; #10 registry/transactions/Envio; #11 verifier; #12 Aegis lifecycle/voice/a11y; #13 production build boundaries; #14 validate-mvp + CI + negative controls; #15 user-controlled device evidence; #16 handoff. Prerequisite Chapters 1-11 and 15-18 complete (Chapter 14 remains in-progress by owner decision; see docs/END-OF-BUILD-NOTES.md). Inspected: apps/web (features/*, server/{auth,vault,assistant,chain,db}, 15 route groups, test-support rigs: account-harness, review-rig, assistant-rig, fake-authenticator, local-s3, scripted-qwen-server), tooling browser journeys (hud/privacy/vault/account/verifier checks drive the production build with a CDP virtual authenticator, embedded PostgreSQL, local S3 and the scripted loopback provider; registry state is scripted there), contracts/integration Anvil harness (local-registry, embed fixture), packages/agent tests. Blocked prerequisite found: the production server resolves its registry from the committed Monad testnet record and an Alchemy-host-only endpoint, so a browser journey cannot broadcast to a local registry. Decision: add a narrow, explicitly test-mode-only server seam (LEXAEGIS_TEST_MODE=local-chain, loopback endpoint, local deployment record file) in Task 3 rather than any mock success; it is inert unless set and is recorded as a limitation. Established test location: vitest projects plus tooling/scripts browser programs; the chapter's tests/system and tests/privacy paths become a root tests/ workspace (vitest project 'system', run by pnpm test:system, outside default pnpm test); validate-mvp lives in tooling/scripts (the repository has no root scripts/).",
+        "files": ["docs/build-state.json"]
+      }
+    },
+    "decisions": [],
+    "limitations": []
   }
 }
