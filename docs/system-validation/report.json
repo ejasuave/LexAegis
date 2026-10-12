@@ -2,19 +2,19 @@
   "schema": "lexaegis.validation-report.v1",
   "scope": "local_software_gate",
   "limits": "Local synthetic software gate. Not live-capability evidence, not a security audit, not deployment readiness and not permission to publish or deploy.",
-  "generatedAt": "2026-10-12T20:40:51.271Z",
-  "durationMs": 748342,
+  "generatedAt": "2026-10-12T21:57:25.814Z",
+  "durationMs": 936008,
   "complete": true,
   "source": {
-    "commit": "8f58a19cc2b484479079017ae083f9eb5c0b82e1",
+    "commit": "6c4d7366d97d62ee856a9d4be825319dbb0500dd",
     "dirtyWorktree": true,
-    "sourceFingerprint": "8260f4f33eabdb723de99ffacab641df1619f87c3cf517dbb3d2e883dac395fc",
+    "sourceFingerprint": "ab24fb924938299d2dcd98e606d71297a1ac0f3934d1fb699dd685045692d8c1",
     "testsFingerprint": "d112def23c68ed77f86c3a5740389a59d9baeff08f757811dda32c9acb82da27",
     "lockfileSha256": "18876f443fb1d96d69633c59cb602bef92403e0d0826eb35a2d67b885911f1c5",
     "manifestSha256": "6bff06f63f0c96682c8cd2473b898033cb1b9bc3634bed7afb8482047e2af8d5",
     "schemasSha256": "e24cc52d8831211e1ef81409f934869edb668783bd08e5e045e6649acafcbb1c",
     "promptsSha256": "f24da314285675dcdc4056b81db6c7a55a420a9e8638bc8491de9e59feba4c0b",
-    "configSha256": "f92b7f8e3499cb0401a6cfbeee0e6210d81a32fd18fe66a0bb40144d46c4c472",
+    "configSha256": "54f73fc23fbdf0adeb614cbda5c94e8bffb350bb2a3bf9caee4e4dfe74ce9d58",
     "fixtures": [
       {
         "name": "fixtures/account-v1",
@@ -48,13 +48,24 @@
   },
   "stages": [
     {
+      "id": "indexer-codegen",
+      "required": true,
+      "evidenceClass": "unit",
+      "timeoutMs": 600000,
+      "command": "pnpm indexer:codegen (generated files already match the testnet config; not re-run)",
+      "status": "pass",
+      "durationMs": 0,
+      "exitCode": 0,
+      "issueCodes": []
+    },
+    {
       "id": "lint",
       "required": true,
       "evidenceClass": "unit",
       "timeoutMs": 900000,
       "command": "pnpm lint",
       "status": "pass",
-      "durationMs": 46913,
+      "durationMs": 47776,
       "exitCode": 0,
       "issueCodes": []
     },
@@ -65,7 +76,7 @@
       "timeoutMs": 900000,
       "command": "pnpm typecheck",
       "status": "pass",
-      "durationMs": 23072,
+      "durationMs": 21396,
       "exitCode": 0,
       "issueCodes": []
     },
@@ -76,7 +87,7 @@
       "timeoutMs": 1200000,
       "command": "pnpm test",
       "status": "pass",
-      "durationMs": 15049,
+      "durationMs": 16319,
       "exitCode": 0,
       "issueCodes": []
     },
@@ -87,7 +98,7 @@
       "timeoutMs": 300000,
       "command": "pnpm fixtures:check",
       "status": "pass",
-      "durationMs": 665,
+      "durationMs": 712,
       "exitCode": 0,
       "issueCodes": []
     },
@@ -98,7 +109,7 @@
       "timeoutMs": 300000,
       "command": "pnpm protocol:check",
       "status": "pass",
-      "durationMs": 834,
+      "durationMs": 936,
       "exitCode": 0,
       "issueCodes": []
     },
@@ -109,7 +120,7 @@
       "timeoutMs": 300000,
       "command": "pnpm agent:prompts:check",
       "status": "pass",
-      "durationMs": 864,
+      "durationMs": 884,
       "exitCode": 0,
       "issueCodes": []
     },
@@ -120,7 +131,7 @@
       "timeoutMs": 120000,
       "command": "pnpm state:validate",
       "status": "pass",
-      "durationMs": 694,
+      "durationMs": 727,
       "exitCode": 0,
       "issueCodes": []
     },
@@ -131,18 +142,7 @@
       "timeoutMs": 300000,
       "command": "pnpm secrets:check",
       "status": "pass",
-      "durationMs": 634,
-      "exitCode": 0,
-      "issueCodes": []
-    },
-    {
-      "id": "exclusion",
-      "required": true,
-      "evidenceClass": "unit",
-      "timeoutMs": 300000,
-      "command": "pnpm exclusion:check",
-      "status": "pass",
-      "durationMs": 912,
+      "durationMs": 648,
       "exitCode": 0,
       "issueCodes": []
     },
@@ -153,7 +153,18 @@
       "timeoutMs": 1200000,
       "command": "pnpm build",
       "status": "pass",
-      "durationMs": 5548,
+      "durationMs": 5604,
+      "exitCode": 0,
+      "issueCodes": []
+    },
+    {
+      "id": "exclusion",
+      "required": true,
+      "evidenceClass": "unit",
+      "timeoutMs": 300000,
+      "command": "pnpm exclusion:check",
+      "status": "pass",
+      "durationMs": 851,
       "exitCode": 0,
       "issueCodes": []
     },
@@ -164,7 +175,7 @@
       "timeoutMs": 1200000,
       "command": "pnpm packages:check",
       "status": "pass",
-      "durationMs": 23544,
+      "durationMs": 22147,
       "exitCode": 0,
       "issueCodes": []
     },
@@ -175,7 +186,7 @@
       "timeoutMs": 600000,
       "command": "pnpm contracts:toolchain",
       "status": "pass",
-      "durationMs": 867,
+      "durationMs": 992,
       "exitCode": 0,
       "issueCodes": []
     },
@@ -186,7 +197,7 @@
       "timeoutMs": 1200000,
       "command": "pnpm contracts:test",
       "status": "pass",
-      "durationMs": 20683,
+      "durationMs": 21477,
       "exitCode": 0,
       "issueCodes": []
     },
@@ -197,7 +208,7 @@
       "timeoutMs": 1200000,
       "command": "pnpm test:contracts:integration",
       "status": "pass",
-      "durationMs": 78785,
+      "durationMs": 82579,
       "exitCode": 0,
       "issueCodes": []
     },
@@ -208,7 +219,7 @@
       "timeoutMs": 600000,
       "command": "pnpm --filter @lexaegis/vault exec vitest run --config vitest.browser.config.ts",
       "status": "pass",
-      "durationMs": 1794,
+      "durationMs": 1921,
       "exitCode": 0,
       "issueCodes": []
     },
@@ -219,7 +230,7 @@
       "timeoutMs": 600000,
       "command": "pnpm --filter @lexaegis/indexer exec vitest run --config vitest.config.ts",
       "status": "pass",
-      "durationMs": 1329,
+      "durationMs": 1448,
       "exitCode": 0,
       "issueCodes": []
     },
@@ -230,7 +241,7 @@
       "timeoutMs": 300000,
       "command": "pnpm vitest (tests-unit)",
       "status": "pass",
-      "durationMs": 820,
+      "durationMs": 877,
       "exitCode": 0,
       "issueCodes": []
     },
@@ -241,7 +252,7 @@
       "timeoutMs": 5400000,
       "command": "pnpm vitest (tests-system)",
       "status": "pass",
-      "durationMs": 525335,
+      "durationMs": 708714,
       "exitCode": 0,
       "issueCodes": []
     }
@@ -255,7 +266,7 @@
       "evidenceClass": "unit",
       "status": "pass",
       "satisfied": true,
-      "durationMs": 10,
+      "durationMs": 20,
       "tests": {
         "passed": 10,
         "failed": 0,
@@ -272,7 +283,7 @@
       "evidenceClass": "unit",
       "status": "pass",
       "satisfied": true,
-      "durationMs": 32,
+      "durationMs": 21,
       "tests": {
         "passed": 12,
         "failed": 0,
@@ -289,7 +300,7 @@
       "evidenceClass": "browser_scripted",
       "status": "pass",
       "satisfied": true,
-      "durationMs": 2151,
+      "durationMs": 2226,
       "tests": {
         "passed": 1,
         "failed": 0,
@@ -306,7 +317,7 @@
       "evidenceClass": "browser_scripted",
       "status": "pass",
       "satisfied": true,
-      "durationMs": 3179,
+      "durationMs": 3232,
       "tests": {
         "passed": 1,
         "failed": 0,
@@ -323,7 +334,7 @@
       "evidenceClass": "browser_scripted",
       "status": "pass",
       "satisfied": true,
-      "durationMs": 22599,
+      "durationMs": 22633,
       "tests": {
         "passed": 1,
         "failed": 0,
@@ -340,7 +351,7 @@
       "evidenceClass": "browser_scripted",
       "status": "pass",
       "satisfied": true,
-      "durationMs": 774,
+      "durationMs": 768,
       "tests": {
         "passed": 1,
         "failed": 0,
@@ -357,7 +368,7 @@
       "evidenceClass": "browser_scripted",
       "status": "pass",
       "satisfied": true,
-      "durationMs": 6139,
+      "durationMs": 6260,
       "tests": {
         "passed": 1,
         "failed": 0,
@@ -374,7 +385,7 @@
       "evidenceClass": "browser_scripted",
       "status": "pass",
       "satisfied": true,
-      "durationMs": 702,
+      "durationMs": 791,
       "tests": {
         "passed": 1,
         "failed": 0,
@@ -391,7 +402,7 @@
       "evidenceClass": "browser_scripted",
       "status": "pass",
       "satisfied": true,
-      "durationMs": 2138,
+      "durationMs": 2500,
       "tests": {
         "passed": 1,
         "failed": 0,
@@ -408,7 +419,7 @@
       "evidenceClass": "browser_scripted",
       "status": "pass",
       "satisfied": true,
-      "durationMs": 4697,
+      "durationMs": 4934,
       "tests": {
         "passed": 1,
         "failed": 0,
@@ -425,7 +436,7 @@
       "evidenceClass": "browser_scripted",
       "status": "pass",
       "satisfied": true,
-      "durationMs": 1770,
+      "durationMs": 1827,
       "tests": {
         "passed": 1,
         "failed": 0,
@@ -442,7 +453,7 @@
       "evidenceClass": "browser_scripted",
       "status": "pass",
       "satisfied": true,
-      "durationMs": 73,
+      "durationMs": 69,
       "tests": {
         "passed": 12,
         "failed": 0,
@@ -459,7 +470,7 @@
       "evidenceClass": "browser_scripted",
       "status": "pass",
       "satisfied": true,
-      "durationMs": 997,
+      "durationMs": 1013,
       "tests": {
         "passed": 8,
         "failed": 0,
@@ -476,7 +487,7 @@
       "evidenceClass": "browser_scripted",
       "status": "pass",
       "satisfied": true,
-      "durationMs": 176,
+      "durationMs": 183,
       "tests": {
         "passed": 3,
         "failed": 0,
@@ -493,7 +504,7 @@
       "evidenceClass": "browser_scripted",
       "status": "pass",
       "satisfied": true,
-      "durationMs": 630,
+      "durationMs": 626,
       "tests": {
         "passed": 5,
         "failed": 0,
@@ -510,7 +521,7 @@
       "evidenceClass": "browser_scripted",
       "status": "pass",
       "satisfied": true,
-      "durationMs": 847,
+      "durationMs": 815,
       "tests": {
         "passed": 3,
         "failed": 0,
@@ -527,7 +538,7 @@
       "evidenceClass": "browser_scripted",
       "status": "pass",
       "satisfied": true,
-      "durationMs": 248,
+      "durationMs": 433,
       "tests": {
         "passed": 7,
         "failed": 0,
@@ -544,7 +555,7 @@
       "evidenceClass": "browser_scripted",
       "status": "pass",
       "satisfied": true,
-      "durationMs": 245,
+      "durationMs": 307,
       "tests": {
         "passed": 3,
         "failed": 0,
@@ -561,7 +572,7 @@
       "evidenceClass": "browser_scripted",
       "status": "pass",
       "satisfied": true,
-      "durationMs": 314,
+      "durationMs": 326,
       "tests": {
         "passed": 4,
         "failed": 0,
@@ -578,7 +589,7 @@
       "evidenceClass": "browser_scripted",
       "status": "pass",
       "satisfied": true,
-      "durationMs": 361,
+      "durationMs": 409,
       "tests": {
         "passed": 2,
         "failed": 0,
@@ -595,7 +606,7 @@
       "evidenceClass": "browser_scripted",
       "status": "pass",
       "satisfied": true,
-      "durationMs": 26258,
+      "durationMs": 26336,
       "tests": {
         "passed": 1,
         "failed": 0,
@@ -612,7 +623,7 @@
       "evidenceClass": "browser_scripted",
       "status": "pass",
       "satisfied": true,
-      "durationMs": 10705,
+      "durationMs": 10789,
       "tests": {
         "passed": 3,
         "failed": 0,
@@ -629,7 +640,7 @@
       "evidenceClass": "browser_scripted",
       "status": "pass",
       "satisfied": true,
-      "durationMs": 3,
+      "durationMs": 10,
       "tests": {
         "passed": 2,
         "failed": 0,
@@ -646,7 +657,7 @@
       "evidenceClass": "unit",
       "status": "pass",
       "satisfied": true,
-      "durationMs": 91,
+      "durationMs": 79,
       "tests": {
         "passed": 4,
         "failed": 0,
@@ -663,7 +674,7 @@
       "evidenceClass": "unit",
       "status": "pass",
       "satisfied": true,
-      "durationMs": 42,
+      "durationMs": 35,
       "tests": {
         "passed": 5,
         "failed": 0,
@@ -680,7 +691,7 @@
       "evidenceClass": "unit",
       "status": "pass",
       "satisfied": true,
-      "durationMs": 5,
+      "durationMs": 3,
       "tests": {
         "passed": 1,
         "failed": 0,
@@ -697,7 +708,7 @@
       "evidenceClass": "unit",
       "status": "pass",
       "satisfied": true,
-      "durationMs": 1712,
+      "durationMs": 1703,
       "tests": {
         "passed": 22,
         "failed": 0,
@@ -714,7 +725,7 @@
       "evidenceClass": "unit",
       "status": "pass",
       "satisfied": true,
-      "durationMs": 1313,
+      "durationMs": 1383,
       "tests": {
         "passed": 19,
         "failed": 0,
@@ -731,7 +742,7 @@
       "evidenceClass": "browser_scripted",
       "status": "pass",
       "satisfied": true,
-      "durationMs": 381,
+      "durationMs": 471,
       "tests": {
         "passed": 2,
         "failed": 0,
@@ -748,7 +759,7 @@
       "evidenceClass": "browser_scripted",
       "status": "pass",
       "satisfied": true,
-      "durationMs": 5536,
+      "durationMs": 5661,
       "tests": {
         "passed": 1,
         "failed": 0,
@@ -765,7 +776,7 @@
       "evidenceClass": "browser_scripted",
       "status": "pass",
       "satisfied": true,
-      "durationMs": 36627,
+      "durationMs": 36177,
       "tests": {
         "passed": 1,
         "failed": 0,
@@ -782,7 +793,7 @@
       "evidenceClass": "browser_scripted",
       "status": "pass",
       "satisfied": true,
-      "durationMs": 61206,
+      "durationMs": 61439,
       "tests": {
         "passed": 3,
         "failed": 0,
@@ -799,7 +810,7 @@
       "evidenceClass": "browser_scripted",
       "status": "pass",
       "satisfied": true,
-      "durationMs": 42030,
+      "durationMs": 42051,
       "tests": {
         "passed": 9,
         "failed": 0,
@@ -816,7 +827,7 @@
       "evidenceClass": "browser_scripted",
       "status": "pass",
       "satisfied": true,
-      "durationMs": 3323,
+      "durationMs": 5156,
       "tests": {
         "passed": 3,
         "failed": 0,
@@ -833,7 +844,7 @@
       "evidenceClass": "browser_scripted",
       "status": "pass",
       "satisfied": true,
-      "durationMs": 7482,
+      "durationMs": 7764,
       "tests": {
         "passed": 3,
         "failed": 0,
@@ -850,7 +861,7 @@
       "evidenceClass": "browser_scripted",
       "status": "pass",
       "satisfied": true,
-      "durationMs": 12407,
+      "durationMs": 18433,
       "tests": {
         "passed": 4,
         "failed": 0,
@@ -867,7 +878,7 @@
       "evidenceClass": "browser_scripted",
       "status": "pass",
       "satisfied": true,
-      "durationMs": 10862,
+      "durationMs": 28525,
       "tests": {
         "passed": 5,
         "failed": 0,
@@ -884,7 +895,7 @@
       "evidenceClass": "browser_scripted",
       "status": "pass",
       "satisfied": true,
-      "durationMs": 3218,
+      "durationMs": 12545,
       "tests": {
         "passed": 3,
         "failed": 0,
@@ -901,7 +912,7 @@
       "evidenceClass": "browser_scripted",
       "status": "pass",
       "satisfied": true,
-      "durationMs": 12430,
+      "durationMs": 12890,
       "tests": {
         "passed": 4,
         "failed": 0,
@@ -918,7 +929,7 @@
       "evidenceClass": "browser_scripted",
       "status": "pass",
       "satisfied": true,
-      "durationMs": 10991,
+      "durationMs": 11157,
       "tests": {
         "passed": 3,
         "failed": 0,
@@ -935,7 +946,7 @@
       "evidenceClass": "browser_scripted",
       "status": "pass",
       "satisfied": true,
-      "durationMs": 9561,
+      "durationMs": 10518,
       "tests": {
         "passed": 2,
         "failed": 0,
@@ -952,7 +963,7 @@
       "evidenceClass": "browser_scripted",
       "status": "pass",
       "satisfied": true,
-      "durationMs": 26769,
+      "durationMs": 27384,
       "tests": {
         "passed": 1,
         "failed": 0,
@@ -969,7 +980,7 @@
       "evidenceClass": "browser_scripted",
       "status": "pass",
       "satisfied": true,
-      "durationMs": 3899,
+      "durationMs": 4007,
       "tests": {
         "passed": 3,
         "failed": 0,
@@ -986,7 +997,7 @@
       "evidenceClass": "browser_scripted",
       "status": "pass",
       "satisfied": true,
-      "durationMs": 10563,
+      "durationMs": 11073,
       "tests": {
         "passed": 4,
         "failed": 0,
@@ -1003,7 +1014,7 @@
       "evidenceClass": "browser_scripted",
       "status": "pass",
       "satisfied": true,
-      "durationMs": 4186,
+      "durationMs": 4237,
       "tests": {
         "passed": 2,
         "failed": 0,
@@ -1020,7 +1031,7 @@
       "evidenceClass": "browser_scripted",
       "status": "pass",
       "satisfied": true,
-      "durationMs": 12944,
+      "durationMs": 13115,
       "tests": {
         "passed": 1,
         "failed": 0,
@@ -1037,7 +1048,7 @@
       "evidenceClass": "browser_scripted",
       "status": "pass",
       "satisfied": true,
-      "durationMs": 12390,
+      "durationMs": 12321,
       "tests": {
         "passed": 2,
         "failed": 0,
@@ -1054,7 +1065,7 @@
       "evidenceClass": "browser_scripted",
       "status": "pass",
       "satisfied": true,
-      "durationMs": 9235,
+      "durationMs": 9273,
       "tests": {
         "passed": 2,
         "failed": 0,
@@ -1071,7 +1082,7 @@
       "evidenceClass": "local_integration",
       "status": "pass",
       "satisfied": true,
-      "durationMs": 922,
+      "durationMs": 928,
       "tests": {
         "passed": 16,
         "failed": 0,
@@ -1088,7 +1099,7 @@
       "evidenceClass": "local_integration",
       "status": "pass",
       "satisfied": true,
-      "durationMs": 1318,
+      "durationMs": 1333,
       "tests": {
         "passed": 6,
         "failed": 0,
@@ -1105,7 +1116,7 @@
       "evidenceClass": "local_integration",
       "status": "pass",
       "satisfied": true,
-      "durationMs": 34,
+      "durationMs": 35,
       "tests": {
         "passed": 3,
         "failed": 0,
@@ -1122,7 +1133,7 @@
       "evidenceClass": "local_integration",
       "status": "pass",
       "satisfied": true,
-      "durationMs": 5659,
+      "durationMs": 5704,
       "tests": {
         "passed": 33,
         "failed": 0,
@@ -1139,7 +1150,7 @@
       "evidenceClass": "browser_scripted",
       "status": "pass",
       "satisfied": true,
-      "durationMs": 1127,
+      "durationMs": 1235,
       "tests": {
         "passed": 2,
         "failed": 0,
@@ -1156,7 +1167,7 @@
       "evidenceClass": "browser_scripted",
       "status": "pass",
       "satisfied": true,
-      "durationMs": 6076,
+      "durationMs": 6129,
       "tests": {
         "passed": 3,
         "failed": 0,
@@ -1173,7 +1184,7 @@
       "evidenceClass": "browser_scripted",
       "status": "pass",
       "satisfied": true,
-      "durationMs": 1730,
+      "durationMs": 2083,
       "tests": {
         "passed": 2,
         "failed": 0,
@@ -1190,7 +1201,7 @@
       "evidenceClass": "browser_scripted",
       "status": "pass",
       "satisfied": true,
-      "durationMs": 3066,
+      "durationMs": 3083,
       "tests": {
         "passed": 2,
         "failed": 0,
@@ -1207,7 +1218,7 @@
       "evidenceClass": "browser_scripted",
       "status": "pass",
       "satisfied": true,
-      "durationMs": 3155,
+      "durationMs": 3343,
       "tests": {
         "passed": 2,
         "failed": 0,
@@ -1224,7 +1235,7 @@
       "evidenceClass": "browser_scripted",
       "status": "pass",
       "satisfied": true,
-      "durationMs": 984,
+      "durationMs": 939,
       "tests": {
         "passed": 3,
         "failed": 0,
@@ -1241,7 +1252,7 @@
       "evidenceClass": "browser_scripted",
       "status": "pass",
       "satisfied": true,
-      "durationMs": 13,
+      "durationMs": 12,
       "tests": {
         "passed": 1,
         "failed": 0,
@@ -1258,7 +1269,7 @@
       "evidenceClass": "browser_scripted",
       "status": "pass",
       "satisfied": true,
-      "durationMs": 1,
+      "durationMs": 0,
       "tests": {
         "passed": 1,
         "failed": 0,

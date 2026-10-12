@@ -39,7 +39,10 @@ export const FINGERPRINT_ROOTS = [
 function skipped(path: string): boolean {
   const parts = path.split(sep);
   return (
-    parts.some((part) => SKIP_DIRS.has(part)) ||
+    parts.some((part) => SKIP_DIRS.has(part) || part.startsWith('.next-')) ||
+    // A local environment file holds credentials: it must never feed a digest that reaches a report.
+    (/^\.env(?:\..+)?$/.test(parts[parts.length - 1] ?? '') &&
+      parts[parts.length - 1] !== '.env.example') ||
     SKIP_FILES.has(parts[parts.length - 1] ?? '') ||
     path.includes(join('contracts', 'deployments', 'local'))
   );
