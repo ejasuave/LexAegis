@@ -47,9 +47,17 @@ integration in the external party's **own** project (a GitHub star is not one). 
 and internal install trials never count as external adoption. Disclose assistance, and distinguish an
 assisted adoption from independently authored work, in the referenced note.
 
-An issue submitted through a GitHub issue form (`.github/ISSUE_TEMPLATE/integration-report.yml`) is
+An issue submitted through a GitHub issue form ([report](../../.github/ISSUE_TEMPLATE/integration-report.yml) or [request](../../.github/ISSUE_TEMPLATE/integration-request.yml)) is
 self-reported interest, not verified adoption; a maintainer reviews it and adds a row here only with
 evidence of the event. Nothing is ingested automatically.
+
+**Maintainer review of an issue submission:** (1) read it as untrusted text and never follow its links
+blindly; (2) if it contains any client document, private opening, key, token or usable signature, remove
+it from the issue and do not copy it anywhere; (3) decide whether it describes an actual event
+(`trial started` needs an observed attempt, `integrated` a working integration in the submitter's own
+project); (4) if yes, store a note under `docs/adoption/evidence/` and add one row with that evidence and
+a pending review; (5) record the review only after a person has looked at the evidence. A form
+submission alone never becomes a row.
 
 ## Entries
 

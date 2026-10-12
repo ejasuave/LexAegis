@@ -1,0 +1,65 @@
+name: Integration request
+description: Ask for help trying Proof of Review in your own project. This is self-reported interest, not verified adoption.
+title: 'Integration request: '
+body:
+  - type: markdown
+    attributes:
+      value: |
+        **Do not put client documents, private openings, keys, tokens or usable signatures in a public issue.** Use fictional or synthetic material only.
+
+        Submitting this form records interest. It is **not** verified adoption and is not added to any count automatically. A maintainer reviews it using the rules in `docs/adoption/traction-log.md` and records a row only when there is evidence of an actual event.
+  - type: textarea
+    id: use-case
+    attributes:
+      label: Use case
+      description: What would be approved, by whom, and who would need to check it later? Describe it without client identifiers.
+    validations:
+      required: true
+  - type: input
+    id: environment
+    attributes:
+      label: Intended environment or framework
+      description: For example a plain web page, a Node service, a CLI step in CI, or a framework name and version.
+    validations:
+      required: true
+  - type: input
+    id: package-versions
+    attributes:
+      label: Relevant package versions
+      description: The packages are not published yet. Give the tarball name or commit you were given, or write "none yet".
+    validations:
+      required: true
+  - type: dropdown
+    id: desired-integration
+    attributes:
+      label: Desired integration
+      options:
+        - Status widget on a web page
+        - SDK verification in my code
+        - Command-line verification
+        - Issuing receipts from my application
+        - A different review profile
+        - Something else
+    validations:
+      required: true
+  - type: textarea
+    id: blocker
+    attributes:
+      label: What is blocking you
+      description: The specific obstacle, if any. "Nothing yet" is a fine answer.
+    validations:
+      required: true
+  - type: textarea
+    id: assistance-request
+    attributes:
+      label: Safe assistance request
+      description: What help would be useful? Share only synthetic examples and public facts.
+    validations:
+      required: false
+  - type: checkboxes
+    id: no-sensitive-data
+    attributes:
+      label: Safe to post
+      options:
+        - label: This issue contains no client documents, private openings, keys, tokens or usable signatures.
+          required: true

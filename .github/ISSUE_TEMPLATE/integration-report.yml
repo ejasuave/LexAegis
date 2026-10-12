@@ -1,0 +1,59 @@
+name: Integration report
+description: Report what happened when you tried Proof of Review. This is self-reported evidence, not verified adoption.
+title: 'Integration report: '
+body:
+  - type: markdown
+    attributes:
+      value: |
+        **Do not put client documents, private openings, keys, tokens or usable signatures in a public issue.** Reproduce problems with synthetic data only.
+
+        Submitting this form is self-reported evidence. It is **not** verified adoption and is not added to any count automatically. A maintainer reviews it using the rules in `docs/adoption/traction-log.md`.
+  - type: textarea
+    id: attempted
+    attributes:
+      label: What you actually attempted
+      description: The steps you ran, in order, not what you intended to do.
+    validations:
+      required: true
+  - type: input
+    id: version-network
+    attributes:
+      label: Version and network
+      description: The tarball name or commit, and whether you used a local chain or a test network. Say which network.
+    validations:
+      required: true
+  - type: textarea
+    id: observed
+    attributes:
+      label: Observed result
+      description: What happened, including exact messages. Say plainly if it worked.
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Reproduction steps with synthetic data
+      description: Steps another person could follow using fictional material only.
+    validations:
+      required: true
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Sanitised evidence
+      description: Optional. Logs or output with every secret and private value removed.
+    validations:
+      required: false
+  - type: textarea
+    id: assistance
+    attributes:
+      label: Assistance received
+      description: Any help you got from the project team or a tool while doing this. Write "none" if none.
+    validations:
+      required: true
+  - type: checkboxes
+    id: no-sensitive-data
+    attributes:
+      label: Safe to post
+      options:
+        - label: This issue contains no client documents, private openings, keys, tokens or usable signatures.
+          required: true

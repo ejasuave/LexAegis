@@ -8697,6 +8697,17 @@
           "tooling/src/traction.test.ts",
           "tooling/scripts/traction-summary.ts"
         ]
+      },
+      "11": {
+        "status": "complete",
+        "summary": "docs/adoption/ROADMAP.md (canonical): labelled 'Plan, not commitment', Day 0 = first working day after the hackathon result with start date NOT YET SET; 30/60/90-day tables each with measurable outcome, dependency, evidence to collect and continue/change/stop decision. Days 1-30 security/installation gaps, 8-12 practitioner conversations (a goal), synthetic handover observation, assisted integrations, friction classification; no client-data pilot before separate decisions. Days 31-60 SDK/doc fixes from observed failures, demand-led profiles, independent security review scoping, hosted read-only service and attestation-schema bridge evaluated not implemented. Days 61-90 mainnet decision with all required conditions (review, resolved findings, reproducible deployment/source verification, ownership, incident procedures, evidence-reviewed adoption; calendar is not authorisation, testnet stays otherwise), separate decision points for opt-in agent reputation feedback (gated by actual target-network availability and privacy) and selective-disclosure research (v1 discloses the full package; not shipped). docs/ROADMAP.md did not exist, so a concise pointer was added (no separate commitments). .github/ISSUE_TEMPLATE/integration-request.yml and integration-report.yml: unique ids/labels, valid types, required validations, no labels/assignees/projects/settings, both forbid client documents/private openings/keys/tokens/usable signatures and state a submission is self-reported, not verified adoption, with a maintainer review path in traction-log.md. 11 tests (yaml 2.9.1 added to tooling devDependencies) validate shape; a real hosted form submission is NOT YET. No issue was opened.",
+        "files": [
+          "docs/adoption/ROADMAP.md",
+          "docs/ROADMAP.md",
+          ".github/ISSUE_TEMPLATE/integration-request.yml",
+          ".github/ISSUE_TEMPLATE/integration-report.yml",
+          "tooling/src/issue-forms.test.ts"
+        ]
       }
     },
     "decisions": [],
