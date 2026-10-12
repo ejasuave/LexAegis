@@ -261,6 +261,13 @@ describe('read-aloud', () => {
     r.controller.selectVoice('local-1');
     r.controller.play('one');
     const first = r.spoken[0];
+    // Queued is not speaking: pause is only offered once the engine has started.
+    expect(r.controller.getSnapshot().playback).toBe('starting');
+    expect(r.controller.isActive()).toBe(true);
+    r.controller.pause();
+    expect(r.controller.getSnapshot().playback).toBe('starting');
+    first?.handlers.onstart();
+    expect(r.controller.getSnapshot().playback).toBe('speaking');
     r.controller.pause();
     expect(r.controller.getSnapshot().playback).toBe('paused');
     r.controller.resume();

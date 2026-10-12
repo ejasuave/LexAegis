@@ -1,0 +1,310 @@
+- link "Skip to main content":
+  - /url: "#main"
+- banner "System status":
+  - term: Matter
+  - definition: SYSTEM-a11y-names-7c04, version 8b659d6e
+  - term: Network
+  - definition: Monad Testnet (10143)
+  - term: Passkey session
+  - definition: Account ready
+  - term: Server sign-in
+  - definition: Signed in
+  - term: Vault
+  - definition: Saved
+  - term: Transaction
+  - definition: None
+  - term: Indexer
+  - definition: Unavailable
+  - group: Diagnostics
+- navigation "Primary":
+  - list:
+    - listitem:
+      - link "Review":
+        - /url: /review
+    - listitem:
+      - link "Vault":
+        - /url: /vault
+    - listitem:
+      - link "History":
+        - /url: /history
+    - listitem:
+      - link "Verify":
+        - /url: /verify
+- main:
+  - heading "Review" [level=1]
+  - group "Presentation mode":
+    - button "Command centre" [pressed]
+    - button "Review"
+  - paragraph: No matter selected.
+  - complementary "Matter":
+    - heading "Matters" [level=2]
+    - list:
+      - listitem:
+        - button "SYSTEM-a11y-names-7c04" [pressed]
+    - heading "Documents" [level=3]
+    - list:
+      - listitem: discrepancy-2000.pdf
+      - listitem: lexaegis:extraction:v1:8b659d6e-d092-474d-9bfb-221ddd4d06f7
+    - heading "Saved context" [level=3]
+    - list:
+      - listitem: "Confirmed: Fact: payment total (total) is £24,000.00"
+      - listitem: "Confirmed: Fact: payment instalment (i1) is £10,000.00"
+      - listitem: "Confirmed: Fact: payment instalment (i2) is £12,000.00"
+      - listitem: "Confirmed: Fact: payment basis (basis) is gross"
+      - listitem: "Confirmed: Your decision: accepted an unresolved concern, Recorded for the accessibility check."
+      - listitem: "Confirmed: Your decision: accepted an unresolved concern, Recorded for the accessibility check."
+      - listitem: "Confirmed: Your decision: accepted an unresolved concern, Recorded for the accessibility check."
+      - listitem: "Confirmed: Your decision: accepted an unresolved concern, Recorded for the accessibility check."
+      - listitem: "Confirmed: Your decision: accepted an unresolved concern, Recorded for the accessibility check."
+      - listitem: "Confirmed: Your decision: accepted an unresolved concern, Recorded for the accessibility check."
+      - listitem: "Confirmed: Your decision: accepted an unresolved concern, Recorded for the accessibility check."
+      - listitem: "Confirmed: Your decision: accepted an unresolved concern, Recorded for the accessibility check."
+  - region "Work":
+    - status: Ready
+    - region "Suggested actions":
+      - list:
+        - listitem:
+          - button "Explain selection"
+        - listitem:
+          - button "Check payments"
+        - listitem:
+          - button "Missing evidence"
+        - listitem:
+          - button "Prepare review"
+      - paragraph: Actions that need the model show what would be sent before anything leaves this browser.
+    - status: "Vault: Saved"
+    - region "Task steps":
+      - heading "Task steps" [level=2]
+      - paragraph: No task is running.
+    - region "Conversation":
+      - heading "Conversation" [level=2]
+      - paragraph: No conversation. Select text and choose Explain selection, or use the command dock. Messages are kept in memory only and are not saved unless you save an outcome.
+      - list "Conversation"
+  - complementary "Evidence and approval":
+    - heading "Evidence" [level=2]
+    - paragraph: Select a finding to see its source passage and calculation.
+    - region "Evidence checklist":
+      - heading "Evidence checklist" [level=2]
+      - paragraph: This is a scoped review aid, not an exhaustive test of enforceability. Run the checks to populate it.
+      - list:
+        - listitem:
+          - paragraph:
+            - strong: written agreement
+            - text: ": Not confirmed within the selected documents"
+          - combobox "Document for written-agreement":
+            - option "None linked" [selected]
+            - option "discrepancy-2000.pdf"
+          - checkbox "Linked for this check"
+          - text: Linked for this check
+          - button "Apply"
+        - listitem:
+          - paragraph:
+            - strong: complaints identified
+            - text: ": Not confirmed within the selected documents"
+          - combobox "Document for complaints-identified":
+            - option "None linked" [selected]
+            - option "discrepancy-2000.pdf"
+          - checkbox "Linked for this check"
+          - text: Linked for this check
+          - button "Apply"
+        - listitem:
+          - paragraph:
+            - strong: independent advice
+            - text: ": Not confirmed within the selected documents"
+          - combobox "Document for independent-advice":
+            - option "None linked" [selected]
+            - option "discrepancy-2000.pdf"
+          - checkbox "Linked for this check"
+          - text: Linked for this check
+          - button "Apply"
+        - listitem:
+          - paragraph:
+            - strong: adviser identified
+            - text: ": Not confirmed within the selected documents"
+          - combobox "Document for adviser-identified":
+            - option "None linked" [selected]
+            - option "discrepancy-2000.pdf"
+          - checkbox "Linked for this check"
+          - text: Linked for this check
+          - button "Apply"
+        - listitem:
+          - paragraph:
+            - strong: adviser insurance
+            - text: ": Not confirmed within the selected documents"
+          - combobox "Document for adviser-insurance":
+            - option "None linked" [selected]
+            - option "discrepancy-2000.pdf"
+          - checkbox "Linked for this check"
+          - text: Linked for this check
+          - button "Apply"
+        - listitem:
+          - paragraph:
+            - strong: conditions statement
+            - text: ": Not confirmed within the selected documents"
+          - combobox "Document for conditions-statement":
+            - option "None linked" [selected]
+            - option "discrepancy-2000.pdf"
+          - checkbox "Linked for this check"
+          - text: Linked for this check
+          - button "Apply"
+    - region "Payment what-if (simulated)":
+      - heading "Payment what-if SIMULATED" [level=2]
+      - paragraph: Hypothetical figures only. Nothing here changes the agreement, your confirmed facts, the findings or any package. A changed figure needs a new source version and a new review.
+      - text: SIMULATED stated total (£)
+      - textbox "SIMULATED stated total (£)": "24000.00"
+      - text: SIMULATED instalment 1 (£)
+      - textbox "SIMULATED instalment 1 (£)": "10000.00"
+      - text: SIMULATED instalment 2 (£)
+      - textbox "SIMULATED instalment 2 (£)": "12000.00"
+      - button "Reset"
+      - status: "SIMULATED result: mismatch · difference £2,000.00 · actual difference £2,000.00"
+    - region "Review decisions":
+      - heading "Review decisions" [level=2]
+      - status: Every finding has a decision or needs none.
+      - list:
+        - listitem:
+          - paragraph:
+            - strong: attention.
+            - text: Adviser identified in the agreement has not been confirmed within the selected documents.
+          - paragraph:
+            - text: "Your decision: Accept unresolved concern — Recorded for the accessibility check.. The check result itself is unchanged."
+            - button "Withdraw"
+        - listitem:
+          - paragraph:
+            - strong: attention.
+            - text: Adviser insurance or indemnity evidence has not been confirmed within the selected documents.
+          - paragraph:
+            - text: "Your decision: Accept unresolved concern — Recorded for the accessibility check.. The check result itself is unchanged."
+            - button "Withdraw"
+        - listitem:
+          - paragraph:
+            - strong: attention.
+            - text: Particular complaints or proceedings identified has not been confirmed within the selected documents.
+          - paragraph:
+            - text: "Your decision: Accept unresolved concern — Recorded for the accessibility check.. The check result itself is unchanged."
+            - button "Withdraw"
+        - listitem:
+          - paragraph:
+            - strong: attention.
+            - text: Statement that the conditions are satisfied has not been confirmed within the selected documents.
+          - paragraph:
+            - text: "Your decision: Accept unresolved concern — Recorded for the accessibility check.. The check result itself is unchanged."
+            - button "Withdraw"
+        - listitem:
+          - paragraph:
+            - strong: attention.
+            - text: Independent advice evidence has not been confirmed within the selected documents.
+          - paragraph:
+            - text: "Your decision: Accept unresolved concern — Recorded for the accessibility check.. The check result itself is unchanged."
+            - button "Withdraw"
+        - listitem:
+          - paragraph:
+            - strong: attention.
+            - text: Written agreement supplied has not been confirmed within the selected documents.
+          - paragraph:
+            - text: "Your decision: Accept unresolved concern — Recorded for the accessibility check.. The check result itself is unchanged."
+            - button "Withdraw"
+        - listitem:
+          - paragraph:
+            - strong: attention.
+            - text: "Payment schedule differs by £2,000: stated total £24,000, instalments total £22,000."
+          - paragraph:
+            - text: "Your decision: Accept unresolved concern — Recorded for the accessibility check.. The check result itself is unchanged."
+            - button "Withdraw"
+        - listitem:
+          - paragraph:
+            - strong: needs input.
+            - text: "Not yet confirmed: Employer, Employee, Agreement date."
+          - paragraph:
+            - text: "Your decision: Accept unresolved concern — Recorded for the accessibility check.. The check result itself is unchanged."
+            - button "Withdraw"
+        - listitem:
+          - paragraph:
+            - strong: ok.
+            - text: No two confirmed values conflict for the same field.
+          - paragraph: Checked. No decision is needed.
+        - listitem:
+          - paragraph:
+            - strong: ok.
+            - text: Text was extracted from every page. Annotations, images and signatures are not verified.
+          - paragraph: Checked. No decision is needed.
+      - button "Record review decisions"
+      - status: Decisions recorded. Recording is not approval.
+    - region "Review package":
+      - heading "Review package" [level=2]
+      - heading "Saved and checked" [level=3]
+      - paragraph: "Public commitment: 0xa450c31731d2846282ce2f35f753b7e7844ccbaa365907ff8c143cdb19177159"
+      - paragraph: Read-only. This is not approved, signed or an active receipt.
+      - group: Technical details
+      - status: Frozen and saved. This is not approval, a signature or a receipt.
+    - region "Approval":
+      - heading "Approval" [level=2]
+      - paragraph: The package is saved and verified. Preview the approval to see exactly what you would be authorising.
+      - button "Check network and preview approval"
+      - status
+    - region "Receipt actions":
+      - heading "Receipt actions" [level=2]
+      - paragraph: Only for receipts issued by your own account. Each action is checked against the live registry first and needs its own explicit approval.
+      - text: Revoke a receipt (its commitment)
+      - combobox "Revoke a receipt (its commitment)"
+      - paragraph: Revoking marks the receipt as withdrawn. Its evidence and history stay as they are, and you do not need the private documents.
+      - button "Check and preview revocation" [disabled]
+      - text: Replace an earlier receipt with a new reviewed package
+      - combobox "Replace an earlier receipt with a new reviewed package"
+      - paragraph: The replacement must be separately reviewed, frozen and saved, and it declares the receipt it replaces. The old package is never edited. Build the replacement package preview with this predecessor, then freeze it and approve it as a replacement.
+      - button "Preview replacement package" [disabled]
+      - heading "Cancel outstanding authorisation" [level=3]
+      - paragraph: Every instruction you signed with the current nonce stops working. It does not revoke a receipt that was already issued, and it can lose a race against someone submitting that instruction first. It is a separate transaction and costs a fee.
+      - button "Read current nonce"
+      - status
+    - region "Saved reviews":
+      - heading "Saved reviews" [level=2]
+      - list:
+        - listitem:
+          - paragraph: "0xa450c31731d2846282ce2f35f753b7e7844ccbaa365907ff8c143cdb19177159"
+          - paragraph: Saved 2026-10-12T17:33:57.260Z
+          - paragraph: "Frozen package, verified in this unlock: 8 artifacts. 8 recorded decision(s)."
+          - paragraph: This is how the package was when it was frozen. Your current working results are separate, and removing a working note does not change it.
+          - button "Copy public receipt reference"
+      - paragraph: An address identifies a signing account. It is not a verified professional identity.
+      - region "Export and import":
+        - heading "Export and import" [level=3]
+        - paragraph: Files are made in this browser and never sent anywhere. Readable files expose private material to anyone who holds them.
+        - button "Export saved context…"
+        - button "Export encrypted review 7db89966…"
+        - button "Export readable review 7db89966…"
+        - text: Import a review or context file
+        - button "Import a review or context file"
+      - paragraph: Checking a package is done in the independent verifier, a separate application that needs no LexAegis account, passkey or backend. This app does not report anything as verified.
+      - list:
+        - listitem: Download the readable export above (you will see what it discloses first).
+        - listitem: Copy the public receipt reference for the receipt you want checked.
+        - listitem: Open the verifier, choose the downloaded file yourself and paste the reference as the one you expect.
+      - paragraph: "Nothing is sent to the verifier automatically: no file, opening or case detail goes in the address or between the sites."
+      - paragraph: The verifier address is not configured here.
+    - region "Integration readiness":
+      - heading "Integration readiness" [level=2]
+      - paragraph: "Not ready: required capabilities are unavailable."
+      - list:
+        - listitem: account.mera Configured, not verified
+        - listitem: vault.storage Not built yet
+        - listitem: assistant.qwen Not configured
+        - listitem: chain.rpc Not built yet
+        - listitem: chain.registry Not built yet
+        - listitem: history.envio Not built yet
+        - listitem: database.postgres Configured, not verified
+        - listitem: storage.s3 Not built yet
+- region "Command dock":
+  - button "Commands"
+  - text: Command or question for Aegis
+  - textbox "Command or question for Aegis":
+    - /placeholder: Ask Aegis or type / for commands
+  - button "Send"
+  - button "Hold to talk"
+  - status: On-device voice input is ready.
+  - button "Stop" [disabled]
+  - button "Saved context"
+  - button "Activity"
+  - paragraph: "Scope: 1 selected passage(s) in discrepancy-2000.pdf. You review exactly what would be sent before Send."
+  - status: Type a question or a command. Nothing is sent until you review it and choose Send.
+- alert: Review · LexAegis

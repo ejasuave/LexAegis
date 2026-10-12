@@ -56,6 +56,50 @@
       "status": "open",
       "result": "No disclosure and no wrong result: the check simply does not run. The test serves hashed assets with long-lived cache headers (as a static host would), warms the worker with one online check, then goes fully offline.",
       "remaining": "Decide whether the verifier should fetch (or inline) its worker at load so first use works offline, and what the page should say when the worker cannot start. Hosting with cache headers is not yet decided."
+    },
+    {
+      "id": "F-006",
+      "severity": "medium",
+      "invariant": "No fake listening or speaking state: the page never claims a state the engine has not entered.",
+      "case": "aegis-read-aloud-and-dictation-states",
+      "module": "apps/web (features/voice/read-aloud.ts, components/voice/ReadAloud.tsx, VoiceControls.tsx)",
+      "reproduction": "Press Play before the speech engine fires its start event: the page said 'Speaking'. Press the microphone while recognition was still starting: the control said 'Listening'.",
+      "status": "fixed",
+      "result": "Read-aloud has a 'starting' playback state (counted as active for Stop) and says 'Speaking' only after the engine's own start event. The microphone control says 'Starting… press to cancel' until recognition starts. Unit test in voice.test.ts and the voice-local-speech system cases cover it.",
+      "remaining": "Speech objects in the system tests are scripted stand-ins; real OS/browser engine timing is unproven."
+    },
+    {
+      "id": "F-007",
+      "severity": "medium",
+      "invariant": "Refusals, errors and Stop warnings (including a possibly-sent transaction) are readable at 320 CSS px.",
+      "case": "accessibility-and-reflow narrow-screen dock notice",
+      "module": "apps/web (components/shell/CommandDock.tsx)",
+      "reproduction": "At 320 and 390 px the command dock clamped its status line to one row, so a refusal or a Stop warning could be cut off. Seen in the 320 px screenshots.",
+      "status": "fixed",
+      "result": "The one-line clamp now applies only to the idle hint (no Stop note and no notice). A regression check types 'approve' at 390 and 320 px and asserts the notice is not clipped.",
+      "remaining": "None known for the tested notices. Automated checks cover tested controls only, not WCAG certification."
+    },
+    {
+      "id": "F-008",
+      "severity": "medium",
+      "invariant": "Voice capability must not break the page when speech is unavailable or unusual.",
+      "case": "voice-local-speech environment probe",
+      "module": "apps/web voice capability query (environment finding)",
+      "reproduction": "In headless Chromium 153 in this sandbox, SpeechRecognition.available({ processLocally: true }) crashed the renderer (standalone Playwright probe against a localhost page). With the voice flag on and no stand-in, the page died at load.",
+      "status": "open",
+      "result": "The system tests install speech stand-ins and hide the real objects for the 'unsupported' case, so the suite does not exercise the real call. Real-device behaviour is unknown.",
+      "remaining": "Query capability lazily on first use of the control rather than at load, and check on a real device in task 15."
+    },
+    {
+      "id": "F-009",
+      "severity": "low",
+      "invariant": "Escape never confirms.",
+      "case": "accessibility-and-reflow drawers and dialogs",
+      "module": "apps/web disclosure preview",
+      "reproduction": "Open the disclosure preview and press Escape: it stays open. It sends nothing and has its own Cancel button.",
+      "status": "observation",
+      "result": "No change made; Escape confirmed nothing in any tested dialog or drawer.",
+      "remaining": "Decide whether Escape should close the preview, for consistency with the drawers."
     }
   ]
 }

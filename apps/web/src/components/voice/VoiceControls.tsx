@@ -67,9 +67,11 @@ export function VoiceControls() {
         <span className="sr-only sm:not-sr-only">
           {phase === 'finishing'
             ? 'Finishing…'
-            : active
-              ? 'Listening: release or press to finish'
-              : 'Hold to talk'}
+            : phase === 'starting'
+              ? 'Starting… press to cancel'
+              : phase === 'listening'
+                ? 'Listening: release or press to finish'
+                : 'Hold to talk'}
         </span>
       </button>
       {capability === 'downloadable' ? (

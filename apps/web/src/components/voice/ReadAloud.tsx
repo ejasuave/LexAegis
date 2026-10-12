@@ -15,7 +15,10 @@ export function ReadAloudButton({ text }: { text: string }) {
   if (reader === null || readState === null) return null;
   if (!readState.supported)
     return <p className="m-0 mt-1 text-[0.8125rem] text-lj-secondary">{readState.message}</p>;
-  const speaking = readState.playback === 'speaking' || readState.playback === 'paused';
+  const speaking =
+    readState.playback === 'starting' ||
+    readState.playback === 'speaking' ||
+    readState.playback === 'paused';
   return (
     <div className="mt-1 flex flex-wrap items-center gap-2">
       <label htmlFor={selectId} className="text-[0.8125rem] text-lj-secondary">
@@ -49,11 +52,11 @@ export function ReadAloudButton({ text }: { text: string }) {
             <button type="button" className={btn} onClick={() => reader.pause()}>
               Pause
             </button>
-          ) : (
+          ) : readState.playback === 'paused' ? (
             <button type="button" className={btn} onClick={() => reader.resume()}>
               Resume
             </button>
-          )}
+          ) : null}
           <button
             type="button"
             className={btn}
@@ -70,11 +73,13 @@ export function ReadAloudButton({ text }: { text: string }) {
         className="text-[0.8125rem] text-lj-secondary"
         data-testid="read-aloud-status"
       >
-        {readState.playback === 'speaking'
-          ? 'Speaking on this device'
-          : readState.playback === 'paused'
-            ? 'Paused'
-            : readState.message}
+        {readState.playback === 'starting'
+          ? 'Starting on this device. Nothing is speaking yet.'
+          : readState.playback === 'speaking'
+            ? 'Speaking on this device'
+            : readState.playback === 'paused'
+              ? 'Paused'
+              : readState.message}
       </span>
     </div>
   );

@@ -10,7 +10,8 @@ import type { SynthesisAdapter, VoiceInfo } from './adapter';
 export const MAX_READ_CHARS = 4000;
 export const VOICE_PREFERENCE_KEY = 'lexaegis.voice.preference.v1';
 
-export type PlaybackState = 'idle' | 'speaking' | 'paused' | 'error';
+/** `starting` is a request the engine has not yet confirmed: it is never shown as speaking. */
+export type PlaybackState = 'idle' | 'starting' | 'speaking' | 'paused' | 'error';
 
 export interface ReadAloudSnapshot {
   readonly supported: boolean;
@@ -64,7 +65,9 @@ export class ReadAloudController {
   };
   getSnapshot = (): ReadAloudSnapshot => this.#state;
   isActive = (): boolean =>
-    this.#state.playback === 'speaking' || this.#state.playback === 'paused';
+    this.#state.playback === 'starting' ||
+    this.#state.playback === 'speaking' ||
+    this.#state.playback === 'paused';
 
   #localVoices(): VoiceInfo[] {
     return this.#deps.adapter.voices().filter((voice) => voice.localService);
@@ -143,6 +146,9 @@ export class ReadAloudController {
     }
     this.cancel('replaced');
     const generation = ++this.#generation;
+    // The request is queued, not speaking: only the engine's own start event says speaking. Set
+    // first so a synchronous start or error from the adapter lands on top of it.
+    this.#set({ playback: 'starting', message: '' });
     this.#deps.adapter.speak(plain, voiceURI, voice.lang || (this.#deps.language ?? 'en-GB'), {
       onstart: () => {
         if (generation === this.#generation) this.#set({ playback: 'speaking', message: '' });
@@ -160,7 +166,6 @@ export class ReadAloudController {
         });
       },
     });
-    this.#set({ playback: 'speaking' });
     return true;
   }
 

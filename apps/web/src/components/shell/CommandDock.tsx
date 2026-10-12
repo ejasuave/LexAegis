@@ -215,7 +215,11 @@ export function CommandDock() {
         role="status"
         aria-live="polite"
         data-testid="aegis-notice"
-        className="m-0 mt-1 min-h-5 line-clamp-1 text-[0.8125rem] text-lj-secondary lg:line-clamp-none"
+        // Only the idle hint is shortened on small screens. A refusal, an error or what Stop did not
+        // do is shown whole: it must never be clipped out of sight.
+        className={`m-0 mt-1 min-h-5 text-[0.8125rem] text-lj-secondary ${
+          stopNote === '' && snapshot.notice === '' ? 'line-clamp-1 lg:line-clamp-none' : ''
+        }`}
       >
         {stopNote !== '' ? `${stopNote} ` : ''}
         {notice}

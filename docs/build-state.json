@@ -6109,8 +6109,14 @@
         { "type": "path", "value": "docs/evidence/chapter10/01-command-centre-empty-1440x900.png" },
         { "type": "path", "value": "docs/evidence/chapter10/02-review-1440x900.png" },
         { "type": "path", "value": "docs/evidence/chapter10/03-approval-preview-1440x900.png" },
-        { "type": "path", "value": "docs/evidence/chapter10/04-transaction-unavailable-1440x900.png" },
-        { "type": "path", "value": "docs/evidence/chapter10/05-review-after-approval-1440x900.png" },
+        {
+          "type": "path",
+          "value": "docs/evidence/chapter10/04-transaction-unavailable-1440x900.png"
+        },
+        {
+          "type": "path",
+          "value": "docs/evidence/chapter10/05-review-after-approval-1440x900.png"
+        },
         { "type": "path", "value": "docs/evidence/chapter10/06-command-centre-1440x900.png" },
         { "type": "path", "value": "docs/evidence/chapter10/07-command-centre-1024x768.png" },
         { "type": "path", "value": "docs/evidence/chapter10/08-review-package-390x844.png" },
@@ -6163,6 +6169,87 @@
         "checksTotal": "60",
         "liveReadOutcome": "pass",
         "realDeviceEvidence": false
+      }
+    },
+    {
+      "id": "hud-browser-20261012173611",
+      "subject": "hud-browser-check",
+      "sourceRevision": {
+        "commit": "226584b97e5634caca3b7e98d8c91c54b335e61d",
+        "dirtyWorktree": true,
+        "contentFingerprint": "782dcd7fa5b2f5dae6924300dbc62f530444bdea2a9eb584588679e7618fc61f"
+      },
+      "checkedAt": "2026-10-12T17:36:12.793Z",
+      "command": "pnpm test:hud:browser",
+      "environment": { "node": "v24.21.0", "os": "linux-x64", "pnpm": "11.11.0" },
+      "evidenceClass": "virtual_authenticator",
+      "outcome": "pass",
+      "reasonCodes": [
+        "AUTHENTICATOR_MODE_VIRTUAL",
+        "SYNTHETIC_DOCUMENTS_ONLY",
+        "SCRIPTED_CHAIN_STATE",
+        "MOCK_SPEECH_ADAPTERS"
+      ],
+      "evidenceRefs": [
+        { "type": "path", "value": "docs/evidence/chapter10/01-command-centre-empty-1440x900.png" },
+        { "type": "path", "value": "docs/evidence/chapter10/02-review-1440x900.png" },
+        { "type": "path", "value": "docs/evidence/chapter10/03-approval-preview-1440x900.png" },
+        {
+          "type": "path",
+          "value": "docs/evidence/chapter10/04-transaction-unavailable-1440x900.png"
+        },
+        {
+          "type": "path",
+          "value": "docs/evidence/chapter10/05-review-after-approval-1440x900.png"
+        },
+        { "type": "path", "value": "docs/evidence/chapter10/06-command-centre-1440x900.png" },
+        { "type": "path", "value": "docs/evidence/chapter10/07-command-centre-1024x768.png" },
+        { "type": "path", "value": "docs/evidence/chapter10/08-review-package-390x844.png" },
+        { "type": "path", "value": "docs/evidence/chapter10/09-review-320x640.png" },
+        { "type": "path", "value": "docs/evidence/chapter10/10-locked-1440x900.png" }
+      ],
+      "facts": {
+        "browser": "chromium 153.0.8010.12",
+        "checksPassed": "69",
+        "checksTotal": "69",
+        "provider": "scripted-test (loopback, no model)",
+        "chain": "scripted live state, fixture registry address, no network",
+        "speech": "mock adapters, not a real device",
+        "storage": "postgresql + versitygw",
+        "authenticatorMode": "virtual",
+        "realDeviceEvidence": false,
+        "liveProviderEvidence": false,
+        "screenshotCount": "10"
+      }
+    },
+    {
+      "id": "assistant-browser-20261012173727",
+      "subject": "assistant-browser-check",
+      "sourceRevision": {
+        "commit": "226584b97e5634caca3b7e98d8c91c54b335e61d",
+        "dirtyWorktree": true,
+        "contentFingerprint": "f43e3f5c7eafb299c2bb96cbfe14e64c34924503b192f361a2f74fa0b8b34ede"
+      },
+      "checkedAt": "2026-10-12T17:37:28.105Z",
+      "command": "pnpm test:assistant:browser",
+      "environment": { "node": "v24.21.0", "os": "linux-x64", "pnpm": "11.11.0" },
+      "evidenceClass": "virtual_authenticator",
+      "outcome": "pass",
+      "reasonCodes": [
+        "AUTHENTICATOR_MODE_VIRTUAL",
+        "SYNTHETIC_DOCUMENTS_ONLY",
+        "SCRIPTED_PROVIDER_NOT_QWEN"
+      ],
+      "evidenceRefs": [],
+      "facts": {
+        "browser": "chromium 153.0.8010.12",
+        "checksPassed": "61",
+        "checksTotal": "61",
+        "provider": "scripted-test (loopback, no model)",
+        "storage": "postgresql + versitygw",
+        "authenticatorMode": "virtual",
+        "realDeviceEvidence": false,
+        "liveProviderEvidence": false
       }
     }
   ],
@@ -9171,6 +9258,25 @@
           "tests/system/harness/cases.ts",
           "docs/system-validation/findings.json",
           "docs/evidence/chapter11-verifier-live-2026-10-12.json"
+        ]
+      },
+      "12": {
+        "status": "complete",
+        "summary": "Three new browser specs against the real app with scripted stand-ins, all passing: aegis-lifecycle.spec.ts (10), voice-local-speech.spec.ts (9), accessibility-and-reflow.spec.ts (5); harness/aegis.ts is the shared helper and the ten case IDs are registered in cases.ts (tests: pnpm test 14/14). Lifecycle: Lock, Sign out, matter switch, late run events after Lock, pagehide/pageshow, session expiry and a cut stream leave no private pane, signing authority or success indicator; a storage scan after Lock finds no private text; Stop is coordinated through the acknowledgement contract, and after a lost response it keeps read-only reconciliation instead of labelling the matter cancelled. Voice: speech support is independent of PRF; unavailable speech keeps full text function; start and play are explicit, recognition must be verified on-device with no cloud fallback, the transcript is editable and sent only by an explicit Send; permission denial, missing language pack, voice disappearance, the 30 s capture limit, manual-edit races and late results are covered; spoken yes/approve authorises nothing. Accessibility and reflow: Command centre and Review at 1440x900, 1024x768, 390x844 and 320x640; keyboard-only navigation, drawers (focus moves in, Escape closes and restores focus, nothing is confirmed), disclosure, approval and fee confirmation; accessible control trees, a contrast probe with a negative control, and reduced motion. Synthetic screenshots and control-tree text are in docs/evidence/chapter12/. App fixes: a 'starting' read-aloud state and an honest 'Starting\u2026' microphone label (F-006); the dock status notice is no longer clamped to one line unless it is the idle hint (F-007). Re-run after the fixes: apps/web unit tests 553/553, pnpm test:hud:browser 69/69, pnpm test:assistant:browser 61/61, eslint and typecheck clean. LIMITS: speech objects are scripted stand-ins, so real OS/browser speech locality and the real recognition call are unproven (F-008 open: SpeechRecognition.available({ processLocally: true }) crashed headless Chromium 153 here); the 4,000-character playback bound is covered only by the controller unit test (model text is capped at 2,000); pagehide/pageshow are dispatched events, not a real back-forward cache restore; drawers are non-modal by design, so focus containment means focus moves in, Escape closes and restores focus, and Tab can leave; automated accessibility checks are evidence for the tested controls, not WCAG certification; state cleanup is best effort, not a guarantee of physical memory erasure.",
+        "files": [
+          "tests/system/aegis-lifecycle.spec.ts",
+          "tests/system/voice-local-speech.spec.ts",
+          "tests/system/accessibility-and-reflow.spec.ts",
+          "tests/system/harness/aegis.ts",
+          "tests/system/harness/cases.ts",
+          "apps/web/src/features/voice/read-aloud.ts",
+          "apps/web/src/features/voice/voice.test.ts",
+          "apps/web/src/components/voice/ReadAloud.tsx",
+          "apps/web/src/components/voice/VoiceControls.tsx",
+          "apps/web/src/components/shell/CommandDock.tsx",
+          "docs/system-validation/findings.json",
+          "docs/END-OF-BUILD-NOTES.md",
+          "docs/evidence/chapter12/"
         ]
       }
     },
