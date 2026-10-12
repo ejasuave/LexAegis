@@ -1,0 +1,125 @@
+{
+  "schema": "lexaegis.release-requirements.v1",
+  "version": 1,
+  "recordedAt": "2026-10-12",
+  "note": "Requirements come from the supplied project brief. None has been checked against an organiser page or submission portal in this record; official_verified is therefore unused until a lookup is recorded. A failed lookup does not extend any deadline.",
+  "deadline": {
+    "internalTarget": "2026-10-12",
+    "latestPlanned": "2026-10-13T22:00:00+01:00",
+    "hardDeadline": "2026-10-14T04:59:00+01:00",
+    "hardDeadlineUtc": "2026-10-14T03:59:00Z",
+    "status": "user_supplied",
+    "recheckBeforeSubmission": true
+  },
+  "network": { "name": "Monad Testnet", "chainId": 10143, "mainnet": false },
+  "requirements": [
+    {
+      "id": "R1",
+      "label": "Public GitHub repository readable by metropolis@hackathon.monad.xyz without private credentials",
+      "source": "project_brief/LexAegis Refined Project Brief v3.md#13",
+      "checkedAt": "2026-10-12",
+      "status": "user_supplied",
+      "limit": null
+    },
+    {
+      "id": "R2",
+      "label": "Live product URL with judge access instructions including supported passkey setup",
+      "source": "project_brief/LexAegis Refined Project Brief v3.md#13",
+      "checkedAt": "2026-10-12",
+      "status": "user_supplied",
+      "limit": null
+    },
+    {
+      "id": "R3",
+      "label": "Logo, JPG/JPEG/PNG/WEBP",
+      "source": "project_brief/LexAegis Refined Project Brief v3.md#13",
+      "checkedAt": "2026-10-12",
+      "status": "user_supplied",
+      "limit": { "maxBytes": 3000000 }
+    },
+    {
+      "id": "R4",
+      "label": "Working-product technical demo on YouTube, Loom or Vimeo; not slides or a code walkthrough",
+      "source": "project_brief/LexAegis Refined Project Brief v3.md#13",
+      "checkedAt": "2026-10-12",
+      "status": "user_supplied",
+      "limit": { "maxSeconds": 180, "practicalTargetSeconds": 175 }
+    },
+    {
+      "id": "R5",
+      "label": "Pitch video covering team, problem and why the approach matters",
+      "source": "project_brief/LexAegis Refined Project Brief v3.md#13",
+      "checkedAt": "2026-10-12",
+      "status": "user_supplied",
+      "limit": { "maxSeconds": 120, "targetWords": 230 }
+    },
+    {
+      "id": "R6",
+      "label": "Deployed contract and network details",
+      "source": "docs/DEPLOYMENTS.md",
+      "checkedAt": "2026-10-12",
+      "status": "user_supplied",
+      "limit": null
+    },
+    {
+      "id": "R7",
+      "label": "Evidence for the five approved bounty targets",
+      "source": "project_brief/LexAegis Refined Project Brief v3.md#9",
+      "checkedAt": "2026-10-12",
+      "status": "user_supplied",
+      "limit": null
+    },
+    {
+      "id": "R8",
+      "label": "Published Qwen article (destination and length rules unverified)",
+      "source": "project_brief/LexAegis Refined Project Brief v3.md#9",
+      "checkedAt": "2026-10-12",
+      "status": "unverified",
+      "limit": { "plannedWords": [700, 1000] }
+    },
+    {
+      "id": "R9",
+      "label": "Submission portal, its field names and file limits",
+      "source": null,
+      "checkedAt": null,
+      "status": "unverified",
+      "limit": null
+    },
+    {
+      "id": "R10",
+      "label": "Eligibility and team rules",
+      "source": null,
+      "checkedAt": null,
+      "status": "unverified",
+      "limit": null
+    },
+    {
+      "id": "R11",
+      "label": "Optional advertisement of at most 30 seconds (outside judged deliverables; not produced)",
+      "source": "project_brief/LexAegis Refined Project Brief v3.md#13",
+      "checkedAt": "2026-10-12",
+      "status": "user_supplied",
+      "limit": { "maxSeconds": 30 }
+    }
+  ],
+  "conflicts": [
+    {
+      "id": "C1",
+      "topic": "Technical demo sequence",
+      "detail": "The brief (section 13) suggests a table that leads with the primitive and a verifier segment (0:00-3:00). Chapter 13 Task #14 prescribes a different second-by-second sequence ending at 175 s. Both stay visible; submission/technical-demo.md follows the Chapter 13 sequence and the 180 s limit common to both."
+    },
+    {
+      "id": "C2",
+      "topic": "Run order",
+      "detail": "CLAUDE.md lists chapter 13 after chapter 19. The user directed chapter 13 to proceed before chapter 19 (state: pending) on 2026-10-12."
+    }
+  ],
+  "weights": {
+    "technicalExecution": 20,
+    "designAndDeveloperExperience": 20,
+    "originalityAndTrackInsight": 15,
+    "founderAndMarketReadiness": 25,
+    "tractionAndPathForward": 20,
+    "status": "user_supplied"
+  }
+}

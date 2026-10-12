@@ -1,0 +1,44 @@
+{
+  "schema": "lexaegis.deploy-target.v1",
+  "version": 1,
+  "provider": "railway",
+  "status": "unprovisioned",
+  "note": "No hosting target was configured in this repository and no provider CLI or token is available in this environment. Nothing below is an observed identifier. Provider project, environment and service IDs belong in private operator configuration, not here.",
+  "services": {
+    "web": {
+      "dockerfile": "deploy/docker/web.Dockerfile",
+      "port": 3000,
+      "health": "/api/health",
+      "readiness": "/api/readiness",
+      "replicas": 1
+    },
+    "verifier": {
+      "dockerfile": "deploy/docker/verifier.Dockerfile",
+      "port": 8080,
+      "health": "/healthz",
+      "replicas": 1
+    },
+    "database": { "kind": "postgresql", "publicAccess": false },
+    "objectStore": { "kind": "s3-compatible", "publicAccess": false },
+    "indexer": { "kind": "envio-hosted", "root": "indexer", "config": "indexer/config.yaml" }
+  },
+  "origins": { "app": null, "verifier": null, "webauthnRpId": null },
+  "origin_policy": "One durable HTTPS app origin is chosen before production-demo passkeys are created. rpId, auth domain and allowed origins are pinned from configuration, never derived from forwarding headers. Development credentials bound to localhost cannot become production credentials. A preview origin is not an interchangeable recovery origin.",
+  "limits": {
+    "controlBodyBytes": 16384,
+    "vaultObjectBytes": 16777216,
+    "assistantStartBytes": 131072,
+    "assistantRunSeconds": 120
+  },
+  "spending": {
+    "approvedPolicy": null,
+    "autoscaling": "disabled",
+    "paidUpgrades": "not enabled without explicit approval"
+  },
+  "chain": { "chainId": 10143, "registry": "0x453bfd1602d8a8666f55bf9a8d87b127cb94048f" },
+  "docs": [
+    "https://nextjs.org/docs/app/guides/self-hosting",
+    "https://docs.railway.com/networking/public-networking/specs-and-limits",
+    "https://docs.envio.dev/docs/HyperIndex/hosted-service-deployment"
+  ]
+}

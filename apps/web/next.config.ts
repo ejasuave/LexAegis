@@ -6,6 +6,10 @@ const config: NextConfig = {
   // The browser check builds into its own directory so it never replaces the normal build.
   distDir: process.env.NEXT_DIST_DIR ?? '.next',
   poweredByHeader: false,
+  // The production image sets NEXT_OUTPUT=standalone. Route handlers stay on the Node runtime.
+  ...(process.env.NEXT_OUTPUT === 'standalone'
+    ? { output: 'standalone' as const, outputFileTracingRoot: path.resolve(process.cwd(), '../..') }
+    : {}),
   transpilePackages: ['@lexaegis/agent', '@lexaegis/protocol', '@lexaegis/sdk', '@lexaegis/vault'],
   turbopack: { root: path.resolve(process.cwd(), '../..') },
   // The nonce-based Content Security Policy is set per request in src/proxy.ts.
