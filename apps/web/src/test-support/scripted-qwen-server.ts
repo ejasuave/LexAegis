@@ -12,6 +12,7 @@ import { once } from 'node:events';
  *   SLOW-TEST     the first completion waits (so Stop can be exercised) until the client aborts
  *   PROPOSE-TEST  the final answer proposes a fact and asks for confirmation
  *   INJECT-TEST   the "model" obeys injected instructions: it asks for a signing tool first
+ *   FAIL-TEST     every completion for this request fails with a provider error (HTTP 500)
  */
 
 interface WireMessage {
@@ -134,6 +135,13 @@ export async function startScriptedQwenServer(): Promise<ScriptedQwenServer> {
     const system = messages.find((message) => message.role === 'system')?.content ?? '';
     const user = messages.find((message) => message.role === 'user')?.content ?? '';
     const asked = between(user, 'REQUEST\n', ['\n\nGive the', '\n\nReturn the']).trim();
+
+    // A provider outage for this request only: the application must report it, never retry silently.
+    if (asked.includes('FAIL-TEST')) {
+      response.writeHead(500, { 'content-type': 'application/json' });
+      response.end(JSON.stringify({ error: { code: 'ScriptedProviderFailure' } }));
+      return;
+    }
 
     // The synthetic capability checks: a native tool call, and a request held open until aborted.
     if (system.startsWith('Capability check')) {

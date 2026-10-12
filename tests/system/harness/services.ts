@@ -233,6 +233,11 @@ export async function startWebApp(options: {
    * origin (public values are baked into a build) but takes its own server-side environment.
    */
   readonly sameBuildAs?: WebApp;
+  /** Server output and extra environment, for the privacy observer (a log file and an egress recorder). */
+  readonly serverLog?: {
+    readonly stdio: ['ignore', number, number];
+    readonly env: Record<string, string>;
+  };
 }): Promise<WebApp | Blocked> {
   // NEXT_PUBLIC_* values are baked into the build, so a reusable build needs a stable port per name.
   const stable = 3200 + (createHash('sha256').update(options.name).digest().readUInt16BE(0) % 700);
@@ -255,12 +260,13 @@ export async function startWebApp(options: {
     WEB_PORT: String(port),
     ...options.env,
   };
+  const serverEnv: NodeJS.ProcessEnv = { ...env, ...options.serverLog?.env };
   if (options.sameBuildAs === undefined && !reuse && (await runNext(['build'], env)) !== 0)
     return { blocked: true, code: 'PREREQUISITE_MISSING', reason: 'START_FAILED' };
   const child: ChildProcess = spawn('pnpm', ['exec', 'next', 'start', '--port', String(port)], {
     cwd: join(repository, 'apps', 'web'),
-    env,
-    stdio: 'ignore',
+    env: serverEnv,
+    stdio: options.serverLog?.stdio ?? 'ignore',
     detached: true,
   });
   try {

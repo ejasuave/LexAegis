@@ -175,6 +175,14 @@ export const EMPTY_ASSISTANT_SNAPSHOT: AssistantSnapshot = Object.freeze({
   selectionCount: 0,
 });
 
+/** A stable identity for a selection, so a changed one can be told from an unchanged one. */
+function selectionKey(
+  documentVersionId: string | null,
+  references: readonly SourceReferenceV1[],
+): string {
+  return JSON.stringify([documentVersionId, references]);
+}
+
 export interface SubmitInput {
   readonly intent: AssistantIntent | null;
   readonly trigger: AssistantRequest['trigger'];
@@ -238,6 +246,7 @@ export class AssistantController {
     inputRevision: -1,
     vaultGeneration: -1,
   };
+  #previewSelectionKey: string | null = null;
   #selection: { documentVersionId: string | null; references: readonly SourceReferenceV1[] } = {
     documentVersionId: null,
     references: [],
@@ -382,6 +391,23 @@ export class AssistantController {
   /** The passages the reviewer has selected in the source viewer for the next request. */
   setSelection(documentVersionId: string | null, references: readonly SourceReferenceV1[]): void {
     this.#selection = { documentVersionId, references: [...references] };
+    // A preview built from the selection says what WOULD be sent. When the reviewer changes the
+    // selection, that preview no longer describes their choice, so it is discarded: consent is
+    // renewed by a new preview, never carried over to a different excerpt.
+    if (
+      this.#state.phase === 'preview' &&
+      this.#previewSelectionKey !== null &&
+      this.#previewSelectionKey !== selectionKey(documentVersionId, references)
+    ) {
+      this.#epoch += 1;
+      this.#previewSelectionKey = null;
+      this.#publish({
+        phase: 'idle',
+        pending: null,
+        notice:
+          'The selection changed, so the preview was discarded. Nothing was sent. Choose the action again to review what will be sent.',
+      });
+    }
     if (this.#state.selectionCount !== references.length)
       this.#publish({ selectionCount: references.length });
   }
@@ -695,6 +721,12 @@ export class AssistantController {
       return;
     }
     this.#binding = this.#currentBinding();
+    // The preview is bound to the selection that existed when it was built, whether or not the request
+    // named its passages explicitly: any later change to the selection discards it.
+    this.#previewSelectionKey = selectionKey(
+      this.#selection.documentVersionId,
+      this.#selection.references,
+    );
     this.#publish({
       phase: 'preview',
       pending: prepared.pending,

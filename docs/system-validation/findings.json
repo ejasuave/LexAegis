@@ -12,6 +12,17 @@
       "status": "open",
       "result": "No unauthorised access: the save is refused, the draft is kept and no session is silently created. The stale reading is a presentation inconsistency.",
       "remaining": "Update the Server sign-in reading when a protected route answers 401, with a regression test."
+    },
+    {
+      "id": "F-002",
+      "severity": "medium",
+      "invariant": "Consent is bound to exactly what the reviewer selected; consent is renewed when the disclosure changes.",
+      "case": "privacy-assistant-consent-and-failure-boundaries",
+      "module": "apps/web assistant controller (disclosure preview)",
+      "reproduction": "Select a passage and choose Explain (a preview appears), then select a different passage and press Send without choosing Explain again. Send transmitted the FIRST passage, which the preview identifies only by page and length.",
+      "status": "fixed",
+      "result": "setSelection now discards a preview that was built under a different selection ('The selection changed, so the preview was discarded. Nothing was sent.'). Regression: controller.test.ts 'discards a preview when the selection changes' and the system privacy spec, which confirms only the newly consented excerpt reaches the provider.",
+      "remaining": "None for this case. The preview still names an excerpt by page and size, not by its text."
     }
   ]
 }

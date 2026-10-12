@@ -9000,6 +9000,17 @@
           "tests/system/harness/http.ts",
           "tests/system/harness/services.ts"
         ]
+      },
+      "7": {
+        "status": "complete",
+        "summary": "tests/privacy/disclosure-boundaries.spec.ts (6 tests pass). It reuses the Chapter 17 observation layer and matrix (tooling/src/privacy) rather than a second framework, attached to a NEW complete journey that adds a real local broadcast: canaries (matter title, file name, unselected PDF lines, confirmed amounts, reviewer note, file SHA-256, storage and database credentials, PRF outputs and the signing key derived from them, the session cookie, plus the opening nonce and artifact digests read from the exported file) are searched in browser storage writes and snapshots, every network body, the console, provider requests, the server log, every database row and every stored object, in plain/escaped/URL/hex/base64 forms: 0 violations, coverage minimums met, server egress limited to database, object store, scripted provider and the local chain; unobserved layers are listed (what the backend sent to S3/Qwen, real provider or host logs, worker writes, memory). Consent and failure boundaries: nothing reaches the provider on import, fact confirmation, selection or preview; a changed selection discards the preview and Send then does nothing; only the consented excerpt reaches the provider (none of the other selection or unselected lines, title or file name); a FAIL-TEST provider error (new scripted-provider marker) is typed, bounded to at most six attempts, not retried silently and needs a new preview and Send; Stop (SLOW-TEST) ends the run and no further provider request follows. Logging: every JSON log line uses only level/event/requestId/code/status and holds no canary or provider error body. Evidence hygiene: no test enables traces, HAR, video, screenshots or saved authentication state, and tests/.output is git-ignored. DEFECT FOUND AND FIXED (F-002, medium): after changing the selection the old preview stayed actionable and Send transmitted the FIRST passage; the controller now discards a preview built under a different selection (regression test in controller.test.ts; confirmed in the real browser). Harness: startWebApp serverLog option for the observer.",
+        "files": [
+          "tests/privacy/disclosure-boundaries.spec.ts",
+          "apps/web/src/features/assistant/controller.ts",
+          "apps/web/src/features/assistant/controller.test.ts",
+          "apps/web/src/test-support/scripted-qwen-server.ts",
+          "docs/system-validation/findings.json"
+        ]
       }
     },
     "decisions": [],

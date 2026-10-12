@@ -142,4 +142,22 @@ export const SYSTEM_CASES: readonly SystemCaseV1[] = parseManifest([
     'Sessions, rate limits and operation ownership are shared through the database across two application processes, and an unreachable database disables protected work without a bypass.',
     'local_integration',
   ),
+  c(
+    'privacy-observed-journey-disclosure-matrix',
+    'tests/privacy/disclosure-boundaries.spec.ts',
+    'Across a complete journey with a real local broadcast, planted canaries appear only where the disclosure matrix allows, in every observed layer and encoding, and unobserved layers are stated.',
+    'browser_scripted',
+  ),
+  c(
+    'privacy-assistant-consent-and-failure-boundaries',
+    'tests/privacy/disclosure-boundaries.spec.ts',
+    'No assistant request is made without an explicit Send, a changed selection renews consent, only the consented excerpt is sent, and a provider failure or Stop is bounded and never retried silently.',
+    'browser_scripted',
+  ),
+  c(
+    'privacy-logging-and-evidence-hygiene',
+    'tests/privacy/disclosure-boundaries.spec.ts',
+    'Server logs hold only allowlisted operational fields, and no test produces or commits a trace, HAR, video, screenshot or saved authentication state.',
+    'browser_scripted',
+  ),
 ]);

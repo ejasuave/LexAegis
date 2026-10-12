@@ -75,6 +75,24 @@ describe('disclosure before anything is sent', () => {
     dispose(a);
   });
 
+  it('discards a preview when the selection changes, so consent is never carried to another excerpt', async () => {
+    const a = await assistantRig([done(), answer()]);
+    a.assistant.setSelection(a.documentVersionId, [a.clause]);
+    await a.assistant.submit('/summarise');
+    expect(a.assistant.getSnapshot().phase).toBe('preview');
+    // Re-selecting the same passage keeps the preview; a different selection discards it.
+    a.assistant.setSelection(a.documentVersionId, [a.clause]);
+    expect(a.assistant.getSnapshot().phase).toBe('preview');
+    a.assistant.setSelection(a.documentVersionId, []);
+    expect(a.assistant.getSnapshot()).toMatchObject({ phase: 'idle', pending: null });
+    expect(a.assistant.getSnapshot().notice).toContain('The selection changed');
+    // Send now does nothing: there is no consent to use, and nothing reached the provider.
+    await a.assistant.send();
+    expect(a.transportCalls.start).toBe(0);
+    expect(a.h.provider.requests).toHaveLength(0);
+    dispose(a);
+  });
+
   it('cancelling the preview sends nothing', async () => {
     const a = await assistantRig([done(), answer()]);
     await a.assistant.action('explain', { references: [a.clause] });
