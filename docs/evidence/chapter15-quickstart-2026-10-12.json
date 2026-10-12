@@ -1,0 +1,80 @@
+{
+  "schema": "lexaegis.quickstart-evidence.v1",
+  "date": "2026-10-12",
+  "evidenceClass": "local_scripted",
+  "command": "pnpm quickstart:check",
+  "outcome": "pass",
+  "sourceRevision": "185a5c38252a929e43cd8ea763dd643084905d6f",
+  "workingTreeDirty": true,
+  "environment": {
+    "os": "linux 7.0.0-38-generic",
+    "arch": "x64",
+    "node": "v24.21.0",
+    "pnpm": "11.11.0",
+    "packageStore": "offline (the repository store)"
+  },
+  "tarballs": [
+    {
+      "file": "lexaegis-cli-0.1.0.tgz",
+      "bytes": 21356,
+      "sha256": "599cabd5756bcd50cde36860ec175fcbd0fdb5420c5e488dad4fed2cede32ecb"
+    },
+    {
+      "file": "lexaegis-protocol-0.1.0.tgz",
+      "bytes": 72014,
+      "sha256": "53058f8a7694b581bdd1a305377470ee74a48b7b7f52d74628559ef0629cea34"
+    },
+    {
+      "file": "lexaegis-sdk-0.1.0.tgz",
+      "bytes": 85117,
+      "sha256": "e970c2ce2df348244a867c4ab9233bf86d820f454c21b07e2a9c8d7857f57b2b"
+    },
+    {
+      "file": "lexaegis-verify-embed-0.1.0.tgz",
+      "bytes": 170064,
+      "sha256": "d44c2c60a64e30c7025e0c432af25370c7e1b3d98caf911baaa8ff9411f2f08d"
+    }
+  ],
+  "tools": {
+    "vite": "8.3.4"
+  },
+  "paths": {
+    "sdk": {
+      "id": "path1",
+      "phase": "execute",
+      "status": "pass",
+      "durationMs": 409
+    },
+    "cli": {
+      "id": "path2",
+      "phase": "execute",
+      "status": "pass",
+      "durationMs": 879
+    },
+    "lifecycleLocal": {
+      "id": "path3",
+      "phase": "execute",
+      "status": "pass",
+      "durationMs": 7293
+    },
+    "widgetLocal": {
+      "id": "path4",
+      "phase": "execute",
+      "status": "pass",
+      "durationMs": 4876
+    }
+  },
+  "timingsMs": {
+    "installation": 11776,
+    "localExecution": 1288,
+    "lifecycleLocalExecution": 7293,
+    "widgetLocalExecution": 4876,
+    "liveStepsPerformedManually": 0,
+    "wallClockOfThisCheck": 25638
+  },
+  "notRun": [],
+  "liveSteps": "not performed: no check contacts a public network",
+  "outsiderAcceptance": "NOT YET: no one other than the author has followed the guide",
+  "widget": "Local harness only (path 4): a plain HTML page, status-only and explicit file check, in headless Chromium. A page for a real deployment: NOT YET.",
+  "note": "Author-run, automated, offline-store evidence. It is not an outsider following the guide, not independent adoption and not a claim about time for anyone else."
+}

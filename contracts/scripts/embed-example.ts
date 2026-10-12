@@ -14,7 +14,7 @@ import { copyFileSync, mkdirSync, readFileSync, rmSync, writeFileSync } from 'no
 import { createServer, type Server } from 'node:http';
 import { dirname, extname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import type { PreparedReviewPackage, ReceiptReferenceV1 } from '@lexaegis/protocol/v1';
+import type { ReceiptReferenceV1 } from '@lexaegis/protocol/v1';
 import { prepareLocalPackage } from '../integration/harness';
 import { exportBytes, startLocalRegistry, type LocalRegistry } from '../integration/local-registry';
 
@@ -68,21 +68,15 @@ export function serveDirectory(
   );
 }
 
-export async function generateEmbedExample(options: {
-  /** The origin the page and its package will be served from: the host's one approved package origin. */
-  readonly origin: string;
-  readonly outDir?: string;
-  readonly build?: boolean;
-}): Promise<GeneratedExample> {
-  if (options.build !== false)
-    execFileSync('pnpm', ['--filter', '@lexaegis/verify-embed', 'build'], {
-      cwd: repository,
-      stdio: 'ignore',
-    });
-  const outDir = options.outDir ?? join(exampleDir, 'generated');
-  rmSync(outDir, { recursive: true, force: true });
-  mkdirSync(join(outDir, 'packages'), { recursive: true });
+export interface SyntheticChain {
+  readonly chain: LocalRegistry;
+  readonly references: GeneratedExample['references'];
+  /** The deliberately public synthetic readable export of the Active receipt. */
+  readonly activeExport: Uint8Array;
+}
 
+/** A throwaway chain with the unchanged registry and one receipt in each lifecycle state. */
+export async function startSyntheticChain(): Promise<SyntheticChain> {
   const chain = await startLocalRegistry();
   const make = (
     supersedes: ReceiptReferenceV1 | null = null,
@@ -99,16 +93,35 @@ export async function generateEmbedExample(options: {
   await chain.issue(superseded);
   await chain.supersede(superseded.reference, replacement);
   await chain.mine();
-
-  const references = {
-    active: active.reference,
-    revoked: revoked.reference,
-    superseded: superseded.reference,
-    notFound: notFound.reference,
+  return {
+    chain,
+    references: {
+      active: active.reference,
+      revoked: revoked.reference,
+      superseded: superseded.reference,
+      notFound: notFound.reference,
+    },
+    activeExport: exportBytes(active),
   };
-  const exportPackage = (name: string, prepared: PreparedReviewPackage): void =>
-    writeFileSync(join(outDir, 'packages', `${name}.json`), exportBytes(prepared));
-  exportPackage('active', active);
+}
+
+export async function generateEmbedExample(options: {
+  /** The origin the page and its package will be served from: the host's one approved package origin. */
+  readonly origin: string;
+  readonly outDir?: string;
+  readonly build?: boolean;
+}): Promise<GeneratedExample> {
+  if (options.build !== false)
+    execFileSync('pnpm', ['--filter', '@lexaegis/verify-embed', 'build'], {
+      cwd: repository,
+      stdio: 'ignore',
+    });
+  const outDir = options.outDir ?? join(exampleDir, 'generated');
+  rmSync(outDir, { recursive: true, force: true });
+  mkdirSync(join(outDir, 'packages'), { recursive: true });
+
+  const { chain, references, activeExport } = await startSyntheticChain();
+  writeFileSync(join(outDir, 'packages', 'active.json'), activeExport);
 
   // The widget bundle is copied unchanged. No signer, key or test helper is in it.
   copyFileSync(

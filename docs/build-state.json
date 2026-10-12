@@ -5864,6 +5864,37 @@
         "browser": "chromium (playwright)",
         "published": false
       }
+    },
+    {
+      "id": "packages-check-20261012083604",
+      "subject": "packaged-consumer-check",
+      "sourceRevision": {
+        "commit": "185a5c38252a929e43cd8ea763dd643084905d6f",
+        "dirtyWorktree": true,
+        "contentFingerprint": "1d7bdc84da64f54421d28a892f742f228199822a1b3eebfb484feccb258a84f1"
+      },
+      "checkedAt": "2026-10-12T08:36:05.676Z",
+      "command": "pnpm packages:check",
+      "environment": { "node": "v24.21.0", "os": "linux-x64", "pnpm": "11.11.0" },
+      "evidenceClass": "local_scripted",
+      "outcome": "pass",
+      "reasonCodes": ["LOCAL_TARBALLS_NOT_PUBLISHED", "AUTHORED_EXAMPLE_NOT_ADOPTION"],
+      "evidenceRefs": [],
+      "facts": {
+        "checksPassed": "44",
+        "checksTotal": "44",
+        "protocolTarballBytes": "72014",
+        "sdkTarballBytes": "85117",
+        "cliTarballBytes": "21356",
+        "protocolTarballSha256": "53058f8a7694b581bdd1a305377470ee74a48b7b7f52d74628559ef0629cea34",
+        "sdkTarballSha256": "e970c2ce2df348244a867c4ab9233bf86d820f454c21b07e2a9c8d7857f57b2b",
+        "cliTarballSha256": "599cabd5756bcd50cde36860ec175fcbd0fdb5420c5e488dad4fed2cede32ecb",
+        "protocolFiles": "68",
+        "sdkFiles": "71",
+        "cliFiles": "28",
+        "browser": "chromium (playwright)",
+        "published": false
+      }
     }
   ],
   "appliedCuts": [],
@@ -8633,6 +8664,18 @@
           "examples/ai-pr-signoff/src/guards.ts",
           "examples/ai-pr-signoff/src/cli.ts",
           "contracts/integration/ai-pr-signoff.anvil.test.ts"
+        ]
+      },
+      "8": {
+        "status": "complete",
+        "summary": "docs/integration-trials.md plus clean packed-package trials. pnpm quickstart:check (extended) packs protocol, sdk, cli and verify-embed from the pinned toolchain, installs only the tarballs into a fresh consumer outside the repository, proves every @lexaegis package resolves inside the consumer and no tsconfig/path alias/repo source exists, records tarball sha256 and tool versions, and runs the guide verbatim: path 1 SDK, path 2 CLI text+JSON, path 3 local lifecycle, new path 4 plain HTML widget (status-only and explicit Check files, local harness via pnpm embed:harness, headless driver pnpm embed:check-page). QUICKSTART widget section replaced with the implemented path; local and public paths labelled separately. Internal trial 1: 13/13 pass; runner durations installation 10880 ms, path1 409, path2 946, path3 8027, path4 6524, manual 0 (evidence docs/evidence/chapter18-quickstart-trial1-2026-10-12.json). Gaps found by review (path 4 assumed path 3's Foundry install, fixed sleeps) corrected in the guide first; trial 2 pass 13/13 with identical tarball hashes (…trial2…json). Trial 3: ai-pr-signoff README commands from a fresh directory. packages:check extended to inspect and exclusion-scan the verify-embed tarball (44/44). No external trial: 'No external trials recorded yet' retained with an external-trial template. All trials are internal, offline-store, automated-runner durations, not a human's time.",
+        "files": [
+          "docs/integration-trials.md",
+          "docs/QUICKSTART.md",
+          "tooling/scripts/quickstart-check.ts",
+          "tooling/scripts/package-check.ts",
+          "tooling/scripts/embed-consumer-check.ts",
+          "contracts/scripts/embed-harness.ts"
         ]
       }
     },

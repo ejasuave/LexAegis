@@ -12,7 +12,17 @@
  * pnpm store is offline. Evidence is written to docs/evidence/chapter15-quickstart-<date>.json.
  */
 import { execFileSync, spawnSync } from 'node:child_process';
-import { existsSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
+import { createHash } from 'node:crypto';
+import {
+  existsSync,
+  mkdtempSync,
+  readFileSync,
+  readdirSync,
+  realpathSync,
+  rmSync,
+  statSync,
+  writeFileSync,
+} from 'node:fs';
 import { arch, platform, release, tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { ROOT } from './lib';
@@ -92,7 +102,8 @@ const scratch = mkdtempSync(join(tmpdir(), 'lexaegis-quickstart-'));
 const script = [
   'set -u',
   ...runs.flatMap((block) => {
-    if (block.id === 'path3' && !forgeInstalled) return [`echo "@@SKIP ${block.id}@@"`];
+    if ((block.id === 'path3' || block.id === 'path4') && !forgeInstalled)
+      return [`echo "@@SKIP ${block.id}@@"`];
     return [
       `echo "@@BEGIN ${block.id} $(date +%s%3N)@@"`,
       block.body,
@@ -160,6 +171,35 @@ for (const block of runs) {
   );
 }
 
+// Identify the tested build and prove the consumer used only the tarballs: every @lexaegis package
+// resolves inside the consumer directory (never the repository) and no TypeScript config exists.
+const consumerDir = readdirSync(scratch)
+  .map((name) => join(scratch, name))
+  .find((path) => existsSync(join(path, 'tarballs')));
+const tarballs: { file: string; bytes: number; sha256: string }[] = [];
+if (consumerDir !== undefined) {
+  for (const file of readdirSync(join(consumerDir, 'tarballs')).sort()) {
+    const path = join(consumerDir, 'tarballs', file);
+    tarballs.push({
+      file,
+      bytes: statSync(path).size,
+      sha256: createHash('sha256').update(readFileSync(path)).digest('hex'),
+    });
+  }
+  const resolved = ['protocol', 'sdk', 'cli', 'verify-embed'].map((name) => {
+    const link = join(consumerDir, 'node_modules', '@lexaegis', name);
+    return existsSync(link) ? realpathSync(link) : '';
+  });
+  check(
+    'the consumer resolves every @lexaegis package inside its own directory (no workspace links)',
+    resolved.every((path) => path !== '' && path.startsWith(realpathSync(consumerDir))),
+  );
+  check(
+    'the consumer has no TypeScript path aliases or repository sources',
+    !existsSync(join(consumerDir, 'tsconfig.json')) && !existsSync(join(consumerDir, 'packages')),
+  );
+}
+
 for (const block of blocks.filter((item) => item.kind === 'file')) {
   const file = block.path ?? '';
   const content = existsSync(join(ROOT, file)) ? readFileSync(join(ROOT, file), 'utf8') : '';
@@ -171,8 +211,10 @@ check(
   runs.every((block) => expectations.has(block.id)),
 );
 check(
-  'the guide offers no widget embed snippet or URL (NOT YET)',
-  /NOT YET/.test(markdown) && !/<script[^>]*widget|embed\.js/i.test(markdown),
+  'the guide offers no hosted script, CDN link or published-package claim for the widget',
+  /NOT YET/.test(markdown) &&
+    !/<script[^>]*src=["']https?:/i.test(markdown) &&
+    !/unpkg|jsdelivr|cdnjs|npmjs\.com\/package\/@lexaegis/i.test(markdown),
 );
 check(
   'the guide claims no unmeasured speed',
@@ -182,7 +224,7 @@ check(
 const ok = checks.every((item) => item.ok);
 const sum = (phase: string): number =>
   results
-    .filter((result) => result.phase === phase && result.id !== 'path3')
+    .filter((result) => result.phase === phase && result.id !== 'path3' && result.id !== 'path4')
     .reduce((total, result) => total + result.durationMs, 0);
 const revision = execFileSync('git', ['rev-parse', 'HEAD'], { cwd: ROOT, encoding: 'utf8' }).trim();
 const dirty =
@@ -204,22 +246,36 @@ const evidence = {
     pnpm: pnpmVersion,
     packageStore: 'offline (the repository store)',
   },
+  tarballs,
+  tools: {
+    vite: (
+      JSON.parse(
+        readFileSync(
+          join(ROOT, 'packages', 'verify-embed', 'node_modules', 'vite', 'package.json'),
+          'utf8',
+        ),
+      ) as { version: string }
+    ).version,
+  },
   paths: {
     sdk: results.find((result) => result.id === 'path1') ?? null,
     cli: results.find((result) => result.id === 'path2') ?? null,
     lifecycleLocal: results.find((result) => result.id === 'path3') ?? null,
+    widgetLocal: results.find((result) => result.id === 'path4') ?? null,
   },
   timingsMs: {
     installation: sum('install'),
     localExecution: sum('execute'),
     lifecycleLocalExecution: results.find((result) => result.id === 'path3')?.durationMs ?? 0,
+    widgetLocalExecution: results.find((result) => result.id === 'path4')?.durationMs ?? 0,
     liveStepsPerformedManually: 0,
     wallClockOfThisCheck: Date.now() - started,
   },
   notRun: results.filter((result) => result.status === 'not_run').map((result) => result.id),
   liveSteps: 'not performed: no check contacts a public network',
   outsiderAcceptance: 'NOT YET: no one other than the author has followed the guide',
-  widget: 'NOT YET (Chapter 18)',
+  widget:
+    'Local harness only (path 4): a plain HTML page, status-only and explicit file check, in headless Chromium. A page for a real deployment: NOT YET.',
   note: 'Author-run, automated, offline-store evidence. It is not an outsider following the guide, not independent adoption and not a claim about time for anyone else.',
 };
 if (process.argv.includes('--write') || ok) {

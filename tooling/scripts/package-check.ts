@@ -151,6 +151,59 @@ try {
     );
   }
 
+  // The embeddable widget: built by its own bundler (everything inlined), packed and inspected.
+  run('pnpm', ['--filter', '@lexaegis/verify-embed', 'build'], ROOT);
+  run('pnpm', ['pack', '--pack-destination', tarballs], join(ROOT, 'packages', 'verify-embed'));
+  const embedFile = join(tarballs, 'lexaegis-verify-embed-0.1.0.tgz');
+  const embedEntries = run('tar', ['-tzf', embedFile], ROOT)
+    .split('\n')
+    .filter((line) => line !== '');
+  check(
+    'verify-embed: tarball holds the readable and minified browser modules, declarations and README',
+    [
+      'package/package.json',
+      'package/README.md',
+      'package/dist/proof-of-review-embed.js',
+      'package/dist/proof-of-review-embed.min.js',
+      'package/dist/types/index.d.ts',
+    ].every((entry) => embedEntries.includes(entry)),
+  );
+  const embedBad = embedEntries.filter(
+    (entry) => !/^package\/(?:package\.json|README\.md|dist\/.+)$/.test(entry),
+  );
+  check(
+    'verify-embed: nothing but package.json, README and dist is packed (no source, tests, helpers or scripts)',
+    embedBad.length === 0 && !embedEntries.some((entry) => /test|helper|\.map$/i.test(entry)),
+    embedBad.slice(0, 3).join(', '),
+  );
+  const embedManifest = JSON.parse(
+    run('tar', ['-xzOf', embedFile, 'package/package.json'], ROOT),
+  ) as {
+    dependencies?: Record<string, string>;
+    devDependencies?: Record<string, string>;
+    exports: Record<string, unknown>;
+  };
+  check(
+    'verify-embed: no runtime dependency, no workspace specifier, exports point at dist',
+    embedManifest.dependencies === undefined &&
+      JSON.stringify(embedManifest.exports).includes('./dist/') &&
+      !JSON.stringify(embedManifest).includes('workspace:'),
+  );
+  const embedExtracted = join(scratch, 'extracted', 'verify-embed');
+  mkdirSync(embedExtracted, { recursive: true });
+  run('tar', ['-xzf', embedFile, '-C', embedExtracted], ROOT);
+  const embedFindings = scanArtifacts([join(embedExtracted, 'package')], {
+    extraSecrets: [registryVectors.signer.privateKey],
+  });
+  check(
+    'verify-embed: the packed output passes the production-exclusion scan (no signer, key or test marker)',
+    embedFindings.length === 0,
+    embedFindings
+      .slice(0, 3)
+      .map((finding) => `${finding.rule}:${finding.file}`)
+      .join(', '),
+  );
+
   // The command: shebang, executable bit and a bin entry that points at the built file.
   const cliManifest = JSON.parse(
     run('tar', ['-xzOf', packed.cli.file, 'package/package.json'], ROOT),

@@ -67,6 +67,8 @@
     "packages:build": "tsx tooling/scripts/build-packages.ts",
     "packages:check": "tsx tooling/scripts/package-check.ts",
     "embed:example": "tsx contracts/scripts/embed-example.ts",
+    "embed:check-page": "tsx tooling/scripts/embed-consumer-check.ts",
+    "embed:harness": "tsx contracts/scripts/embed-harness.ts",
     "sdk:browser": "pnpm --filter @lexaegis/sdk test:browser",
     "test:verifier:browser": "tsx tooling/scripts/verifier-browser-check.ts",
     "spec:check": "pnpm --filter @lexaegis/sdk spec:check",

@@ -1,10 +1,11 @@
 # Proof of Review quickstart
 
-Three ways to use Proof of Review, each with real, tested commands:
+Four ways to use Proof of Review, each with real, tested commands:
 
 1. **Verify a review package with the SDK** (read-only).
 2. **Verify it with the command-line tool** (read-only).
 3. **Prepare, issue and supersede** through the SDK with a signer you supply.
+4. **Show a receipt's status on a plain HTML page** with the embeddable widget (read-only).
 
 Everything below uses **synthetic** documents. The packages are not published yet, so you install them
 from tarballs built in this repository. `pnpm quickstart:check` runs every command in this guide from a
@@ -23,7 +24,7 @@ clean directory and fails if one stops working or its output changes (see
 | Node.js                                  | 24.x (24.21.0)                                 | The packages are ESM and need `engines.node >= 24`. |
 | pnpm                                     | 11.x (11.11.0)                                 | Builds and packs the tarballs, installs them.       |
 | A checkout of this repository, installed | `pnpm install --frozen-lockfile`               | Source of the tarballs and of the example you copy. |
-| Foundry (path 3 only)                    | 1.8.5, installed by `pnpm contracts:toolchain` | A local chain for the issue and supersede demo.     |
+| Foundry (paths 3 and 4)                  | 1.8.5, installed by `pnpm contracts:toolchain` | A local chain for the issue demo and the widget.    |
 
 No Python, no wallet, no key and no account are needed for paths 1 and 2. Installing the third-party
 packages (`viem`, `zod` and others) needs the npm registry, or a pnpm store that already has them; the
@@ -40,6 +41,8 @@ export QS="$(mktemp -d)"
 pnpm packages:build
 mkdir "$QS/tarballs"
 for package in protocol sdk cli; do pnpm --dir "packages/$package" pack --pack-destination "$QS/tarballs"; done
+pnpm --filter @lexaegis/verify-embed build
+pnpm --dir packages/verify-embed pack --pack-destination "$QS/tarballs"
 ls "$QS/tarballs"
 ```
 
@@ -47,9 +50,10 @@ ls "$QS/tarballs"
 lexaegis-cli-0.1.0.tgz
 lexaegis-protocol-0.1.0.tgz
 lexaegis-sdk-0.1.0.tgz
+lexaegis-verify-embed-0.1.0.tgz
 ```
 
-Install the three tarballs. The `overrides` make the packages' own dependency on each other resolve to
+Install the four tarballs. The `overrides` make the packages' own dependency on each other resolve to
 the tarballs as well, never to a registry. `tsx` runs the TypeScript example without a build step.
 
 ```sh quickstart:install install
@@ -63,6 +67,7 @@ cat > package.json <<'JSON'
     "@lexaegis/protocol": "file:./tarballs/lexaegis-protocol-0.1.0.tgz",
     "@lexaegis/sdk": "file:./tarballs/lexaegis-sdk-0.1.0.tgz",
     "@lexaegis/cli": "file:./tarballs/lexaegis-cli-0.1.0.tgz",
+    "@lexaegis/verify-embed": "file:./tarballs/lexaegis-verify-embed-0.1.0.tgz",
     "viem": "2.57.3"
   },
   "devDependencies": { "tsx": "4.23.15" }
@@ -217,11 +222,6 @@ Add `--agent-identity` to `verify` to read the package's ERC-8004 reference (if 
 the registry you trust. A package without one reports "not included", not a failure. Card fetching
 needs `--fetch-agent-card --agent-card-origin <origin>`. See the [CLI README](../packages/cli/README.md).
 
-### Embeddable widget: NOT YET
-
-There is no embeddable verification widget yet (Chapter 18). No snippet or URL is offered here, because
-none would work. Use the command above or the SDK.
-
 ## Path 3: prepare, issue and supersede with your own signer
 
 This path is **not** part of the read-only command. It is the SDK, driven by the example in
@@ -289,6 +289,127 @@ for the fee and a deployment you trust, and it is deliberately outside every aut
 it until you have read what an on-chain receipt discloses: the reviewer account, the commitment and the
 action are public and permanent.
 
+## Path 4: the widget on a plain HTML page
+
+`@lexaegis/verify-embed` is one custom element, `proof-of-review-status`. It shows two **separate**
+lines for a receipt reference: **Receipt status** (what the registry you trust records) and **File
+integrity** (whether a package you published still matches). It needs no wallet, no LexAegis login, no
+backend and no model, and it signs nothing. The package is not published: you installed it from the
+tarball above. Read [its README](../packages/verify-embed/README.md) for the attributes, the trusted
+configuration, the exact network behaviour and what the words mean.
+
+A receipt needs a registry to read. This path uses the same **isolated local harness** as path 3: a
+throwaway chain with the unchanged registry and four synthetic receipts (active, revoked, superseded,
+never issued). It is local, it is started from the repository checkout, and nothing in this path
+contacts a public network or the LexAegis application. For a real deployment you would use its recorded
+deployment record and a public endpoint instead of the harness's values.
+
+Start the harness and write the page. The host page's configuration (the trusted deployment and the one
+origin it publishes packages from) comes from the harness's own record, never from the markup.
+
+```sh quickstart:path4 execute
+cd "$REPO"
+pnpm contracts:toolchain
+export HARNESS="$QS/harness"
+pnpm -s embed:harness "$HARNESS" > "$QS/harness.log" 2>&1 &
+HARNESS_PID=$!
+until [ -f "$HARNESS/harness.json" ]; do sleep 1; done
+cat "$QS/harness.log"
+cd "$QS"
+mkdir site
+cp node_modules/@lexaegis/verify-embed/dist/proof-of-review-embed.min.js site/
+cp -r "$HARNESS/packages" site/packages
+cat > build-page.mjs <<'JS'
+import { readFileSync, writeFileSync } from 'node:fs';
+
+const origin = `http://127.0.0.1:${process.env.WIDGET_PORT}`;
+const { hostConfig, references } = JSON.parse(readFileSync(process.env.HARNESS + '/harness.json', 'utf8'));
+hostConfig.packageOrigins = [origin];
+const attributes = (reference) =>
+  `chain-id="${reference.chainId}" registry="${reference.registryAddress}" reviewer="${reference.reviewerAddress}" commitment="${reference.commitment}"`;
+
+// Line 1 of the integration: register the element, with the host's trusted configuration.
+writeFileSync(
+  'site/register.js',
+  `import { registerProofOfReviewStatus } from './proof-of-review-embed.min.js';\n` +
+    `registerProofOfReviewStatus(${JSON.stringify(hostConfig, null, 2)});\n`,
+);
+// Line 2: the element, with the receipt reference you were given. The second element also offers
+// "Check files" for a deliberately public synthetic package.
+writeFileSync(
+  'site/index.html',
+  `<!doctype html>
+<meta charset="utf-8">
+<title>Receipt status</title>
+<script type="module" src="./register.js"></script>
+<proof-of-review-status ${attributes(references.active)}></proof-of-review-status>
+<proof-of-review-status ${attributes(references.active)} package-url="${origin}/packages/active.json"></proof-of-review-status>
+<proof-of-review-status ${attributes(references.revoked)}></proof-of-review-status>
+<proof-of-review-status ${attributes(references.notFound)}></proof-of-review-status>
+`,
+);
+JS
+cat > serve.mjs <<'JS'
+// A static file server for the local page. The CORS header is what lets the page read the public
+// synthetic package; it is for this local example only.
+import { createServer } from 'node:http';
+import { readFileSync } from 'node:fs';
+import { extname, resolve } from 'node:path';
+
+const types = { '.html': 'text/html', '.js': 'text/javascript', '.json': 'application/json' };
+const root = resolve('site');
+createServer((request, response) => {
+  const path = new URL(request.url, 'http://x').pathname;
+  const file = resolve(root, path === '/' ? 'index.html' : path.slice(1));
+  try {
+    if (!file.startsWith(root + '/')) throw new Error('outside');
+    response
+      .writeHead(200, { 'content-type': types[extname(file)] ?? 'text/plain', 'access-control-allow-origin': '*' })
+      .end(readFileSync(file));
+  } catch {
+    response.writeHead(404).end();
+  }
+}).listen(Number(process.env.WIDGET_PORT), '127.0.0.1');
+JS
+export WIDGET_PORT=5190
+node build-page.mjs
+node serve.mjs &
+SERVER_PID=$!
+until node -e "fetch('http://127.0.0.1:' + process.env.WIDGET_PORT + '/').then((r) => process.exit(r.ok ? 0 : 1), () => process.exit(1))"; do sleep 0.3; done
+echo "open http://127.0.0.1:$WIDGET_PORT/ in a browser"
+cd "$REPO"
+pnpm -s embed:check-page "http://127.0.0.1:$WIDGET_PORT/"
+kill "$SERVER_PID"
+touch "$HARNESS/stop"
+wait "$HARNESS_PID"
+```
+
+```text quickstart:expect:path4
+harness ready
+open http://127.0.0.1:5190/ in a browser
+{"statusOnly":{"status":"active","files":"not checked — no package supplied"},"checked":{"status":"active","files":"matching"},"packageRequestsBeforeCheck":0,"packageRequestsAfterCheck":1}
+```
+
+Open the page in a browser to see the same thing; the last command presses **Check files** with a
+headless browser so this guide can be checked automatically (it needs the repository checkout, not the
+installed packages). Read the two lines separately:
+
+- The first widget has no `package-url`, so its file line says **not checked — no package supplied**.
+  Its status, **active**, is the registry's current record for that exact reference. It is **not** a
+  statement that the files are right, that the reviewer is trusted, or that the content is correct.
+- The second widget offers **Check files**. Nothing is downloaded until you press it (the output shows
+  zero package requests before the press and one after). **matching** means the files are exactly the
+  ones the reference commits to; it says nothing about the registry status, and the status line says
+  nothing about the files.
+- The revoked, superseded and `not found` states, and `unknown` (shown for anything that is not a
+  successful read of the registry you configured, never as `not found`), are covered by the widget's
+  tests; see its README.
+
+This path is **local**. A page for a real deployment passes that deployment's recorded policy and a
+public, keyless endpoint, uses HTTPS everywhere, and publishes a package only if it is deliberately
+public: the file check downloads the package in full. Confidential evidence belongs in the local
+verifier or the CLI instead.
+
 ## What was measured
 
 `pnpm quickstart:check` runs the commands above from a clean directory and writes
@@ -297,12 +418,12 @@ date, versions, environment, source revision, outcome, and **separate** times fo
 execution and manually performed live steps. Installation time depends on your machine and store, so
 no total is promised here.
 
-| Item                                             | Status                                                                                   |
-| ------------------------------------------------ | ---------------------------------------------------------------------------------------- |
-| Author-run, automated clean install              | Recorded in the evidence file (the author's machine, an offline pnpm store).             |
-| Someone other than the author follows this guide | **NOT YET.** It needs a real participant with their permission. No feedback is invented. |
-| Live steps against a public network              | Not performed by any check.                                                              |
-| Embeddable widget                                | **NOT YET** (Chapter 18).                                                                |
+| Item                                             | Status                                                                                    |
+| ------------------------------------------------ | ----------------------------------------------------------------------------------------- |
+| Author-run, automated clean install              | Recorded in the evidence file (the author's machine, an offline pnpm store).              |
+| Someone other than the author follows this guide | **NOT YET.** It needs a real participant with their permission. No feedback is invented.  |
+| Live steps against a public network              | Not performed by any check.                                                               |
+| Embeddable widget, local harness                 | Recorded in the evidence file (path 4). A public page for a real deployment: **NOT YET**. |
 
 An authored example shows technical portability. It is not independent adoption, practitioner
 validation, a production security review or an award.
