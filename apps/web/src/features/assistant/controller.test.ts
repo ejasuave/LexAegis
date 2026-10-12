@@ -234,7 +234,7 @@ describe('local handling without disclosure', () => {
   });
 });
 
-describe('Stop', () => {
+describe('[aegis-cancellation-races-and-streams] Stop', () => {
   it('stops during a provider wait, shows stopping, then confirmed cancellation; repeat is harmless', async () => {
     const a = await assistantRig([hangUntilAborted, answer()]);
     await a.assistant.action('explain', { references: [a.clause] });
@@ -313,7 +313,7 @@ describe('Stop', () => {
   });
 });
 
-describe('stream integrity', () => {
+describe('[aegis-cancellation-races-and-streams] stream integrity', () => {
   const run = async (
     tamper: (event: AssistantEvent, index: number) => (AssistantEvent | string)[],
   ) => {

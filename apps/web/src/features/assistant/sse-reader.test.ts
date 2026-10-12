@@ -21,7 +21,7 @@ async function all(stream: ReadableStream<Uint8Array>, limit?: number): Promise<
 
 const frame = (seq: number, data: string) => `id: ${seq}\nevent: x\ndata: ${data}\n\n`;
 
-describe('SSE reader', () => {
+describe('[aegis-cancellation-races-and-streams] SSE reader', () => {
   it('reassembles frames split at every possible byte boundary', async () => {
     const text = frame(1, '{"a":"£24,000 — ünïcode"}') + ': hb\n\n' + frame(2, '{"b":2}');
     const bytes = encoder.encode(text);

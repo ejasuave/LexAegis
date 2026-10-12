@@ -424,7 +424,7 @@ describe('code-only handling', () => {
   });
 });
 
-describe('admission and consent', () => {
+describe('[aegis-run-ceilings-and-admission] admission and consent', () => {
   it('refuses to start without a provider, or on an unverified configuration', async () => {
     const matter = await syntheticMatter();
     const request = await syntheticRequest(matter);
@@ -541,7 +541,7 @@ describe('admission and consent', () => {
   });
 });
 
-describe('cancellation', () => {
+describe('[aegis-cancellation-races-and-streams] cancellation', () => {
   it('stops during a provider wait, acknowledges, and dispatches nothing afterwards', async () => {
     const matter = await syntheticMatter();
     const h = agentHarness([hangUntilAborted, answer(), answer()]);

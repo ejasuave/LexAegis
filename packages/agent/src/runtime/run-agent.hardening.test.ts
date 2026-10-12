@@ -168,7 +168,7 @@ describe('injected document instructions', () => {
   });
 });
 
-describe('output modes and budgets', () => {
+describe('[aegis-run-ceilings-and-admission] output modes and budgets', () => {
   it('uses the configured JSON-object mode with the same local validation and never falls back', async () => {
     const matter = await syntheticMatter();
     const provider = createScriptedProvider([done(), answer()], { outputMode: 'json_object' });
@@ -272,7 +272,7 @@ describe('output modes and budgets', () => {
   });
 });
 
-describe('replicas and restarts', () => {
+describe('[aegis-run-ceilings-and-admission] replicas and restarts', () => {
   it('a second replica can cancel a run it does not hold, through the shared store', async () => {
     const matter = await syntheticMatter();
     const store = createMemoryRunStore();

@@ -27,7 +27,7 @@ const granted = (reservation: ReturnType<BudgetTracker['reserve']>) => {
   return reservation;
 };
 
-describe('run budget', () => {
+describe('[aegis-run-ceilings-and-admission] run budget', () => {
   it('has the documented default ceilings, which configuration can lower but not raise', () => {
     expect(DEFAULT_BUDGET).toEqual({
       providerAttempts: 6,

@@ -9011,6 +9011,14 @@
           "apps/web/src/test-support/scripted-qwen-server.ts",
           "docs/system-validation/findings.json"
         ]
+      },
+      "8": {
+        "status": "complete",
+        "summary": "packages/agent/src/runtime/hostile-boundaries.test.ts (10 tests) on the real runtime with the scripted provider, plus case tags on the existing ceiling, admission, cancellation, stream and replica tests. Capability boundary: the tool registry is exactly check_evidence, check_payments, get_rules, get_status, prepare_review and read_sources, with no name that signs, sends, funds, confirms, writes, fetches or reads secrets; the request schema is closed so forged system/tool/developer/provider roles and smuggled tool_calls in prior conversation cannot be expressed; a scripted model that obeys hostile text in the document, the utterance, the history or a tool result executes nothing outside the allowlist (only read_sources runs) and the run row holds no approval, ticket or signature. Results: unknown source/tool/rule handles and URLs are refused; a handle from another run is unknown here; calculation and status blocks cannot cite the wrong kind of result; the model cannot supply offsets, quotes or results (extra fields refused); empty, non-JSON, truncated, trailing-text, array and null outputs are refused; markup is data, never structure. Oracle 2400000-(1000000+1200000)=200000 from check_payments; a simulated 1400000 instalment is a refused argument and appears nowhere. Existing tests already pinned the 6-attempt/8-tool/120-second ceilings, token reservations, duplicate admission, lease expiry, cross-replica cancellation, restart interruption, one terminal outcome on completion/cancel races, stopping-not-cancelled-before-acknowledgement and partial/duplicate/gapped/lost streams; they are now tagged to cases. Scripted success does not validate live Qwen behaviour, legal advice quality or injection immunity; no paid model call was made.",
+        "files": [
+          "packages/agent/src/runtime/hostile-boundaries.test.ts",
+          "tests/system/harness/cases.ts"
+        ]
       }
     },
     "decisions": [],

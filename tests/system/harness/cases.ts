@@ -160,4 +160,34 @@ export const SYSTEM_CASES: readonly SystemCaseV1[] = parseManifest([
     'Server logs hold only allowlisted operational fields, and no test produces or commits a trace, HAR, video, screenshot or saved authentication state.',
     'browser_scripted',
   ),
+  c(
+    'aegis-injection-capability-boundaries',
+    'packages/agent/src/runtime/hostile-boundaries.test.ts',
+    'Only the six read-only tools can execute; hostile text in a document, note, history or tool output, and forged roles, execute or change nothing.',
+    'unit',
+  ),
+  c(
+    'aegis-handles-and-forged-results',
+    'packages/agent/src/runtime/hostile-boundaries.test.ts',
+    'Source, tool and rule handles must come from this run, calculation and status blocks must cite the right kind of result, and the model cannot supply offsets, quotes or results.',
+    'unit',
+  ),
+  c(
+    'aegis-oracle-arithmetic',
+    'packages/agent/src/runtime/hostile-boundaries.test.ts',
+    'The integer oracle 2400000-(1000000+1200000)=200000 is the only source of figures, and a simulated instalment is refused and changes nothing.',
+    'unit',
+  ),
+  c(
+    'aegis-run-ceilings-and-admission',
+    'packages/agent/src/runtime/run-agent.hardening.test.ts',
+    'Six provider attempts, eight tools, 120 seconds, token reservations, one active run, duplicate admission, lease expiry and cross-replica cancellation hold, with no provider fallback or background continuation.',
+    'unit',
+  ),
+  c(
+    'aegis-cancellation-races-and-streams',
+    'packages/agent/src/runtime/run-agent.test.ts',
+    'Exactly one real terminal outcome results from completion and cancel races, Stop is not cancellation until acknowledged, and partial, duplicate, gapped or lost event streams never become a completed result.',
+    'unit',
+  ),
 ]);
