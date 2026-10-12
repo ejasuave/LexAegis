@@ -243,6 +243,17 @@
       "status": "fixed",
       "result": "Both app launchers now blank the Envio, Qwen and DashScope variables explicitly, so nothing from .env reaches the app under test; the egress check did its job in catching it.",
       "remaining": "Any other variable in .env that an app feature reads would have the same effect; the launchers blank the ones the app knows about today."
+    },
+    {
+      "id": "F-023",
+      "severity": "medium",
+      "invariant": "The gate runs from a clean checkout.",
+      "case": "validate:mvp (lint, typecheck, exclusion, system cases in an isolated worktree)",
+      "module": "indexer/.envio (generated), tooling/scripts/validate-mvp.ts, .github/workflows/ci.yml",
+      "reproduction": "Run the gate in a fresh git worktree after pnpm install: lint and typecheck fail in indexer/src/handlers because the generated Envio types are absent (git-ignored; only pnpm indexer:codegen creates them), the exclusion scan ran before the build it scans, and the system cases were blocked with S3_NOT_INSTALLED because the pinned S3-compatible server is also downloaded separately (pnpm tools:s3).",
+      "status": "fixed",
+      "result": "The runner gained an indexer-codegen stage that runs only when the generated types are missing or describe another chain, the exclusion stage now follows the build, and CI runs pnpm indexer:codegen before lint. The missing S3 server is reported as a typed blocked result, as designed; CI already installs it.",
+      "remaining": "Before this, the CI check job could not have passed lint on a clean checkout; it has not been run on a hosted runner."
     }
   ]
 }

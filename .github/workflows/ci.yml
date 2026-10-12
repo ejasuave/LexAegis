@@ -24,6 +24,7 @@ jobs:
           node-version: 24
           cache: pnpm
       - run: pnpm install --frozen-lockfile
+      - run: pnpm indexer:codegen # generated, git-ignored Envio types: lint and typecheck need them
       - run: pnpm lint # includes the package-boundary restrictions
       - run: pnpm format:check
       - run: pnpm typecheck

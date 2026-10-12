@@ -61,6 +61,8 @@ interface StageDef {
   readonly evidenceClass: Evidence;
   /** A stage that cannot run unless another passed (a toolchain, for example). */
   readonly needs?: string;
+  /** True when the stage's work is already done and a re-run would only rewrite files a running service may use. */
+  readonly satisfied?: () => boolean;
   /** The id of the test group it reports into, for stages that run test files. */
   readonly kind?: 'tests-unit' | 'tests-system';
   /** A package script that runs vitest: add the JSON reporter so its tagged cases are read from real outcomes. */
@@ -69,6 +71,19 @@ interface StageDef {
 
 const MINUTE = 60_000;
 export const STAGES: readonly StageDef[] = [
+  {
+    id: 'indexer-codegen',
+    args: ['indexer:codegen'],
+    timeoutMs: 10 * MINUTE,
+    evidenceClass: 'unit',
+    // Generated, git-ignored types: absent on a fresh checkout, and left for another chain by a local-chain run.
+    satisfied: () => {
+      const types = join(ROOT, 'indexer', '.envio', 'types.d.ts');
+      if (!existsSync(types)) return false;
+      const text = readFileSync(types, 'utf8');
+      return text.includes('10143') && !text.includes('31337');
+    },
+  },
   { id: 'lint', args: ['lint'], timeoutMs: 15 * MINUTE, evidenceClass: 'unit' },
   { id: 'typecheck', args: ['typecheck'], timeoutMs: 15 * MINUTE, evidenceClass: 'unit' },
   { id: 'unit-tests', args: ['test'], timeoutMs: 20 * MINUTE, evidenceClass: 'unit', json: true },
@@ -87,8 +102,8 @@ export const STAGES: readonly StageDef[] = [
   },
   { id: 'state', args: ['state:validate'], timeoutMs: 2 * MINUTE, evidenceClass: 'unit' },
   { id: 'secrets', args: ['secrets:check'], timeoutMs: 5 * MINUTE, evidenceClass: 'unit' },
-  { id: 'exclusion', args: ['exclusion:check'], timeoutMs: 5 * MINUTE, evidenceClass: 'unit' },
   { id: 'build', args: ['build'], timeoutMs: 20 * MINUTE, evidenceClass: 'local_integration' },
+  { id: 'exclusion', args: ['exclusion:check'], timeoutMs: 5 * MINUTE, evidenceClass: 'unit' },
   {
     id: 'packages',
     args: ['packages:check'],
@@ -361,6 +376,18 @@ for (const stage of STAGES) {
       exitCode: null,
       issueCodes: ['STAGE_NOT_SELECTED'],
     });
+    continue;
+  }
+  if (stage.satisfied?.() === true) {
+    stageResults.push({
+      ...base,
+      command: `${command} (generated files already match the testnet config; not re-run)`,
+      status: 'pass',
+      durationMs: 0,
+      exitCode: 0,
+      issueCodes: [],
+    });
+    console.log(`${stage.id}: pass (already satisfied)`);
     continue;
   }
   const needed =
