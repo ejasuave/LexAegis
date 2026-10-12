@@ -8162,6 +8162,39 @@
         "failures": "0",
         "chapter12": "not run; this reuses the Chapter 9 and 10 journeys"
       }
+    },
+    {
+      "id": "live-read-20261012181557",
+      "subject": "live-read-observation",
+      "sourceRevision": {
+        "commit": "fa6e53a2b552851c094056bc6b0809833669ff78",
+        "dirtyWorktree": true,
+        "contentFingerprint": "be3a16ada54d96f3d0295d2f9ddf2380418734aef64ca30f042473e12fcb6aa3"
+      },
+      "checkedAt": "2026-10-12T18:15:57.886Z",
+      "command": "pnpm validate:live read",
+      "environment": {
+        "node": "v24.21.0",
+        "os": "linux-x64",
+        "pnpm": "11.11.0"
+      },
+      "evidenceClass": "live_testnet",
+      "outcome": "unknown",
+      "reasonCodes": [
+        "READ_ONLY",
+        "PROVIDER_UNAVAILABLE"
+      ],
+      "evidenceRefs": [
+        {
+          "type": "path",
+          "value": "docs/evidence/chapter12/live-read-2026-10-12.json"
+        }
+      ],
+      "facts": {
+        "chainId": "10143",
+        "envioReadable": false,
+        "providers": "public-rpc:match,alchemy:match,envio:unavailable"
+      }
     }
   ],
   "appliedCuts": [],
@@ -11391,6 +11424,15 @@
           "tests/system/chain-recovery.spec.ts",
           "package.json",
           ".github/workflows/ci.yml"
+        ]
+      },
+      "15": {
+        "status": "complete",
+        "summary": "pnpm validate:live (tooling/scripts/live-evidence.ts): status (default, no network) lists each live or real-device capability as verified, unverified, blocked or not_run from the existing evidence records, counting only real_device or live_testnet evidence that shows the step; device prints the checklist for a person on their own hardware; device-record validates what that person observed (every step flag required, no default yes, credential-looking values refused, origin-only clearing and passkey-kept must both be confirmed, not-available stays unverified, ceremony counts, measured seconds per stage, voice and text-fallback) and with --write records real_device evidence under the new subject device-recovery-observation (gate subjects untouched); read runs one bounded read-only pass of the existing registry reference through the public Monad RPC, Alchemy and the Envio history index and records provider names, checkpoint and lag separately; qwen --spend-tokens is the only way a paid run starts, otherwise it stays not_run LIVE_OPT_IN_REQUIRED. Observed here: pnpm validate:live read matched the registry code at checkpoints 70466546 (public RPC) and 70466551 (Alchemy), both rechecked, chain 10143, 1.6 s and 1.7 s; the Envio history index was unavailable (fetch failed), so it stays unverified and the result is recorded as unknown (docs/evidence/chapter12/live-read-2026-10-12.json). Status today: Mera create and recover on a real device verified (operator reported, Linux desktop, phone passkey, 2026-10-10); vault recovery on a real device unverified (an earlier record did not show a second device or export/import); second-device recovery, Envio read, live Qwen, a new testnet lifecycle and local dictation/read-aloud are not_run or unverified. No passkey ceremony was driven, nothing was funded, deployed or sent, and no model was called. LIMITS: operator-reported observations are not independently proven; sponsor-side retention, practitioner validation, external adoption and legal accuracy cannot be proven by a script.",
+        "files": [
+          "tooling/scripts/live-evidence.ts",
+          "package.json",
+          "docs/evidence/chapter12/live-read-2026-10-12.json"
         ]
       }
     },

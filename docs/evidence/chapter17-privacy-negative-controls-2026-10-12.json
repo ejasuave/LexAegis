@@ -1,0 +1,272 @@
+{
+  "schema": "lexaegis.evidence.privacy-negative-controls.v1",
+  "note": "Synthetic faults in a disposable git worktree of the commit below; local services and a loopback receiver only. Shows that each named check detects its fault. It does not show that the checks detect every leak.",
+  "command": "pnpm test:privacy:controls",
+  "checkedAt": "2026-10-12T18:15:43.249Z",
+  "durationSeconds": 1043,
+  "commit": "a450f3407c851f59b9c4e65629da723db24f52fc",
+  "workingTreeDirtyAtStart": true,
+  "testedCopy": "git worktree of HEAD (uncommitted changes in the working tree are not in it)",
+  "owningCheck": "pnpm test:privacy:browser --journey hud (observed HUD journey and its built assets)",
+  "scope": "every fault",
+  "outcome": "pass",
+  "setupFailure": null,
+  "baseline": { "outcome": "pass", "failures": [] },
+  "faults": 13,
+  "detectedAndRestored": 13,
+  "results": [
+    {
+      "faultId": "A1-server-secret-in-browser-module",
+      "boundary": "built browser assets",
+      "mistake": "a server-only configuration name and its value are written into a client module",
+      "owningModule": "apps/web/src/features/account/derivation-profile.ts",
+      "expectedDetector": [
+        "^SERVER_ENV_NAME web client assets \\(\\.next-hud-check\\/static\\) .*: QWEN_API_KEY$",
+        "^CANARY_VALUE web client assets \\(\\.next-hud-check\\/static\\) .*: provider_credential fault-server-secret "
+      ],
+      "outcome": "detected",
+      "reason": null,
+      "observedFailure": [
+        "SERVER_ENV_NAME web client assets (.next-hud-check/static) chunks/37dh3v-k58ubu.js: QWEN_API_KEY",
+        "CANARY_VALUE web client assets (.next-hud-check/static) chunks/37dh3v-k58ubu.js: provider_credential fault-server-secret (plain)"
+      ],
+      "otherFailures": 1,
+      "receiverRequests": null,
+      "restored": "pass",
+      "restoredFailures": [],
+      "seconds": 79
+    },
+    {
+      "faultId": "S1-signing-key-in-localStorage",
+      "boundary": "browser persistence: localStorage",
+      "mistake": "a signing key is cached next to the public account hint",
+      "owningModule": "apps/web/src/features/account/derivation-profile.ts",
+      "expectedDetector": [
+        "^CANARY_IN_FORBIDDEN_DESTINATION hud browser\\.localStorage signing_key fault-signing-key @ "
+      ],
+      "outcome": "detected",
+      "reason": null,
+      "observedFailure": [
+        "CANARY_IN_FORBIDDEN_DESTINATION hud browser.localStorage signing_key fault-signing-key @ localStorage write \"lexaegis.negative-control\" during before-account"
+      ],
+      "otherFailures": 8,
+      "receiverRequests": null,
+      "restored": "pass",
+      "restoredFailures": [],
+      "seconds": 76
+    },
+    {
+      "faultId": "S2-prf-output-in-sessionStorage",
+      "boundary": "browser persistence: sessionStorage",
+      "mistake": "a PRF output is kept for the tab session",
+      "owningModule": "apps/web/src/features/account/derivation-profile.ts",
+      "expectedDetector": [
+        "^CANARY_IN_FORBIDDEN_DESTINATION hud browser\\.sessionStorage prf_output fault-prf-output @ "
+      ],
+      "outcome": "detected",
+      "reason": null,
+      "observedFailure": [
+        "CANARY_IN_FORBIDDEN_DESTINATION hud browser.sessionStorage prf_output fault-prf-output @ sessionStorage write \"lexaegis.negative-control\" during before-account"
+      ],
+      "otherFailures": 8,
+      "receiverRequests": null,
+      "restored": "pass",
+      "restoredFailures": [],
+      "seconds": 75
+    },
+    {
+      "faultId": "S3-vault-key-bytes-in-IndexedDB",
+      "boundary": "browser persistence: IndexedDB",
+      "mistake": "unwrapped vault key bytes are stored in IndexedDB",
+      "owningModule": "apps/web/src/features/account/derivation-profile.ts",
+      "expectedDetector": [
+        "^CANARY_IN_FORBIDDEN_DESTINATION hud browser\\.indexedDB vault_key fault-vault-key @ "
+      ],
+      "outcome": "detected",
+      "reason": null,
+      "observedFailure": [
+        "CANARY_IN_FORBIDDEN_DESTINATION hud browser.indexedDB vault_key fault-vault-key @ indexedDB write \"lexaegis-negative-control/kept/value\" during before-account"
+      ],
+      "otherFailures": 8,
+      "receiverRequests": null,
+      "restored": "pass",
+      "restoredFailures": [],
+      "seconds": 76
+    },
+    {
+      "faultId": "S4-session-secret-in-a-script-cookie",
+      "boundary": "browser persistence: cookies",
+      "mistake": "a signing-session secret is written to a cookie by page script",
+      "owningModule": "apps/web/src/features/account/derivation-profile.ts",
+      "expectedDetector": [
+        "^CANARY_IN_FORBIDDEN_DESTINATION hud browser\\.cookie signing_session_secret fault-signing-session-secret @ "
+      ],
+      "outcome": "detected",
+      "reason": null,
+      "observedFailure": [
+        "CANARY_IN_FORBIDDEN_DESTINATION hud browser.cookie signing_session_secret fault-signing-session-secret @ cookie write \"document.cookie\" during before-account"
+      ],
+      "otherFailures": 14,
+      "receiverRequests": null,
+      "restored": "pass",
+      "restoredFailures": [],
+      "seconds": 75
+    },
+    {
+      "faultId": "S5-secret-in-the-Cache-API",
+      "boundary": "browser persistence: Cache storage",
+      "mistake": "a response holding a session secret is put into Cache storage",
+      "owningModule": "apps/web/src/features/account/derivation-profile.ts",
+      "expectedDetector": [
+        "^CACHE_OR_SERVICE_WORKER_USED hud browser\\.cache ",
+        "^CANARY_IN_FORBIDDEN_DESTINATION hud browser\\.cache signing_session_secret fault-cached-secret @ "
+      ],
+      "outcome": "detected",
+      "reason": null,
+      "observedFailure": [
+        "CACHE_OR_SERVICE_WORKER_USED hud browser.cache - - @ cache write \"/negative-control\" during before-account",
+        "CANARY_IN_FORBIDDEN_DESTINATION hud browser.cache signing_session_secret fault-cached-secret @ cache write \"/negative-control\" during before-account"
+      ],
+      "otherFailures": 8,
+      "receiverRequests": null,
+      "restored": "pass",
+      "restoredFailures": [],
+      "seconds": 79
+    },
+    {
+      "faultId": "S6-secret-written-then-deleted",
+      "boundary": "browser persistence: a transient write",
+      "mistake": "a PRF output is written to localStorage and removed again at once",
+      "owningModule": "apps/web/src/features/account/derivation-profile.ts",
+      "expectedDetector": [
+        "^CANARY_IN_FORBIDDEN_DESTINATION hud browser\\.localStorage prf_output fault-transient-secret @ localStorage write "
+      ],
+      "outcome": "detected",
+      "reason": null,
+      "observedFailure": [
+        "CANARY_IN_FORBIDDEN_DESTINATION hud browser.localStorage prf_output fault-transient-secret @ localStorage write \"lexaegis.negative-control.tmp\" during before-account"
+      ],
+      "otherFailures": 2,
+      "receiverRequests": null,
+      "restored": "pass",
+      "restoredFailures": [],
+      "seconds": 76
+    },
+    {
+      "faultId": "S7-CryptoKey-in-IndexedDB",
+      "boundary": "browser persistence: a stored CryptoKey",
+      "mistake": "a non-extractable CryptoKey is stored in IndexedDB",
+      "owningModule": "apps/web/src/features/account/derivation-profile.ts",
+      "expectedDetector": ["^CRYPTOKEY_PERSISTED hud browser\\.indexedDB "],
+      "outcome": "detected",
+      "reason": null,
+      "observedFailure": [
+        "CRYPTOKEY_PERSISTED hud browser.indexedDB - - @ indexedDB write \"lexaegis-negative-control/kept/value\" during before-account"
+      ],
+      "otherFailures": 6,
+      "receiverRequests": null,
+      "restored": "pass",
+      "restoredFailures": [],
+      "seconds": 76
+    },
+    {
+      "faultId": "L1-document-text-through-the-logger",
+      "boundary": "server log: the application logger",
+      "mistake": "document text and a file name are passed to the logger as a code",
+      "owningModule": "apps/web/src/app/api/assistant/runs/route.ts",
+      "expectedDetector": [
+        "^CANARY_IN_FORBIDDEN_DESTINATION hud server\\.log unselected_text fault-document-text @ ",
+        "^CANARY_IN_FORBIDDEN_DESTINATION hud server\\.log filename fault-filename @ "
+      ],
+      "outcome": "detected",
+      "reason": null,
+      "observedFailure": [
+        "CANARY_IN_FORBIDDEN_DESTINATION hud server.log unselected_text fault-document-text @ application and server log",
+        "CANARY_IN_FORBIDDEN_DESTINATION hud server.log filename fault-filename @ application and server log"
+      ],
+      "otherFailures": 2,
+      "receiverRequests": null,
+      "restored": "pass",
+      "restoredFailures": [],
+      "seconds": 76
+    },
+    {
+      "faultId": "L2-amount-and-secret-on-the-error-path",
+      "boundary": "server log: the error path",
+      "mistake": "an error carrying an amount and a credential is printed with its stack",
+      "owningModule": "apps/web/src/app/api/assistant/runs/route.ts",
+      "expectedDetector": [
+        "^CANARY_IN_FORBIDDEN_DESTINATION hud server\\.log money_field fault-amount @ ",
+        "^CANARY_IN_FORBIDDEN_DESTINATION hud server\\.log provider_credential fault-log-secret @ "
+      ],
+      "outcome": "detected",
+      "reason": null,
+      "observedFailure": [
+        "CANARY_IN_FORBIDDEN_DESTINATION hud server.log money_field fault-amount @ application and server log",
+        "CANARY_IN_FORBIDDEN_DESTINATION hud server.log provider_credential fault-log-secret @ application and server log"
+      ],
+      "otherFailures": 2,
+      "receiverRequests": null,
+      "restored": "pass",
+      "restoredFailures": [],
+      "seconds": 76
+    },
+    {
+      "faultId": "N1-browser-sends-to-a-forbidden-receiver",
+      "boundary": "browser network: a destination outside the origin, with no consent given",
+      "mistake": "client code posts unselected text to another host",
+      "owningModule": "apps/web/src/features/account/derivation-profile.ts",
+      "expectedDetector": [
+        "^(?:BROWSER_REQUEST_BLOCKED_BY_POLICY|REQUEST_OUTSIDE_ORIGIN) hud request\\.outside "
+      ],
+      "outcome": "detected",
+      "reason": null,
+      "observedFailure": [
+        "BROWSER_REQUEST_BLOCKED_BY_POLICY hud request.outside - - @ browser console message 8: http://127.0.0.1:34617"
+      ],
+      "otherFailures": 3,
+      "receiverRequests": 0,
+      "restored": "pass",
+      "restoredFailures": [],
+      "seconds": 77
+    },
+    {
+      "faultId": "N2-server-sends-to-a-forbidden-receiver",
+      "boundary": "server network: a destination outside its allowlist, with no consent given",
+      "mistake": "a route posts unselected text to another host",
+      "owningModule": "apps/web/src/app/api/auth/me/route.ts",
+      "expectedDetector": [
+        "^SERVER_EGRESS_NOT_ALLOWED hud server\\.egress - - @ server opened a socket to "
+      ],
+      "outcome": "detected",
+      "reason": null,
+      "observedFailure": [
+        "SERVER_EGRESS_NOT_ALLOWED hud server.egress - - @ server opened a socket to 127.0.0.1:34617"
+      ],
+      "otherFailures": 1,
+      "receiverRequests": 4,
+      "restored": "pass",
+      "restoredFailures": [],
+      "seconds": 75
+    },
+    {
+      "faultId": "N3-consented-request-with-an-extra-unselected-field",
+      "boundary": "analysis request: content beyond what was selected, inside a consented request",
+      "mistake": "the request builder adds text that the reviewer never selected",
+      "owningModule": "apps/web/src/features/assistant/selected-context.ts",
+      "expectedDetector": [
+        "^CANARY_IN_FORBIDDEN_DESTINATION hud request\\.assistant unselected_text fault-unselected-extra @ "
+      ],
+      "outcome": "detected",
+      "reason": null,
+      "observedFailure": [
+        "CANARY_IN_FORBIDDEN_DESTINATION hud request.assistant unselected_text fault-unselected-extra @ POST /api/assistant/runs body"
+      ],
+      "otherFailures": 3,
+      "receiverRequests": null,
+      "restored": "pass",
+      "restoredFailures": [],
+      "seconds": 77
+    }
+  ]
+}
