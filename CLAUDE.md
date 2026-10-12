@@ -34,6 +34,6 @@ Status: `docs/build-state.json`. Node 24+, pnpm 11.
 - Keys, PRF outputs, sessions stay in memory. Vault unlock is no signing session.
 - Model proposes, code decides: no model, chat or voice input approves, signs or confirms. A frozen package is ready only via a `RecoverableCapture` rebuilt this unlock; signing consumes it. Approval is a trusted click; technical failures cannot be waived.
 - Money: GBP minor units, decimal strings. ERC-8004 identity: optional, in hashed `agent-config` v2, read-only.
-- Only real_device/live_testnet evidence passes live gates (computed). Failed Gate B withdraws Mera bounty claims.
+- Live gates accept only real_device/live_testnet evidence, C1 only `live_provider`; gates are computed. Failed Gate B withdraws Mera bounty claims.
 - Adoption counts only from `docs/adoption/traction-log.md`; keep `No external trials recorded yet`, `No entries yet` until real evidence. Widget/example results local; testnet issue NOT YET.
 - Registry code matched source 2026-10-11 (`docs/DEPLOYMENTS.md`), unaudited. Monadscan, private contact: NOT YET. `contracts/foundry.toml` protected: use `FOUNDRY_*`.

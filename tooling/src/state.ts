@@ -14,11 +14,20 @@ export const EVIDENCE_CLASSES = [
   'virtual_authenticator',
   'real_device',
   'live_testnet',
+  /** A genuine paid AI provider call (real endpoint, real request IDs). Never a testnet or device claim. */
+  'live_provider',
 ] as const;
 export type EvidenceClass = (typeof EVIDENCE_CLASSES)[number];
 
 /** Classes that may support a LIVE claim. Local, scripted and virtual evidence never can. */
 export const LIVE_CLASSES: ReadonlySet<EvidenceClass> = new Set(['real_device', 'live_testnet']);
+
+/**
+ * Classes that may support a genuine PROVIDER claim (Gate C1 only). Deliberately separate from
+ * LIVE_CLASSES: a model call proves nothing about a chain or a device, and a chain or device
+ * observation proves nothing about a model.
+ */
+export const PROVIDER_CLASSES: ReadonlySet<EvidenceClass> = new Set(['live_provider']);
 
 export const OUTCOMES = ['pass', 'fail', 'unknown', 'pending', 'blocked'] as const;
 export type Outcome = (typeof OUTCOMES)[number];

@@ -8833,6 +8833,209 @@
         "browser": "chromium (playwright)",
         "published": false
       }
+    },
+    {
+      "id": "qwen-run-20261012212355",
+      "subject": "qwen-run",
+      "sourceRevision": {
+        "commit": "3f8363ccfc24743bb35caf65b471765765fe949f",
+        "dirtyWorktree": true,
+        "contentFingerprint": "44cab3e4da4684b4ac873bea9959267931f6fb68f15530819e6d0c2685c1f813"
+      },
+      "checkedAt": "2026-10-12T21:33:52.569Z",
+      "command": "pnpm qwen:smoke (recorded by pnpm validate:live record-qwen)",
+      "environment": {
+        "node": "v24.21.0",
+        "os": "linux-x64",
+        "pnpm": "11.11.0"
+      },
+      "evidenceClass": "live_provider",
+      "outcome": "pass",
+      "reasonCodes": [
+        "LIVE_PROVIDER_RUN",
+        "SYNTHETIC_FIXTURE_INPUT",
+        "ONE_RUN_ONE_FIXTURE"
+      ],
+      "evidenceRefs": [
+        {
+          "type": "path",
+          "value": "docs/evidence/chapter09-qwen-smoke-2026-10-12.json"
+        }
+      ],
+      "facts": {
+        "provenance": "live-provider",
+        "replayed": false,
+        "scriptedProvider": false,
+        "provider": "qwen",
+        "region": "ap-southeast-1",
+        "returnedModel": "qwen3.8-max",
+        "capabilityVerified": true,
+        "assertionsPassed": true,
+        "requestIds": "6",
+        "toolRequests": "4",
+        "citedBlocks": "4",
+        "inputKind": "synthetic_fixture"
+      }
+    },
+    {
+      "id": "rd-20261012213354-40e9db-check-typecheck",
+      "subject": "check-typecheck",
+      "sourceRevision": {
+        "commit": "3f8363ccfc24743bb35caf65b471765765fe949f",
+        "dirtyWorktree": true,
+        "contentFingerprint": "44cab3e4da4684b4ac873bea9959267931f6fb68f15530819e6d0c2685c1f813"
+      },
+      "checkedAt": "2026-10-12T21:33:54.111Z",
+      "command": "pnpm readiness",
+      "environment": {
+        "node": "v24.21.0",
+        "os": "linux-x64",
+        "pnpm": "11.11.0"
+      },
+      "evidenceClass": "local_scripted",
+      "outcome": "pass",
+      "reasonCodes": [],
+      "evidenceRefs": []
+    },
+    {
+      "id": "rd-20261012213354-40e9db-check-unit-tests",
+      "subject": "check-unit-tests",
+      "sourceRevision": {
+        "commit": "3f8363ccfc24743bb35caf65b471765765fe949f",
+        "dirtyWorktree": true,
+        "contentFingerprint": "44cab3e4da4684b4ac873bea9959267931f6fb68f15530819e6d0c2685c1f813"
+      },
+      "checkedAt": "2026-10-12T21:33:54.111Z",
+      "command": "pnpm readiness",
+      "environment": {
+        "node": "v24.21.0",
+        "os": "linux-x64",
+        "pnpm": "11.11.0"
+      },
+      "evidenceClass": "local_scripted",
+      "outcome": "pass",
+      "reasonCodes": [],
+      "evidenceRefs": []
+    },
+    {
+      "id": "rd-20261012213354-40e9db-check-forge-test",
+      "subject": "check-forge-test",
+      "sourceRevision": {
+        "commit": "3f8363ccfc24743bb35caf65b471765765fe949f",
+        "dirtyWorktree": true,
+        "contentFingerprint": "44cab3e4da4684b4ac873bea9959267931f6fb68f15530819e6d0c2685c1f813"
+      },
+      "checkedAt": "2026-10-12T21:33:54.111Z",
+      "command": "pnpm readiness",
+      "environment": {
+        "node": "v24.21.0",
+        "os": "linux-x64",
+        "pnpm": "11.11.0"
+      },
+      "evidenceClass": "local_scripted",
+      "outcome": "pass",
+      "reasonCodes": [],
+      "evidenceRefs": []
+    },
+    {
+      "id": "rd-20261012213354-40e9db-check-secret-scan",
+      "subject": "check-secret-scan",
+      "sourceRevision": {
+        "commit": "3f8363ccfc24743bb35caf65b471765765fe949f",
+        "dirtyWorktree": true,
+        "contentFingerprint": "44cab3e4da4684b4ac873bea9959267931f6fb68f15530819e6d0c2685c1f813"
+      },
+      "checkedAt": "2026-10-12T21:33:54.111Z",
+      "command": "pnpm readiness",
+      "environment": {
+        "node": "v24.21.0",
+        "os": "linux-x64",
+        "pnpm": "11.11.0"
+      },
+      "evidenceClass": "local_scripted",
+      "outcome": "pass",
+      "reasonCodes": [],
+      "evidenceRefs": []
+    },
+    {
+      "id": "rd-20261012213354-40e9db-check-protected-baselines",
+      "subject": "check-protected-baselines",
+      "sourceRevision": {
+        "commit": "3f8363ccfc24743bb35caf65b471765765fe949f",
+        "dirtyWorktree": true,
+        "contentFingerprint": "44cab3e4da4684b4ac873bea9959267931f6fb68f15530819e6d0c2685c1f813"
+      },
+      "checkedAt": "2026-10-12T21:33:54.111Z",
+      "command": "pnpm readiness",
+      "environment": {
+        "node": "v24.21.0",
+        "os": "linux-x64",
+        "pnpm": "11.11.0"
+      },
+      "evidenceClass": "local_scripted",
+      "outcome": "pass",
+      "reasonCodes": [],
+      "evidenceRefs": []
+    },
+    {
+      "id": "rd-20261012213354-40e9db-check-build",
+      "subject": "check-build",
+      "sourceRevision": {
+        "commit": "3f8363ccfc24743bb35caf65b471765765fe949f",
+        "dirtyWorktree": true,
+        "contentFingerprint": "44cab3e4da4684b4ac873bea9959267931f6fb68f15530819e6d0c2685c1f813"
+      },
+      "checkedAt": "2026-10-12T21:33:54.111Z",
+      "command": "pnpm readiness",
+      "environment": {
+        "node": "v24.21.0",
+        "os": "linux-x64",
+        "pnpm": "11.11.0"
+      },
+      "evidenceClass": "local_scripted",
+      "outcome": "pass",
+      "reasonCodes": [],
+      "evidenceRefs": []
+    },
+    {
+      "id": "rd-20261012213354-40e9db-check-exclusion",
+      "subject": "check-exclusion",
+      "sourceRevision": {
+        "commit": "3f8363ccfc24743bb35caf65b471765765fe949f",
+        "dirtyWorktree": true,
+        "contentFingerprint": "44cab3e4da4684b4ac873bea9959267931f6fb68f15530819e6d0c2685c1f813"
+      },
+      "checkedAt": "2026-10-12T21:33:54.111Z",
+      "command": "pnpm readiness",
+      "environment": {
+        "node": "v24.21.0",
+        "os": "linux-x64",
+        "pnpm": "11.11.0"
+      },
+      "evidenceClass": "local_scripted",
+      "outcome": "pass",
+      "reasonCodes": [],
+      "evidenceRefs": []
+    },
+    {
+      "id": "rd-20261012213354-40e9db-chapters-1-3-checks",
+      "subject": "chapters-1-3-checks",
+      "sourceRevision": {
+        "commit": "3f8363ccfc24743bb35caf65b471765765fe949f",
+        "dirtyWorktree": true,
+        "contentFingerprint": "44cab3e4da4684b4ac873bea9959267931f6fb68f15530819e6d0c2685c1f813"
+      },
+      "checkedAt": "2026-10-12T21:33:54.111Z",
+      "command": "pnpm readiness",
+      "environment": {
+        "node": "v24.21.0",
+        "os": "linux-x64",
+        "pnpm": "11.11.0"
+      },
+      "evidenceClass": "local_scripted",
+      "outcome": "pass",
+      "reasonCodes": [],
+      "evidenceRefs": []
     }
   ],
   "appliedCuts": [],
@@ -8860,7 +9063,7 @@
             "id": "A1",
             "label": "Chapters 1–3 build and tests pass",
             "state": "satisfied",
-            "resultId": "rd-20261012192730-2770f0-chapters-1-3-checks"
+            "resultId": "rd-20261012213354-40e9db-chapters-1-3-checks"
           },
           {
             "id": "A2",
@@ -8873,7 +9076,7 @@
           "MISSING:A2",
           "UNPROVEN_AT_CUTOFF"
         ],
-        "observedAt": "2026-10-12T19:27:30.517Z"
+        "observedAt": "2026-10-12T21:33:54.111Z"
       },
       {
         "gate": "B",
@@ -8915,8 +9118,8 @@
           {
             "id": "C1",
             "label": "Genuine Qwen run with bounded tools and valid source-linked findings",
-            "state": "missing",
-            "resultId": null
+            "state": "satisfied",
+            "resultId": "qwen-run-20261012212355"
           },
           {
             "id": "C2",
@@ -8926,11 +9129,10 @@
           }
         ],
         "reasons": [
-          "MISSING:C1",
           "MISSING:C2",
           "UNPROVEN_AT_CUTOFF"
         ],
-        "observedAt": null
+        "observedAt": "2026-10-12T21:33:52.569Z"
       },
       {
         "gate": "D",
@@ -8993,7 +9195,7 @@
         "HOSTED_T0_INCOMPLETE: dropping the bounties does not complete the hosted golden path"
       ]
     },
-    "evaluatedAt": "2026-10-12T19:27:30.517Z"
+    "evaluatedAt": "2026-10-12T21:33:54.111Z"
   },
   "cutLadder": {
     "order": [
@@ -9027,11 +9229,11 @@
     }
   },
   "readiness": {
-    "runId": "rd-20261012192730-2770f0",
-    "generatedAt": "2026-10-12T19:27:30.517Z",
+    "runId": "rd-20261012213354-40e9db",
+    "generatedAt": "2026-10-12T21:33:54.111Z",
     "live": false,
-    "fingerprint": "aa87c6249562f2cf97baeca0bb076a2a628dda438558bcd83405f8f03198a073",
-    "totalMs": 49804,
+    "fingerprint": "44cab3e4da4684b4ac873bea9959267931f6fb68f15530819e6d0c2685c1f813",
+    "totalMs": 53192,
     "versions": {
       "node": "v24.21.0",
       "pnpm": "11.11.0",
@@ -9042,43 +9244,43 @@
         "id": "typecheck",
         "outcome": "pass",
         "reason": "OK",
-        "durationMs": 32273
+        "durationMs": 34099
       },
       {
         "id": "unit-tests",
         "outcome": "pass",
         "reason": "OK",
-        "durationMs": 21386
+        "durationMs": 23101
       },
       {
         "id": "forge-test",
         "outcome": "pass",
         "reason": "OK",
-        "durationMs": 36527
+        "durationMs": 38418
       },
       {
         "id": "secret-scan",
         "outcome": "pass",
         "reason": "OK",
-        "durationMs": 704
+        "durationMs": 735
       },
       {
         "id": "protected-baselines",
         "outcome": "pass",
         "reason": "OK",
-        "durationMs": 574
+        "durationMs": 622
       },
       {
         "id": "build",
         "outcome": "pass",
         "reason": "OK",
-        "durationMs": 5455
+        "durationMs": 5694
       },
       {
         "id": "exclusion",
         "outcome": "pass",
         "reason": "OK",
-        "durationMs": 801
+        "durationMs": 816
       }
     ]
   },
@@ -12096,7 +12298,8 @@
       "A failed spec file is re-run once for diagnosis only; a failure that then passes stays a failure with FLAKY_RESULT.",
       "The validation report compares fingerprints, not the commit: a run on a dirty tree names its base commit, and the fingerprints bind the report to the content tested.",
       "pnpm audit findings under envio were fixed with narrow pnpm overrides (only the vulnerable ranges), documented in pnpm-workspace.yaml; remove them when envio ships fixed versions.",
-      "validate:live records operator-reported device observations as real_device evidence under its own subject and never touches the gate subjects."
+      "validate:live records operator-reported device observations as real_device evidence under its own subject and never touches the gate subjects.",
+      "Gate C1 reads a dedicated evidence class, live_provider, not live_testnet or real_device: a model call says nothing about a chain or a device, and the reverse. C1 accepts only live_provider with facts showing a live provider, real request IDs, the model name the provider returned, a verified capability, every assertion passed, at least two executed read-only tool requests and at least one validated citation; replayed or scripted runs, and any other class, are refused. A provider run satisfies no other requirement. pnpm validate:live record-qwen derives the record from the qwen:smoke evidence file and calls nothing."
     ],
     "limitations": [
       "Local software gate on synthetic data with scripted stand-ins: a virtual authenticator, a scripted provider, a loopback Anvil. It is not real-device, live-provider or deployment evidence, not an audit and not a legal compliance certification.",

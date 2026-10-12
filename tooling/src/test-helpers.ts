@@ -60,9 +60,21 @@ export function gateBEvidence(action = '0x' + '11'.repeat(32)): EvidenceResult[]
   ];
 }
 
+export const PROVIDER_FACTS = {
+  provenance: 'live-provider',
+  replayed: false,
+  scriptedProvider: false,
+  returnedModel: 'qwen3.8-max',
+  capabilityVerified: true,
+  assertionsPassed: true,
+  requestIds: '6',
+  toolRequests: '4',
+  citedBlocks: '4',
+};
+
 export function gateCEvidence(): EvidenceResult[] {
   return [
-    result('qwen-run', { facts: { provenance: 'live-provider', replayed: false } }),
+    result('qwen-run', { evidenceClass: 'live_provider', facts: { ...PROVIDER_FACTS } }),
     result('browser-t0-journey', {
       facts: { chainId: '10143', transactionChecked: true, verificationChecked: true },
     }),

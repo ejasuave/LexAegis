@@ -23,6 +23,8 @@
  *   read                        bounded READ-ONLY live checks of the existing registry reference through
  *                               the public Monad RPC, Alchemy (when configured) and the Envio history
  *                               index (when configured). One pass, no loops, no load. [--env-file .env] [--write]
+ *   record-qwen                 records the latest passing LIVE qwen:smoke evidence file as a `qwen-run` result of class
+ *                               live_provider (what Gate C1 reads). Calls nothing; refuses a file that is not a genuine run.
  *   qwen --spend-tokens         runs `pnpm qwen:smoke` (a synthetic fixture, the ordinary per-run budget).
  *                               Without the flag nothing is called and the case stays not_run.
  *
@@ -589,6 +591,100 @@ if (command === 'read') {
     console.log(`recorded: ${relative(ROOT, file)}`);
   }
   process.exit(bad ? 1 : unavailable || reached.length === 0 ? 3 : 0);
+}
+
+// ---- record-qwen ------------------------------------------------------------------------------------------
+
+interface QwenSmokeDoc {
+  evidenceKind?: string;
+  outcome?: string;
+  executedAt?: string;
+  provider?: { id?: string; region?: string; requestedModel?: string };
+  capability?: { verified?: boolean; returnedModel?: string | null };
+  run?: { terminalEvent?: string; agentConfig?: { provider?: { requestIds?: string[] } } };
+  assertions?: { id?: string; ok?: boolean; detail?: string }[];
+}
+
+/** Facts a genuine-run requirement reads, derived ONLY from what the smoke wrote. Returns why not, or the facts. */
+function providerFacts(
+  doc: QwenSmokeDoc,
+): { facts: Record<string, string | boolean> } | { why: string } {
+  if (doc.evidenceKind !== 'live') return { why: 'the file is not marked as a live run' };
+  if (doc.outcome !== 'pass') return { why: `the run outcome is ${doc.outcome ?? 'missing'}` };
+  if (doc.provider?.id !== 'qwen') return { why: 'the provider is not qwen' };
+  if (doc.capability?.verified !== true) return { why: 'the capability check is not verified' };
+  const returnedModel = doc.capability.returnedModel ?? '';
+  if (returnedModel === '') return { why: 'the provider returned no model name' };
+  if (doc.run?.terminalEvent !== 'run_completed') return { why: 'the run did not complete' };
+  const assertions = doc.assertions ?? [];
+  if (assertions.length === 0 || !assertions.every((a) => a.ok === true))
+    return { why: 'not every assertion passed' };
+  const requestIds = doc.run.agentConfig?.provider?.requestIds ?? [];
+  const tools =
+    assertions.find((a) => a.id === 'model_requested_two_read_only_tools')?.detail ?? '';
+  const toolRequests = (tools.match(/T\d+:[a-z_]+:succeeded/g) ?? []).length;
+  const cited = assertions.find((a) => a.id === 'answer_cites_resolvable_sources')?.detail ?? '';
+  const citedBlocks = Number(/^(\d+) validated block/.exec(cited)?.[1] ?? '0');
+  return {
+    facts: {
+      provenance: 'live-provider',
+      replayed: false,
+      scriptedProvider: false,
+      provider: 'qwen',
+      region: doc.provider.region ?? '',
+      returnedModel,
+      capabilityVerified: true,
+      assertionsPassed: true,
+      requestIds: String(requestIds.length),
+      toolRequests: String(toolRequests),
+      citedBlocks: String(citedBlocks),
+      inputKind: 'synthetic_fixture',
+    },
+  };
+}
+
+if (command === 'record-qwen') {
+  const directory = join(ROOT, 'docs', 'evidence');
+  const files = readdirSync(directory)
+    .filter((name) => /^chapter09-qwen-smoke-\d{4}-\d{2}-\d{2}\.json$/.test(name))
+    .sort();
+  const name = files.at(-1);
+  if (name === undefined) fail('no chapter09-qwen-smoke evidence file');
+  const doc = JSON.parse(readFileSync(join(directory, name), 'utf8')) as QwenSmokeDoc;
+  const derived = providerFacts(doc);
+  if ('why' in derived) {
+    console.error(`not recorded: ${derived.why}`);
+    process.exit(1);
+  }
+  const executedAt = doc.executedAt ?? '';
+  const id = `qwen-run-${executedAt.replace(/\D/g, '').slice(0, 14)}`;
+  const existing = readState(ROOT).results;
+  if (Array.isArray(existing) && (existing as EvidenceResult[]).some((r) => r.id === id)) {
+    console.log(`already recorded: ${id}`);
+    process.exit(0);
+  }
+  await recordEvidence({
+    root: ROOT,
+    results: [
+      {
+        ...stamp({
+          id,
+          subject: 'qwen-run',
+          command: 'pnpm qwen:smoke (recorded by pnpm validate:live record-qwen)',
+          evidenceClass: 'live_provider',
+          outcome: 'pass',
+          reasonCodes: ['LIVE_PROVIDER_RUN', 'SYNTHETIC_FIXTURE_INPUT', 'ONE_RUN_ONE_FIXTURE'],
+          evidenceRefs: [{ type: 'path', value: `docs/evidence/${name}` }],
+          facts: derived.facts,
+        }),
+        checkedAt: new Date().toISOString(),
+      },
+    ],
+  });
+  console.log(
+    `recorded ${id} as live_provider evidence from docs/evidence/${name} (no provider call made)`,
+  );
+  process.exit(0);
 }
 
 // ---- qwen (explicit opt-in) ------------------------------------------------------------------------------

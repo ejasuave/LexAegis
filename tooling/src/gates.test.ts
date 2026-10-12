@@ -12,6 +12,7 @@ import {
 import {
   DEPLOYMENT_FACTS,
   FINGERPRINT,
+  PROVIDER_FACTS,
   OTHER_FINGERPRINT,
   gateAEvidence,
   gateBEvidence,
@@ -217,11 +218,19 @@ describe('Gates C and D', () => {
     const NOW = '2026-10-10T12:00:00+01:00';
     expect(outcome('C', gateCEvidence(), NOW)).toBe('pass');
     for (const facts of [
-      { provenance: 'scripted-fixture', replayed: false },
-      { provenance: 'live-provider', replayed: true },
+      { ...PROVIDER_FACTS, provenance: 'scripted-fixture' },
+      { ...PROVIDER_FACTS, replayed: true },
+      { ...PROVIDER_FACTS, scriptedProvider: true },
+      { ...PROVIDER_FACTS, returnedModel: '' },
+      { ...PROVIDER_FACTS, capabilityVerified: false },
+      { ...PROVIDER_FACTS, assertionsPassed: false },
+      { ...PROVIDER_FACTS, requestIds: '0' },
+      { ...PROVIDER_FACTS, toolRequests: '1' },
+      { ...PROVIDER_FACTS, citedBlocks: '0' },
+      { provenance: 'live-provider', replayed: false },
     ]) {
       const evidence = gateCEvidence();
-      evidence[0] = result('qwen-run', { facts });
+      evidence[0] = result('qwen-run', { evidenceClass: 'live_provider', facts });
       expect(evaluateGate('C', evidence, context(NOW)).reasons).toContain('PROVENANCE_INVALID:C1');
     }
     const local = gateCEvidence();
@@ -230,6 +239,33 @@ describe('Gates C and D', () => {
       facts: { chainId: '10143', transactionChecked: true, verificationChecked: true },
     });
     expect(evaluateGate('C', local, context(NOW)).reasons).toContain('INSUFFICIENT_CLASS:C2');
+  });
+
+  it('a model run is its own evidence class: no other class satisfies C1, and it satisfies nothing else', () => {
+    const NOW = '2026-10-10T12:00:00+01:00';
+    for (const evidenceClass of [
+      'live_testnet',
+      'real_device',
+      'local_scripted',
+      'virtual_authenticator',
+    ] as const) {
+      const evidence = gateCEvidence();
+      evidence[0] = result('qwen-run', { evidenceClass, facts: { ...PROVIDER_FACTS } });
+      expect(evaluateGate('C', evidence, context(NOW)).reasons).toContain('INSUFFICIENT_CLASS:C1');
+    }
+    // A provider run cannot stand in for a chain or device requirement.
+    const deployment = gateAEvidence();
+    deployment[1] = result('registry-deployment', {
+      evidenceClass: 'live_provider',
+      facts: { ...DEPLOYMENT_FACTS },
+    });
+    expect(evaluateGate('A', deployment, context(NOW)).reasons).toContain('INSUFFICIENT_CLASS:A2');
+    const journey = gateCEvidence();
+    journey[1] = result('browser-t0-journey', {
+      evidenceClass: 'live_provider',
+      facts: { chainId: '10143', transactionChecked: true, verificationChecked: true },
+    });
+    expect(evaluateGate('C', journey, context(NOW)).reasons).toContain('INSUFFICIENT_CLASS:C2');
   });
 
   it('Gate C needs independently checked transaction and verification evidence on testnet', () => {

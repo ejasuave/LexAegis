@@ -1,4 +1,10 @@
-import { LIVE_CLASSES, isCurrent, type EvidenceClass, type EvidenceResult } from './state';
+import {
+  LIVE_CLASSES,
+  PROVIDER_CLASSES,
+  isCurrent,
+  type EvidenceClass,
+  type EvidenceResult,
+} from './state';
 import { instant, isAfter } from './time';
 
 /*
@@ -67,6 +73,31 @@ const LIVE_ONLY: ReadonlySet<EvidenceClass> = LIVE_CLASSES;
 const onTestnet = (facts: Readonly<Record<string, string | boolean>>): RequirementFailure | null =>
   facts.chainId === CHAIN_ID ? null : 'WRONG_NETWORK';
 
+/**
+ * A genuine provider run, not a replay or a scripted stand-in: a live provider, real request IDs, the
+ * model name the provider itself returned, a verified capability check, every assertion passed, at
+ * least two read-only tool requests executed by code, and at least one validated source citation.
+ * The input document may be a synthetic fixture; the MODEL OUTPUT may not be.
+ */
+function genuineProviderRun(facts: Readonly<Record<string, string | boolean>>): boolean {
+  const count = (key: string): number => {
+    const value = facts[key];
+    return typeof value === 'string' && /^\d{1,6}$/.test(value) ? Number(value) : 0;
+  };
+  return (
+    facts.provenance === 'live-provider' &&
+    facts.replayed !== true &&
+    facts.scriptedProvider !== true &&
+    typeof facts.returnedModel === 'string' &&
+    facts.returnedModel !== '' &&
+    facts.capabilityVerified === true &&
+    facts.assertionsPassed === true &&
+    count('requestIds') >= 1 &&
+    count('toolRequests') >= 2 &&
+    count('citedBlocks') >= 1
+  );
+}
+
 export const REQUIREMENTS: Readonly<Record<GateId, readonly Requirement[]>> = {
   A: [
     {
@@ -127,12 +158,9 @@ export const REQUIREMENTS: Readonly<Record<GateId, readonly Requirement[]>> = {
     {
       id: 'C1',
       subject: 'qwen-run',
-      classes: LIVE_ONLY,
+      classes: PROVIDER_CLASSES,
       label: 'Genuine Qwen run with bounded tools and valid source-linked findings',
-      facts: (facts) =>
-        facts.provenance === 'live-provider' && facts.replayed !== true
-          ? null
-          : 'PROVENANCE_INVALID',
+      facts: (facts) => (genuineProviderRun(facts) ? null : 'PROVENANCE_INVALID'),
     },
     {
       id: 'C2',
