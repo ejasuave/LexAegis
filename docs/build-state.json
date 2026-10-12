@@ -12634,6 +12634,14 @@
         "files": [
           "submission/sponsor-evidence.json"
         ]
+      },
+      "14": {
+        "status": "complete",
+        "summary": "submission/technical-demo.md: timed 175 s script following the Chapter 13 sequence, supplementary captures, redaction and upload rules. submission/pitch.md: pitch script under 230 spoken words using only verified facts; team sentence left for the founder (no team facts supplied). Videos are MISSING: no deployed product, no real device ceremonies and no capture/ffmpeg tooling here; nothing recorded, uploaded or measured, no URL recorded.",
+        "files": [
+          "submission/technical-demo.md",
+          "submission/pitch.md"
+        ]
       }
     }
   }
