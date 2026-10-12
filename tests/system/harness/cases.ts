@@ -334,4 +334,40 @@ export const SYSTEM_CASES: readonly SystemCaseV1[] = parseManifest([
     'Real indexer handlers project real local registry events deterministically, treat duplicates as no-ops, reject out-of-order and inconsistent input, roll back orphaned logs, and never override verified live lifecycle. The Envio runtime itself is not exercised.',
     'local_integration',
   ),
+  c(
+    'prod-bundles-carry-no-server-test-or-private-material',
+    'tests/system/production-boundaries.spec.ts',
+    'Production web and verifier builds emit no server variable name, test adapter, development key, auth bypass, mock-success flag, private fixture or source listing, and the running server serves none.',
+    'local_integration',
+  ),
+  c(
+    'prod-csp-nonce-and-framing-hold-on-the-running-build',
+    'tests/system/production-boundaries.spec.ts',
+    'The running server sends a strict per-request nonce policy (no unsafe-inline, unsafe-eval or wildcard); real features raise no violation, while eval, unnonced script and handlers, cross-origin connections, blob workers, objects, forms and framing are blocked.',
+    'browser_scripted',
+  ),
+  c(
+    'prod-headers-no-store-and-no-private-caches',
+    'tests/system/production-boundaries.spec.ts',
+    'Every page and API response is no-store with a safe referrer policy, the intended Permissions-Policy and no cross-origin grant; a foreign-origin mutation is refused; no service worker or Cache Storage exists, and no private text reaches a page body or build output.',
+    'browser_scripted',
+  ),
+  c(
+    'prod-hostile-text-renders-inert',
+    'tests/system/production-boundaries.spec.ts',
+    'A hostile matter title, file name, extracted text and model answer execute nothing and create no element, link or request; no request body or path parameter chooses a server-side fetch target.',
+    'browser_scripted',
+  ),
+  c(
+    'prod-test-seams-inert-and-redirects-refused',
+    'tests/system/production-boundaries.spec.ts',
+    'The production build without the test environment has no scripted provider or local chain and reports typed states; a chain endpoint that answers with a redirect is not followed.',
+    'local_integration',
+  ),
+  c(
+    'prod-dependency-and-committable-secret-scans',
+    'tests/system/production-boundaries.spec.ts',
+    'The production audit reports no known vulnerability (an unreachable registry is blocked, never clean), no committable file or build output holds a credential shape, and the scanner detects planted secrets. A git-ignored .env is outside this case.',
+    'local_integration',
+  ),
 ]);

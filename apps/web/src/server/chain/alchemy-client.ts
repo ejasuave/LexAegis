@@ -68,6 +68,9 @@ export function createChainClient(options: ChainClientOptions): ServerChainClien
     timeout: TIMEOUT_MS,
     retryCount: 2,
     retryDelay: 250,
+    // A redirect would send the JSON-RPC body (and, on Alchemy, a key-bearing URL's request) to a host
+    // nobody configured. Refuse it: the configured endpoint is the only endpoint.
+    fetchOptions: { redirect: 'error' as const },
     ...(options.fetchFn !== undefined && { fetchFn: options.fetchFn }),
   };
   const client = createPublicClient({ chain, transport: http(options.rpcUrl, transportOptions) });

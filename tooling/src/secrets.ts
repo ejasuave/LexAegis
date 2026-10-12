@@ -1,4 +1,4 @@
-import { readFileSync, readdirSync, statSync } from 'node:fs';
+import { existsSync, readFileSync, readdirSync, statSync } from 'node:fs';
 import { join, relative, sep } from 'node:path';
 
 const SKIP = new Set([
@@ -31,6 +31,8 @@ export const SECRET_ALLOWLIST: Readonly<Record<string, string>> = {
     'deliberately credential-bearing RPC URL as an invalid-input case',
   'packages/sdk/src/registry/rpc-client.test.ts':
     'deliberately credential-bearing RPC URLs as invalid-input cases',
+  'tests/system/harness/harness.test.ts':
+    'deliberately credential-bearing database URLs as invalid-input cases',
   'tooling/src/exclusion.test.ts': 'fake credentials the scanner must detect (negative controls)',
   'tooling/src/readiness.test.ts': 'fake credentials the redactor must remove',
 };
@@ -62,19 +64,30 @@ function* walk(directory: string): Generator<string> {
   }
 }
 
-/** Finds likely credentials in source and configuration. Values are never returned. */
-export function scanSecrets(
+/** Finds likely credentials in the named files (paths relative to `root`). Values are never returned. */
+export function scanSecretFiles(
   root: string,
+  names: readonly string[],
   allowlist: Readonly<Record<string, string>> = SECRET_ALLOWLIST,
 ): SecretFinding[] {
   const findings: SecretFinding[] = [];
-  for (const file of walk(root)) {
-    const name = relative(root, file).split(sep).join('/');
+  for (const name of names) {
     if (name === 'pnpm-lock.yaml' || name in allowlist) continue;
-    if (statSync(file).size > 2 * 1024 * 1024) continue;
+    const file = join(root, name);
+    if (!existsSync(file) || !statSync(file).isFile() || statSync(file).size > 2 * 1024 * 1024)
+      continue;
     const text = readFileSync(file, 'utf8');
     for (const { rule, pattern } of PATTERNS)
       if (pattern.test(text)) findings.push({ file: name, rule });
   }
   return findings;
+}
+
+/** Finds likely credentials in source and configuration. Values are never returned. */
+export function scanSecrets(
+  root: string,
+  allowlist: Readonly<Record<string, string>> = SECRET_ALLOWLIST,
+): SecretFinding[] {
+  const names = [...walk(root)].map((file) => relative(root, file).split(sep).join('/'));
+  return scanSecretFiles(root, names, allowlist);
 }

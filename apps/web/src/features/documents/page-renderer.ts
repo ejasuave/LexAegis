@@ -49,6 +49,7 @@ export async function renderPage(
       enableXfa: false,
       disableFontFace: true,
       useWasm: false,
+      isEvalSupported: false,
       verbosity: 0,
       cMapUrl: '/pdfjs/cmaps/',
       cMapPacked: true,

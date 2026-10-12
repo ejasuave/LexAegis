@@ -100,6 +100,94 @@
       "status": "observation",
       "result": "No change made; Escape confirmed nothing in any tested dialog or drawer.",
       "remaining": "Decide whether Escape should close the preview, for consistency with the drawers."
+    },
+    {
+      "id": "F-010",
+      "severity": "medium",
+      "invariant": "The configured chain endpoint is the only endpoint: no redirect substitutes another host.",
+      "case": "prod-test-seams-inert-and-redirects-refused",
+      "module": "apps/web/src/server/chain/alchemy-client.ts",
+      "reproduction": "Start the production build with the chain endpoint set to a loopback server that answers every request with a 307 to a second loopback server, then read /api/chain/status. The second server received the JSON-RPC POST bodies (3 requests).",
+      "status": "fixed",
+      "result": "The viem HTTP transport now sets fetchOptions redirect 'error', as the SDK RPC clients, the Envio client and the Qwen client already did. The same case now shows the redirector asked and the redirect target never contacted; the status is 'unknown' with RPC_UNAVAILABLE.",
+      "remaining": "The endpoint is operator configuration, so exploitation needs a compromised or misconfigured provider. The case uses loopback servers, not Alchemy."
+    },
+    {
+      "id": "F-011",
+      "severity": "low",
+      "invariant": "A hostile document never reaches a string-to-code path in the page.",
+      "case": "prod-csp-nonce-and-framing-hold-on-the-running-build",
+      "module": "apps/web/src/features/documents (extract.ts, page-renderer.ts)",
+      "reproduction": "Run the PDF import in the production build and listen for securitypolicyviolation events.",
+      "status": "fixed",
+      "result": "pdf.js is now opened with isEvalSupported false in both getDocument calls, so PDF function streams are interpreted rather than compiled with eval. This is hardening: the installed pdfjs-dist is past the fix for the eval-related arbitrary-code advisory CVE-2024-4367, and the test did not find the extractor itself raising a violation.",
+      "remaining": "None known. Rendering and extraction of the synthetic PDFs still pass."
+    },
+    {
+      "id": "F-012",
+      "severity": "low",
+      "invariant": "A legitimate feature raises no Content Security Policy violation, so a real violation is not lost in noise.",
+      "case": "prod-csp-nonce-and-framing-hold-on-the-running-build",
+      "module": "apps/web (layout, public/zod-jitless.js)",
+      "reproduction": "Open any page of the production build with a securitypolicyviolation listener: one script-src 'eval' report per page load, from zod's JIT capability probe (Function('') inside a try/catch).",
+      "status": "fixed",
+      "result": "A nonced script, public/zod-jitless.js, sets zod's global jitless option before any bundle runs. Parsing still works through zod's interpreted path. Account, vault and PDF-worker flows now raise zero violations. The policy was not loosened.",
+      "remaining": "Relies on zod's __zod_globalConfig global; a zod upgrade must keep the case green."
+    },
+    {
+      "id": "F-013",
+      "severity": "high",
+      "invariant": "No reachable high or critical vulnerability remains unresolved.",
+      "case": "prod-dependency-and-committable-secret-scans",
+      "module": "indexer (envio and its pinned transitive dependencies)",
+      "reproduction": "pnpm audit --prod: 14 advisories (5 high, 2 moderate, 7 low) in express 4.19.2, body-parser, path-to-regexp, qs, send, serve-static, cookie, ws and esbuild, all under indexer>envio.",
+      "status": "fixed",
+      "result": "Envio pins express 4.19.2 exactly, and its newest release (3.14.1) still does, so pnpm-workspace.yaml now overrides only the vulnerable ranges to patched versions (express 4.22.3, body-parser 1.20.8, path-to-regexp 0.1.13, qs 6.16.0, send 0.19.2, serve-static 1.16.3, cookie 0.7.2, ws 8.22.0, esbuild 0.28.2). pnpm audit --prod now reports no known vulnerability; the lockfile changed only for those packages. The indexer config check, 31 indexer tests and envio codegen still run. None of these packages is in the web, verifier or package bundles.",
+      "remaining": "The Envio runtime itself is not exercised here, so the patched express under it is untested at run time. Remove the overrides when envio ships fixed versions. The audit needs network access; offline it is blocked, not clean."
+    },
+    {
+      "id": "F-014",
+      "severity": "low",
+      "invariant": "The standalone verifier cannot be framed by another origin.",
+      "case": "prod-bundles-carry-no-server-test-or-private-material",
+      "module": "apps/verifier (index.html policy)",
+      "reproduction": "The verifier's Content-Security-Policy is a <meta> element. frame-ancestors is ignored in a <meta> policy, so the page itself cannot refuse framing.",
+      "status": "open",
+      "result": "The meta policy was checked: default-src none, script-src self, connect-src only itself and the listed registry origins, object-src, base-uri and form-action none.",
+      "remaining": "Framing protection must come from host response headers (frame-ancestors and X-Frame-Options). Hosting is not decided; this is a Chapter 13 check."
+    },
+    {
+      "id": "F-015",
+      "severity": "low",
+      "invariant": "State what the page policy does and does not stop.",
+      "case": "prod-csp-nonce-and-framing-hold-on-the-running-build",
+      "module": "apps/web/src/proxy.ts",
+      "reproduction": "Under 'strict-dynamic', a script element created by already-trusted script runs without a nonce. Injected markup in the server's HTML (unnonced script, inline handler, eval) is blocked; script created by first-party or dependency code is not.",
+      "status": "observation",
+      "result": "No change. This matches the comment in proxy.ts: the policy limits injection and does not isolate unlocked material from same-origin code.",
+      "remaining": "No claim of protection against a compromised dependency or DOM-based injection by first-party code."
+    },
+    {
+      "id": "F-016",
+      "severity": "low",
+      "invariant": "Authenticated responses are never stored.",
+      "case": "prod-headers-no-store-and-no-private-caches",
+      "module": "apps/web API routes",
+      "reproduction": "GET a route that exports only POST (for example /api/assistant/runs): the framework answers 405 with an empty body and no Cache-Control.",
+      "status": "observation",
+      "result": "No data in the response; every other tested page and API response, signed in and out, carried no-store.",
+      "remaining": "Optionally add Cache-Control: no-store to framework-generated 405s through the header rules."
+    },
+    {
+      "id": "F-017",
+      "severity": "medium",
+      "invariant": "No committed or committable file holds a credential.",
+      "case": "prod-dependency-and-committable-secret-scans",
+      "module": "tooling/src/secrets.ts, local .env",
+      "reproduction": "pnpm secrets:check reports KEY_ASSIGNMENT and PROVIDER_KEY_URL in the git-ignored local .env. It also read tests/system/harness/harness.test.ts (deliberate credential-bearing database URLs) and, for minified build output, mistook `https://host\\\",...ox@` for a URL credential.",
+      "status": "open",
+      "result": "Committable files (tracked and untracked-not-ignored) and both build outputs are clean by shape, and planted secrets are detected. The harness test is allowlisted with a reason, as the other deliberate invalid-input tests are. Build output is scanned with the stricter asset-scanner shapes, not the source scanner.",
+      "remaining": "secrets:check still fails on the real, git-ignored .env, so the secret-scan readiness check stays failing. Decide whether the scanner skips ignored files or the values move; do not commit .env."
     }
   ]
 }

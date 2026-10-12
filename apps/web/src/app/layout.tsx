@@ -1,4 +1,5 @@
 import type { Metadata, Viewport } from 'next';
+import { headers } from 'next/headers';
 import type { ReactNode } from 'react';
 import { AccountProvider } from '@/components/account/account-context';
 import { AssistantProvider } from '@/components/assistant/assistant-context';
@@ -31,12 +32,19 @@ function networkLabel(result: ReturnType<typeof loadPublicConfig>): string {
   return result.config.chainId ? `Chain ${result.config.chainId}` : 'Not configured';
 }
 
-export default function RootLayout({ children }: { children: ReactNode }) {
+export default async function RootLayout({ children }: { children: ReactNode }) {
+  // The per-request nonce set by src/proxy.ts; the policy has no 'unsafe-inline'.
+  const nonce = (await headers()).get('x-nonce') ?? undefined;
   const publicConfig = loadPublicConfig(readPublicEnv());
   // Public values only; an invalid configuration reaches the account feature as "not configured".
   const accountConfig = publicConfig.ok ? publicConfig.config : {};
   return (
     <html lang="en">
+      <head>
+        {/* Runs before any bundle. zod would otherwise probe `Function("")` for its JIT, which the
+            content security policy refuses and reports on every page load. See public/zod-jitless.js. */}
+        <script src="/zod-jitless.js" nonce={nonce} />
+      </head>
       <body>
         <a
           href="#main"

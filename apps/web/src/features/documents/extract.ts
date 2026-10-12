@@ -110,6 +110,9 @@ export async function extractPdf(
     disableFontFace: true,
     useSystemFonts: false,
     useWasm: false,
+    // pdf.js would compile PDF function streams with eval; the page policy forbids eval, and a hostile
+    // document must never reach a string-to-code path.
+    isEvalSupported: false,
     isOffscreenCanvasSupported: false,
     stopAtErrors: false,
     verbosity: 0,

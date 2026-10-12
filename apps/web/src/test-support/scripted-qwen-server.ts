@@ -13,6 +13,8 @@ import { once } from 'node:events';
  *   PROPOSE-TEST  the final answer proposes a fact and asks for confirmation
  *   INJECT-TEST   the "model" obeys injected instructions: it asks for a signing tool first
  *   FAIL-TEST     every completion for this request fails with a provider error (HTTP 500)
+ *   HOSTILE-TEST  the explanation and the scope limitation carry executable-looking markup, script
+ *                 and link schemes and Markdown: the page must render them as inert text
  */
 
 interface WireMessage {
@@ -60,6 +62,13 @@ const OBJECTIVES: readonly (readonly [Intent, string])[] = [
   ['prepare_review', 'what is still required before a review draft'],
   ['status', 'a factual status reading'],
 ];
+
+/** Hostile model prose for the inert-rendering check (under the 300-character limit on a scope limitation). */
+export const HOSTILE_TEXT =
+  '<img src=x onerror="window.__xss=1"><script>window.__xss=2</script>' +
+  '[go](javascript:window.__xss=3) <a href="javascript:window.__xss=4">link</a> ' +
+  '![pixel](https://example.invalid/pixel.png) <iframe src="https://example.invalid/"></iframe> ' +
+  '**bold** # heading';
 
 const PLAN: Readonly<Record<Intent, readonly string[]>> = {
   summarise: ['read_sources'],
@@ -244,7 +253,9 @@ export async function startScriptedQwenServer(): Promise<ScriptedQwenServer> {
         blocks.push(
           block(
             'explanation',
-            'Scripted test answer: the selected passage states the figure shown above.',
+            asked.includes('HOSTILE-TEST')
+              ? HOSTILE_TEXT
+              : 'Scripted test answer: the selected passage states the figure shown above.',
             { sources: [first] },
           ),
         );
@@ -294,7 +305,11 @@ export async function startScriptedQwenServer(): Promise<ScriptedQwenServer> {
           : [],
         unresolved: [],
         questions: proposing ? ['Is this the employer named in the agreement?'] : [],
-        scopeLimitations: ['Scripted test provider: no model produced this text.'],
+        scopeLimitations: [
+          asked.includes('HOSTILE-TEST')
+            ? HOSTILE_TEXT
+            : 'Scripted test provider: no model produced this text.',
+        ],
         nextActions: proposing ? ['confirm_fact'] : ['open_source'],
       }),
     });
