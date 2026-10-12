@@ -1,0 +1,22 @@
+{
+  "name": "@lexaegis/example-ai-pr-signoff",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "A second-domain reference example: sign-off on an AI-assisted pull request review package (profile lexaegis.ai-pr-signoff). Written by the project team; it demonstrates reuse of the generic protocol, not independent adoption.",
+  "scripts": {
+    "signoff": "tsx src/cli.ts",
+    "typecheck": "tsc --noEmit -p tsconfig.json",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@lexaegis/protocol": "workspace:*",
+    "@lexaegis/sdk": "workspace:*",
+    "@lexaegis/vault": "workspace:*",
+    "viem": "2.57.3",
+    "zod": "4.6.5"
+  },
+  "devDependencies": {
+    "tsx": "4.23.15"
+  }
+}

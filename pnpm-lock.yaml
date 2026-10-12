@@ -197,6 +197,28 @@ importers:
         specifier: 4.6.5
         version: 4.6.5
 
+  examples/ai-pr-signoff:
+    dependencies:
+      '@lexaegis/protocol':
+        specifier: workspace:*
+        version: link:../../packages/protocol
+      '@lexaegis/sdk':
+        specifier: workspace:*
+        version: link:../../packages/sdk
+      '@lexaegis/vault':
+        specifier: workspace:*
+        version: link:../../packages/vault
+      viem:
+        specifier: 2.57.3
+        version: 2.57.3(typescript@6.0.3)(zod@4.6.5)
+      zod:
+        specifier: 4.6.5
+        version: 4.6.5
+    devDependencies:
+      tsx:
+        specifier: 4.23.15
+        version: 4.23.15
+
   examples/document-review:
     dependencies:
       '@lexaegis/protocol':

@@ -1,0 +1,12 @@
+SYNTHETIC EXAMPLE. Not a real repository, change or review.
+--- a/src/greeting.ts
++++ b/src/greeting.ts
+@@ -1,5 +1,9 @@
+ export function greet(name: string): string {
+-  return 'Hello ' + name;
++  const trimmed = name.trim();
++  if (trimmed === '') {
++    throw new Error('name is required');
++  }
++  return `Hello ${trimmed}`;
+ }

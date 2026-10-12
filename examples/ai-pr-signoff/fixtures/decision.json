@@ -1,0 +1,9 @@
+{
+  "schema": "lexaegis.ai-pr-signoff.decision.v1",
+  "reviewer": "0x2222222222222222222222222222222222222222",
+  "decision": "approve-review-package",
+  "diffSha256": "0x83f3f9cc76115db5c5ab8d59cf3ed02d3eb02cefd955eb909bd511416d4d1368",
+  "summarySha256": "0x5b139e3940871dc5f88c0299efe09372ecaec57443c5baafe3c62fb5285a9121",
+  "rationale": "Synthetic example: I read the diff and the summary and approve recording this package.",
+  "decidedAt": "2026-10-12T09:00:00.000Z"
+}

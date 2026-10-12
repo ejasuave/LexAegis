@@ -8612,6 +8612,16 @@
           "contracts/integration/embed-example.anvil.test.ts",
           "tooling/scripts/exclusion-scan.ts"
         ]
+      },
+      "6": {
+        "status": "complete",
+        "summary": "examples/ai-pr-signoff (@lexaegis/example-ai-pr-signoff): profile lexaegis.ai-pr-signoff v1 uses the existing generic profile mechanism (no protocol change; profileIdSchema already accepts it; old vectors untouched, vectors:check passes). diff->source, AI summary->analysis, decision->decision-log, every artifact once in scope, decisionLogArtifactId = decision. Example-local closed decision schema lexaegis.ai-pr-signoff.decision.v1 binds reviewer, explicit approve-review-package decision, SHA-256 of the exact diff and summary, bounded rationale (2000 chars) and supplied decidedAt, without depending on the commitment. Inputs are bounded regular files (O_NOFOLLOW, 2 MiB/256 KiB/64 KiB). Synthetic fixtures; the summary is labelled team-authored, not a measured model run. 12 unit tests: valid generic package verifies, fresh opening per run, altered diff/summary/artifact bytes rejected or mismatched, decision-file rejection cases, bounded-input refusals.",
+        "files": [
+          "examples/ai-pr-signoff/src/package.ts",
+          "examples/ai-pr-signoff/src/profile.ts",
+          "examples/ai-pr-signoff/src/inputs.ts",
+          "examples/ai-pr-signoff/fixtures"
+        ]
       }
     },
     "decisions": [],
