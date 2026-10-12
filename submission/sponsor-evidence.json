@@ -1,0 +1,143 @@
+{
+  "schema": "lexaegis.sponsor-evidence.v1",
+  "version": 1,
+  "recordedAt": "2026-10-12",
+  "sourceCommit": "be57cda",
+  "note": "Claims are limited to what the linked evidence shows. Links are repository paths because the repository is private and nothing is hosted; none is a public URL. No eligibility, award or external user is implied. Qwen and Alchemy awards, if mentioned elsewhere, are credits, not prize money.",
+  "bounties": [
+    {
+      "name": "Best Mera-Powered UX on Monad",
+      "ruleSource": {
+        "ref": "project_brief/LexAegis Refined Project Brief v3.md#9",
+        "status": "user_supplied"
+      },
+      "modules": [
+        "apps/web/src/server/auth",
+        "apps/web/src/features/account",
+        "tooling/scripts/account-browser-check.ts"
+      ],
+      "release": "not deployed",
+      "evidenceClass": "virtual_authenticator",
+      "links": ["docs/evidence/chapter12", "docs/evidence/chapter10"],
+      "observed": "Account, session and recovery flows pass in a Chromium virtual-authenticator journey and scripted local runs. The Chapter 6 testnet transactions were signed by a scripted account, not a real Mera device.",
+      "limitations": [
+        "no real-device ceremony counts recorded",
+        "universal single-prompt onboarding is not claimed"
+      ],
+      "missing": [
+        "real_device onboarding and signing-session expiry/re-prompt",
+        "confirmed testnet execution signed by a real Mera account (Gate B1)",
+        "storage-cleared recovery at the final rpId on a real device",
+        "tap/prompt counts from real ceremonies"
+      ],
+      "claimStatus": "not_established"
+    },
+    {
+      "name": "Mera: One Passkey, Many Keys",
+      "ruleSource": {
+        "ref": "project_brief/LexAegis Refined Project Brief v3.md#9",
+        "status": "user_supplied"
+      },
+      "modules": [
+        "packages/vault",
+        "apps/web/src/server/vault",
+        "tooling/scripts/vault-browser-check.ts"
+      ],
+      "release": "not deployed",
+      "evidenceClass": "virtual_authenticator",
+      "links": ["docs/evidence/chapter12"],
+      "observed": "Separate account and vault PRF namespaces with browser-side encryption; recovery and decryption pass in the virtual-authenticator and scripted-storage journeys. A fresh key or cached plaintext is not counted as recovery.",
+      "limitations": [
+        "a virtual authenticator is not a real device",
+        "ciphertext restore cannot recreate a deleted credential"
+      ],
+      "missing": [
+        "same-credential decryption on a second real device",
+        "recovery after clearing storage at the final rpId"
+      ],
+      "claimStatus": "not_established"
+    },
+    {
+      "name": "Best Use of Envio",
+      "ruleSource": {
+        "ref": "project_brief/LexAegis Refined Project Brief v3.md#9",
+        "status": "user_supplied"
+      },
+      "modules": [
+        "indexer/config.yaml",
+        "indexer/schema.graphql",
+        "indexer/src/handlers",
+        "apps/web/src/server/history"
+      ],
+      "release": "not deployed (local envio dev)",
+      "evidenceClass": "live_testnet",
+      "links": [
+        "docs/evidence/chapter07-live-hypersync-2026-10-11.json",
+        "docs/evidence/chapter07-rollback-local-2026-10-12.json",
+        "deploy/indexer.json"
+      ],
+      "observed": "A local Envio 3.13.0 HyperIndex run ingested the real Monad Testnet registry through HyperSync from block 69534196 and projected ISSUE, SUPERSEDE and REVOKE actions for one reviewer (2 receipts: 1 superseded, 1 revoked); a controlled engine stop showed lag rising and recovery within about 45 s. Rollback tests are local and labelled so.",
+      "limitations": [
+        "the indexer ran locally, not on Envio hosting",
+        "the indexed reviewer's transactions came from a scripted account"
+      ],
+      "missing": [
+        "hosted deployment and sustained caught_up",
+        "indexed history for a receipt from the production application"
+      ],
+      "claimStatus": "partial_local_live_ingestion"
+    },
+    {
+      "name": "Best Builds with Qwen 3.8 Max",
+      "ruleSource": {
+        "ref": "project_brief/LexAegis Refined Project Brief v3.md#9",
+        "status": "user_supplied"
+      },
+      "modules": [
+        "packages/agent",
+        "apps/web/src/server/assistant",
+        "apps/web/scripts/qwen-smoke.ts"
+      ],
+      "release": "not deployed",
+      "evidenceClass": "live_provider",
+      "links": ["docs/evidence/chapter09-qwen-smoke-2026-10-12.json", "submission/qwen-article.md"],
+      "observed": "A genuine qwen3.8-max run (provider region ap-southeast-1, JSON-schema output, native tool calls) completed on the synthetic fixture with the four read-only tools read_sources, check_payments, check_evidence and get_status; the returned model equals the requested model and six provider request IDs are recorded. Capability checks for tool calls, structured output, usage reporting and cancellation passed.",
+      "limitations": [
+        "output is not reproducible",
+        "validation shows references resolve, not that a statement is legally correct",
+        "budgets bound attempts and time, not an invoice",
+        "per-run token usage is not recorded in the evidence file"
+      ],
+      "missing": [
+        "published article (draft only, not published)",
+        "a run observed through the deployed application"
+      ],
+      "claimStatus": "partial_provider_run_article_unpublished"
+    },
+    {
+      "name": "Best Projects using Alchemy",
+      "ruleSource": {
+        "ref": "project_brief/LexAegis Refined Project Brief v3.md#9",
+        "status": "user_supplied"
+      },
+      "modules": [
+        "apps/web/src/server/chain",
+        "packages/sdk",
+        "tooling/scripts/verify-deployment.ts"
+      ],
+      "release": "not deployed",
+      "evidenceClass": "live_testnet",
+      "links": [
+        "docs/evidence/chapter17-deployment-verify-alchemy-2026-10-12.json",
+        "docs/evidence/chapter06-live-2026-10-09.json"
+      ],
+      "observed": "Through the configured Alchemy Monad endpoint (credential kept server-side, not recorded): chain and genesis reads, canonical-checkpoint code read matching the pinned source, transaction and receipt reads, fee estimation and transaction-count capabilities; on 2026-10-09 an ISSUE, SUPERSEDE and REVOKE were transmitted and monitored to confirmation with measured stage latencies.",
+      "limitations": [
+        "transactions were signed by a scripted account, not a real Mera device",
+        "Alchemy is an RPC provider here, and an RPC read is an observation, not a consensus proof"
+      ],
+      "missing": ["a confirmed transaction from the deployed application signed through Mera"],
+      "claimStatus": "partial_live_rpc"
+    }
+  ]
+}

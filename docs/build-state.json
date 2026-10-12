@@ -12627,6 +12627,13 @@
           "apps/web/public/sample/settlement-corrected.pdf",
           "apps/web/public/sample/README.txt"
         ]
+      },
+      "13": {
+        "status": "complete",
+        "summary": "submission/sponsor-evidence.json: five closed entries, each with rule source/status (user_supplied), modules, evidence class, repo-path links, observed result, limitations and missing items. Claim statuses: Mera UX and Mera Many Keys not_established (only virtual-authenticator/scripted evidence); Envio partial (local envio dev ingested the real testnet registry); Qwen partial (genuine qwen3.8-max run, article unpublished); Alchemy partial (live reads/transmission, scripted signer). Links are repo paths: the repository is private and nothing is hosted.",
+        "files": [
+          "submission/sponsor-evidence.json"
+        ]
       }
     }
   }
