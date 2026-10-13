@@ -13,9 +13,9 @@
     {
       "id": "router",
       "file": "router.md",
-      "sha256": "0xcb651881070963c6213e84061b7295b7a33f5020a7040cb37c8855379d013ac3",
-      "bytes": 516,
-      "words": 74
+      "sha256": "0x519eec9ad5700e19ac27dc62add02aa62047191db974007a2cefd210efccf484",
+      "bytes": 670,
+      "words": 94
     },
     {
       "id": "intent:summarise",
@@ -53,6 +53,13 @@
       "words": 68
     },
     {
+      "id": "intent:ask_matter",
+      "file": "intent-ask-matter.md",
+      "sha256": "0x3873e9721420dfbcc7624e9277c3b6d30ece9549c706cadb0e1e9fbb02985af7",
+      "bytes": 1246,
+      "words": 177
+    },
+    {
       "id": "intent:prepare_review",
       "file": "intent-prepare-review.md",
       "sha256": "0xad30259a9d3ec5aeac01796799ab384e242f28ab662b0ca6e7de9ec076364b48",
@@ -74,14 +81,14 @@
     },
     {
       "id": "intent-selection",
-      "sha256": "0xcfa1c78d7b7c5239fc9488cb748beede583e422a8e7b7e5451b63b935f6e25ad"
+      "sha256": "0x60ced3e79a981e9f3797b8eda12390c96178396b2ea29f2237e22362f395b139"
     }
   ],
   "tools": [
     {
       "name": "read_sources",
       "version": "1",
-      "sha256": "0x298ee9ba4f87f7416431101571059aac73baeb39cf7cbaf6b3db9b0b011a214d"
+      "sha256": "0x48bb80c99369a706906b22c88eb47268725e5bf4af948c84871b8aa32d03efc3"
     },
     {
       "name": "get_rules",

@@ -59,6 +59,15 @@ export function routeRequest(request: AssistantRequest, flags: RouterFlags): Rou
     );
   }
   const routed = routeUtterance(request.utterance);
+  // A typed, ordinary question enters the read-only matter Q&A path. The browser
+  // and server agree on this intent; forbidden/empty input cannot use it.
+  if (request.trigger === 'free_text' && request.intent === 'ask_matter') {
+    return routed.kind === 'unsupported' ||
+      routed.kind === 'unknown_command' ||
+      routed.kind === 'stop'
+      ? decided(none('unsupported'))
+      : decided(select('ask_matter', 'phrase'));
+  }
   if (request.trigger === 'command') {
     if (routed.kind !== 'intent' || routed.via !== 'command' || routed.intent !== request.intent)
       return decided(none('unsupported'));

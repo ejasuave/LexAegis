@@ -26,6 +26,20 @@ const calculation = () =>
   });
 
 describe('disclosure before anything is sent', () => {
+  it('previews matter-wide chat without manual highlighting and does not send until consent', async () => {
+    const a = await assistantRig([done(), answer()]);
+    a.assistant.setSelection(null, []);
+    await a.assistant.submit('Analyse this employment settlement matter.');
+    const snapshot = a.assistant.getSnapshot();
+    expect(snapshot.phase).toBe('preview');
+    expect(snapshot.pending?.body.intent).toBe('ask_matter');
+    expect(snapshot.pending?.body.documentVersionId).toBeNull();
+    expect(snapshot.pending?.body.context.searchedScope.automatic).toBeDefined();
+    expect(snapshot.pending?.body.context.sources.length).toBeGreaterThan(0);
+    expect(a.transportCalls.start).toBe(0);
+    dispose(a);
+  });
+
   it('asks for a selection, then shows the exact disclosure and sends only on Send', async () => {
     const a = await assistantRig([
       toolCall('read_sources', { sourceIds: ['S1'] }),
@@ -131,20 +145,30 @@ describe('disclosure before anything is sent', () => {
     dispose(none);
   });
 
-  it('asks which passage an unclear follow-up means instead of assuming an earlier one', async () => {
+  it('keeps prefixed explain-this-clause requests confined to the highlighted passage', async () => {
+    const a = await assistantRig([done(), answer()]);
+    a.assistant.setSelection(a.documentVersionId, [a.clause]);
+    await a.assistant.submit('SLOW-TEST explain this clause');
+    const pending = a.assistant.getSnapshot().pending;
+    expect(pending?.body.documentVersionId).toBe(a.documentVersionId);
+    expect(pending?.body.context.searchedScope.automatic).toBeUndefined();
+    expect(pending?.summary.excerpts).toHaveLength(1);
+    expect(pending?.body.context.sources[0]?.reference.quote).toBe(a.clause.quote);
+    expect(a.transportCalls.start).toBe(0);
+    dispose(a);
+  });
+
+  it('previews a matter question without guessing which earlier passage was meant', async () => {
     const a = await assistantRig([done(), answer()]);
     await a.assistant.submit('And what about the other one?');
-    expect(a.assistant.getSnapshot()).toMatchObject({ phase: 'idle', pending: null });
-    expect(a.assistant.getSnapshot().notice).toContain('Which passage is this about?');
-    expect(a.transportCalls.start).toBe(0);
-    // With a current selection the same text becomes a disclosed request about that selection.
-    a.assistant.setSelection(a.documentVersionId, [a.clause]);
-    await a.assistant.submit('And what about the other one?');
-    expect(a.assistant.getSnapshot().pending?.summary.excerpts).toHaveLength(1);
+    expect(a.assistant.getSnapshot().phase).toBe('preview');
     expect(a.assistant.getSnapshot().pending?.body).toMatchObject({
-      intent: null,
+      intent: 'ask_matter',
+      documentVersionId: null,
       trigger: 'free_text',
     });
+    expect(a.transportCalls.start).toBe(0);
+    a.assistant.cancelPreview();
     dispose(a);
   });
 

@@ -30,6 +30,12 @@ describe('deterministic routing', () => {
     }
   });
 
+  it('does not mistake ordinary case questions for an explicit command', () => {
+    expect(routeUtterance('Analyse my case like an employment solicitor.')).toEqual({
+      kind: 'ambiguous',
+    });
+  });
+
   it('leaves unclear text ambiguous and never guesses', () => {
     expect(routeUtterance('check the payments and tell me what evidence is missing')).toEqual({
       kind: 'ambiguous',

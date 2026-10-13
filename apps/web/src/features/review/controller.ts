@@ -150,6 +150,7 @@ export interface ReviewSnapshot {
 export interface AssistantContextSelection extends Omit<ContextSelection, 'facts' | 'evidence'> {
   readonly factIds: readonly string[];
   readonly includeEvidence: boolean;
+  readonly automaticQuery?: string;
 }
 
 export type AssistantContextResult =
@@ -743,9 +744,94 @@ export class ReviewController {
     const epoch = this.#epoch;
     const revision = this.#revision;
     const wanted = new Set(selection.factIds);
-    const built = buildSelectedContext(set, {
-      documentVersionId: selection.documentVersionId,
-      references: selection.references,
+    let contextSet = set;
+    let refs = selection.references;
+    let automatic:
+      | {
+          availableDocuments: number;
+          readableDocuments: number;
+          includedDocuments: number;
+          availablePages: number;
+          excerptedPages: number;
+        }
+      | undefined;
+    if (selection.automaticQuery !== undefined) {
+      // Read verified sources only from the active unlocked matter; do not change Review selection.
+      const inputs = [...this.#verified.values()].map((v) => v.input);
+      const verified = await verifySourceSet(
+        matterId,
+        inputs,
+        inputs.map((v) => v.documentVersionId),
+      );
+      if (!verified.ok) return { ok: false, code: verified.code };
+      contextSet = verified.data;
+      const terms = [
+        ...new Set(selection.automaticQuery.toLowerCase().match(/[a-z]{4,}/g) ?? []),
+      ].slice(0, 12);
+      const pages: { id: string; page: number; score: number; text: string }[] = [];
+      for (const [id, source] of contextSet.sources) {
+        for (const page of source.extraction.pages) {
+          if (page.text.trim() === '') continue;
+          const lower = page.text.toLowerCase();
+          pages.push({
+            id,
+            page: page.index,
+            score: terms.filter((term) => lower.includes(term)).length,
+            text: page.text,
+          });
+        }
+      }
+      pages.sort((a, b) => b.score - a.score || a.id.localeCompare(b.id) || a.page - b.page);
+      const chosen: typeof pages = [];
+      const seen = new Set<string>();
+      for (const page of pages) {
+        if (chosen.length >= 8) break;
+        if (!seen.has(page.id)) {
+          chosen.push(page);
+          seen.add(page.id);
+        }
+      }
+      for (const page of pages) {
+        if (chosen.length >= 12) break;
+        if (!chosen.includes(page) && seen.has(page.id)) chosen.push(page);
+      }
+      const references = [];
+      for (const page of chosen) {
+        const lower = page.text.toLowerCase();
+        const hit = terms.map((term) => lower.indexOf(term)).find((pos) => pos >= 0) ?? 0;
+        let start = Math.max(0, hit - 80);
+        let end = Math.min(page.text.length, start + 450);
+        // Never split a UTF-16 surrogate pair when building an exact source citation.
+        const pairBoundary = (index: number) => {
+          const left = page.text.charCodeAt(index - 1);
+          const right = page.text.charCodeAt(index);
+          return left >= 0xd800 && left <= 0xdbff && right >= 0xdc00 && right <= 0xdfff;
+        };
+        if (pairBoundary(start)) start += 1;
+        if (pairBoundary(end)) end -= 1;
+        const made = createSourceReference(contextSet, {
+          documentVersionId: page.id,
+          page: page.page,
+          start,
+          end,
+        });
+        if (!made.ok) return { ok: false, code: made.code };
+        references.push(made.data);
+      }
+      refs = references;
+      // The request catalog may describe at most eight documents.
+      contextSet = { ...contextSet, selected: new Set(seen) };
+      automatic = {
+        availableDocuments: this.#state.documents.length,
+        readableDocuments: contextSet.sources.size,
+        includedDocuments: seen.size,
+        availablePages: pages.length,
+        excerptedPages: chosen.length,
+      };
+    }
+    const built = buildSelectedContext(contextSet, {
+      documentVersionId: automatic === undefined ? selection.documentVersionId : null,
+      references: refs,
       facts: this.#state.facts.filter((f) => wanted.has(f.factId)),
       evidence: selection.includeEvidence ? this.#state.evidence : [],
       savedContext: selection.savedContext,
@@ -755,7 +841,10 @@ export class ReviewController {
     if (epoch !== this.#epoch || revision !== this.#revision) return { ok: false, code: 'STALE' };
     return {
       ok: true,
-      context: built.data,
+      context:
+        automatic === undefined
+          ? built.data
+          : { ...built.data, searchedScope: { ...built.data.searchedScope, automatic } },
       snapshot: { digest, revision },
       vaultGeneration: this.#vaultGeneration,
     };

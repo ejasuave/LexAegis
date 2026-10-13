@@ -33,6 +33,7 @@ export const assistantIntentSchema = z.enum([
   'check_payments',
   'missing_evidence',
   'brief_matter',
+  'ask_matter',
   'prepare_review',
   'status',
 ]);
@@ -98,6 +99,16 @@ export const selectedContextSchema = z
     searchedScope: z.strictObject({
       documentVersionIds: z.array(uuidSchema).max(8),
       excerptsOnly: z.literal(true),
+      /** Present only for on-device automatic matter retrieval; never implies full review. */
+      automatic: z
+        .strictObject({
+          availableDocuments: z.number().int().nonnegative(),
+          readableDocuments: z.number().int().nonnegative(),
+          includedDocuments: z.number().int().nonnegative().max(8),
+          availablePages: z.number().int().nonnegative(),
+          excerptedPages: z.number().int().nonnegative(),
+        })
+        .optional(),
     }),
   })
   .check((ctx) => {
