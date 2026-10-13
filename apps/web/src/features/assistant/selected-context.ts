@@ -173,13 +173,16 @@ export async function buildRequestBody(
 
   const facts = factsFor(input.intent, review.facts);
   // The passages a disclosed fact cites travel with it, so the answer can cite them.
-  const references = [...input.references, ...facts.flatMap((fact) => fact.references)];
+  const references = input.intent === 'ask_matter'
+    ? []
+    : [...input.references, ...facts.flatMap((fact) => fact.references)];
   const built = await ports.review.assistantContext({
     documentVersionId: input.documentVersionId,
     references,
     factIds: facts.map((fact) => fact.factId),
     includeEvidence: usesEvidence(input.intent),
     savedContext: saved.entries,
+    ...(input.intent === 'ask_matter' && { automaticQuery: input.utterance }),
   });
   if (!built.ok) return built;
   return {
