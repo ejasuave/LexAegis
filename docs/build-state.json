@@ -13039,6 +13039,34 @@
         ],
         "checks": "observed 2026-10-13: web vitest 613/613 (tier table, seeded geometry, backing-scale cap, governor step-down, alert routing, effects policy), typecheck, eslint and prettier clean, next build ok and exclusion:check clean with the gated fixtures route. tooling/scripts/hud-canvas-check.ts on next dev with HUD_FIXTURES=1: all pass. 12 synthetic scenes (idle, queued, awaiting, running, alert, stopping, offline, stale, locked, pending, failed, confirmed): composited art inside every registered reading region is at or below channel 23 (#0D1117) in each; particles only in running and alert and within 64; static states run no loop; idle 20 fps cap; running 60 fps cap; amber alert branches present with none inside a reading region; locked clears anchors; hidden page draws no frames and resumes; effects churn leaves one canvas and one loop; Effects Off removes the canvas and persists; reduced motion and Reduced are static with 80 filaments; forced colours remove the canvas; a 390 px phone starts compact. Canvas work p95 about 0.4 to 1.1 ms on this machine (a development container, not the required mid-range iGPU or mobile device). Screenshots docs/evidence/ui-blueprint/stage5-*.png. Not run: recorded mid-range iGPU and mobile traces, long-task trace, contrast with the brightest real scene on a physical screen, flash-safety review.",
         "limitations": "Real finding anchors are verified only on synthetic fixtures; the live findings rows carry the same data-hud-finding markers but a run with real findings was not exercised here. Canvas work budget is measured on a development machine only. The quality governor only steps down."
+      },
+      "6": {
+        "state": "complete",
+        "files": [
+          "apps/web/src/features/transactions/confirmation.ts",
+          "apps/web/src/features/transactions/confirmation.test.ts",
+          "apps/web/src/features/transactions/controller.ts",
+          "apps/web/src/features/hud/hud.effects.ts",
+          "apps/web/src/features/hud/hud.effects.test.ts",
+          "apps/web/src/features/hud/neural.renderer.ts",
+          "apps/web/src/components/hud/hud-context.tsx",
+          "apps/web/src/components/hud/HudShell.tsx",
+          "apps/web/src/components/hud/AttentionRail.tsx",
+          "apps/web/src/components/shell/ActivityDrawer.tsx",
+          "apps/web/src/components/chain/transaction-context.tsx",
+          "apps/web/src/components/hud/HudFixtureStage.tsx",
+          "tooling/scripts/hud-receipt-check.ts"
+        ],
+        "interfaces": [
+          "TransactionController.onConfirmation(listener): unsubscribe; emits ConfirmationSignal {kind confirmed|invalidated, id chain:registry:txHash, operationId, transactionHash, blockNumber, commitment, reviewer}",
+          "verifyConfirmation(operation, expectedAction, scope)",
+          "ReceiptEffects.consume(signal, ctx): {accepted, log, label, announce, play, cancelPlay}",
+          "washOpacity(elapsedMs): rise 180 ms, fade 420 ms, max 0.06",
+          "HudContext.receipt {label, log, wash, announcement} and consumeReceipt (controller subscription is the only production caller)",
+          "SceneState.wash; RendererStats.wash {receivedAtMs, firstFrameAtMs}"
+        ],
+        "checks": "observed 2026-10-13: web vitest 640/640 (confirmation: 12 negative bindings, once-only emission, no signal for pending/reverted/unknown/recovered, withdrawal once; effects gate: duplicate, hydration, hidden, other matter, reduced/off, coalescing, correction, envelope); typecheck and eslint clean. tooling/scripts/hud-receipt-check.ts on next dev with HUD_FIXTURES=1: all pass (wash peaks at channel 15 on empty pixels, i.e. 0.06; gone after 600 ms; reading regions stay at 0 throughout from the seventh frame; effect starts about 14 ms after the signal on this machine; duplicate, second-in-window, replay, other matter and reload do not replay; correction persists and is announced; reduced motion and Effects Off still get label and announcement; hidden tab gets no effect). hud-visual, hud-command and hud-canvas checks still pass.",
+        "limitations": "No real confirmed transaction was driven through the page: the controller emission is covered by unit tests with a scripted chain API and the page behaviour by synthetic fixture buttons. During the roughly five frames after a reading region grows (for example a label appears) the mask can lag; the margin was widened to 24 px so the exposed art stays below the reading floor in the test, but this is not proven for every layout. Timing is client-side only; it makes no claim about chain time. Not a photosensitivity assessment: no luminance flash analysis tool was run."
       }
     }
   }

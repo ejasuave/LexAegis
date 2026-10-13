@@ -15,10 +15,19 @@ import { SavedReviews } from '@/components/review/SavedReviews';
  * reviewer's own controls; nothing here approves, signs or confirms by being shown.
  */
 export function AttentionRail() {
-  const { view } = useHud();
+  const { view, receipt } = useHud();
   const unresolved = view.attention.unresolvedCount;
   return (
     <div className="lj-rail-inner lj-marks" data-hud-quiet="">
+      {receipt.label === null ? null : (
+        <p
+          data-testid="receipt-label"
+          data-kind={receipt.label.kind}
+          className={`m-0 mb-3 text-[0.9375rem] ${receipt.label.kind === 'correction' ? 'text-lj-amber' : 'text-lj-cyan'}`}
+        >
+          {receipt.label.text}
+        </p>
+      )}
       <section aria-label="Findings and evidence">
         <h2 className="m-0 text-lg font-medium" data-hud-findings-control="">
           Evidence

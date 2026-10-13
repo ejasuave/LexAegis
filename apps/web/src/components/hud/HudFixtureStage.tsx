@@ -18,7 +18,13 @@ import { useHud } from './hud-context';
  * every state without a live account, run or chain.
  */
 export function HudFixtureStage({ name }: { name: HudFixtureName }) {
-  const { view } = useHud();
+  const { view, receipt, consumeReceipt } = useHud();
+  const commitment = `0x${'ab'.repeat(32)}`;
+  const send = (
+    kind: 'confirmed' | 'invalidated',
+    id: string,
+    options?: { source?: 'live' | 'hydration'; sameMatter?: boolean },
+  ) => consumeReceipt({ kind, id, commitment }, { sameMatter: true, ...options });
   useEffect(() => {
     setHudFixture(buildHudFixture(name, Date.now()));
     return () => setHudFixture(null);
@@ -73,6 +79,48 @@ export function HudFixtureStage({ name }: { name: HudFixtureName }) {
       </section>
       <aside data-hud-rail="attention" aria-label="Fixture attention rail">
         <div className="lj-rail-inner" data-hud-quiet="">
+          <div className="mb-3 flex flex-col items-start gap-1" aria-label="Fixture signals">
+            {(
+              [
+                ['live', 'Confirm A (live)', () => send('confirmed', 'fx-a')],
+                ['dup', 'Confirm A again', () => send('confirmed', 'fx-a')],
+                ['b', 'Confirm B at once', () => send('confirmed', 'fx-b')],
+                [
+                  'hydrate',
+                  'Replay C (history)',
+                  () => send('confirmed', 'fx-c', { source: 'hydration' }),
+                ],
+                [
+                  'other',
+                  'Confirm D (other matter)',
+                  () => send('confirmed', 'fx-d', { sameMatter: false }),
+                ],
+                ['invalidate', 'Withdraw A', () => send('invalidated', 'fx-a')],
+              ] as const
+            ).map(([key, label, run]) => (
+              <button
+                key={key}
+                type="button"
+                data-testid={`fx-${key}`}
+                className="min-h-6 rounded border border-lj-edge px-2 text-[0.8125rem]"
+                onClick={run}
+              >
+                {label}
+              </button>
+            ))}
+            {receipt.label === null ? null : (
+              <p
+                data-testid="receipt-label"
+                data-kind={receipt.label.kind}
+                className="m-0 text-[0.875rem]"
+              >
+                {receipt.label.text}
+              </p>
+            )}
+            <p data-testid="fixture-log" className="m-0 text-[0.8125rem] text-lj-secondary">
+              Log entries: {String(receipt.log.length)}
+            </p>
+          </div>
           <h2 className="m-0 text-lg font-medium" data-hud-findings-control="">
             Evidence
           </h2>

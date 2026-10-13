@@ -1,5 +1,5 @@
 import type { ActivityState } from './hud.types';
-import type { EffectsMode } from './hud.effects';
+import { WASH_FADE_MS, WASH_RISE_MS, washOpacity, type EffectsMode } from './hud.effects';
 import {
   FIELD_POINTS,
   QualityGovernor,
@@ -43,6 +43,8 @@ export interface SceneState {
   readonly regions: readonly Rect[];
   readonly channelX: number | null;
   readonly alerts: readonly AlertTarget[];
+  /** One verified confirmation to show once. The id is the stable event identity. */
+  readonly wash: { readonly id: string; readonly receivedAtMs: number } | null;
 }
 
 export const EMPTY_SCENE: SceneState = {
@@ -53,6 +55,7 @@ export const EMPTY_SCENE: SceneState = {
   regions: [],
   channelX: null,
   alerts: [],
+  wash: null,
 };
 
 export interface RendererStats {
@@ -65,6 +68,8 @@ export interface RendererStats {
   readonly backingPixels: number;
   /** p95 of the most recent window of canvas work, in milliseconds; null before one exists. */
   readonly lastP95Ms: number | null;
+  /** Client-side timing of the last confirmation effect, in performance.now() milliseconds. */
+  readonly wash: { readonly receivedAtMs: number; readonly firstFrameAtMs: number } | null;
 }
 
 interface Palette {
@@ -157,7 +162,7 @@ const HALO_HERO = 72;
 const HALO_COMPACT = 17;
 const CORE_HERO = 5;
 const CORE_COMPACT = 2.5;
-const MASK_MARGIN = 20;
+const MASK_MARGIN = 24;
 const MASK_FEATHER = 14;
 const FRAME_CLAMP_MS = 100;
 
@@ -185,6 +190,9 @@ export class NeuralRenderer {
   #frames = 0;
   #lastP95: number | null = null;
   #work: number[] = [];
+  #washId: string | null = null;
+  #washStart = 0;
+  #washTiming: { receivedAtMs: number; firstFrameAtMs: number } | null = null;
 
   // Particle pool: structure of arrays, fixed size, reused.
   readonly #pf = new Int16Array(64);
@@ -229,6 +237,7 @@ export class NeuralRenderer {
       mode: this.#mode,
       backingPixels: this.#canvas.width * this.#canvas.height,
       lastP95Ms: this.#lastP95,
+      wash: this.#washTiming,
     };
   }
 
@@ -298,13 +307,19 @@ export class NeuralRenderer {
     return (
       this.#mode === 'full' &&
       !s.ceremony &&
-      (paletteFor(s.activity).animated || s.toolsRunning || this.#pn > 0)
+      (paletteFor(s.activity).animated || s.toolsRunning || this.#pn > 0 || this.#washLive())
     );
+  }
+
+  #washLive(): boolean {
+    return this.#washStart > 0 && performance.now() < this.#washStart + WASH_RISE_MS + WASH_FADE_MS;
   }
 
   #fps(): number {
     const tier = TIERS[this.#tier];
-    return this.#scene.toolsRunning || this.#pn > 0 ? tier.activeFps : tier.idleFps;
+    return this.#scene.toolsRunning || this.#pn > 0 || this.#washLive()
+      ? tier.activeFps
+      : tier.idleFps;
   }
 
   #schedule(): void {
@@ -331,6 +346,7 @@ export class NeuralRenderer {
       this.#raf = requestAnimationFrame(this.#tick);
       return;
     }
+    this.#startWash(now);
     const dt = this.#lastFrame === 0 ? 0 : Math.min(now - this.#lastFrame, FRAME_CLAMP_MS) / 1000;
     this.#lastFrame = now;
     this.#lastDraw = now;
@@ -344,6 +360,22 @@ export class NeuralRenderer {
     if (this.#loop) this.#raf = requestAnimationFrame(this.#tick);
     else this.#lastFrame = 0;
   };
+
+  /** Starts the one-shot effect on the first rendered frame after the signal arrived. */
+  #startWash(now: number): void {
+    const wash = this.#scene.wash;
+    if (wash === null) {
+      // A withdrawn confirmation ends the effect at once.
+      this.#washStart = 0;
+      return;
+    }
+    if (wash.id === this.#washId) return;
+    this.#washId = wash.id;
+    if (this.#mode !== 'full' || this.#scene.ceremony || !this.#visible) return;
+    this.#washStart = now;
+    // Both in the performance.now() timeline, so the interval is a real client-side delay.
+    this.#washTiming = { receivedAtMs: wash.receivedAtMs, firstFrameAtMs: performance.now() };
+  }
 
   #adapt(work: number): void {
     this.#work.push(work);
@@ -386,6 +418,7 @@ export class NeuralRenderer {
     } else {
       this.#pn = 0;
     }
+    this.#drawWash(ctx, origin, mode, t * 1000);
     this.#applyMask(ctx);
     this.#drawAlerts(ctx, origin, s, t, motion);
   }
@@ -547,6 +580,38 @@ export class NeuralRenderer {
       const uy = (f.ys[begin + k] ?? 0) * (1 - frac) + (f.ys[begin + k + 1] ?? 0) * frac;
       ctx.globalAlpha = (this.#pa[i] ?? 0) * 0.9;
       ctx.drawImage(dot, origin.x + ux * reach - 5, origin.y + uy * reach - 5, 10, 10);
+    }
+    ctx.globalAlpha = 1;
+  }
+
+  /**
+   * One low-luminance cyan wash and a wave leaving the nucleus. Both are painted before the
+   * reading-zone mask, so text backgrounds stay dark throughout, and neither exceeds the envelope.
+   */
+  #drawWash(ctx: CanvasRenderingContext2D, origin: Point, mode: NucleusMode, nowMs: number): void {
+    if (!this.#washLive() || this.#scene.ceremony) return;
+    const elapsed = nowMs - this.#washStart;
+    const opacity = washOpacity(elapsed);
+    if (opacity > 0) {
+      ctx.globalAlpha = opacity;
+      ctx.fillStyle = `rgb(${CYAN})`;
+      ctx.fillRect(0, 0, this.#cssW, this.#cssH);
+    }
+    if (mode !== 'none') {
+      const total = WASH_RISE_MS + WASH_FADE_MS;
+      const p = Math.min(1, Math.max(0, elapsed / total));
+      ctx.globalAlpha = 0.3 * (1 - p);
+      ctx.strokeStyle = `rgb(${CYAN})`;
+      ctx.lineWidth = 1.5;
+      ctx.beginPath();
+      ctx.arc(
+        origin.x,
+        origin.y,
+        (mode === 'hero' ? HALO_HERO : HALO_COMPACT) * (1 + 2.2 * p),
+        0,
+        Math.PI * 2,
+      );
+      ctx.stroke();
     }
     ctx.globalAlpha = 1;
   }

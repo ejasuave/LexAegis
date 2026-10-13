@@ -4,6 +4,7 @@ import {
   createContext,
   useContext,
   useEffect,
+  useRef,
   useState,
   useSyncExternalStore,
   type ReactNode,
@@ -45,7 +46,12 @@ const empty = () => INITIAL;
  * sent until the separate Send transaction confirmation.
  */
 export function TransactionProvider({ children }: { children: ReactNode }) {
-  const { handle } = useAccount();
+  const { handle, publicConfig } = useAccount();
+  const scopeRef = useRef<{ chainId: string; registryAddress: string } | null>(null);
+  scopeRef.current =
+    publicConfig.chainId !== undefined && publicConfig.registryAddress !== undefined
+      ? { chainId: publicConfig.chainId, registryAddress: publicConfig.registryAddress }
+      : null;
   const approval = useApproval();
   const [controller, setController] = useState<TransactionController | null>(null);
 
@@ -58,6 +64,7 @@ export function TransactionProvider({ children }: { children: ReactNode }) {
       api: createChainApi(),
       signing: handle.transactions,
       newIdempotencyKey: () => crypto.randomUUID(),
+      scope: () => scopeRef.current,
     });
     const off = handle.onLock(() => created.onAccountLost());
     setController(created);

@@ -20,7 +20,8 @@ export interface Anchors {
 }
 
 const EMPTY: Anchors = { regions: [], nucleus: null, channelX: null, alerts: [] };
-const MIN_GAP_MS = 80;
+// One pass per frame at most: a mask that lags a layout change would leave art behind new text.
+const MIN_GAP_MS = 0;
 
 const rectOf = (el: Element): Rect => {
   const r = el.getBoundingClientRect();
@@ -137,6 +138,7 @@ export function useHudAnchors(
     };
 
     const request = () => {
+      watchRegions();
       if (frame !== 0) return;
       const wait = Math.max(0, MIN_GAP_MS - (performance.now() - last));
       frame = requestAnimationFrame(() => {
@@ -148,6 +150,16 @@ export function useHudAnchors(
     const root = document.querySelector('.lj-app') ?? document.body;
     const resize = new ResizeObserver(request);
     resize.observe(root);
+    const watched = new WeakSet<Element>();
+    const watchRegions = () => {
+      for (const el of document.querySelectorAll('[data-hud-quiet]')) {
+        if (!watched.has(el)) {
+          watched.add(el);
+          resize.observe(el);
+        }
+      }
+    };
+    watchRegions();
     const main = document.querySelector('.lj-main');
     if (main !== null) resize.observe(main);
     const mutation = new MutationObserver(request);

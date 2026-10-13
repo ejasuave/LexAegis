@@ -7,6 +7,12 @@ import type {
   TransactionTicket,
 } from '@/features/account/public';
 import type { ChainApi, OperationView, Phase, PublicRequest } from './api-client';
+import {
+  verifyConfirmation,
+  type ConfirmationScope,
+  type ConfirmationSignal,
+  type ExpectedAction,
+} from './confirmation';
 
 /*
  * Drives one registry transaction from reservation to a refreshed chain outcome. It owns no
@@ -72,6 +78,8 @@ export interface ControllerDeps {
   readonly api: ChainApi;
   readonly signing: RegistryTransactionSigning;
   readonly newIdempotencyKey: () => string;
+  /** The configured chain and registry. Without it no confirmation signal is ever emitted. */
+  readonly scope?: () => ConfirmationScope | null;
 }
 
 interface Pending {
@@ -92,6 +100,10 @@ export class TransactionController {
   #request: PublicRequest | null = null;
   /** The stage-one signature, kept in memory only so an expired quote can be renewed. Never stored. */
   #authorisation: SignedReviewAction | null = null;
+  readonly #confirmationListeners = new Set<(signal: ConfirmationSignal) => void>();
+  /** The confirmation this session emitted and has not withdrawn. */
+  #confirmed: ConfirmationSignal | null = null;
+  readonly #emitted = new Set<string>();
 
   constructor(deps: ControllerDeps) {
     this.#deps = deps;
@@ -102,6 +114,68 @@ export class TransactionController {
     return () => this.#listeners.delete(listener);
   };
   getSnapshot = (): TransactionState => this.#state;
+
+  /**
+   * Verified live confirmations and their withdrawal. Delivered only for an operation this tab
+   * signed and then watched change to confirmed; never for a recovered or replayed operation.
+   */
+  onConfirmation = (listener: (signal: ConfirmationSignal) => void): (() => void) => {
+    this.#confirmationListeners.add(listener);
+    return () => this.#confirmationListeners.delete(listener);
+  };
+
+  #expected(): ExpectedAction | null {
+    const signed = this.#authorisation;
+    const bound = (signed as { action?: unknown } | null)?.action as
+      | {
+          chainId?: unknown;
+          registryAddress?: unknown;
+          action?: { reviewer?: unknown; commitment?: unknown; nonce?: unknown };
+        }
+      | undefined;
+    const inner = bound?.action;
+    if (
+      typeof bound?.chainId !== 'string' ||
+      typeof bound.registryAddress !== 'string' ||
+      typeof inner?.reviewer !== 'string' ||
+      typeof inner.commitment !== 'string' ||
+      (typeof inner.nonce !== 'string' &&
+        typeof inner.nonce !== 'bigint' &&
+        typeof inner.nonce !== 'number')
+    ) {
+      return null;
+    }
+    return {
+      chainId: bound.chainId,
+      registryAddress: bound.registryAddress,
+      reviewer: inner.reviewer,
+      commitment: inner.commitment,
+      nonce: String(inner.nonce),
+    };
+  }
+
+  /** Called with every live observation of the operation, after the state is updated. */
+  #observed(operation: OperationView, previous: TransactionStage): void {
+    if (operation.phase !== 'confirmed') {
+      // Leaving confirmed after one was emitted is a withdrawal, never a silent change.
+      const was = this.#confirmed;
+      if (was !== null && previous === 'confirmed') {
+        this.#confirmed = null;
+        this.#emitConfirmation({ ...was, kind: 'invalidated' });
+      }
+      return;
+    }
+    if (previous === 'confirmed') return;
+    const signal = verifyConfirmation(operation, this.#expected(), this.#deps.scope?.() ?? null);
+    if (signal === null || this.#emitted.has(signal.id)) return;
+    this.#emitted.add(signal.id);
+    this.#confirmed = signal;
+    this.#emitConfirmation(signal);
+  }
+
+  #emitConfirmation(signal: ConfirmationSignal): void {
+    for (const listener of this.#confirmationListeners) listener(signal);
+  }
 
   #set(patch: Partial<TransactionState>): void {
     this.#state = Object.freeze({ ...this.#state, ...patch });
@@ -231,10 +305,12 @@ export class TransactionController {
       signedTransaction: signed.raw,
     });
     if (result.ok) {
+      const previous = this.#state.stage;
       this.#set({
         operation: result.data.operation,
         stage: STAGE_BY_PHASE[result.data.operation.phase],
       });
+      this.#observed(result.data.operation, previous);
       return;
     }
     // A lost response is not a failed broadcast: keep the bytes for an identical retry.
@@ -260,10 +336,12 @@ export class TransactionController {
       this.#set({ reason: result.reason });
       return;
     }
+    const previous = this.#state.stage;
     this.#set({
       operation: result.data.operation,
       stage: STAGE_BY_PHASE[result.data.operation.phase],
     });
+    this.#observed(result.data.operation, previous);
   }
 
   /**

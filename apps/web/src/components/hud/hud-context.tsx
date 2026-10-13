@@ -6,6 +6,7 @@ import {
   useContext,
   useEffect,
   useMemo,
+  useRef,
   useState,
   type ReactNode,
 } from 'react';
@@ -14,14 +15,21 @@ import { useAssistant } from '@/components/assistant/assistant-context';
 import { operationName } from '@/components/assistant/orb-state';
 import { useTransaction } from '@/components/chain/transaction-context';
 import { useHistory } from '@/components/history/history-context';
+import { useEffectsEnvironment } from './effects-preference';
 import { useHudFixture } from './hud-fixture';
+import { usePackage } from '@/components/review/package-context';
 import { useDecisions } from '@/components/review/decision-context';
 import { useReview } from '@/components/review/review-context';
 import { useVault } from '@/components/vault/vault-context';
 import { vaultStatusLabel } from '@/components/vault/status';
 import type { RunView } from '@/features/assistant/public';
 import {
+  ReceiptEffects,
+  resolveEffects,
   selectHud,
+  type ReceiptLabel,
+  type ReceiptLogEntry,
+  type ReceiptSignal,
   type ActiveRunInput,
   type HudInput,
   type HudView,
@@ -37,7 +45,30 @@ interface HudContextValue {
   readonly nowMs: number;
   /** Finding rows currently rendered in the viewport; the canvas may end branches at them. */
   readonly setVisibleFindingIds: (ids: readonly string[]) => void;
+  readonly receipt: ReceiptView;
+  /**
+   * The entry for a verified signal. The transaction controller is its only production caller;
+   * the gated fixtures page is the only other.
+   */
+  readonly consumeReceipt: (
+    signal: ReceiptSignal & { readonly commitment: string },
+    options?: { readonly source?: 'live' | 'hydration'; readonly sameMatter?: boolean },
+  ) => void;
 }
+
+export interface ReceiptView {
+  /** Persistent wording of the latest confirmation or correction. */
+  readonly label: ReceiptLabel | null;
+  /** Every accepted real event, newest first, bounded. */
+  readonly log: readonly ReceiptLogEntry[];
+  /** The one effect to show, or null. */
+  readonly wash: { readonly id: string; readonly receivedAtMs: number } | null;
+  /** Said once to assistive technology. */
+  readonly announcement: { readonly id: string; readonly text: string } | null;
+}
+
+const NO_RECEIPT: ReceiptView = { label: null, log: [], wash: null, announcement: null };
+const LOG_LIMIT = 20;
 
 const HudContext = createContext<HudContextValue | null>(null);
 
@@ -96,6 +127,50 @@ export function HudProvider({
   const assistant = useAssistant().snapshot;
   const decisions = useDecisions().snapshot;
   const nowMs = useNow();
+  const fixture = useHudFixture();
+  const transactionContext = useTransaction();
+  const frozen = usePackage().snapshot.frozen;
+  const environment = useEffectsEnvironment();
+  const effectsMode = resolveEffects({ ...environment, canvasFailed: false });
+  const [receipt, setReceipt] = useState<ReceiptView>(NO_RECEIPT);
+  const gate = useRef(new ReceiptEffects());
+  const shownNetwork = fixture?.ceiling.networkLabel ?? networkLabel;
+  const latest = useRef({ effectsMode, networkLabel: shownNetwork, frozen });
+  latest.current = { effectsMode, networkLabel: shownNetwork, frozen };
+  const consumeReceipt = useCallback<HudContextValue['consumeReceipt']>((signal, options) => {
+    const now = latest.current;
+    const outcome = gate.current.consume(signal, {
+      nowMs: performance.now(),
+      source: options?.source ?? 'live',
+      pageVisible: document.visibilityState === 'visible',
+      mode: now.effectsMode,
+      sameMatter:
+        options?.sameMatter ??
+        (now.frozen !== null &&
+          now.frozen.commitment.toLowerCase() === signal.commitment.toLowerCase()),
+      networkLabel: now.networkLabel,
+    });
+    if (!outcome.accepted) return;
+    setReceipt((previous) => ({
+      label: outcome.label ?? previous.label,
+      log: outcome.log === null ? previous.log : [outcome.log, ...previous.log].slice(0, LOG_LIMIT),
+      wash: outcome.cancelPlay
+        ? null
+        : outcome.play
+          ? { id: signal.id, receivedAtMs: performance.now() }
+          : previous.wash,
+      announcement:
+        outcome.announce === null
+          ? previous.announcement
+          : { id: signal.id + signal.kind, text: outcome.announce },
+    }));
+  }, []);
+  // The controller emits only verified, live confirmations; nothing else reaches this gate.
+  useEffect(() => {
+    const controller = transactionContext.controller;
+    if (controller === null) return;
+    return controller.onConfirmation((signal) => consumeReceipt(signal));
+  }, [transactionContext.controller, consumeReceipt]);
   const [visible, setVisible] = useState<readonly string[]>([]);
   const setVisibleFindingIds = useCallback((ids: readonly string[]) => {
     setVisible((previous) =>
@@ -171,7 +246,6 @@ export function HudProvider({
     matterSelected: vault.snapshot.selectedMatterId !== null,
   };
 
-  const fixture = useHudFixture();
   // A synthetic input (gated page only) still goes through the real selectors and the real
   // measurement of which rows are on screen.
   const input: HudInput =
@@ -191,8 +265,8 @@ export function HudProvider({
     if (!same) setView(computed);
   }, [same, computed]);
   const value = useMemo<HudContextValue>(
-    () => ({ view, nowMs, setVisibleFindingIds }),
-    [view, nowMs, setVisibleFindingIds],
+    () => ({ view, nowMs, setVisibleFindingIds, receipt, consumeReceipt }),
+    [view, nowMs, setVisibleFindingIds, receipt, consumeReceipt],
   );
   return <HudContext.Provider value={value}>{children}</HudContext.Provider>;
 }

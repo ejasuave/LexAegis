@@ -4,6 +4,7 @@ import { useId, useRef, useState } from 'react';
 import { useDrawerFocus } from './drawer-focus';
 import { useAssistant } from '@/components/assistant/assistant-context';
 import { useTransaction } from '@/components/chain/transaction-context';
+import { useHud } from '@/components/hud/hud-context';
 import { IndexerStatusIndicator } from '@/components/history/IndexerStatusIndicator';
 import { useHistory } from '@/components/history/history-context';
 import { useApproval } from '@/components/review/approval-context';
@@ -65,6 +66,7 @@ export function ActivityDrawer() {
   const approval = useApproval().snapshot;
   const transaction = useTransaction().state;
   const history = useHistory();
+  const { receipt } = useHud();
 
   const local: string[] = [];
   if (snapshot.intake.state === 'running') local.push(`Reading ${snapshot.intake.label}`);
@@ -117,6 +119,7 @@ export function ActivityDrawer() {
       }`,
     );
 
+  const observed = receipt.log.map((entry) => entry.text);
   const chain = history.state.items
     .slice(0, 8)
     .map(
@@ -187,6 +190,11 @@ export function ActivityDrawer() {
         ) : null}
         {view === 'receipts' ? (
           <>
+            <Section
+              title="Confirmed or corrected in this session"
+              lines={observed}
+              none="No receipt confirmed in this session."
+            />
             <Section
               title="Observed on-chain events"
               lines={chain}

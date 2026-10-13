@@ -14,8 +14,27 @@ export {
   transactionReading,
 } from './hud.selectors';
 export type * from './hud.types';
-export { EFFECTS_PREFERENCES, isEffectsPreference, resolveEffects } from './hud.effects';
-export type { EffectsEnvironment, EffectsMode, EffectsPreference } from './hud.effects';
+export {
+  EFFECTS_PREFERENCES,
+  RECEIPT_COALESCE_MS,
+  ReceiptEffects,
+  WASH_FADE_MS,
+  WASH_MAX_OPACITY,
+  WASH_RISE_MS,
+  isEffectsPreference,
+  resolveEffects,
+  washOpacity,
+} from './hud.effects';
+export type {
+  EffectsEnvironment,
+  EffectsMode,
+  EffectsPreference,
+  ReceiptContext,
+  ReceiptLabel,
+  ReceiptLogEntry,
+  ReceiptOutcome,
+  ReceiptSignal,
+} from './hud.effects';
 export { FIELD_SEED, TIERS, backingScale, initialTier, QualityGovernor } from './neural.geometry';
 export type { Point, Rect, Tier, TierName } from './neural.geometry';
 export { EMPTY_SCENE, NeuralRenderer } from './neural.renderer';

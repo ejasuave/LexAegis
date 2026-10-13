@@ -6,3 +6,5 @@ export { createLiveStateReader, parseLiveState } from './live-state';
 export type { LiveState, LiveStateReader, ReceiptLifecycle } from './live-state';
 export { parseConfirmedLifecycle, readConfirmedLifecycle } from './live-state';
 export type { ConfirmedLifecycle } from './live-state';
+export { confirmationId, verifyConfirmation } from './confirmation';
+export type { ConfirmationScope, ConfirmationSignal, ExpectedAction } from './confirmation';

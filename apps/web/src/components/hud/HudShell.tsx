@@ -20,7 +20,7 @@ const CEREMONY_STAGES: ReadonlySet<string> = new Set(['checking', 'preview', 'si
 
 function Frame({ children }: { children: ReactNode }) {
   const { paletteOpen } = useWorkspace();
-  const { view, setVisibleFindingIds } = useHud();
+  const { view, setVisibleFindingIds, receipt } = useHud();
   const approval = useApproval().snapshot.stage;
   const pathname = usePathname();
   const environment = useEffectsEnvironment();
@@ -39,8 +39,9 @@ function Frame({ children }: { children: ReactNode }) {
       regions: anchors.regions,
       channelX: anchors.channelX,
       alerts: anchors.alerts,
+      wash: receipt.wash,
     }),
-    [activity.state, activity.toolsRunning, ceremony, anchors],
+    [activity.state, activity.toolsRunning, ceremony, anchors, receipt.wash],
   );
   return (
     <div className="lj-app" data-effects={mode} data-canvas={mode === 'off' ? 'off' : 'on'}>
@@ -62,6 +63,10 @@ function Frame({ children }: { children: ReactNode }) {
         <ContextDrawerHost />
       </div>
       <CommandPalette />
+      {/* One polite announcement per accepted event; it never depends on the effect playing. */}
+      <p className="sr-only" role="status" aria-live="polite" data-testid="receipt-announcement">
+        {receipt.announcement?.text ?? ''}
+      </p>
     </div>
   );
 }
