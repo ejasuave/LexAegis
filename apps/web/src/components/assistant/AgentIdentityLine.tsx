@@ -42,7 +42,7 @@ export function AgentIdentityLine() {
     <section
       aria-label="Assistant agent identity"
       data-testid="agent-identity-line"
-      className="grid gap-1 rounded-md border border-lj-line p-3 text-[0.875rem]"
+      className="lj-rule grid gap-1 pt-3 text-[0.875rem]"
     >
       <p className="m-0 font-medium" role="status" aria-live="polite">
         <span className="text-lj-muted">Current assistant: </span>
@@ -52,7 +52,7 @@ export function AgentIdentityLine() {
       <div className="flex flex-wrap items-center gap-3">
         <button
           type="button"
-          className="min-h-11 min-w-11 rounded-md border border-lj-line px-3"
+          className="min-h-11 min-w-11 rounded border border-lj-edge px-3"
           disabled={snapshot.phase === 'checking'}
           onClick={() => void controller.inspect()}
         >

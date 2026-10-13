@@ -11,7 +11,7 @@ import {
 } from 'react';
 
 export type PresentationMode = 'command' | 'review';
-export type MobileTab = 'document' | 'aegis' | 'findings' | 'package';
+export type MobileTab = 'matter' | 'document' | 'findings' | 'activity';
 
 /** The selected matter/document/clause. Null until a later chapter provides real matters. */
 export interface Selection {

@@ -82,10 +82,7 @@ export function CommandDock() {
         : IDLE_TEXT[snapshot.availabilityStatus];
 
   return (
-    <section
-      aria-label="Command dock"
-      className="lj-safe-x lj-safe-bottom sticky bottom-0 z-10 border-t border-lj-divider bg-lj-bg py-2"
-    >
+    <section aria-label="Command dock" className="lj-dock lj-gutter">
       <form onSubmit={onSubmit} className="flex flex-wrap items-center gap-2">
         <div className="relative">
           <button
@@ -101,7 +98,7 @@ export function CommandDock() {
             <ul
               id="command-menu"
               aria-label="Commands"
-              className="absolute bottom-full left-0 z-20 m-0 mb-2 min-w-56 list-none border border-lj-edge bg-lj-soft p-1"
+              className="absolute bottom-full left-0 z-40 m-0 mb-2 min-w-56 list-none border border-lj-edge bg-lj-soft p-1"
             >
               {commands.map((command) => (
                 <li key={command}>
@@ -149,12 +146,12 @@ export function CommandDock() {
           placeholder="Ask Aegis or type / for commands"
           aria-describedby={`${noticeId} ${scopeId}`}
           data-testid="aegis-input"
-          className="min-h-11 min-w-0 flex-1 basis-40 resize-y sm:basis-64 rounded border border-lj-edge bg-lj-soft px-3 py-2 font-mono text-base text-lj-text placeholder:text-lj-muted"
+          className="min-h-11 min-w-0 flex-1 basis-40 resize-y sm:basis-64 lj-dock-field rounded border border-lj-edge bg-lj-soft px-3 py-2 font-mono text-base leading-6 text-lj-text placeholder:text-lj-muted"
         />
 
         <button
           type="submit"
-          className={`${button} bg-lj-soft`}
+          className={button}
           aria-disabled={controller === null}
           data-testid="aegis-send"
         >
@@ -198,32 +195,34 @@ export function CommandDock() {
           <Icon name="activity" /> <span className="sr-only sm:not-sr-only">Activity</span>
         </button>
       </form>
-      <p
-        id={scopeId}
-        className="m-0 mt-1 line-clamp-1 text-[0.8125rem] text-lj-secondary lg:line-clamp-none"
-        data-testid="aegis-scope"
-      >
-        Scope:{' '}
-        {snapshot.selectionCount > 0
-          ? `${snapshot.selectionCount} selected passage(s) in ${
-              review.documents.find((doc) => doc.selected)?.label ?? 'the selected document'
-            }. You review exactly what would be sent before Send.`
-          : 'no passage selected. Local checks stay on this device.'}
-      </p>
-      <p
-        id={noticeId}
-        role="status"
-        aria-live="polite"
-        data-testid="aegis-notice"
-        // Only the idle hint is shortened on small screens. A refusal, an error or what Stop did not
-        // do is shown whole: it must never be clipped out of sight.
-        className={`m-0 mt-1 min-h-5 text-[0.8125rem] text-lj-secondary ${
-          stopNote === '' && snapshot.notice === '' ? 'line-clamp-1 lg:line-clamp-none' : ''
-        }`}
-      >
-        {stopNote !== '' ? `${stopNote} ` : ''}
-        {notice}
-      </p>
+      <div className="flex flex-wrap gap-x-6">
+        <p
+          id={scopeId}
+          className="m-0 mt-1 line-clamp-1 text-[0.8125rem] text-lj-secondary lg:line-clamp-none"
+          data-testid="aegis-scope"
+        >
+          Scope:{' '}
+          {snapshot.selectionCount > 0
+            ? `${snapshot.selectionCount} selected passage(s) in ${
+                review.documents.find((doc) => doc.selected)?.label ?? 'the selected document'
+              }. You review exactly what would be sent before Send.`
+            : 'no passage selected. Local checks stay on this device.'}
+        </p>
+        <p
+          id={noticeId}
+          role="status"
+          aria-live="polite"
+          data-testid="aegis-notice"
+          // Only the idle hint is shortened on small screens. A refusal, an error or what Stop did not
+          // do is shown whole: it must never be clipped out of sight.
+          className={`m-0 mt-1 min-h-5 text-[0.8125rem] text-lj-secondary ${
+            stopNote === '' && snapshot.notice === '' ? 'line-clamp-1 lg:line-clamp-none' : ''
+          }`}
+        >
+          {stopNote !== '' ? `${stopNote} ` : ''}
+          {notice}
+        </p>
+      </div>
     </section>
   );
 }

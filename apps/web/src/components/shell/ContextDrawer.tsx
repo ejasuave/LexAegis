@@ -60,7 +60,7 @@ export function ContextDrawer({ open, onClose }: { open: boolean; onClose: () =>
       id="context-drawer"
       aria-label="Saved context"
       hidden={!open}
-      className="lj-card fixed inset-x-0 bottom-24 z-10 max-h-[60dvh] overflow-y-auto p-4 lg:left-auto lg:w-[28rem]"
+      className="lj-drawer fixed inset-x-0 bottom-24 z-40 max-h-[60dvh] overflow-y-auto p-4 lg:left-auto lg:w-[28rem]"
     >
       <div className="flex items-center justify-between gap-2">
         <h2 className="m-0 text-lg font-medium">Saved context</h2>

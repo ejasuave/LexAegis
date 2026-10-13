@@ -67,7 +67,7 @@ export function EvidenceChecklist() {
               </p>
               <div className="mt-1 flex flex-wrap items-center gap-2">
                 <select
-                  className={`${field} max-w-64`}
+                  className={`${field} max-w-full`}
                   aria-label={`Document for ${item.requirement}`}
                   value={current.artifactId}
                   onChange={(e) =>

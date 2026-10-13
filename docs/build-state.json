@@ -12926,6 +12926,34 @@
           "docs/ui-blueprint-mapping.md"
         ],
         "checks": "Mapping written; no code changed. Video not viewed (cannot play mp4)."
+      },
+      "2": {
+        "state": "complete",
+        "files": [
+          "apps/web/src/app/globals.css",
+          "apps/web/src/app/tokens.test.ts",
+          "apps/web/src/components/hud/hud.tokens.css",
+          "apps/web/src/components/hud/HudShell.tsx",
+          "apps/web/src/components/hud/SystemCeiling.tsx",
+          "apps/web/src/components/hud/MatterRail.tsx",
+          "apps/web/src/components/hud/AttentionRail.tsx",
+          "apps/web/src/components/hud/layout-tier.ts",
+          "apps/web/src/components/review/ReviewWorkspace.tsx",
+          "apps/web/src/components/shell/AppShell.tsx",
+          "apps/web/src/components/shell/CommandDock.tsx",
+          "apps/web/src/components/shell/NavBar.tsx",
+          "tooling/scripts/hud-visual-check.ts"
+        ],
+        "interfaces": [
+          "HudShell({networkLabel, children})",
+          "SystemCeiling({networkLabel})",
+          "MatterRail()",
+          "AttentionRail()",
+          "useLayoutTier(): 'wide'|'medium'|'narrow'",
+          "MobileTab = 'matter'|'document'|'findings'|'activity'"
+        ],
+        "checks": "observed 2026-10-13: web vitest 557/557, web and workspace typecheck clean, eslint clean on touched files, exclusion:check clean; tooling/scripts/hud-visual-check.ts on next dev: 6 viewports (1440x900, 1280x800, 1024x768, 768x1024, 390x844, 320x640) no page-wide horizontal scroll, ceiling flush and full width, dock >= 64px, 1440 rails 240/776/336, 1280 rails 208/304, keyboard tab walk of 41-43 stops never behind ceiling or dock. Screenshots docs/evidence/ui-blueprint/stage2-*.png. Not run: pnpm test:hud:browser (needs embedded Postgres, S3), 200% text and 400% zoom manual checks, screen reader.",
+        "limitations": "Matter rail is a labelled disclosure (not a modal drawer) between 800 and 1199 px. Nucleus is still the CSS/SVG orb until stage 5."
       }
     }
   }

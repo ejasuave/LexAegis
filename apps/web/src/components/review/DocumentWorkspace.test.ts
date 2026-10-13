@@ -3,7 +3,7 @@ import { renderToStaticMarkup } from 'react-dom/server';
 import { describe, expect, it } from 'vitest';
 import { ALL_FLAGS_OFF } from '@/config/flags';
 import { FeatureFlagsProvider } from '@/components/shell/feature-flags-context';
-import { ReviewEvidence } from './DocumentWorkspace';
+import { ReviewChecklist, ReviewEvidence } from './DocumentWorkspace';
 
 const render = (comparison: boolean) =>
   renderToStaticMarkup(
@@ -13,11 +13,17 @@ const render = (comparison: boolean) =>
     }),
   );
 
+describe('left-rail evidence checklist', () => {
+  it('is its own region, so the attention rail carries no checklist', () => {
+    expect(renderToStaticMarkup(createElement(ReviewChecklist))).toContain('Evidence checklist');
+    expect(render(false)).not.toContain('Evidence checklist');
+  });
+});
+
 describe('review evidence column', () => {
   it('has no comparison heading, control or empty panel while the flag is off', () => {
     const html = render(false);
     expect(html).not.toMatch(/Compare versions|Old version|Document comparison/);
-    expect(html).toContain('Evidence checklist');
   });
 
   it('shows the comparison only when the flag is on', () => {

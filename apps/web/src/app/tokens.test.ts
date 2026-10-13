@@ -23,17 +23,19 @@ function contrast(a: string, b: string): number {
 
 describe('design tokens', () => {
   it('uses the blueprint palette', () => {
-    expect(token('lj-bg')).toBe('#060b14');
-    expect(token('lj-bg-soft')).toBe('#0c1626');
-    expect(token('lj-raised')).toBe('#112039');
-    expect(token('lj-border')).toBe('#23364c');
-    expect(token('lj-text')).toBe('#e6edf7');
-    expect(token('lj-text-secondary')).toBe('#aabcd0');
+    expect(token('lj-bg')).toBe('#000000');
+    expect(token('lj-bg-soft')).toBe('#0d1117');
+    expect(token('lj-raised')).toBe('#131a24');
+    expect(token('lj-border')).toBe('#2a3646');
+    expect(token('lj-text-muted')).toBe('#8b98a9');
+    expect(token('lj-cyan')).toBe('#67e8f9');
+    expect(token('lj-text')).toBe('#e6edf3');
+    expect(token('lj-text-secondary')).toBe('#aab6c4');
     expect(token('lj-cobalt-action')).toBe('#1d4ed8');
-    expect(token('lj-violet-text')).toBe('#b6a1ff');
-    expect(token('lj-amber')).toBe('#f5c76a');
-    expect(token('lj-positive')).toBe('#69d8a7');
-    expect(token('lj-error')).toBe('#fda4af');
+    expect(token('lj-violet-text')).toBe('#c4b5fd');
+    expect(token('lj-amber')).toBe('#fbbf24');
+    expect(token('lj-positive')).toBe('#6ee7b7');
+    expect(token('lj-error')).toBe('#fb7185');
   });
 
   it('keeps every text pairing at WCAG AA (4.5:1) on every surface', () => {

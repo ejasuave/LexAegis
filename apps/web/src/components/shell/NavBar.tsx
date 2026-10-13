@@ -13,7 +13,7 @@ const ITEMS = [
 export function NavBar() {
   const pathname = usePathname();
   return (
-    <nav aria-label="Primary" className="border-b border-lj-divider px-3">
+    <nav aria-label="Primary" className="lj-gutter">
       <ul className="m-0 flex list-none flex-wrap gap-1 p-0">
         {ITEMS.map((item) => {
           const current = pathname === item.href;

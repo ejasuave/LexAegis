@@ -130,7 +130,7 @@ export function ActivityDrawer() {
       id="activity-drawer"
       aria-label="Activity"
       hidden={!activityOpen}
-      className="lj-card lj-safe-bottom fixed inset-x-0 bottom-24 z-10 max-h-[55dvh] overflow-y-auto p-4 lg:left-auto lg:w-[26rem]"
+      className="lj-drawer lj-safe-bottom fixed inset-x-0 bottom-24 z-40 max-h-[55dvh] overflow-y-auto p-4 lg:left-auto lg:w-[26rem]"
     >
       <div className="flex items-center justify-between">
         <h2 className="m-0 text-lg font-medium">Activity</h2>

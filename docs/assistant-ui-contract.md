@@ -4,7 +4,7 @@ Requirements, not evidence that a feature exists. Authority: v3 brief; `UI_UX_In
 
 ## Shell (Chapters 1, 10)
 
-- `apps/web` shell: status strip (matter and version, network, passkey session, server sign-in, vault, transaction, indexer as separate readings), navigation, Command-centre and Review modes, labelled mobile tabs (Document, Aegis, Findings, Review package), command dock, activity and saved-context drawers.
+- `apps/web` shell (`components/hud`): telemetry ceiling (matter and version, network, passkey session, public account, vault, transaction, indexer as separate readings; server sign-in in a status disclosure), navigation, three-zone workbench (matter rail, stage, attention rail), Command-centre and Review modes, labelled mobile tabs (Matter, Document, Findings, Activity), command dock, activity and saved-context drawers. Layout rules: `UI_UX_Instructions/UI_UX_BLUEPRINT.md`.
 - View state lives in `WorkspaceProvider`. A pure readiness selector returns blockers, outstanding decisions and next actions; there is no combined approved or ready flag.
 - The orb is CSS/SVG with a text label, animated only for real running, tool, listening or stopping states and never under reduced motion; completion names the operation and says it approves nothing.
 - Palette tokens (`--lj-*`) have a contrast test. Only the idle dock hint is clipped.

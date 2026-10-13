@@ -22,7 +22,8 @@ export function ConversationPanel({ compact = false }: { compact?: boolean }) {
   const end = useRef<HTMLDivElement | null>(null);
   const count = snapshot.conversation.length;
   useEffect(() => {
-    end.current?.scrollIntoView({ block: 'nearest' });
+    // Only follow new messages: an empty or freshly mounted transcript must not scroll the stage.
+    if (count > 0 || snapshot.pending !== null) end.current?.scrollIntoView({ block: 'nearest' });
   }, [count, snapshot.pending]);
 
   /** Reopens the exact cited passage, only if it still matches the current verified artifacts. */

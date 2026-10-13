@@ -804,11 +804,11 @@ try {
   check('no horizontal scroll at 390x844', await noHorizontalScroll());
   const tabs = await page.getByRole('tab').allInnerTexts();
   check(
-    'mobile tabs are Document, Aegis, Findings and Review package',
-    ['Document', 'Aegis', 'Findings', 'Review package'].every((t) => tabs.includes(t)),
+    'mobile tabs are Matter, Document, Findings and Activity',
+    ['Matter', 'Document', 'Findings', 'Activity'].every((t) => tabs.includes(t)),
     tabs.join(','),
   );
-  await page.getByRole('tab', { name: 'Review package' }).click();
+  await page.getByRole('tab', { name: 'Findings' }).click();
   check(
     'approval controls are reachable on a phone',
     (await page.getByTestId('action-preview').count()) === 1,

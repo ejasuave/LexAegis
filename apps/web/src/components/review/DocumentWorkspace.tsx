@@ -23,14 +23,18 @@ export function ReviewDocuments() {
   );
 }
 
-/** Evidence column: checklist, comparison and the simulation, clearly separated. */
+/** Left-rail evidence checklist: a scoped aid, not proof that an event did or did not occur. */
+export function ReviewChecklist() {
+  return <EvidenceChecklist />;
+}
+
+/** Attention rail: comparison and the simulation, clearly separated. */
 export function ReviewEvidence() {
   const { setFocus } = useReview();
   // Off by default: when disabled there is no heading, control or empty panel at all.
   const comparison = useFeatureFlag('documentComparison');
   return (
     <div className="grid gap-6">
-      <EvidenceChecklist />
       {comparison ? <DocumentComparison onFocus={setFocus} /> : null}
       <PaymentWhatIfPanel />
     </div>

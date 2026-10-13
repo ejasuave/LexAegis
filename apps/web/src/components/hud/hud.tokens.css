@@ -1,0 +1,249 @@
+/*
+ * Obsidian Neural Workbench: layout, layer stack and accessibility overrides.
+ * Colour tokens live in app/globals.css (asserted by app/tokens.test.ts).
+ *
+ * Layer stack, one stacking context (.lj-app isolates it):
+ *   0 base, 1 neural canvas, 2 contrast mask, 10 workspace, 20 ceiling and dock,
+ *   40 palette or drawer, 60 exact-action approval.
+ */
+
+.lj-app {
+  position: relative;
+  isolation: isolate;
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  min-height: 100vh;
+  min-height: 100dvh;
+  background: var(--lj-bg);
+  --lj-gutter: 12px;
+  --lj-gap: 16px;
+}
+@media (min-width: 1200px) {
+  .lj-app {
+    --lj-gutter: 16px;
+    --lj-gap: 16px;
+  }
+}
+@media (min-width: 1440px) {
+  .lj-app {
+    --lj-gutter: 20px;
+    --lj-gap: 24px;
+  }
+}
+/* A fixed-height application only where there is room; otherwise the page scrolls. */
+@media (min-width: 800px) and (min-height: 560px) {
+  .lj-app {
+    height: 100vh;
+    height: 100dvh;
+  }
+}
+
+/* Layers 1 and 2: decorative, never intercept input. */
+.lj-art {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background: var(--lj-bg);
+}
+.lj-art canvas,
+.lj-art-static {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.lj-gutter {
+  padding-inline: max(var(--lj-gutter), env(safe-area-inset-left))
+    max(var(--lj-gutter), env(safe-area-inset-right));
+}
+
+/* Layer 20: the ceiling is flush and borderless; internal padding keeps focus rings unclipped. */
+.lj-ceiling {
+  position: relative;
+  z-index: 20;
+  padding-top: env(safe-area-inset-top);
+  background: var(--lj-bg);
+}
+.lj-ceiling-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 2px 20px;
+  min-height: 40px;
+  padding-block: 6px;
+  padding-inline: max(12px, env(safe-area-inset-left)) max(12px, env(safe-area-inset-right));
+  font-size: 0.8125rem;
+  line-height: 1.25rem;
+}
+.lj-ceiling dl,
+.lj-ceiling dd,
+.lj-ceiling dt {
+  margin: 0;
+}
+
+/* Layer 10: workspace. */
+.lj-main {
+  position: relative;
+  z-index: 10;
+  min-width: 0;
+  min-height: 0;
+  padding-block: var(--lj-space-3);
+}
+@media (min-width: 800px) and (min-height: 560px) {
+  .lj-main {
+    overflow-y: auto;
+  }
+  .lj-main:has(.lj-workbench) {
+    overflow: hidden;
+  }
+}
+
+/* Three zones: matter rail, working stage, attention rail. 240 + 776 + 336 + 48 + 40 = 1440. */
+.lj-workbench {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--lj-gap);
+}
+.lj-workbench > * {
+  min-width: 0;
+  min-height: 0;
+}
+/* 800-1199 px: the stage plus a 304 px inspector; the matter rail is a labelled disclosure above. */
+@media (min-width: 800px) {
+  .lj-workbench {
+    grid-template-columns: minmax(0, 1fr) 304px;
+    grid-template-rows: auto minmax(0, 1fr);
+  }
+  .lj-rail-left {
+    grid-column: 1 / -1;
+  }
+}
+@media (min-width: 1200px) {
+  .lj-workbench {
+    grid-template-columns: 208px minmax(0, 1fr) 304px;
+    grid-template-rows: minmax(0, 1fr);
+  }
+  .lj-rail-left {
+    grid-column: auto;
+  }
+}
+@media (min-width: 1440px) {
+  .lj-workbench {
+    grid-template-columns: clamp(240px, 16.6667vw, 256px) minmax(0, 1fr) clamp(
+        336px,
+        23.3333vw,
+        384px
+      );
+  }
+}
+@media (min-width: 800px) and (min-height: 560px) {
+  .lj-workbench {
+    height: 100%;
+  }
+  .lj-workbench > * {
+    overflow-y: auto;
+    overscroll-behavior: contain;
+  }
+}
+/* Below 800px one work surface shows at a time, chosen by the labelled tabs. The attribute is
+   data-active, not hidden: Tailwind's preflight forces [hidden] to display: none everywhere. */
+@media (max-width: 799.98px) {
+  .lj-surface[data-active='false'] {
+    display: none;
+  }
+}
+@media (min-width: 800px) {
+  .lj-tabs {
+    display: none;
+  }
+}
+
+/* Grouping: hairlines and whitespace, plus small corner marks. */
+.lj-rule {
+  border-top: 1px solid var(--lj-divider);
+}
+.lj-marks {
+  position: relative;
+}
+.lj-marks::before,
+.lj-marks::after {
+  content: '';
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  border: 1px solid var(--lj-control-edge);
+  pointer-events: none;
+}
+.lj-marks::before {
+  top: 0;
+  left: 0;
+  border-right: 0;
+  border-bottom: 0;
+}
+.lj-marks::after {
+  right: 0;
+  bottom: 0;
+  border-left: 0;
+  border-top: 0;
+}
+
+/* Layer 20: the dock is a real row, sticky when the page scrolls. */
+.lj-dock {
+  position: sticky;
+  bottom: 0;
+  z-index: 20;
+  min-height: 64px;
+  background: var(--lj-bg);
+  border-top: 1px solid var(--lj-divider);
+  padding-block: var(--lj-space-2);
+  padding-bottom: max(var(--lj-space-2), env(safe-area-inset-bottom));
+}
+.lj-dock-field:focus-visible {
+  outline: 2px solid var(--lj-focus);
+  outline-offset: 1px;
+  box-shadow: 0 0 10px rgb(103 232 249 / 25%);
+}
+
+/* Section headings and the one large financial figure. */
+.lj-figure {
+  font-size: 1.75rem;
+  line-height: 2.125rem;
+  font-variant-numeric: tabular-nums;
+  font-variant-ligatures: none;
+}
+
+/* Effects: "Off" removes the canvas; reduced mode is handled by the renderer. */
+.lj-app[data-effects='off'] .lj-art {
+  display: none;
+}
+
+@media (forced-colors: active) {
+  .lj-art {
+    display: none;
+  }
+  .lj-marks::before,
+  .lj-marks::after {
+    border-color: CanvasText;
+  }
+}
+
+/* Command mode: the nucleus sits near 44% of the stage with the surrounding space left empty. */
+.lj-hero {
+  display: grid;
+  place-items: center;
+  min-height: clamp(18rem, 48dvh, 30rem);
+  text-align: center;
+}
+.lj-rail-inner {
+  padding: var(--lj-space-2);
+}
+
+/* Layer 40: a drawer or palette is the one place a surface is opaque, so it never lets the art show through text. */
+.lj-drawer {
+  background: var(--lj-bg-soft);
+  border: 1px solid var(--lj-control-edge);
+  border-radius: var(--lj-control-radius);
+}
