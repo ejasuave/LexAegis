@@ -26,6 +26,20 @@ const calculation = () =>
   });
 
 describe('disclosure before anything is sent', () => {
+  it('previews matter-wide chat without manual highlighting and does not send until consent', async () => {
+    const a = await assistantRig([done(), answer()]);
+    a.assistant.setSelection(null, []);
+    await a.assistant.submit('Analyse this employment settlement matter.');
+    const snapshot = a.assistant.getSnapshot();
+    expect(snapshot.phase).toBe('preview');
+    expect(snapshot.pending?.body.intent).toBe('ask_matter');
+    expect(snapshot.pending?.body.documentVersionId).toBeNull();
+    expect(snapshot.pending?.body.context.searchedScope.automatic).toBeDefined();
+    expect(snapshot.pending?.body.context.sources.length).toBeGreaterThan(0);
+    expect(a.transportCalls.start).toBe(0);
+    dispose(a);
+  });
+
   it('asks for a selection, then shows the exact disclosure and sends only on Send', async () => {
     const a = await assistantRig([
       toolCall('read_sources', { sourceIds: ['S1'] }),
