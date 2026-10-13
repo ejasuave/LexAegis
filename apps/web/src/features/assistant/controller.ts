@@ -496,6 +496,19 @@ export class AssistantController {
     if (routed.kind === 'intent' && routed.via === 'command') {
       return this.#prepare({ intent: routed.intent, trigger: 'command', utterance: text });
     }
+    // An explicit explanation/summary of a CURRENT selection stays scoped to exactly
+    // those excerpts. A general question without a selection searches the open matter.
+    if (
+      routed.kind === 'intent' &&
+      (routed.intent === 'explain' || routed.intent === 'summarise') &&
+      this.#selection.references.length > 0
+    ) {
+      return this.#prepare({
+        intent: routed.intent,
+        trigger: 'free_text',
+        utterance: text,
+      });
+    }
     return this.#prepare({ intent: 'ask_matter', trigger: 'free_text', utterance: text });
   }
 
