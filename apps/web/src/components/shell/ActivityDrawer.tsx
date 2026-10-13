@@ -119,7 +119,10 @@ export function ActivityDrawer() {
       }`,
     );
 
-  const observed = receipt.log.map((entry) => entry.text);
+  const observed = [
+    ...receipt.log.map((entry) => entry.text),
+    ...receipt.positiveLog.map((entry) => entry.text),
+  ];
   const chain = history.state.items
     .slice(0, 8)
     .map(

@@ -13107,6 +13107,36 @@
         ],
         "checks": "observed 2026-10-13: format:check, lint, typecheck, test (161 files, 2013 tests), build, state:validate, exclusion:check pass; test:hud:browser 73/73, test:assistant:browser 61/61, test:privacy:browser pass; test:account/vault/review/history:browser fail in this environment (account and vault identically at 9ecc21b); readiness fails for existing Gate B reasons. See docs/ui-blueprint-handoff.md for the definition-of-done table with passed and not-run items.",
         "limitations": "No performance trace on a mid-range iGPU or mobile device, no flash-safety tool, no screen-reader or 200% text and 400% zoom pass."
+      },
+      "9": {
+        "state": "complete-with-gaps",
+        "files": [
+          "apps/web/src/features/hud/hud.feedback.ts",
+          "apps/web/src/features/hud/hud.feedback.test.ts",
+          "apps/web/src/features/hud/hud.effects.ts",
+          "apps/web/src/features/hud/public.ts",
+          "apps/web/src/features/hud/neural.renderer.ts",
+          "apps/web/src/components/hud/hud-context.tsx",
+          "apps/web/src/components/hud/useLoadingView.ts",
+          "apps/web/src/components/hud/LoadingStatus.tsx",
+          "apps/web/src/components/hud/HudShell.tsx",
+          "apps/web/src/components/hud/useHudAnchors.ts",
+          "apps/web/src/components/hud/AttentionRail.tsx",
+          "apps/web/src/components/hud/hud.tokens.css",
+          "apps/web/src/components/review/ReviewWorkspace.tsx",
+          "apps/web/src/components/shell/ActivityDrawer.tsx",
+          "tooling/scripts/hud-interaction-check.ts"
+        ],
+        "interfaces": [
+          "selectPendingWork(PendingInput): PendingWork | null (real controller state only)",
+          "LoadingGate.update(work, nowMs): LoadingView (150 ms show-after, 300 ms minimum, 8 s still-working)",
+          "PositiveEffects.consume(event, ctx): PositiveOutcome; detectPositiveEvents(prev, current)",
+          "EnvelopeLimiter shared by ReceiptEffects and PositiveEffects (one wash per 2 s)",
+          "useBusyProps(...regions): data-busy-region + aria-busy",
+          "CSS tokens --lj-fx-* in hud.tokens.css (hover, press, ease, disabled, selected)"
+        ],
+        "checks": "observed 2026-10-13: hud.feedback.test.ts covers thresholds, dedupe, hydration, coalescing and the shared envelope window; web vitest and typecheck pass; tooling/scripts/hud-interaction-check.ts on next dev passes (cursor pointer/not-allowed/text, :hover only inside @media (hover: hover), 0.98 press on pointerdown, 2px focus ring, Effects Off and prefers-reduced-motion remove the press transform and transitions, no positive label or loading status on a fresh load). hud-canvas-check.ts: one failure, 'idle drift stays at or under the 20 fps cap' (41-43 frames in 1 s), identical with this stage stashed, so not caused by it.",
+        "limitations": "Real pending work and verified positive events were not driven end to end in a browser (they need a live vault, passkey and checks run); they are covered by unit tests of the pure gates and by wiring to controller snapshots. Loading skeletons are a static top-edge bar plus dimmed content on the busy region, not per-component placeholders. Timeouts are not invented: failures reuse the existing Needs attention notices. No flash-safety tool or screen-reader pass."
       }
     },
     "handoff": "docs/ui-blueprint-handoff.md",

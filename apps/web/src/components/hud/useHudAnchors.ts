@@ -18,9 +18,22 @@ export interface Anchors {
   readonly channelX: number | null;
   readonly alerts: readonly AlertTarget[];
   readonly stage: Rect | null;
+  /** Centres of regions that can show pending work, keyed by the region names they answer to. */
+  readonly busy: readonly {
+    readonly regions: readonly string[];
+    readonly x: number;
+    readonly y: number;
+  }[];
 }
 
-const EMPTY: Anchors = { regions: [], nucleus: null, channelX: null, alerts: [], stage: null };
+const EMPTY: Anchors = {
+  regions: [],
+  nucleus: null,
+  channelX: null,
+  alerts: [],
+  stage: null,
+  busy: [],
+};
 // One pass per frame at most: a mask that lags a layout change would leave art behind new text.
 const MIN_GAP_MS = 0;
 
@@ -131,7 +144,17 @@ export function useHudAnchors(
         }
       }
 
+      const busy = Array.from(document.querySelectorAll('[data-busy-region]'))
+        .map((el) => ({ el, r: rectOf(el) }))
+        .filter((entry) => onScreen(entry.r))
+        .map(({ el, r }) => ({
+          regions: (el.getAttribute('data-busy-region') ?? '').split(' ').filter(Boolean),
+          x: r.x + r.w / 2,
+          y: r.y + Math.min(r.h / 2, 160),
+        }));
+
       const next: Anchors = {
+        busy,
         regions,
         nucleus,
         channelX,

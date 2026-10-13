@@ -51,6 +51,8 @@ export interface SceneState {
   readonly stage: Rect | null;
   /** One verified confirmation to show once. The id is the stable event identity. */
   readonly wash: { readonly id: string; readonly receivedAtMs: number } | null;
+  /** Real work is being shown as pending; x and y are the busy region's centre, or null. */
+  readonly pending: { readonly x: number | null; readonly y: number | null } | null;
 }
 
 export const EMPTY_SCENE: SceneState = {
@@ -64,6 +66,7 @@ export const EMPTY_SCENE: SceneState = {
   workspace: 'empty',
   stage: null,
   wash: null,
+  pending: null,
 };
 
 export interface RendererStats {
@@ -243,6 +246,7 @@ export class NeuralRenderer {
   #energy = 0;
   /** 1 with no matter open, 0 with one open: radius, reach and mesh ease on it, the centre never moves. */
   #open = 1;
+  #openSeen = false;
   readonly #scratchX = new Float32Array(512);
   readonly #scratchY = new Float32Array(512);
   #tier: TierName;
@@ -397,6 +401,7 @@ export class NeuralRenderer {
         s.toolsRunning ||
         this.#pn > 0 ||
         this.#washLive() ||
+        s.pending !== null ||
         this.#energySettling())
     );
   }
@@ -535,6 +540,11 @@ export class NeuralRenderer {
       : target;
     const energy = this.#energy;
     const openTarget = empty ? 1 : 0;
+    // The first frame starts at its own state: nothing eases in on load.
+    if (!this.#openSeen) {
+      this.#open = openTarget;
+      this.#openSeen = true;
+    }
     this.#open = motion ? easeToward(this.#open, openTarget, dt, OPEN_TAU) : openTarget;
     const open = this.#open;
     const lerp = (shut: number, wide: number) => shut + (wide - shut) * open;
@@ -583,6 +593,7 @@ export class NeuralRenderer {
     // The hero art never leaves the visible stage: it fades toward the stage edges instead of
     // ending on a hard rectangle or reaching the heading above it.
     if (stage !== null && mode === 'hero') this.#fadeToStage(ctx, stage);
+    if (s.pending !== null && mode !== 'none') this.#drawPending(ctx, origin, s.pending, t, motion);
     this.#drawWash(ctx, origin, mode, t * 1000);
     this.#applyMask(ctx);
     this.#drawAlerts(ctx, origin, s, t, motion);
@@ -987,6 +998,47 @@ export class NeuralRenderer {
     ctx.globalAlpha = 1;
   }
 
+  /**
+   * Real work in flight: a dim violet veil over the nucleus and a few thin filaments converging
+   * on the busy region. Nothing here advances with the work (no progress, no count); it holds
+   * still in reduced mode and is drawn only while a controller reports pending work.
+   */
+  #drawPending(
+    ctx: CanvasRenderingContext2D,
+    origin: Point,
+    pending: NonNullable<SceneState['pending']>,
+    t: number,
+    motion: boolean,
+  ): void {
+    const pulse = motion ? 0.5 + 0.5 * Math.sin((t * Math.PI * 2) / 2.4) : 0.5;
+    const veil = ctx.createRadialGradient(origin.x, origin.y, 0, origin.x, origin.y, 220);
+    veil.addColorStop(0, `rgb(109 40 217 / ${String(0.1 + 0.06 * pulse)})`);
+    veil.addColorStop(1, 'rgb(109 40 217 / 0)');
+    ctx.fillStyle = veil;
+    ctx.beginPath();
+    ctx.arc(origin.x, origin.y, 220, 0, Math.PI * 2);
+    ctx.fill();
+    if (pending.x === null || pending.y === null) return;
+    ctx.lineWidth = 0.8;
+    ctx.strokeStyle = 'rgb(167 139 250)';
+    const dx = pending.x - origin.x;
+    const dy = pending.y - origin.y;
+    for (let i = -2; i <= 2; i++) {
+      const bend = i * 0.07;
+      ctx.globalAlpha = 0.14 + 0.1 * pulse;
+      ctx.beginPath();
+      ctx.moveTo(origin.x, origin.y);
+      ctx.quadraticCurveTo(
+        origin.x + dx * 0.5 - dy * bend,
+        origin.y + dy * 0.5 + dx * bend,
+        pending.x + i * 6,
+        pending.y + Math.abs(i) * 3,
+      );
+      ctx.stroke();
+    }
+    ctx.globalAlpha = 1;
+  }
+
   /** Multiplies the art by a soft-edged copy of the stage rectangle (cached until the stage moves). */
   #fadeToStage(ctx: CanvasRenderingContext2D, stage: Rect): void {
     const key = `${String(stage.x)},${String(stage.y)},${String(stage.w)},${String(stage.h)},${String(this.#scale)}`;
@@ -1009,12 +1061,7 @@ export class NeuralRenderer {
       g.shadowColor = '#fff';
       g.shadowBlur = feather * 1.5 * this.#scale;
       g.shadowOffsetX = away * this.#scale;
-      g.fillRect(
-        stage.x + inset - away,
-        stage.y + inset,
-        stage.w - 2 * inset,
-        stage.h - 2 * inset,
-      );
+      g.fillRect(stage.x + inset - away, stage.y + inset, stage.w - 2 * inset, stage.h - 2 * inset);
     }
     ctx.globalCompositeOperation = 'destination-in';
     ctx.drawImage(this.#fade, 0, 0, this.#cssW, this.#cssH);

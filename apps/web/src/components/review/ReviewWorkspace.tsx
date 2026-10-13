@@ -7,7 +7,8 @@ import { orbForActivity } from '@/components/assistant/orb-state';
 import { useAssistant } from '@/components/assistant/assistant-context';
 import { ConversationPanel } from '@/components/assistant/ConversationPanel';
 import { AttentionRail } from '@/components/hud/AttentionRail';
-import { useHud } from '@/components/hud/hud-context';
+import { useBusyProps, useHud } from '@/components/hud/hud-context';
+import { LoadingStatus } from '@/components/hud/LoadingStatus';
 import { useLayoutTier } from '@/components/hud/layout-tier';
 import { MatterRail } from '@/components/hud/MatterRail';
 import { StateNotices } from '@/components/hud/StateNotices';
@@ -196,6 +197,9 @@ export function ReviewWorkspace() {
     if (stage.current !== null) stage.current.scrollTop = scrolled.current[mode];
   }, [mode]);
   const tier = useLayoutTier();
+  const workBusy = useBusyProps('document', 'analysis', 'assistant');
+  const matterBusy = useBusyProps('vault', 'account', 'save');
+  const findingsBusy = useBusyProps('analysis', 'transaction', 'index');
   const ids = useId();
   const active = (tab: MobileTab) => mobileTab === tab;
 
@@ -203,6 +207,7 @@ export function ReviewWorkspace() {
     <div className="flex h-full min-h-0 flex-col gap-3">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <h1 className="m-0 text-xl font-medium">Review</h1>
+        <LoadingStatus />
         <div role="group" aria-label="Presentation mode" className="flex gap-1">
           {MODES.map((item) => (
             <button
@@ -257,6 +262,7 @@ export function ReviewWorkspace() {
           id={`${ids}-matter`}
           aria-label="Matter"
           className="lj-rail-left lj-surface"
+          {...matterBusy}
           data-active={active('matter')}
         >
           {tier === 'medium' ? (
@@ -273,6 +279,7 @@ export function ReviewWorkspace() {
         <section
           aria-label="Work"
           className="min-w-0"
+          {...workBusy}
           ref={stage}
           onScroll={(event) => {
             scrolled.current[shown.current] = event.currentTarget.scrollTop;
@@ -298,6 +305,7 @@ export function ReviewWorkspace() {
           aria-label="Evidence and approval"
           className="min-w-0 lj-surface"
           data-hud-rail="attention"
+          {...findingsBusy}
           data-active={active('findings')}
         >
           <AttentionRail />

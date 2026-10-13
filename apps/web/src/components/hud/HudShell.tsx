@@ -21,7 +21,7 @@ import { useHudAnchors } from './useHudAnchors';
 
 function Frame({ children }: { children: ReactNode }) {
   const { paletteOpen } = useWorkspace();
-  const { view, setVisibleFindingIds, receipt } = useHud();
+  const { view, setVisibleFindingIds, receipt, loading } = useHud();
   const approval = useApproval().snapshot.stage;
   const pathname = usePathname();
   const environment = useEffectsEnvironment();
@@ -30,6 +30,12 @@ function Frame({ children }: { children: ReactNode }) {
   const mode = resolveEffects({ ...environment, canvasFailed });
   const anchors = useHudAnchors(view, setVisibleFindingIds, [pathname]);
   const activity = view.activity;
+  const busyRegion = loading.view.visible ? (loading.view.work?.region ?? null) : null;
+  const pending = useMemo(() => {
+    if (busyRegion === null) return null;
+    const target = anchors.busy.find((entry) => entry.regions.includes(busyRegion));
+    return target === undefined ? { x: null, y: null } : { x: target.x, y: target.y };
+  }, [busyRegion, anchors.busy]);
   const ceremony = isCeremonyStage(approval);
   const scene = useMemo<SceneState>(
     () => ({
@@ -43,11 +49,25 @@ function Frame({ children }: { children: ReactNode }) {
       workspace: view.workspaceEmpty ? 'empty' : 'matter',
       stage: anchors.stage,
       wash: receipt.wash,
+      pending,
     }),
-    [activity.state, activity.toolsRunning, ceremony, anchors, receipt.wash, view.workspaceEmpty],
+    [
+      activity.state,
+      activity.toolsRunning,
+      ceremony,
+      anchors,
+      receipt.wash,
+      view.workspaceEmpty,
+      pending,
+    ],
   );
   return (
-    <div className="lj-app" data-effects={mode} data-canvas={mode === 'off' ? 'off' : 'on'}>
+    <div
+      className="lj-app"
+      data-effects={mode}
+      data-canvas={mode === 'off' ? 'off' : 'on'}
+      data-busy={busyRegion ?? undefined}
+    >
       <div className="lj-art" aria-hidden="true" data-testid="art-layer">
         <NeuralCanvas mode={mode} scene={scene} onFail={onFail} />
       </div>
@@ -70,6 +90,10 @@ function Frame({ children }: { children: ReactNode }) {
       {/* One polite announcement per accepted event; it never depends on the effect playing. */}
       <p className="sr-only" role="status" aria-live="polite" data-testid="receipt-announcement">
         {receipt.announcement?.text ?? ''}
+      </p>
+      {/* Start and finish of real pending work, said once each; never progress ticks. */}
+      <p className="sr-only" role="status" aria-live="polite" data-testid="loading-announcement">
+        {loading.announcement?.text ?? ''}
       </p>
     </div>
   );

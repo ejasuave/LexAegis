@@ -20,6 +20,7 @@ export type { Gap, SelectableFinding, SelectedFinding } from './hud.finding';
 export type * from './hud.types';
 export {
   EFFECTS_PREFERENCES,
+  EnvelopeLimiter,
   RECEIPT_COALESCE_MS,
   ReceiptEffects,
   WASH_FADE_MS,
@@ -50,3 +51,25 @@ export {
   isHudFixtureName,
 } from './hud.fixtures';
 export type { HudFixtureName } from './hud.fixtures';
+export {
+  LOADING_MIN_VISIBLE_MS,
+  LOADING_SHOW_AFTER_MS,
+  LOADING_STILL_WORKING_MS,
+  LoadingGate,
+  POSITIVE_TEXT,
+  PositiveEffects,
+  detectPositiveEvents,
+  selectPendingWork,
+} from './hud.feedback';
+export type {
+  BusyRegion,
+  LoadingView,
+  PendingInput,
+  PendingWork,
+  PositiveContext,
+  PositiveEvent,
+  PositiveKind,
+  PositiveLabel,
+  PositiveOutcome,
+  PositiveSnapshot,
+} from './hud.feedback';

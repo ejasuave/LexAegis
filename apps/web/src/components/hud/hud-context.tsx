@@ -16,6 +16,7 @@ import { operationName } from '@/components/assistant/orb-state';
 import { useTransaction } from '@/components/chain/transaction-context';
 import { useHistory } from '@/components/history/history-context';
 import { useEffectsEnvironment } from './effects-preference';
+import { useLoadingView } from './useLoadingView';
 import { useHudFixture } from './hud-fixture';
 import { usePackage } from '@/components/review/package-context';
 import { useDecisions } from '@/components/review/decision-context';
@@ -25,7 +26,11 @@ import { useVault } from '@/components/vault/vault-context';
 import { vaultStatusLabel } from '@/components/vault/status';
 import type { RunView } from '@/features/assistant/public';
 import {
+  EnvelopeLimiter,
+  PositiveEffects,
   ReceiptEffects,
+  detectPositiveEvents,
+  selectPendingWork,
   chooseSelectedFinding,
   selectNotices,
   type Notice,
@@ -34,6 +39,12 @@ import {
   type ReceiptLabel,
   type ReceiptLogEntry,
   type ReceiptSignal,
+  type BusyRegion,
+  type LoadingView,
+  type PendingInput,
+  type PositiveKind,
+  type PositiveLabel,
+  type PositiveSnapshot,
   type ActiveRunInput,
   type HudInput,
   type HudView,
@@ -50,6 +61,8 @@ interface HudContextValue {
   /** Finding rows currently rendered in the viewport; the canvas may end branches at them. */
   readonly setVisibleFindingIds: (ids: readonly string[]) => void;
   readonly receipt: ReceiptView;
+  /** Real pending work as the loading gate shows it; null when nothing is shown. */
+  readonly loading: LoadingState;
   /** Plain sentences for every degraded or failed state that applies right now. */
   readonly notices: readonly Notice[];
   /** The finding the attention rail explains, and why it was chosen. */
@@ -73,9 +86,30 @@ export interface ReceiptView {
   readonly wash: { readonly id: string; readonly receivedAtMs: number } | null;
   /** Said once to assistive technology. */
   readonly announcement: { readonly id: string; readonly text: string } | null;
+  /** Persistent wording of the latest verified positive event ("Saved and verified."). */
+  readonly positive: PositiveLabel | null;
+  /** Every accepted positive event, newest first, bounded: coalesced ones live here. */
+  readonly positiveLog: readonly {
+    readonly id: string;
+    readonly kind: PositiveKind;
+    readonly text: string;
+  }[];
 }
 
-const NO_RECEIPT: ReceiptView = { label: null, log: [], wash: null, announcement: null };
+export interface LoadingState {
+  readonly view: LoadingView;
+  /** Said once on start and once on finish. */
+  readonly announcement: { readonly id: number; readonly text: string } | null;
+}
+
+const NO_RECEIPT: ReceiptView = {
+  label: null,
+  log: [],
+  wash: null,
+  announcement: null,
+  positive: null,
+  positiveLog: [],
+};
 const LOG_LIMIT = 20;
 
 const HudContext = createContext<HudContextValue | null>(null);
@@ -148,38 +182,76 @@ export function HudProvider({
   const environment = useEffectsEnvironment();
   const effectsMode = resolveEffects({ ...environment, canvasFailed: false });
   const [receipt, setReceipt] = useState<ReceiptView>(NO_RECEIPT);
-  const gate = useRef(new ReceiptEffects());
+  // Receipts and every positive effect share one envelope window: one wash in any two seconds.
+  const [gates] = useState(() => {
+    const limiter = new EnvelopeLimiter();
+    return { receipt: new ReceiptEffects(limiter), positive: new PositiveEffects(limiter) };
+  });
   const shownNetwork = fixture?.ceiling.networkLabel ?? networkLabel;
   const latest = useRef({ effectsMode, networkLabel: shownNetwork, frozen });
   latest.current = { effectsMode, networkLabel: shownNetwork, frozen };
-  const consumeReceipt = useCallback<HudContextValue['consumeReceipt']>((signal, options) => {
-    const now = latest.current;
-    const outcome = gate.current.consume(signal, {
-      nowMs: performance.now(),
-      source: options?.source ?? 'live',
-      pageVisible: document.visibilityState === 'visible',
-      mode: now.effectsMode,
-      sameMatter:
-        options?.sameMatter ??
-        (now.frozen !== null &&
-          now.frozen.commitment.toLowerCase() === signal.commitment.toLowerCase()),
-      networkLabel: now.networkLabel,
-    });
-    if (!outcome.accepted) return;
-    setReceipt((previous) => ({
-      label: outcome.label ?? previous.label,
-      log: outcome.log === null ? previous.log : [outcome.log, ...previous.log].slice(0, LOG_LIMIT),
-      wash: outcome.cancelPlay
-        ? null
-        : outcome.play
-          ? { id: signal.id, receivedAtMs: performance.now() }
+  const consumeReceipt = useCallback<HudContextValue['consumeReceipt']>(
+    (signal, options) => {
+      const now = latest.current;
+      const outcome = gates.receipt.consume(signal, {
+        nowMs: performance.now(),
+        source: options?.source ?? 'live',
+        pageVisible: document.visibilityState === 'visible',
+        mode: now.effectsMode,
+        sameMatter:
+          options?.sameMatter ??
+          (now.frozen !== null &&
+            now.frozen.commitment.toLowerCase() === signal.commitment.toLowerCase()),
+        networkLabel: now.networkLabel,
+      });
+      if (!outcome.accepted) return;
+      setReceipt((previous) => ({
+        ...previous,
+        label: outcome.label ?? previous.label,
+        log:
+          outcome.log === null ? previous.log : [outcome.log, ...previous.log].slice(0, LOG_LIMIT),
+        wash: outcome.cancelPlay
+          ? null
+          : outcome.play
+            ? { id: signal.id, receivedAtMs: performance.now() }
+            : previous.wash,
+        announcement:
+          outcome.announce === null
+            ? previous.announcement
+            : { id: signal.id + signal.kind, text: outcome.announce },
+      }));
+    },
+    [gates],
+  );
+  const consumePositive = useCallback(
+    (event: { kind: PositiveKind; id: string; matterId: string }) => {
+      const outcome = gates.positive.consume(event, {
+        nowMs: performance.now(),
+        source: 'live',
+        pageVisible: document.visibilityState === 'visible',
+        mode: latest.current.effectsMode,
+        // Detection compares two snapshots of one open matter, so an event is always for it.
+        sameMatter: true,
+      });
+      if (!outcome.accepted) return;
+      setReceipt((previous) => ({
+        ...previous,
+        positive: outcome.label ?? previous.positive,
+        positiveLog:
+          outcome.log === null
+            ? previous.positiveLog
+            : [outcome.log, ...previous.positiveLog].slice(0, LOG_LIMIT),
+        wash: outcome.play
+          ? { id: `${event.kind}:${event.id}`, receivedAtMs: performance.now() }
           : previous.wash,
-      announcement:
-        outcome.announce === null
-          ? previous.announcement
-          : { id: signal.id + signal.kind, text: outcome.announce },
-    }));
-  }, []);
+        announcement:
+          outcome.announce === null
+            ? previous.announcement
+            : { id: `${event.kind}:${event.id}`, text: outcome.announce },
+      }));
+    },
+    [gates],
+  );
   // The controller emits only verified, live confirmations; nothing else reaches this gate.
   useEffect(() => {
     const controller = transactionContext.controller;
@@ -206,6 +278,67 @@ export function HudProvider({
       : arrival?.run === activeRun
         ? arrival.at
         : Date.parse(activeRun.startedAt) || null;
+
+  // What is really pending, from each controller's own state. Nothing here is a timer or a guess.
+  const runForPending = activeRun === null ? null : toActiveRun(activeRun, null);
+  const pendingInput: PendingInput = {
+    vault: vault.snapshot.progress === 'recovery_failed' ? null : vault.snapshot.progress,
+    account: { ceremony: account.ceremony, backend: account.backend.state },
+    review: {
+      loading: review.loading,
+      intake: review.intake.state,
+      intakeLabel: review.intake.state === 'running' ? review.intake.label : null,
+      checks: review.checks.status,
+      comparison: review.comparison.status,
+      save: review.save,
+    },
+    transaction: transaction.stage,
+    run:
+      runForPending === null
+        ? null
+        : {
+            active: assistant.phase === 'running',
+            operation: runForPending.operation,
+            stepsCompleted: runForPending.stepsCompleted,
+            stepsTotal: runForPending.stepsTotal,
+          },
+    indexerCatchingUp: history.health?.freshness === 'catching_up',
+  };
+  const pendingWork = selectPendingWork(pendingInput);
+  const loading = useLoadingView(fixture === null ? pendingWork : null);
+
+  // Verified positive events: only a change between two snapshots of the same open matter.
+  const positiveSnapshot: PositiveSnapshot = {
+    matterId: vault.snapshot.selectedMatterId,
+    factIds: review.facts.map((fact) => fact.factId),
+    checks: review.checks.status,
+    checksDigest: review.checks.snapshotDigest,
+    saveInFlight:
+      vault.snapshot.progress === 'saving_files' ||
+      vault.snapshot.progress === 'checking_package' ||
+      review.save === 'saving',
+    savedVerified:
+      vault.snapshot.progress === null &&
+      vault.snapshot.save === 'saved' &&
+      review.save !== 'saving' &&
+      review.save !== 'error',
+    saveRevision: review.inputRevision,
+    findingsTotal: decisions.findings.length,
+    findingsUnresolved: decisions.findings.filter((item) => item.disposition === null).length,
+    evidenceItems: review.checks.checklist?.items.length ?? 0,
+    evidenceUnsatisfied:
+      review.checks.checklist?.items.filter(
+        (item) => item.state !== 'confirmed_for_check' && item.state !== 'not_applicable',
+      ).length ?? 0,
+  };
+  const previousPositive = useRef<PositiveSnapshot | null>(null);
+  const positiveKey = JSON.stringify(positiveSnapshot);
+  useEffect(() => {
+    const current = JSON.parse(positiveKey) as PositiveSnapshot;
+    const events = fixture === null ? detectPositiveEvents(previousPositive.current, current) : [];
+    previousPositive.current = current;
+    for (const event of events) consumePositive(event);
+  }, [positiveKey, consumePositive, fixture]);
 
   const unlocked = vault.snapshot.state === 'unlocked' || vault.snapshot.state === 'saving';
   const health = history.health;
@@ -314,11 +447,12 @@ export function HudProvider({
       nowMs,
       setVisibleFindingIds,
       receipt,
+      loading,
       consumeReceipt,
       notices,
       selectedFindingId: selectedId,
     }),
-    [view, nowMs, setVisibleFindingIds, receipt, consumeReceipt, notices, selectedId],
+    [view, nowMs, setVisibleFindingIds, receipt, loading, consumeReceipt, notices, selectedId],
   );
   return <HudContext.Provider value={value}>{children}</HudContext.Provider>;
 }
@@ -327,4 +461,20 @@ export function useHud(): HudContextValue {
   const value = useContext(HudContext);
   if (value === null) throw new Error('useHud must be used inside HudProvider');
   return value;
+}
+
+/**
+ * Props for a region that shows its own pending state: which busy regions it answers to, and
+ * aria-busy only while one of them is really being worked on and the loading state is shown.
+ */
+export function useBusyProps(...regions: BusyRegion[]): {
+  readonly 'data-busy-region': string;
+  readonly 'aria-busy': true | undefined;
+} {
+  const { loading } = useHud();
+  const region = loading.view.visible ? loading.view.work?.region : undefined;
+  return {
+    'data-busy-region': regions.join(' '),
+    'aria-busy': region !== undefined && regions.includes(region) ? true : undefined,
+  };
 }

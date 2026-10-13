@@ -32,6 +32,15 @@ export function AttentionRail() {
           {receipt.label.text}
         </p>
       )}
+      {receipt.positive === null ? null : (
+        <p
+          data-testid="positive-label"
+          data-kind={receipt.positive.kind}
+          className="m-0 mb-3 text-[0.9375rem] text-lj-cyan"
+        >
+          {receipt.positive.text}
+        </p>
+      )}
       <SelectedFinding />
       <section aria-label="Findings and evidence" className="lj-rule pt-3">
         <h2 className="m-0 text-lg font-medium" data-hud-findings-control="">

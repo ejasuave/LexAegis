@@ -94,6 +94,21 @@ export const WASH_FADE_MS = 420;
 export const WASH_MAX_OPACITY = 0.06;
 
 /**
+ * One celebration envelope in any window, shared by every kind of positive effect so a receipt and
+ * a save landing together still make a single wash. A later burst is dropped, never queued.
+ */
+export class EnvelopeLimiter {
+  #lastAt: number | null = null;
+
+  /** True, and the window starts, only when no envelope played inside the window. */
+  tryPlay(nowMs: number): boolean {
+    if (this.#lastAt !== null && nowMs - this.#lastAt < RECEIPT_COALESCE_MS) return false;
+    this.#lastAt = nowMs;
+    return true;
+  }
+}
+
+/**
  * Decides what a verified signal changes on screen. It deduplicates by the stable event
  * identity, suppresses replays, hidden tabs, other matters and reduced or disabled effects (which
  * still get the persistent label and one announcement), and coalesces bursts. It reads no
@@ -101,7 +116,11 @@ export const WASH_MAX_OPACITY = 0.06;
  */
 export class ReceiptEffects {
   readonly #seen = new BoundedIdentitySet(256);
-  #lastPlayAt: number | null = null;
+  readonly #limiter: EnvelopeLimiter;
+
+  constructor(limiter: EnvelopeLimiter = new EnvelopeLimiter()) {
+    this.#limiter = limiter;
+  }
 
   consume(signal: ReceiptSignal, ctx: ReceiptContext): ReceiptOutcome {
     if (signal.kind === 'invalidated') {
@@ -122,10 +141,8 @@ export class ReceiptEffects {
     // Replayed history is remembered so it cannot play later, but it is not news.
     if (ctx.source === 'hydration') return NONE;
     const text = `Receipt confirmed on ${ctx.networkLabel}.`;
-    const coalesced =
-      this.#lastPlayAt !== null && ctx.nowMs - this.#lastPlayAt < RECEIPT_COALESCE_MS;
-    const play = ctx.pageVisible && ctx.sameMatter && ctx.mode === 'full' && !coalesced;
-    if (play) this.#lastPlayAt = ctx.nowMs;
+    const eligible = ctx.pageVisible && ctx.sameMatter && ctx.mode === 'full';
+    const play = eligible && this.#limiter.tryPlay(ctx.nowMs);
     return {
       accepted: true,
       log: { id: signal.id, kind: 'confirmed', atMs: ctx.nowMs, text },
