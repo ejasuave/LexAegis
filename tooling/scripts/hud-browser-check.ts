@@ -570,10 +570,44 @@ try {
       (await page.getByTestId('approval-signed').count()) === 0,
   );
   chain.nonce = '0';
-  // Stop discards an unused preview and sends nothing.
+  // The exact-action approval is an exclusive modal: focus inside, background inert, no palette.
   await page.getByTestId('preview-approval').click();
   await page.getByTestId('approval-details').waitFor({ timeout: 20_000 });
-  await page.getByTestId('aegis-stop').click();
+  check(
+    'the approval is a modal dialog that owns focus',
+    (await page.locator('[role="dialog"][aria-modal="true"][aria-label="Approval"]').count()) ===
+      1 &&
+      (await page.evaluate(
+        () => document.activeElement?.closest('[role="dialog"][aria-label="Approval"]') !== null,
+      )),
+  );
+  check(
+    'everything behind the approval is inert',
+    await page.evaluate(
+      () =>
+        document.querySelector('#main')?.closest('[inert]') != null &&
+        document.querySelector('[data-testid="aegis-input"]')?.closest('[inert]') != null,
+    ),
+  );
+  await page.keyboard.press('Control+k');
+  check(
+    'the command palette does not open over the approval',
+    (await page.locator('[role="dialog"][aria-label="Command palette"]').count()) === 0,
+  );
+  await page.keyboard.press('Escape');
+  await page
+    .getByTestId('approval-details')
+    .waitFor({ state: 'detached', timeout: 10_000 })
+    .catch(() => undefined);
+  check(
+    'Escape closes an unused preview and approves nothing',
+    (await page.getByTestId('approval-details').count()) === 0 &&
+      (await page.getByTestId('approval-signed').count()) === 0,
+  );
+  // Stop, from inside the dialog, discards an unused preview and sends nothing.
+  await page.getByTestId('preview-approval').click();
+  await page.getByTestId('approval-details').waitFor({ timeout: 20_000 });
+  await page.getByTestId('ceremony-stop').click();
   await page
     .getByTestId('approval-details')
     .waitFor({ state: 'detached', timeout: 10_000 })

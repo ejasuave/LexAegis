@@ -6,6 +6,7 @@ import { useApproval } from '@/components/review/approval-context';
 import { useStop } from '@/components/shell/stop-context';
 import { useWorkspace } from '@/components/shell/workspace-context';
 import { filterCommands, type CommandEntry } from '@/features/hud/public';
+import { isCeremonyStage } from './ceremony';
 import { useCommandDispatch } from './use-command-dispatch';
 
 const FOCUSABLE =
@@ -19,7 +20,7 @@ const FOCUSABLE =
 export function CommandPalette() {
   const { paletteOpen, setPaletteOpen } = useWorkspace();
   const approval = useApproval();
-  const approvalBusy = approval.snapshot.stage !== 'idle';
+  const approvalBusy = isCeremonyStage(approval.snapshot.stage);
   const approvalBusyRef = useRef(approvalBusy);
   approvalBusyRef.current = approvalBusy;
   const openRef = useRef(paletteOpen);

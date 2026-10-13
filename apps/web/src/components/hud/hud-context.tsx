@@ -20,11 +20,15 @@ import { useHudFixture } from './hud-fixture';
 import { usePackage } from '@/components/review/package-context';
 import { useDecisions } from '@/components/review/decision-context';
 import { useReview } from '@/components/review/review-context';
+import { useWorkspace } from '@/components/shell/workspace-context';
 import { useVault } from '@/components/vault/vault-context';
 import { vaultStatusLabel } from '@/components/vault/status';
 import type { RunView } from '@/features/assistant/public';
 import {
   ReceiptEffects,
+  chooseSelectedFinding,
+  selectNotices,
+  type Notice,
   resolveEffects,
   selectHud,
   type ReceiptLabel,
@@ -46,6 +50,10 @@ interface HudContextValue {
   /** Finding rows currently rendered in the viewport; the canvas may end branches at them. */
   readonly setVisibleFindingIds: (ids: readonly string[]) => void;
   readonly receipt: ReceiptView;
+  /** Plain sentences for every degraded or failed state that applies right now. */
+  readonly notices: readonly Notice[];
+  /** The finding the attention rail explains, and why it was chosen. */
+  readonly selectedFindingId: string | null;
   /**
    * The entry for a verified signal. The transaction controller is its only production caller;
    * the gated fixtures page is the only other.
@@ -102,6 +110,7 @@ function toActiveRun(run: RunView | null, lastEventAtMs: number | null): ActiveR
     operation: operationName(run.intent),
     outOfDate: run.stale,
     failureMessage: run.failure?.message ?? null,
+    failureCode: run.failure?.code ?? null,
     lastEventAtMs,
   };
 }
@@ -127,6 +136,12 @@ export function HudProvider({
   const assistant = useAssistant().snapshot;
   const decisions = useDecisions().snapshot;
   const nowMs = useNow();
+  const {
+    selectedFindingId: chosenFindingId,
+    setDraft,
+    setCommandNote,
+    setSelectedFindingId,
+  } = useWorkspace();
   const fixture = useHudFixture();
   const transactionContext = useTransaction();
   const frozen = usePackage().snapshot.frozen;
@@ -207,6 +222,16 @@ export function HudProvider({
           confirmedLag: health.lag.confirmedLag,
         };
 
+  const selectedId =
+    chooseSelectedFinding(
+      decisions.findings.map((item) => ({
+        id: item.finding.findingId,
+        state: item.finding.state,
+        priority: item.finding.priority,
+        resolved: item.disposition !== null,
+      })),
+      chosenFindingId,
+    )?.id ?? null;
   const live: HudInput = {
     ceiling: {
       nowMs,
@@ -240,7 +265,7 @@ export function HudProvider({
       state: item.finding.state,
       resolved: item.disposition !== null,
       visible: visible.includes(item.finding.findingId),
-      selected: false,
+      selected: item.finding.findingId === selectedId,
     })),
     vaultUnlocked: unlocked,
     matterSelected: vault.snapshot.selectedMatterId !== null,
@@ -264,9 +289,36 @@ export function HudProvider({
   useEffect(() => {
     if (!same) setView(computed);
   }, [same, computed]);
+  const noticeText = JSON.stringify(
+    selectNotices(input, {
+      transactionReason: transactionContext.state.reason,
+      receiptCorrection: receipt.label?.kind === 'correction',
+    }),
+  );
+  const notices = useMemo(() => JSON.parse(noticeText) as Notice[], [noticeText]);
+
+  // Locking clears what the reviewer typed and chose, as it clears decrypted content.
+  const wasUnlocked = useRef(unlocked);
+  useEffect(() => {
+    if (wasUnlocked.current && !unlocked) {
+      setDraft('');
+      setCommandNote('');
+      setSelectedFindingId(null);
+    }
+    wasUnlocked.current = unlocked;
+  }, [unlocked, setDraft, setCommandNote, setSelectedFindingId]);
+
   const value = useMemo<HudContextValue>(
-    () => ({ view, nowMs, setVisibleFindingIds, receipt, consumeReceipt }),
-    [view, nowMs, setVisibleFindingIds, receipt, consumeReceipt],
+    () => ({
+      view,
+      nowMs,
+      setVisibleFindingIds,
+      receipt,
+      consumeReceipt,
+      notices,
+      selectedFindingId: selectedId,
+    }),
+    [view, nowMs, setVisibleFindingIds, receipt, consumeReceipt, notices, selectedId],
   );
   return <HudContext.Provider value={value}>{children}</HudContext.Provider>;
 }

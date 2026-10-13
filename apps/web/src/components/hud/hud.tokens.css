@@ -295,3 +295,24 @@
 .lj-app[data-canvas='on'] .lj-orb svg {
   visibility: hidden;
 }
+
+/* Layer 60: the exact-action approval. Exclusive and central over a strongly dimmed canvas, on a dark reading floor. */
+.lj-ceremony-scrim {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  overflow-y: auto;
+  padding: max(6vh, env(safe-area-inset-top)) var(--lj-gutter) var(--lj-space-5);
+  background: rgb(0 0 0 / 88%);
+}
+.lj-ceremony {
+  width: min(760px, 100%);
+  padding: var(--lj-space-4) var(--lj-space-4);
+  /* Dark floor, not transparent: text behind an inert page must never show through the words. */
+  background: var(--lj-bg-soft);
+  border-top: 1px solid var(--lj-control-edge);
+  border-bottom: 1px solid var(--lj-control-edge);
+}

@@ -2,6 +2,7 @@
 
 import { useEffect, useRef } from 'react';
 import { useReview } from '@/components/review/review-context';
+import { useWorkspace } from '@/components/shell/workspace-context';
 import { useVault } from '@/components/vault/vault-context';
 import type { RunView } from '@/features/assistant/public';
 import { useAssistant } from './assistant-context';
@@ -18,6 +19,7 @@ import { AgentIdentityLine } from './AgentIdentityLine';
 export function ConversationPanel({ compact = false }: { compact?: boolean }) {
   const { controller, snapshot } = useAssistant();
   const { setFocus } = useReview();
+  const { setMode } = useWorkspace();
   const vault = useVault();
   const end = useRef<HTMLDivElement | null>(null);
   const count = snapshot.conversation.length;
@@ -29,7 +31,11 @@ export function ConversationPanel({ compact = false }: { compact?: boolean }) {
   /** Reopens the exact cited passage, only if it still matches the current verified artifacts. */
   const open = (run: RunView | null, handle: string) => {
     const focus = run === null ? null : (controller?.openSource(run.id, handle) ?? null);
-    if (focus !== null) setFocus(focus);
+    if (focus !== null) {
+      // Opening a source is the one thing that enters Review mode by itself.
+      setMode('review');
+      setFocus(focus);
+    }
   };
 
   const matter = vault.snapshot.selectedMatter;

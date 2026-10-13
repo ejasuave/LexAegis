@@ -13067,6 +13067,36 @@
         ],
         "checks": "observed 2026-10-13: web vitest 640/640 (confirmation: 12 negative bindings, once-only emission, no signal for pending/reverted/unknown/recovered, withdrawal once; effects gate: duplicate, hydration, hidden, other matter, reduced/off, coalescing, correction, envelope); typecheck and eslint clean. tooling/scripts/hud-receipt-check.ts on next dev with HUD_FIXTURES=1: all pass (wash peaks at channel 15 on empty pixels, i.e. 0.06; gone after 600 ms; reading regions stay at 0 throughout from the seventh frame; effect starts about 14 ms after the signal on this machine; duplicate, second-in-window, replay, other matter and reload do not replay; correction persists and is announced; reduced motion and Effects Off still get label and announcement; hidden tab gets no effect). hud-visual, hud-command and hud-canvas checks still pass.",
         "limitations": "No real confirmed transaction was driven through the page: the controller emission is covered by unit tests with a scripted chain API and the page behaviour by synthetic fixture buttons. During the roughly five frames after a reading region grows (for example a label appears) the mask can lag; the margin was widened to 24 px so the exposed art stays below the reading floor in the test, but this is not proven for every layout. Timing is client-side only; it makes no claim about chain time. Not a photosensitivity assessment: no luminance flash analysis tool was run."
+      },
+      "7": {
+        "state": "complete",
+        "files": [
+          "apps/web/src/components/hud/ApprovalCeremony.tsx",
+          "apps/web/src/components/hud/ceremony.ts",
+          "apps/web/src/components/hud/SelectedFinding.tsx",
+          "apps/web/src/components/hud/StateNotices.tsx",
+          "apps/web/src/components/hud/AttentionRail.tsx",
+          "apps/web/src/components/hud/hud-context.tsx",
+          "apps/web/src/components/hud/HudShell.tsx",
+          "apps/web/src/components/hud/CommandPalette.tsx",
+          "apps/web/src/components/review/ReviewWorkspace.tsx",
+          "apps/web/src/components/review/FindingsPanel.tsx",
+          "apps/web/src/components/assistant/ConversationPanel.tsx",
+          "apps/web/src/components/shell/workspace-context.tsx",
+          "apps/web/src/features/hud/hud.finding.ts",
+          "apps/web/src/features/hud/hud.selectors.ts",
+          "apps/web/src/features/hud/hud.notices.test.ts",
+          "tooling/scripts/hud-browser-check.ts"
+        ],
+        "interfaces": [
+          "selectNotices(HudInput, {transactionReason, receiptCorrection}): Notice[]",
+          "chooseSelectedFinding / paymentGap / categoryLabel",
+          "WorkspaceState.adoptDefaultMode / selectedFindingId",
+          "ApprovalCeremony (role=dialog, aria-modal, layer 60, opaque dark floor, Stop inside)",
+          "isCeremonyStage(stage): checking|preview|signing"
+        ],
+        "checks": "observed 2026-10-13: web vitest 652/652 (notices for unsupported passkey, expired session, locked vault, unsaved, conflict, failed read-back, budget failure, cancel, interruption, offline, indexer lag, reverted, unknown, rejected signing, withdrawn confirmation, none offering a retry; finding selection and calculator-gap classification), typecheck and eslint clean. Existing production-build journeys on the new UI: pnpm test:hud:browser 73/73 (adds: approval is a modal dialog owning focus, background inert, palette does not open over it, Escape closes an unused preview and approves nothing, Stop inside the dialog discards it and sends no transaction, trusted-click-only approval unchanged) and pnpm test:assistant:browser 61/61; test:privacy:browser (which runs both) passed. hud-visual, hud-command, hud-canvas and hud-receipt checks still pass. Screenshots docs/evidence/ui-blueprint/stage7-journey-*.png.",
+        "limitations": "test:account:browser, test:vault:browser, test:review:browser and test:history:browser fail in this environment (server sign-in never reaches Signed in; history exits 3). The account and vault journeys fail identically at commit 9ecc21b, before any UI change; review and history were only re-run at that baseline in a tree contaminated by a stale build cache, so their pre-existing status is likely but not proven. They were not fixed here. The Chapter 10 evidence images and build-state record were left as they were; the new journey screenshots were copied to docs/evidence/ui-blueprint. Not run: screen reader, IME composition, 200% text and 400% zoom by hand, live Qwen or testnet."
       }
     }
   }

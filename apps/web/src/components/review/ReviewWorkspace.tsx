@@ -1,6 +1,6 @@
 'use client';
 
-import { useId, type KeyboardEvent } from 'react';
+import { useEffect, useId, useLayoutEffect, useRef, useState, type KeyboardEvent } from 'react';
 import { AssistantOrb } from '@/components/assistant/AssistantOrb';
 import { CommandActions } from '@/components/assistant/CommandActions';
 import { orbForActivity } from '@/components/assistant/orb-state';
@@ -10,6 +10,8 @@ import { AttentionRail } from '@/components/hud/AttentionRail';
 import { useHud } from '@/components/hud/hud-context';
 import { useLayoutTier } from '@/components/hud/layout-tier';
 import { MatterRail } from '@/components/hud/MatterRail';
+import { StateNotices } from '@/components/hud/StateNotices';
+import { useReview } from './review-context';
 import { useVault } from '@/components/vault/vault-context';
 import { vaultStatusLabel } from '@/components/vault/status';
 import {
@@ -102,6 +104,33 @@ function ActivitySurface() {
   );
 }
 
+/**
+ * Review mode keeps the transcript one disclosure away. It opens by itself whenever the
+ * assistant needs the reviewer (a disclosure to approve sending, a running task) or a message
+ * arrives, so a consent step can never sit hidden behind a closed section.
+ */
+function ReviewTranscript({ forceOpen }: { forceOpen: boolean }) {
+  const { snapshot } = useAssistant();
+  const [userOpen, setUserOpen] = useState(false);
+  const count = snapshot.conversation.length;
+  useEffect(() => {
+    if (count > 0) setUserOpen(true);
+  }, [count]);
+  const needsYou = snapshot.pending !== null || snapshot.phase !== 'idle';
+  return (
+    <details
+      className="lj-rule mt-4 pt-2"
+      open={forceOpen || needsYou || userOpen}
+      onToggle={(event) => setUserOpen(event.currentTarget.open)}
+    >
+      <summary className="inline-flex min-h-11 cursor-pointer items-center text-[0.875rem]">
+        Assistant transcript
+      </summary>
+      <ActivitySurface />
+    </details>
+  );
+}
+
 /** Review mode: the document is dominant and the nucleus shrinks to a status marker. */
 function ReviewSurface() {
   const { view } = useHud();
@@ -149,7 +178,22 @@ function onTabKey(
  * Three zones on wide screens; below 800 px one labelled surface at a time.
  */
 export function ReviewWorkspace() {
-  const { mode, setMode, mobileTab, setMobileTab, selection } = useWorkspace();
+  const { mode, setMode, adoptDefaultMode, mobileTab, setMobileTab, selection } = useWorkspace();
+  const hasActiveDocument = useReview().snapshot.documents.some((doc) => doc.selected);
+  // A workspace with an active document opens in Review; an empty one stays in Command mode.
+  // An explicit choice by the reviewer is never overridden.
+  useEffect(() => {
+    if (hasActiveDocument) adoptDefaultMode('review');
+  }, [hasActiveDocument, adoptDefaultMode]);
+  // Each mode remembers where the stage was scrolled, so switching back finds the same place.
+  const stage = useRef<HTMLElement | null>(null);
+  const scrolled = useRef<Record<PresentationMode, number>>({ command: 0, review: 0 });
+  const shown = useRef(mode);
+  useLayoutEffect(() => {
+    if (shown.current === mode) return;
+    shown.current = mode;
+    if (stage.current !== null) stage.current.scrollTop = scrolled.current[mode];
+  }, [mode]);
   const tier = useLayoutTier();
   const ids = useId();
   const active = (tab: MobileTab) => mobileTab === tab;
@@ -201,6 +245,8 @@ export function ReviewWorkspace() {
         ))}
       </div>
 
+      <StateNotices />
+
       <p className="sr-only" aria-live="polite">
         {selection.matterId ? 'Matter selected.' : 'No matter selected.'}
       </p>
@@ -223,7 +269,14 @@ export function ReviewWorkspace() {
             <MatterRail />
           )}
         </aside>
-        <section aria-label="Work" className="min-w-0">
+        <section
+          aria-label="Work"
+          className="min-w-0"
+          ref={stage}
+          onScroll={(event) => {
+            scrolled.current[shown.current] = event.currentTarget.scrollTop;
+          }}
+        >
           <div id={`${ids}-document`} className="lj-surface" data-active={active('document')}>
             {mode === 'command' ? <CommandHero /> : <ReviewSurface />}
           </div>
@@ -231,15 +284,7 @@ export function ReviewWorkspace() {
             {mode === 'command' ? (
               <ActivitySurface />
             ) : (
-              <details
-                className="lj-rule mt-4 pt-2"
-                open={mobileTab === 'activity' ? true : undefined}
-              >
-                <summary className="inline-flex min-h-11 cursor-pointer items-center text-[0.875rem]">
-                  Assistant transcript
-                </summary>
-                <ActivitySurface />
-              </details>
+              <ReviewTranscript forceOpen={mobileTab === 'activity'} />
             )}
           </div>
         </section>

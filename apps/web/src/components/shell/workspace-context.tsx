@@ -2,6 +2,7 @@
 
 import {
   createContext,
+  useCallback,
   useRef,
   useContext,
   useMemo,
@@ -24,7 +25,13 @@ export interface Selection {
 
 interface WorkspaceState {
   mode: PresentationMode;
+  /** An explicit choice by the reviewer. It is never overridden by a default. */
   setMode: (mode: PresentationMode) => void;
+  /** The default for a workspace with an active document; ignored once the reviewer has chosen. */
+  adoptDefaultMode: (mode: PresentationMode) => void;
+  /** The finding the attention rail explains. Null means the highest-priority unresolved one. */
+  selectedFindingId: string | null;
+  setSelectedFindingId: (id: string | null) => void;
   mobileTab: MobileTab;
   setMobileTab: (tab: MobileTab) => void;
   /** Unsent command draft; volatile and never persisted. */
@@ -54,7 +61,16 @@ const EMPTY_SELECTION: Selection = { matterId: null, documentVersionId: null, cl
  * between pages) keeps the selection and the unsent draft.
  */
 export function WorkspaceProvider({ children }: { children: ReactNode }) {
-  const [mode, setMode] = useState<PresentationMode>('command');
+  const [mode, setModeState] = useState<PresentationMode>('command');
+  const modeChosen = useRef(false);
+  const setMode = useCallback((next: PresentationMode) => {
+    modeChosen.current = true;
+    setModeState(next);
+  }, []);
+  const adoptDefaultMode = useCallback((next: PresentationMode) => {
+    if (!modeChosen.current) setModeState(next);
+  }, []);
+  const [selectedFindingId, setSelectedFindingId] = useState<string | null>(null);
   const [mobileTab, setMobileTab] = useState<MobileTab>('document');
   const [draft, setDraft] = useState('');
   const [activityOpen, setActivityOpen] = useState(false);
@@ -67,6 +83,9 @@ export function WorkspaceProvider({ children }: { children: ReactNode }) {
     () => ({
       mode,
       setMode,
+      adoptDefaultMode,
+      selectedFindingId,
+      setSelectedFindingId,
       mobileTab,
       setMobileTab,
       draft,
@@ -82,7 +101,18 @@ export function WorkspaceProvider({ children }: { children: ReactNode }) {
       setCommandNote,
       selection: EMPTY_SELECTION,
     }),
-    [mode, mobileTab, draft, activityOpen, contextOpen, paletteOpen, commandNote],
+    [
+      mode,
+      setMode,
+      adoptDefaultMode,
+      selectedFindingId,
+      mobileTab,
+      draft,
+      activityOpen,
+      contextOpen,
+      paletteOpen,
+      commandNote,
+    ],
   );
   return <WorkspaceContext.Provider value={value}>{children}</WorkspaceContext.Provider>;
 }

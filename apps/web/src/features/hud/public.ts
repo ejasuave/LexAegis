@@ -11,8 +11,12 @@ export {
   selectAttention,
   selectCeiling,
   selectHud,
+  selectNotices,
   transactionReading,
 } from './hud.selectors';
+export type { Notice, NoticeExtras } from './hud.selectors';
+export { CATEGORY_LABEL, categoryLabel, chooseSelectedFinding, paymentGap } from './hud.finding';
+export type { Gap, SelectableFinding, SelectedFinding } from './hud.finding';
 export type * from './hud.types';
 export {
   EFFECTS_PREFERENCES,

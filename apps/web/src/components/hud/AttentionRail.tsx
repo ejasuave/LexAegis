@@ -1,6 +1,9 @@
 'use client';
 
+import { useApproval } from '@/components/review/approval-context';
+import { isCeremonyStage } from './ceremony';
 import { useHud } from './hud-context';
+import { SelectedFinding } from './SelectedFinding';
 import { TransactionPanel } from '@/components/chain/TransactionPanel';
 import { ReadinessPanel } from '@/components/shell/ReadinessPanel';
 import { DecisionsPanel } from '@/components/review/DecisionsPanel';
@@ -16,6 +19,7 @@ import { SavedReviews } from '@/components/review/SavedReviews';
  */
 export function AttentionRail() {
   const { view, receipt } = useHud();
+  const ceremony = isCeremonyStage(useApproval().snapshot.stage);
   const unresolved = view.attention.unresolvedCount;
   return (
     <div className="lj-rail-inner lj-marks" data-hud-quiet="">
@@ -28,7 +32,8 @@ export function AttentionRail() {
           {receipt.label.text}
         </p>
       )}
-      <section aria-label="Findings and evidence">
+      <SelectedFinding />
+      <section aria-label="Findings and evidence" className="lj-rule pt-3">
         <h2 className="m-0 text-lg font-medium" data-hud-findings-control="">
           Evidence
         </h2>
@@ -48,12 +53,24 @@ export function AttentionRail() {
       <section aria-label="Review package and approval" className="lj-rule mt-4 pt-3">
         <DecisionsPanel />
         <PackagePanel />
-        <ReviewActionPreview />
+        {ceremony ? <ReviewActionPlaceholder /> : <ReviewActionPreview />}
         <TransactionPanel />
         <ReceiptActions />
         <SavedReviews />
         <ReadinessPanel />
       </section>
     </div>
+  );
+}
+
+/** While the approval dialog is open the preview lives there; the rail says so. */
+function ReviewActionPlaceholder() {
+  return (
+    <section aria-label="Approval" className="mt-6">
+      <h2 className="m-0 text-lg font-medium">Approval</h2>
+      <p className="m-0 mt-2 text-[0.875rem] text-lj-secondary" role="status">
+        The approval is open in its own window.
+      </p>
+    </section>
   );
 }

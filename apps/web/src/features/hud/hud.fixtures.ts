@@ -57,6 +57,7 @@ export function buildHudFixture(name: HudFixtureName, nowMs: number): HudInput {
     operation: 'payment check',
     outOfDate: false,
     failureMessage: null,
+    failureCode: null,
     lastEventAtMs: nowMs - 1000,
     ...patch,
   });

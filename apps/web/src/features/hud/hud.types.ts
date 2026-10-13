@@ -117,6 +117,8 @@ export interface ActiveRunInput {
   /** The reviewer's inputs changed after this result was produced. */
   readonly outOfDate: boolean;
   readonly failureMessage: string | null;
+  /** The run's own failure code, when it failed. */
+  readonly failureCode: string | null;
   /** When the last accepted event for this run arrived; null when none has. */
   readonly lastEventAtMs: number | null;
 }

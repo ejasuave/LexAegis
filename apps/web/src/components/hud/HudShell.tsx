@@ -8,7 +8,9 @@ import { CommandDock } from '@/components/shell/CommandDock';
 import { ContextDrawerHost } from '@/components/shell/ContextDrawerHost';
 import { useWorkspace } from '@/components/shell/workspace-context';
 import { resolveEffects, type SceneState } from '@/features/hud/public';
+import { ApprovalCeremony } from './ApprovalCeremony';
 import { CommandPalette } from './CommandPalette';
+import { isCeremonyStage } from './ceremony';
 import { useEffectsEnvironment } from './effects-preference';
 import { HudProvider, useHud } from './hud-context';
 import { NeuralCanvas } from './NeuralCanvas';
@@ -16,7 +18,6 @@ import { SystemCeiling } from './SystemCeiling';
 import { useHudAnchors } from './useHudAnchors';
 
 /** The approval ceremony is the one moment the art goes still and dim. */
-const CEREMONY_STAGES: ReadonlySet<string> = new Set(['checking', 'preview', 'signing']);
 
 function Frame({ children }: { children: ReactNode }) {
   const { paletteOpen } = useWorkspace();
@@ -29,7 +30,7 @@ function Frame({ children }: { children: ReactNode }) {
   const mode = resolveEffects({ ...environment, canvasFailed });
   const anchors = useHudAnchors(view, setVisibleFindingIds, [pathname]);
   const activity = view.activity;
-  const ceremony = CEREMONY_STAGES.has(approval);
+  const ceremony = isCeremonyStage(approval);
   const scene = useMemo<SceneState>(
     () => ({
       activity: activity.state,
@@ -49,7 +50,7 @@ function Frame({ children }: { children: ReactNode }) {
         <NeuralCanvas mode={mode} scene={scene} onFail={onFail} />
       </div>
       {/* Contents only: the regions stay grid rows. A modal makes everything behind it inert. */}
-      <div className="contents" inert={paletteOpen}>
+      <div className="contents" inert={paletteOpen || ceremony}>
         <SystemCeiling />
         <main
           id="main"
@@ -62,6 +63,7 @@ function Frame({ children }: { children: ReactNode }) {
         <ActivityDrawer />
         <ContextDrawerHost />
       </div>
+      <ApprovalCeremony />
       <CommandPalette />
       {/* One polite announcement per accepted event; it never depends on the effect playing. */}
       <p className="sr-only" role="status" aria-live="polite" data-testid="receipt-announcement">

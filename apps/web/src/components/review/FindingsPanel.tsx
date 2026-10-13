@@ -2,6 +2,8 @@
 
 import type { CheckFindingV1 } from '@lexaegis/agent/contracts';
 import { formatGbp } from '@lexaegis/agent/review';
+import { useHud } from '@/components/hud/hud-context';
+import { useWorkspace } from '@/components/shell/workspace-context';
 import { useReview } from './review-context';
 import { btn, h2, muted, type Focus } from './styles';
 
@@ -34,6 +36,8 @@ const STATE_COLOUR: Record<CheckFindingV1['state'], string> = {
 export function FindingsPanel({ onFocus }: { onFocus: (focus: Focus) => void }) {
   const { controller, snapshot } = useReview();
   const { checks } = snapshot;
+  const { selectedFindingId } = useHud();
+  const { setSelectedFindingId } = useWorkspace();
   return (
     <section aria-label="Findings" className="min-w-0">
       <div className="flex flex-wrap items-center gap-2">
@@ -65,6 +69,7 @@ export function FindingsPanel({ onFocus }: { onFocus: (focus: Focus) => void }) 
             <li
               key={finding.findingId}
               data-hud-finding={finding.findingId}
+              aria-current={selectedFindingId === finding.findingId ? 'true' : undefined}
               className="border-b border-lj-divider py-2 text-[0.875rem]"
             >
               <p className="m-0">
@@ -73,6 +78,14 @@ export function FindingsPanel({ onFocus }: { onFocus: (focus: Focus) => void }) 
                 </span>
                 <strong>{STATE_LABEL[finding.state]}.</strong> {finding.explanation}
               </p>
+              <button
+                type="button"
+                className={`${btn} mt-1 mr-2`}
+                aria-pressed={selectedFindingId === finding.findingId}
+                onClick={() => setSelectedFindingId(finding.findingId)}
+              >
+                Explain in the side panel
+              </button>
               {reference ? (
                 <button
                   type="button"

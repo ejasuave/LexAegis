@@ -345,3 +345,209 @@ export function selectHud(input: HudInput): HudView {
     clearPrivateAnchors: !input.vaultUnlocked,
   };
 }
+
+// ---- Notices for the non-happy paths ---------------------------------------------------------
+
+export interface Notice {
+  readonly id: string;
+  readonly severity: 'info' | 'warn' | 'bad';
+  readonly title: string;
+  readonly body: string;
+  /** A recovery the reviewer may take. Never a retry of signing or sending. */
+  readonly action: { readonly label: string; readonly href: string } | null;
+}
+
+export interface NoticeExtras {
+  /** The transaction controller's own reason code, when it has one. */
+  readonly transactionReason: string | null;
+  /** A confirmation was withdrawn after being shown. */
+  readonly receiptCorrection: boolean;
+}
+
+const VAULT_PAGE = { label: 'Open the Vault page', href: '/vault' } as const;
+
+/**
+ * Every failure and degraded state the blueprint names, as plain sentences with what is and is
+ * not affected. None of them retries, signs or sends, and none claims a lock retracts data that
+ * was already sent.
+ */
+export function selectNotices(input: HudInput, extras: NoticeExtras): readonly Notice[] {
+  const { ceiling, assistant } = input;
+  const out: Notice[] = [];
+  const add = (notice: Notice) => out.push(notice);
+  const account = ceiling.account;
+
+  if (account.availability === 'unsupported') {
+    add({
+      id: 'passkey-unsupported',
+      severity: 'bad',
+      title: 'Passkeys are not supported in this browser',
+      body: 'Reviewing documents still works, but an account, the vault and approvals need passkey support with the PRF extension. Use a browser and device that offer it.',
+      action: null,
+    });
+  } else if (account.availability === 'misconfigured') {
+    add({
+      id: 'account-unavailable',
+      severity: 'bad',
+      title: 'The account is not configured for this deployment',
+      body: 'Accounts, the vault and approvals are unavailable. Local checks still work.',
+      action: null,
+    });
+  }
+  const mera = meraSessionReading(account, ceiling.nowMs);
+  if (mera.text === 'Expired') {
+    add({
+      id: 'session-expired',
+      severity: 'warn',
+      title: 'Your passkey session expired',
+      body: 'Nothing was approved or signed by this. Unlock again to continue; saved work stays encrypted.',
+      action: VAULT_PAGE,
+    });
+  }
+
+  switch (ceiling.vaultLabel) {
+    case 'Locked':
+      if (account.address !== null) {
+        add({
+          id: 'vault-locked',
+          severity: 'info',
+          title: 'The vault is locked',
+          body: 'Decrypted text, drafts and private markers are cleared from view. Locking cannot retract anything already sent to the service or to the model provider.',
+          action: VAULT_PAGE,
+        });
+      }
+      break;
+    case 'Unsaved changes':
+      add({
+        id: 'vault-unsaved',
+        severity: 'warn',
+        title: 'Changes are not saved yet',
+        body: 'They exist only in this tab until the encrypted save is read back successfully.',
+        action: null,
+      });
+      break;
+    case 'Conflict':
+      add({
+        id: 'vault-conflict',
+        severity: 'bad',
+        title: 'The saved copy changed elsewhere',
+        body: 'Your last save was not applied. Review the saved version before saving again.',
+        action: VAULT_PAGE,
+      });
+      break;
+    case 'Recovery failed':
+      add({
+        id: 'vault-recovery',
+        severity: 'bad',
+        title: 'The saved package could not be read back',
+        body: 'Nothing was approved. A package that has not been read back cannot be used for approval.',
+        action: VAULT_PAGE,
+      });
+      break;
+    case 'Vault unavailable':
+      add({
+        id: 'vault-unavailable',
+        severity: 'bad',
+        title: 'The encrypted vault is not available',
+        body: 'Matters cannot be opened or saved in this browser.',
+        action: null,
+      });
+      break;
+    default:
+      break;
+  }
+
+  const run = assistant.activeRun;
+  if (assistant.availability === 'unreachable') {
+    add({
+      id: 'assistant-offline',
+      severity: 'warn',
+      title: 'The assistant service could not be reached',
+      body: 'Local checks still work. Nothing is resent automatically when it returns.',
+      action: null,
+    });
+  }
+  if (assistant.orb === 'failed' && run !== null) {
+    const budget = run.failureCode === 'BUDGET_EXHAUSTED' || run.failureCode === 'TOOL_LIMIT';
+    add({
+      id: 'run-failed',
+      severity: 'bad',
+      title: budget ? 'The analysis budget for this run is used up' : 'The run failed',
+      body: budget
+        ? 'No further analysis was run. Start a new request if you still need it; checks you run locally are unaffected.'
+        : (run.failureMessage ?? 'The run failed. Nothing was approved.'),
+      action: null,
+    });
+  }
+  if (assistant.orb === 'cancelled') {
+    add({
+      id: 'run-cancelled',
+      severity: 'info',
+      title: 'The run was cancelled',
+      body: 'Cancelling does not reverse anything that was already sent or broadcast.',
+      action: null,
+    });
+  }
+  if (assistant.orb === 'interrupted') {
+    add({
+      id: 'run-interrupted',
+      severity: 'warn',
+      title: 'The run was interrupted and its outcome is not known',
+      body: 'Do not treat any partial result as complete. Start a new request when ready.',
+      action: null,
+    });
+  }
+
+  const indexer = indexerReading(ceiling.indexer, ceiling.nowMs);
+  if (ceiling.indexer !== null && (indexer.tone === 'warn' || indexer.tone === 'bad')) {
+    add({
+      id: 'indexer-lag',
+      severity: 'warn',
+      title: 'Receipt history may be behind',
+      body: 'The index is stale, catching up or unavailable. A live registry read decides a receipt’s state, not this list.',
+      action: null,
+    });
+  }
+
+  const tx = ceiling.transaction;
+  if (tx.stage === 'reverted') {
+    add({
+      id: 'tx-reverted',
+      severity: 'bad',
+      title: 'The transaction reverted',
+      body: 'The registry rejected it on chain, so nothing was published. Nothing is retried for you.',
+      action: null,
+    });
+  } else if (tx.stage === 'unknown') {
+    add({
+      id: 'tx-unknown',
+      severity: 'warn',
+      title: 'The transaction’s status is not known',
+      body: tx.mayHaveBroadcast
+        ? 'It may have been broadcast. Refresh its status and do not send it again until you know.'
+        : 'Refresh its status. Nothing is resent automatically.',
+      action: null,
+    });
+  } else if (tx.stage === 'failed' && extras.transactionReason !== null) {
+    const rejected =
+      extras.transactionReason === 'USER_CANCELLED' ||
+      extras.transactionReason === 'SIGNING_FAILED';
+    add({
+      id: 'tx-not-sent',
+      severity: 'warn',
+      title: rejected ? 'Signing was not completed' : 'The transaction was not sent',
+      body: 'Nothing was broadcast. You decide whether to try again; the app will not.',
+      action: null,
+    });
+  }
+  if (extras.receiptCorrection) {
+    add({
+      id: 'receipt-correction',
+      severity: 'warn',
+      title: 'A confirmation was withdrawn',
+      body: 'The earlier “receipt confirmed” no longer holds. Its status is being checked again.',
+      action: null,
+    });
+  }
+  return out;
+}

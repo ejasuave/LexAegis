@@ -60,6 +60,7 @@ const run: ActiveRunInput = {
   operation: 'payment check',
   outOfDate: false,
   failureMessage: null,
+  failureCode: null,
   lastEventAtMs: NOW - 2_000,
 };
 const assistant: AssistantInput = {

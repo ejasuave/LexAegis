@@ -67,6 +67,12 @@ body {
   color: var(--lj-text);
   scroll-padding-block: 4rem 7rem;
 }
+/* On a phone the sticky dock wraps to several rows; a focused control must clear all of it. */
+@media (max-width: 799.98px) {
+  html {
+    scroll-padding-bottom: 12rem;
+  }
+}
 
 body {
   font-family:
