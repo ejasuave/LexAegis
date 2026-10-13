@@ -8,13 +8,11 @@ import {
   buildField,
   buildNetwork,
   easeToward,
-  fieldReach,
   initialTier,
   inflate,
   jagged,
   routeAlert,
   seeded,
-  visiblePoints,
   type Field,
   type Network,
   type Point,
@@ -208,11 +206,6 @@ function paletteFor(activity: ActivityState): Palette {
 
 const HALO_HERO = 72;
 const HALO_COMPACT = 17;
-const CORE_HERO = 5;
-const CORE_COMPACT = 2.5;
-/** The core never grows past these, so near-white stays a small bounded disc. */
-const CORE_HERO_MAX = 11;
-const CORE_COMPACT_MAX = 4;
 const ENERGY_RISE_TAU = 0.2;
 const ENERGY_FALL_TAU = 0.4;
 /** Thinking pulses once every 1.75 s: well under three a second. */
