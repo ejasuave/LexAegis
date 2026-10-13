@@ -54,6 +54,32 @@ async function prepared() {
 }
 
 describe('selected context for a request', () => {
+  it('builds bounded, hash-verified matter excerpts without manually selecting a passage', async () => {
+    const { r } = await prepared();
+    await r.controller.setSelected([]);
+    const built = await buildRequestBody(ports(r), {
+      intent: 'ask_matter',
+      trigger: 'free_text',
+      utterance: 'Analyse the employment settlement and identify the risks.',
+      documentVersionId: null,
+      references: [],
+      savedEntryIds: [],
+      history: [],
+    });
+    expect(built.ok).toBe(true);
+    if (built.ok) {
+      expect(built.body.documentVersionId).toBeNull();
+      expect(built.body.context.sources.length).toBeGreaterThan(0);
+      expect(built.body.context.searchedScope.automatic?.includedDocuments).toBe(1);
+      for (const source of built.body.context.sources) {
+        expect(source.reference.quote.length).toBeLessThanOrEqual(450);
+        expect(source.reference.sourceSha256).toMatch(/^0x[0-9a-f]{64}$/);
+      }
+      expect(r.controller.getSnapshot().documents.every((doc) => !doc.selected)).toBe(true);
+    }
+    r.controller.dispose();
+  });
+
   it('sends only the selected excerpt for an explanation, with no facts or client status', async () => {
     const { r, id, clause } = await prepared();
     const built = await buildRequestBody(ports(r), {
