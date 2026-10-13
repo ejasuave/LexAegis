@@ -502,7 +502,8 @@ export class AssistantController {
     // General matter questions still use automatic retrieval.
     const asksAboutSelectedText =
       this.#selection.references.length > 0 &&
-      /\b(?:explain|summari[sz]e)\b[^\n]{0,120}\b(?:this|the selected)\s+(?:clause|passage|paragraph|text)\b/i.test(text);
+      /\b(?:explain|summari[sz]e)\b/i.test(text) &&
+      /\b(?:this|the selected)\s+(?:clause|passage|paragraph|text)\b/i.test(text);
     if (
       asksAboutSelectedText ||
       (routed.kind === 'intent' &&
