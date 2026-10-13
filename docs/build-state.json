@@ -12912,5 +12912,21 @@
       "Mera bounty claims withdrawn by failed Gate B"
     ],
     "handoff": "Chapter 13 is NOT complete: required hosted, recording and publication checks did not run. Resume with provider access and an HTTPS origin: pnpm release prepare/deploy/verify, pnpm hosted:smoke --evidence, record videos, publish the article, pnpm submission:validate --check-links. Run order was changed by the user (13 before 19); chapter 14 remains in-progress."
+  },
+  "uiBlueprint": {
+    "source": "UI_UX_Instructions/UI_UX_BLUEPRINT.md",
+    "notes": "docs/ui-reference-notes.md",
+    "mapping": "docs/ui-blueprint-mapping.md",
+    "state": "in-progress",
+    "stages": {
+      "1": {
+        "state": "complete",
+        "files": [
+          "docs/ui-reference-notes.md",
+          "docs/ui-blueprint-mapping.md"
+        ],
+        "checks": "Mapping written; no code changed. Video not viewed (cannot play mp4)."
+      }
+    }
   }
 }
