@@ -286,3 +286,12 @@
     animation: none;
   }
 }
+
+/* With the canvas drawing the nucleus, the SVG marker keeps its layout box but is not painted. */
+.lj-art-host {
+  position: absolute;
+  inset: 0;
+}
+.lj-app[data-canvas='on'] .lj-orb svg {
+  visibility: hidden;
+}

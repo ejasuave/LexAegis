@@ -5,6 +5,7 @@ import { useState, type ReactNode } from 'react';
 import { Icon, type IconName } from '@/components/shell/icons';
 import { NavBar } from '@/components/shell/NavBar';
 import type { Reading, Tone } from '@/features/hud/public';
+import { EffectsControl } from './EffectsControl';
 import { useHud } from './hud-context';
 
 const ICON: Record<Reading['id'], IconName> = {
@@ -112,7 +113,7 @@ export function SystemCeiling() {
   const essential = primary.filter((r) => ESSENTIAL.has(r.id));
   const secondary = view.readings.filter((r) => r.id === 'server-sign-in');
   return (
-    <header className="lj-ceiling" aria-label="System status">
+    <header className="lj-ceiling" aria-label="System status" data-hud-quiet="">
       <div className="lj-ceiling-row">
         <dl className="hidden flex-wrap gap-x-5 gap-y-1 min-[1200px]:flex">
           {primary.map((r) => renderReading(r))}
@@ -120,7 +121,7 @@ export function SystemCeiling() {
         <dl className="grid gap-y-1 min-[1200px]:hidden">
           {essential.map((r) => renderReading(r))}
         </dl>
-        <details className="text-[0.8125rem] text-lj-secondary">
+        <details className="text-[0.8125rem] text-lj-secondary min-[1200px]:ml-auto">
           <summary className="inline-flex min-h-6 cursor-pointer items-center">
             System status
           </summary>
@@ -137,7 +138,10 @@ export function SystemCeiling() {
           </p>
         </details>
       </div>
-      <NavBar />
+      <div className="lj-gutter flex flex-wrap items-center justify-between gap-x-6">
+        <NavBar />
+        <EffectsControl />
+      </div>
     </header>
   );
 }

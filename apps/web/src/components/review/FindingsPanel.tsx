@@ -62,7 +62,11 @@ export function FindingsPanel({ onFocus }: { onFocus: (focus: Focus) => void }) 
         {checks.findings.map((finding) => {
           const reference = finding.references[0];
           return (
-            <li key={finding.findingId} className="border-b border-lj-divider py-2 text-[0.875rem]">
+            <li
+              key={finding.findingId}
+              data-hud-finding={finding.findingId}
+              className="border-b border-lj-divider py-2 text-[0.875rem]"
+            >
               <p className="m-0">
                 <span className={STATE_COLOUR[finding.state]} aria-hidden="true">
                   {STATE_MARK[finding.state]}{' '}

@@ -14,6 +14,7 @@ import { useAssistant } from '@/components/assistant/assistant-context';
 import { operationName } from '@/components/assistant/orb-state';
 import { useTransaction } from '@/components/chain/transaction-context';
 import { useHistory } from '@/components/history/history-context';
+import { useHudFixture } from './hud-fixture';
 import { useDecisions } from '@/components/review/decision-context';
 import { useReview } from '@/components/review/review-context';
 import { useVault } from '@/components/vault/vault-context';
@@ -131,7 +132,7 @@ export function HudProvider({
           confirmedLag: health.lag.confirmedLag,
         };
 
-  const input: HudInput = {
+  const live: HudInput = {
     ceiling: {
       nowMs,
       matterTitle: vault.snapshot.selectedMatter?.title ?? null,
@@ -169,6 +170,18 @@ export function HudProvider({
     vaultUnlocked: unlocked,
     matterSelected: vault.snapshot.selectedMatterId !== null,
   };
+
+  const fixture = useHudFixture();
+  // A synthetic input (gated page only) still goes through the real selectors and the real
+  // measurement of which rows are on screen.
+  const input: HudInput =
+    fixture === null
+      ? live
+      : {
+          ...fixture,
+          ceiling: { ...fixture.ceiling, nowMs },
+          findings: fixture.findings.map((f) => ({ ...f, visible: visible.includes(f.id) })),
+        };
 
   // Keep the previous view while nothing visible changed, so the canvas is not woken by renders.
   const computed = selectHud(input);

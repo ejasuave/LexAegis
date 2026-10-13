@@ -14,3 +14,16 @@ export {
   transactionReading,
 } from './hud.selectors';
 export type * from './hud.types';
+export { EFFECTS_PREFERENCES, isEffectsPreference, resolveEffects } from './hud.effects';
+export type { EffectsEnvironment, EffectsMode, EffectsPreference } from './hud.effects';
+export { FIELD_SEED, TIERS, backingScale, initialTier, QualityGovernor } from './neural.geometry';
+export type { Point, Rect, Tier, TierName } from './neural.geometry';
+export { EMPTY_SCENE, NeuralRenderer } from './neural.renderer';
+export type { AlertTarget, NucleusMode, RendererStats, SceneState } from './neural.renderer';
+export {
+  HUD_FIXTURE_NAMES,
+  buildHudFixture,
+  fixtureFindingIds,
+  isHudFixtureName,
+} from './hud.fixtures';
+export type { HudFixtureName } from './hud.fixtures';

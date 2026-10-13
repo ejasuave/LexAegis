@@ -65,6 +65,8 @@ export function AssistantOrb({
   return (
     <div
       className="lj-orb inline-flex items-center gap-3"
+      data-hud-nucleus=""
+      data-size={size}
       data-active={ACTIVE.has(state)}
       data-state={state}
     >

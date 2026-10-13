@@ -13008,6 +13008,37 @@
         ],
         "checks": "observed 2026-10-13: web vitest 597/597 (registry: allowlist, filter, typo suggestion, approve/sign refusal, /stop routing; Enter handling lets /stop through while busy), typecheck and eslint clean; tooling/scripts/hud-command-check.ts against next dev: 14/14 (Ctrl+K to focused input p95 26.8 ms over 20 opens on this dev machine, modal combobox/listbox, inert background, ArrowDown moves announced option without submitting, Tab contained, Escape restores focus, unsent draft survives, free text goes to dock, unknown command suggests, no approve/sign command, /stop in dock, Stop 44px). Not run: palette during a live run or over a real approval (needs the full journey, stage 7/8), screen reader, IME composition.",
         "limitations": "The palette is not opened while the approval controller is past idle; the exact-action approval is still the inline preview until stage 7. Explicit commands go to the assistant controller, which shows its own disclosure preview before anything is sent."
+      },
+      "5": {
+        "state": "complete",
+        "files": [
+          "apps/web/src/features/hud/neural.geometry.ts",
+          "apps/web/src/features/hud/neural.geometry.test.ts",
+          "apps/web/src/features/hud/neural.renderer.ts",
+          "apps/web/src/features/hud/hud.effects.ts",
+          "apps/web/src/features/hud/hud.fixtures.ts",
+          "apps/web/src/components/hud/NeuralCanvas.tsx",
+          "apps/web/src/components/hud/useHudAnchors.ts",
+          "apps/web/src/components/hud/effects-preference.ts",
+          "apps/web/src/components/hud/EffectsControl.tsx",
+          "apps/web/src/components/hud/hud-fixture.ts",
+          "apps/web/src/components/hud/HudFixtureStage.tsx",
+          "apps/web/src/app/hud-fixtures/page.tsx",
+          "apps/web/src/components/hud/HudShell.tsx",
+          "tooling/scripts/hud-canvas-check.ts"
+        ],
+        "interfaces": [
+          "NeuralRenderer(canvas,{mode,tier}).setScene/setMode/setVisible/resize/dispose/stats",
+          "SceneState {activity,toolsRunning,ceremony,nucleus,regions,channelX,alerts}",
+          "TIERS standard 320/64/20-60, balanced 160/32/15-30, compact 80/16/static-24",
+          "QualityGovernor (two missed 90-frame windows to step down, never up)",
+          "resolveEffects({preference,osReducedMotion,forcedColors,canvasFailed})",
+          "routeAlert/jagged/segmentCrossesRect",
+          "data attributes: data-hud-quiet, data-hud-nucleus, data-hud-finding, data-hud-findings-control, data-hud-rail",
+          "/hud-fixtures?state=<name> (404 unless HUD_FIXTURES=1 at server start)"
+        ],
+        "checks": "observed 2026-10-13: web vitest 613/613 (tier table, seeded geometry, backing-scale cap, governor step-down, alert routing, effects policy), typecheck, eslint and prettier clean, next build ok and exclusion:check clean with the gated fixtures route. tooling/scripts/hud-canvas-check.ts on next dev with HUD_FIXTURES=1: all pass. 12 synthetic scenes (idle, queued, awaiting, running, alert, stopping, offline, stale, locked, pending, failed, confirmed): composited art inside every registered reading region is at or below channel 23 (#0D1117) in each; particles only in running and alert and within 64; static states run no loop; idle 20 fps cap; running 60 fps cap; amber alert branches present with none inside a reading region; locked clears anchors; hidden page draws no frames and resumes; effects churn leaves one canvas and one loop; Effects Off removes the canvas and persists; reduced motion and Reduced are static with 80 filaments; forced colours remove the canvas; a 390 px phone starts compact. Canvas work p95 about 0.4 to 1.1 ms on this machine (a development container, not the required mid-range iGPU or mobile device). Screenshots docs/evidence/ui-blueprint/stage5-*.png. Not run: recorded mid-range iGPU and mobile traces, long-task trace, contrast with the brightest real scene on a physical screen, flash-safety review.",
+        "limitations": "Real finding anchors are verified only on synthetic fixtures; the live findings rows carry the same data-hud-finding markers but a run with real findings was not exercised here. Canvas work budget is measured on a development machine only. The quality governor only steps down."
       }
     }
   }

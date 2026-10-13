@@ -52,13 +52,20 @@ function CommandHero() {
     <div className="lj-hero">
       <div className="flex flex-col items-center">
         <AssistantOrb state={orbForActivity(view.activity)} size="expanded" />
-        <p role="status" aria-live="polite" className="m-0 mt-4 text-lg" data-testid="orb-caption">
-          {vault.snapshot.selectedMatterId === null
-            ? 'Open a matter to begin.'
-            : view.activity.statusText}
-        </p>
-        <CommandActions />
-        <VaultStatusLine />
+        <div data-hud-quiet="" className="flex flex-col items-center">
+          <p
+            role="status"
+            aria-live="polite"
+            className="m-0 mt-4 text-lg"
+            data-testid="orb-caption"
+          >
+            {vault.snapshot.selectedMatterId === null
+              ? 'Open a matter to begin.'
+              : view.activity.statusText}
+          </p>
+          <CommandActions />
+          <VaultStatusLine />
+        </div>
       </div>
     </div>
   );
@@ -71,7 +78,7 @@ function ActivitySurface() {
     (item) => item.run?.id === snapshot.activeRunViewId,
   )?.run;
   return (
-    <div className="mx-auto w-full max-w-xl text-left">
+    <div className="mx-auto w-full max-w-xl text-left" data-hud-quiet="">
       <section aria-label="Task steps" className="lj-rule pt-3">
         <h2 className={sectionTitle}>Task steps</h2>
         {active?.plan == null ? (
@@ -99,7 +106,7 @@ function ActivitySurface() {
 function ReviewSurface() {
   const { view } = useHud();
   return (
-    <section aria-label="Document" className="min-w-0">
+    <section aria-label="Document" className="min-w-0" data-hud-quiet="">
       <div className="flex items-center justify-between border-b border-lj-divider pb-2">
         <h2 className={sectionTitle}>Document</h2>
         <AssistantOrb
@@ -175,6 +182,7 @@ export function ReviewWorkspace() {
           <button
             key={tab.id}
             id={`lj-tab-${tab.id}`}
+            data-hud-findings-control={tab.id === 'findings' ? '' : undefined}
             type="button"
             role="tab"
             aria-selected={mobileTab === tab.id}
@@ -239,6 +247,7 @@ export function ReviewWorkspace() {
           id={`${ids}-findings`}
           aria-label="Evidence and approval"
           className="min-w-0 lj-surface"
+          data-hud-rail="attention"
           data-active={active('findings')}
         >
           <AttentionRail />

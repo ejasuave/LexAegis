@@ -93,7 +93,7 @@ export function CommandDock() {
         : IDLE_TEXT[snapshot.availabilityStatus];
 
   return (
-    <section aria-label="Command dock" className="lj-dock lj-gutter">
+    <section aria-label="Command dock" className="lj-dock lj-gutter" data-hud-quiet="">
       <form onSubmit={onSubmit} className="flex flex-wrap items-center gap-2">
         <button
           type="button"

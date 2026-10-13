@@ -19,7 +19,7 @@ export function MatterRail() {
   const unlocked = snapshot.state === 'unlocked' || snapshot.state === 'saving';
   const selected = snapshot.selectedMatter;
   return (
-    <div className="lj-rail-inner lj-marks">
+    <div className="lj-rail-inner lj-marks" data-hud-quiet="">
       <Onboarding />
       <h2 className="m-0 text-lg font-medium">Matters</h2>
       {!unlocked ? (
