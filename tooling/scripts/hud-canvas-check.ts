@@ -44,6 +44,7 @@ async function open(
   options: {
     width?: number;
     height?: number;
+    path?: string;
     reducedMotion?: 'reduce';
     forcedColors?: 'active';
   } = {},
