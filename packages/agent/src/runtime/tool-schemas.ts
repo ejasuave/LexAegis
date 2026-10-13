@@ -36,7 +36,7 @@ export const TOOL_DESCRIPTIONS: Readonly<Record<AssistantToolName, string>> = {
 };
 
 export const TOOL_INTENTS: Readonly<Record<AssistantToolName, readonly AssistantIntent[]>> = {
-  read_sources: ['summarise', 'explain', 'check_payments', 'missing_evidence', 'brief_matter'],
+  read_sources: ['summarise', 'explain', 'check_payments', 'missing_evidence', 'brief_matter', 'ask_matter'],
   get_rules: ['explain', 'check_payments', 'missing_evidence', 'prepare_review'],
   check_payments: ['check_payments', 'brief_matter', 'prepare_review'],
   check_evidence: ['missing_evidence', 'brief_matter', 'prepare_review'],
