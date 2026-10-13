@@ -487,15 +487,16 @@ export class AssistantController {
       this.#note(`Unknown command ${routed.command}. Use the Commands menu.`);
       return;
     }
-    if (routed.kind === 'intent' && LOCAL_INTENTS.includes(routed.intent)) {
-      this.#add({ role: 'user', text, run: null });
-      return this.#runLocal(routed.intent);
+    // Slash commands keep their existing narrow behaviour; ordinary prose, including
+    // follow-up questions, goes to matter Q&A without requiring a highlighted passage.
+    if (routed.kind === 'intent' && routed.via === 'command') {
+      if (LOCAL_INTENTS.includes(routed.intent)) {
+        this.#add({ role: 'user', text, run: null });
+        return this.#runLocal(routed.intent);
+      }
+      return this.#prepare({ intent: routed.intent, trigger: 'command', utterance: text });
     }
-    return this.#prepare({
-      intent: routed.kind === 'intent' ? routed.intent : null,
-      trigger: routed.kind === 'intent' && routed.via === 'command' ? 'command' : 'free_text',
-      utterance: text,
-    });
+    return this.#prepare({ intent: 'ask_matter', trigger: 'free_text', utterance: text });
   }
 
   /** An interface action: Explain selection, Ask Aegis about a result, briefing, prepare review. */
@@ -696,7 +697,9 @@ export class AssistantController {
 
     const epoch = ++this.#epoch;
     this.#lastInput = { ...input, references };
-    const documentVersionId = references[0]?.documentVersionId ?? this.#selection.documentVersionId;
+    const documentVersionId = input.intent === 'ask_matter'
+      ? null
+      : references[0]?.documentVersionId ?? this.#selection.documentVersionId;
     const built = await buildRequestBody(
       { ...this.#ports, newId: this.#ports.newId },
       {
