@@ -697,9 +697,10 @@ export class AssistantController {
 
     const epoch = ++this.#epoch;
     this.#lastInput = { ...input, references };
-    const documentVersionId = input.intent === 'ask_matter'
-      ? null
-      : references[0]?.documentVersionId ?? this.#selection.documentVersionId;
+    const documentVersionId =
+      input.intent === 'ask_matter'
+        ? null
+        : (references[0]?.documentVersionId ?? this.#selection.documentVersionId);
     const built = await buildRequestBody(
       { ...this.#ports, newId: this.#ports.newId },
       {

@@ -65,11 +65,15 @@ export function DisclosurePreview({
       {pending.body.context.searchedScope.automatic !== undefined ? (
         <p className="m-0 mt-3 text-lj-secondary" role="status">
           Automatic matter search: {pending.body.context.searchedScope.automatic.includedDocuments}
-          {' of '}{pending.body.context.searchedScope.automatic.availableDocuments}
+          {' of '}
+          {pending.body.context.searchedScope.automatic.availableDocuments}
           {' documents included; '}
           {pending.body.context.searchedScope.automatic.excerptedPages}
-          {' of '}{pending.body.context.searchedScope.automatic.availablePages}
-          {' readable pages sampled. This is a partial evidence review, not a complete case analysis.'}
+          {' of '}
+          {pending.body.context.searchedScope.automatic.availablePages}
+          {
+            ' readable pages sampled. This is a partial evidence review, not a complete case analysis.'
+          }
         </p>
       ) : null}
       <ul className="m-0 mt-2 list-disc pl-5 text-lj-secondary">

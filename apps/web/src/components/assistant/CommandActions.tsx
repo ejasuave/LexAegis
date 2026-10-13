@@ -47,9 +47,11 @@ export function CommandActions() {
       id: 'analyse-matter',
       label: 'Analyse matter',
       needs: 'matter',
-      run: () => void controller?.action('ask_matter', {
-        utterance: 'Analyse this matter: summarise the available evidence, identify risks and gaps, and suggest the next steps. Cite sources and clearly state any limits to coverage.',
-      }),
+      run: () =>
+        void controller?.action('ask_matter', {
+          utterance:
+            'Analyse this matter: summarise the available evidence, identify risks and gaps, and suggest the next steps. Cite sources and clearly state any limits to coverage.',
+        }),
     },
     {
       id: 'explain',

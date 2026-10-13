@@ -747,21 +747,38 @@ export class ReviewController {
     let contextSet = set;
     let refs = selection.references;
     let automatic:
-      | { availableDocuments: number; readableDocuments: number; includedDocuments: number; availablePages: number; excerptedPages: number }
+      | {
+          availableDocuments: number;
+          readableDocuments: number;
+          includedDocuments: number;
+          availablePages: number;
+          excerptedPages: number;
+        }
       | undefined;
     if (selection.automaticQuery !== undefined) {
       // Read verified sources only from the active unlocked matter; do not change Review selection.
       const inputs = [...this.#verified.values()].map((v) => v.input);
-      const verified = await verifySourceSet(matterId, inputs, inputs.map((v) => v.documentVersionId));
+      const verified = await verifySourceSet(
+        matterId,
+        inputs,
+        inputs.map((v) => v.documentVersionId),
+      );
       if (!verified.ok) return { ok: false, code: verified.code };
       contextSet = verified.data;
-      const terms = [...new Set((selection.automaticQuery.toLowerCase().match(/[a-z]{4,}/g) ?? []))].slice(0, 12);
+      const terms = [
+        ...new Set(selection.automaticQuery.toLowerCase().match(/[a-z]{4,}/g) ?? []),
+      ].slice(0, 12);
       const pages: { id: string; page: number; score: number; text: string }[] = [];
       for (const [id, source] of contextSet.sources) {
         for (const page of source.extraction.pages) {
           if (page.text.trim() === '') continue;
           const lower = page.text.toLowerCase();
-          pages.push({ id, page: page.index, score: terms.filter((term) => lower.includes(term)).length, text: page.text });
+          pages.push({
+            id,
+            page: page.index,
+            score: terms.filter((term) => lower.includes(term)).length,
+            text: page.text,
+          });
         }
       }
       pages.sort((a, b) => b.score - a.score || a.id.localeCompare(b.id) || a.page - b.page);
@@ -769,7 +786,10 @@ export class ReviewController {
       const seen = new Set<string>();
       for (const page of pages) {
         if (chosen.length >= 8) break;
-        if (!seen.has(page.id)) { chosen.push(page); seen.add(page.id); }
+        if (!seen.has(page.id)) {
+          chosen.push(page);
+          seen.add(page.id);
+        }
       }
       for (const page of pages) {
         if (chosen.length >= 12) break;
@@ -790,7 +810,10 @@ export class ReviewController {
         if (pairBoundary(start)) start += 1;
         if (pairBoundary(end)) end -= 1;
         const made = createSourceReference(contextSet, {
-          documentVersionId: page.id, page: page.page, start, end,
+          documentVersionId: page.id,
+          page: page.page,
+          start,
+          end,
         });
         if (!made.ok) return { ok: false, code: made.code };
         references.push(made.data);
@@ -818,7 +841,10 @@ export class ReviewController {
     if (epoch !== this.#epoch || revision !== this.#revision) return { ok: false, code: 'STALE' };
     return {
       ok: true,
-      context: automatic === undefined ? built.data : { ...built.data, searchedScope: { ...built.data.searchedScope, automatic } },
+      context:
+        automatic === undefined
+          ? built.data
+          : { ...built.data, searchedScope: { ...built.data.searchedScope, automatic } },
       snapshot: { digest, revision },
       vaultGeneration: this.#vaultGeneration,
     };
