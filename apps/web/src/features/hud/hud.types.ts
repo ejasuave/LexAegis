@@ -180,4 +180,6 @@ export interface HudView {
   readonly attention: AttentionView;
   /** Lock clears sensitive anchors at once; it never erases public transaction history. */
   readonly clearPrivateAnchors: boolean;
+  /** No matter is open. Only then may the canvas fill the central stage. */
+  readonly workspaceEmpty: boolean;
 }

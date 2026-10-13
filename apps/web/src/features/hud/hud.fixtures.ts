@@ -8,6 +8,7 @@ import type { HudInput, ActiveRunInput, FindingInput } from './hud.types';
  */
 
 export const HUD_FIXTURE_NAMES = [
+  'empty',
   'idle',
   'queued',
   'awaiting',
@@ -101,6 +102,19 @@ export function buildHudFixture(name: HudFixtureName, nowMs: number): HudInput {
     activeRun: run(),
   };
   switch (name) {
+    case 'empty':
+      // Nothing open: no matter, no document. The canvas may fill the stage.
+      return {
+        ...base,
+        ceiling: {
+          ...base.ceiling,
+          vaultLabel: 'Locked',
+          selectedVersionIds: [],
+          matterTitle: null,
+        },
+        matterSelected: false,
+        vaultUnlocked: false,
+      };
     case 'idle':
       return base;
     case 'queued':

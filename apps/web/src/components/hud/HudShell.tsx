@@ -40,9 +40,11 @@ function Frame({ children }: { children: ReactNode }) {
       regions: anchors.regions,
       channelX: anchors.channelX,
       alerts: anchors.alerts,
+      workspace: view.workspaceEmpty ? 'empty' : 'matter',
+      stage: anchors.stage,
       wash: receipt.wash,
     }),
-    [activity.state, activity.toolsRunning, ceremony, anchors, receipt.wash],
+    [activity.state, activity.toolsRunning, ceremony, anchors, receipt.wash, view.workspaceEmpty],
   );
   return (
     <div className="lj-app" data-effects={mode} data-canvas={mode === 'off' ? 'off' : 'on'}>

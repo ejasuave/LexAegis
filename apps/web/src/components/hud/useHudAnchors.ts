@@ -17,9 +17,10 @@ export interface Anchors {
   readonly nucleus: { readonly x: number; readonly y: number; readonly mode: NucleusMode } | null;
   readonly channelX: number | null;
   readonly alerts: readonly AlertTarget[];
+  readonly stage: Rect | null;
 }
 
-const EMPTY: Anchors = { regions: [], nucleus: null, channelX: null, alerts: [] };
+const EMPTY: Anchors = { regions: [], nucleus: null, channelX: null, alerts: [], stage: null };
 // One pass per frame at most: a mask that lags a layout change would leave art behind new text.
 const MIN_GAP_MS = 0;
 
@@ -80,6 +81,7 @@ export function useHudAnchors(
       const stage = document.querySelector('section[aria-label="Work"]');
       const rail = document.querySelector('[data-hud-rail="attention"]');
       let channelX: number | null = null;
+      const stageRect = stage === null ? null : rectOf(stage);
       if (stage !== null && rail !== null) {
         const a = rectOf(stage);
         const b = rectOf(rail);
@@ -129,7 +131,13 @@ export function useHudAnchors(
         }
       }
 
-      const next: Anchors = { regions, nucleus, channelX, alerts };
+      const next: Anchors = {
+        regions,
+        nucleus,
+        channelX,
+        alerts,
+        stage: stageRect !== null && onScreen(stageRect) ? stageRect : null,
+      };
       const key = JSON.stringify(next);
       if (key !== lastKey.current) {
         lastKey.current = key;

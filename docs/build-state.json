@@ -13109,6 +13109,25 @@
         "limitations": "No performance trace on a mid-range iGPU or mobile device, no flash-safety tool, no screen-reader or 200% text and 400% zoom pass."
       }
     },
-    "handoff": "docs/ui-blueprint-handoff.md"
+    "handoff": "docs/ui-blueprint-handoff.md",
+    "canvasRework": {
+      "state": "complete",
+      "reference": "UI_UX_Instructions/orb-reference.jpg",
+      "files": [
+        "apps/web/src/features/hud/neural.renderer.ts",
+        "apps/web/src/features/hud/neural.geometry.ts",
+        "apps/web/src/features/hud/neural.geometry.test.ts",
+        "apps/web/src/features/hud/hud.fixtures.ts",
+        "apps/web/src/features/hud/hud.types.ts",
+        "apps/web/src/features/hud/hud.selectors.ts",
+        "apps/web/src/components/hud/useHudAnchors.ts",
+        "apps/web/src/components/hud/HudShell.tsx",
+        "tooling/scripts/hud-canvas-check.ts",
+        "docs/ui-reference-notes.md"
+      ],
+      "changes": "Linked-node cluster (150/90/48 nodes by tier) sized to the stage when no matter is open and a small knot otherwise; at least 24 long S-curved tendrils in every tier, smoothed, lengthening with an eased activity cue; beads along stems; bounded white-cyan core (at most 11 px) breathing over 6 s; particles travel inward and outward on stems only while a tool executes (this replaces the blueprint's inward-only wording on the user's instruction); brighter palettes so idle and muted states stay clearly present. Reading-zone masks, quality tiers, Effects control and reduced-motion handling unchanged.",
+      "checks": "observed 2026-10-13: web vitest 657/657, typecheck, eslint clean; hud-canvas-check all pass including new checks (empty workspace 22855 lit pixels in the central stage, near-white core 74 px empty and 291 px running, idle brightness step 0.002 of 255 and running 0.010 of 255 per frame over 150 to 180 frames, particles up to the 64 cap, reading regions still at channel 0 in all 13 fixtures, canvas work p95 about 1.2 ms on this development machine); hud-visual, hud-command and hud-receipt checks pass. Screenshots docs/evidence/ui-blueprint/orb-*.png.",
+      "limitations": "Not re-run: the production-build journeys (test:hud:browser, test:assistant:browser) and the full gate set after this change; no mid-range device trace; flash safety checked only as a frame-to-frame mean brightness bound, not with a photosensitivity tool. In the real app with no account the scene is the muted unavailable state, so the empty workspace shows the neutral network, not the cobalt/cyan one."
+    }
   }
 }

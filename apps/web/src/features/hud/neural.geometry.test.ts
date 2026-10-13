@@ -5,6 +5,9 @@ import {
   TIERS,
   backingScale,
   buildField,
+  buildNetwork,
+  easeToward,
+  visiblePoints,
   fieldReach,
   initialTier,
   jagged,
@@ -42,6 +45,68 @@ describe('field geometry', () => {
 
   it('measures reach to the farthest corner', () => {
     expect(fieldReach({ x: 0, y: 0 }, 300, 400)).toBe(500);
+  });
+});
+
+describe('tendrils and cluster', () => {
+  it('has at least 24 long stems in every tier, indexed, with exact totals', () => {
+    for (const n of [320, 160, 80]) {
+      const f = buildField(n);
+      expect(f.count).toBe(n);
+      expect(f.stems.length).toBeGreaterThanOrEqual(24);
+      for (const stem of f.stems) expect(f.depth[stem]).toBe(0);
+      expect(Array.from(f.depth).filter((d) => d === 0)).toHaveLength(f.stems.length);
+    }
+  });
+
+  it('lets stems reach beyond the field radius so they cross the stage', () => {
+    const f = buildField(320);
+    const farthest = Math.max(
+      ...Array.from(f.stems).map((stem) => {
+        const last = (f.start[stem] ?? 0) + FIELD_POINTS - 1;
+        return Math.hypot(f.xs[last] ?? 0, f.ys[last] ?? 0);
+      }),
+    );
+    expect(farthest).toBeGreaterThan(0.95);
+  });
+
+  it('builds a deterministic linked cluster, densest at the centre, with real links', () => {
+    const a = buildNetwork(150);
+    const b = buildNetwork(150);
+    expect(Array.from(a.xs)).toEqual(Array.from(b.xs));
+    expect(a.edges).toBeGreaterThan(150);
+    for (let e = 0; e < a.edges; e++) {
+      expect(a.edgeFrom[e]).not.toBe(a.edgeTo[e]);
+      expect(a.edgeFrom[e]).toBeLessThan(150);
+      expect(a.edgeTo[e]).toBeLessThan(150);
+    }
+    const inner = Array.from(a.xs).filter((x, i) => Math.hypot(x, a.ys[i] ?? 0) < 0.5).length;
+    expect(inner).toBeGreaterThan(150 * 0.3);
+    for (let i = 0; i < 150; i++)
+      expect(Math.hypot(a.xs[i] ?? 0, a.ys[i] ?? 0)).toBeLessThanOrEqual(1.1);
+    expect(TIERS.standard.nodes).toBeGreaterThan(TIERS.balanced.nodes);
+    expect(TIERS.balanced.nodes).toBeGreaterThan(TIERS.compact.nodes);
+  });
+
+  it('eases an activity cue without overshoot or jumps', () => {
+    let v = 0;
+    const seen: number[] = [];
+    for (let i = 0; i < 400; i++) {
+      v = easeToward(v, 1, 1 / 20, 1.4);
+      seen.push(v);
+    }
+    expect(Math.max(...seen)).toBeLessThanOrEqual(1);
+    expect(seen.every((x, i) => i === 0 || x >= (seen[i - 1] ?? 0))).toBe(true);
+    const steps = seen.map((x, i) => Math.abs(x - (seen[i - 1] ?? 0)));
+    expect(Math.max(...steps)).toBeLessThan(0.05);
+    expect(v).toBe(1);
+    expect(easeToward(0.5, 0.2, 0, 1)).toBe(0.5);
+  });
+
+  it('draws a growing fraction of a polyline', () => {
+    expect(visiblePoints(14, 0)).toEqual({ whole: 0, rest: 0 });
+    expect(visiblePoints(14, 1)).toEqual({ whole: 13, rest: 0 });
+    expect(visiblePoints(14, 0.5).whole).toBe(6);
   });
 });
 

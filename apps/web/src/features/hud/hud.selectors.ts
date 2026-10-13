@@ -343,6 +343,7 @@ export function selectHud(input: HudInput): HudView {
     activity: selectActivity(input.assistant, input.ceiling.nowMs),
     attention: input.vaultUnlocked ? selectAttention(input.findings) : selectAttention([]),
     clearPrivateAnchors: !input.vaultUnlocked,
+    workspaceEmpty: !input.matterSelected,
   };
 }
 

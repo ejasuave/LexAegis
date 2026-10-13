@@ -121,6 +121,7 @@ const amberPixels = (page: Page) =>
   await context.close();
 }
 for (const state of [
+  'empty',
   'idle',
   'queued',
   'awaiting',
@@ -216,6 +217,100 @@ for (const state of [
     `note  canvas work p95 on this machine: ${p95 === null ? 'not yet measured' : `${p95.toFixed(2)} ms`}`,
   );
   await context.close();
+}
+
+// ---- The network and the activity cue (reference: orb-reference.jpg) ---------------------------
+/** Canvas pixels that are visibly lit, optionally only the near-white ones, within a CSS rectangle. */
+const litPixels = (page: Page, rect: [number, number, number, number], nearWhite: boolean) =>
+  page.evaluate<number>(`(() => {
+    const canvas = document.querySelector('.lj-art canvas');
+    const scale = canvas.width / canvas.getBoundingClientRect().width;
+    const [x, y, w, h] = ${JSON.stringify(rect)}.map((v) => Math.round(v * scale));
+    const d = canvas.getContext('2d').getImageData(x, y, w, h).data;
+    let n = 0;
+    for (let i = 0; i < d.length; i += 4) {
+      const a = d[i + 3] / 255;
+      const r = d[i] * a, g = d[i + 1] * a, b = d[i + 2] * a;
+      if (${String(nearWhite)} ? r > 215 && g > 215 && b > 215 : Math.max(r, g, b) > 30) n++;
+    }
+    return n;
+  })()`);
+
+/** The largest change in the whole canvas's mean brightness between consecutive frames, 0..255. */
+const flicker = (page: Page, ms: number) =>
+  page.evaluate<{ maxStep: number; frames: number }>(`(async () => {
+    const canvas = document.querySelector('.lj-art canvas');
+    const g = canvas.getContext('2d');
+    const mean = () => {
+      const d = g.getImageData(0, 0, canvas.width, canvas.height).data;
+      let sum = 0;
+      for (let i = 0; i < d.length; i += 16) sum += (d[i] + d[i + 1] + d[i + 2]) * (d[i + 3] / 255) / 3;
+      return sum / (d.length / 16);
+    };
+    let last = mean(), maxStep = 0, frames = 0;
+    const end = performance.now() + ${String(ms)};
+    await new Promise((resolve) => {
+      const step = () => {
+        const m = mean();
+        maxStep = Math.max(maxStep, Math.abs(m - last));
+        last = m;
+        frames++;
+        if (performance.now() < end) requestAnimationFrame(step); else resolve(null);
+      };
+      requestAnimationFrame(step);
+    });
+    return { maxStep, frames };
+  })()`);
+
+{
+  const empty = await open(browser, { path: FIXTURE('empty') });
+  await wait(empty.page, 800);
+  // The central stage is x 284..1064, y 150..555 at 1440x900; the middle of it is not under a mask.
+  const lit = await litPixels(empty.page, [300, 160, 740, 380], false);
+  check(
+    'empty workspace: a full visible network fills the central stage, not a lone dot',
+    lit > 6000,
+    `${String(lit)} lit pixels`,
+  );
+  const dot = await litPixels(empty.page, [600, 290, 140, 90], true);
+  check(
+    'empty workspace: near-white is only the small core',
+    dot > 0 && dot < 900,
+    `${String(dot)} px`,
+  );
+  await empty.context.close();
+
+  const idle = await open(browser, { path: FIXTURE('idle') });
+  await wait(idle.page, 800);
+  check(
+    'idle with a matter open: tendrils stay present in the margins',
+    (await litPixels(idle.page, [0, 560, 360, 240], false)) > 1500,
+  );
+  const idleFlicker = await flicker(idle.page, 2500);
+  check(
+    'idle never flickers (largest frame-to-frame brightness step)',
+    idleFlicker.maxStep < 0.8,
+    `${idleFlicker.maxStep.toFixed(3)} of 255 over ${String(idleFlicker.frames)} frames`,
+  );
+  await idle.context.close();
+
+  const running = await open(browser, { path: FIXTURE('running') });
+  await wait(running.page, 3500);
+  const core = await litPixels(running.page, [560, 260, 220, 160], true);
+  check('running: the near-white core is bounded', core > 0 && core < 1000, `${String(core)} px`);
+  const runFlicker = await flicker(running.page, 3000);
+  check(
+    'running never flashes (largest frame-to-frame brightness step)',
+    runFlicker.maxStep < 1.5,
+    `${runFlicker.maxStep.toFixed(3)} of 255 over ${String(runFlicker.frames)} frames`,
+  );
+  const st = await stats(running.page);
+  check(
+    'running: particles travel both ways within the tier cap',
+    (st?.liveParticles ?? 0) > 4 && (st?.liveParticles ?? 0) <= 64,
+    JSON.stringify(st?.liveParticles),
+  );
+  await running.context.close();
 }
 
 // ---- Full effects ------------------------------------------------------------------------

@@ -29,6 +29,8 @@ export interface Tier {
   readonly activeFps: number;
   /** p95 canvas work per drawn frame above which quality steps down, in milliseconds. */
   readonly budgetMs: number;
+  /** Linked nodes in the central cluster. */
+  readonly nodes: number;
 }
 
 export const TIERS: Readonly<Record<TierName, Tier>> = {
@@ -39,6 +41,7 @@ export const TIERS: Readonly<Record<TierName, Tier>> = {
     idleFps: 20,
     activeFps: 60,
     budgetMs: 4,
+    nodes: 150,
   },
   balanced: {
     name: 'balanced',
@@ -47,6 +50,7 @@ export const TIERS: Readonly<Record<TierName, Tier>> = {
     idleFps: 15,
     activeFps: 30,
     budgetMs: 4,
+    nodes: 90,
   },
   compact: {
     name: 'compact',
@@ -55,6 +59,7 @@ export const TIERS: Readonly<Record<TierName, Tier>> = {
     idleFps: 0,
     activeFps: 24,
     budgetMs: 2,
+    nodes: 48,
   },
 };
 
@@ -148,26 +153,36 @@ export interface Field {
   readonly ys: Float32Array;
   /** 0 for a stem, 1 for a branch. */
   readonly depth: Uint8Array;
+  /** Indices of the stems: the long tendrils that reach across the stage. */
+  readonly stems: Uint16Array;
   /** Unit perpendicular of each filament's base direction, for drift. */
   readonly perpX: Float32Array;
   readonly perpY: Float32Array;
   readonly phase: Float32Array;
 }
 
-const POINTS_PER_FILAMENT = 10;
-const BRANCHES_PER_STEM = 7;
+export const FIELD_POINTS = 14;
+/** At least this many long tendrils, whatever the tier. */
+export const MIN_STEMS = 24;
 
+/**
+ * Stems curve outward with an S-shaped sway, so they cross the stage rather than fan out
+ * straight; each carries branches that leave it part-way along. The total is exactly `filaments`.
+ */
 export function buildField(filaments: number, seed = FIELD_SEED): Field {
   const rand = seeded(seed);
-  const stems = Math.max(1, Math.floor(filaments / (BRANCHES_PER_STEM + 1)));
-  const total = stems * (BRANCHES_PER_STEM + 1);
-  const start = new Uint32Array(total + 1);
-  const xs = new Float32Array(total * POINTS_PER_FILAMENT);
-  const ys = new Float32Array(total * POINTS_PER_FILAMENT);
-  const depth = new Uint8Array(total);
-  const perpX = new Float32Array(total);
-  const perpY = new Float32Array(total);
-  const phase = new Float32Array(total);
+  const stemCount = Math.min(filaments, Math.max(MIN_STEMS, Math.round(filaments / 8)));
+  const spare = filaments - stemCount;
+  const base = Math.floor(spare / stemCount);
+  const extra = spare - base * stemCount;
+  const start = new Uint32Array(filaments + 1);
+  const xs = new Float32Array(filaments * FIELD_POINTS);
+  const ys = new Float32Array(filaments * FIELD_POINTS);
+  const depth = new Uint8Array(filaments);
+  const stems = new Uint16Array(stemCount);
+  const perpX = new Float32Array(filaments);
+  const perpY = new Float32Array(filaments);
+  const phase = new Float32Array(filaments);
 
   let f = 0;
   const lay = (
@@ -176,50 +191,132 @@ export function buildField(filaments: number, seed = FIELD_SEED): Field {
     angle: number,
     length: number,
     curl: number,
+    sway: number,
     kind: 0 | 1,
   ): number => {
     const index = f++;
-    start[index] = index * POINTS_PER_FILAMENT;
+    start[index] = index * FIELD_POINTS;
     depth[index] = kind;
     perpX[index] = -Math.sin(angle);
     perpY[index] = Math.cos(angle);
     phase[index] = rand() * Math.PI * 2;
-    for (let k = 0; k < POINTS_PER_FILAMENT; k++) {
-      const t = k / (POINTS_PER_FILAMENT - 1);
-      const a = angle + curl * t * t;
+    const wave = rand() * Math.PI * 2;
+    for (let k = 0; k < FIELD_POINTS; k++) {
+      const t = k / (FIELD_POINTS - 1);
+      const a = angle + curl * t * t + sway * Math.sin(t * Math.PI * 1.4 + wave) * t;
       const r = length * t;
-      xs[index * POINTS_PER_FILAMENT + k] = originX + Math.cos(a) * r;
-      ys[index * POINTS_PER_FILAMENT + k] = originY + Math.sin(a) * r;
+      xs[index * FIELD_POINTS + k] = originX + Math.cos(a) * r;
+      ys[index * FIELD_POINTS + k] = originY + Math.sin(a) * r;
     }
     return index;
   };
 
-  for (let s = 0; s < stems; s++) {
+  for (let s = 0; s < stemCount; s++) {
     // Even spread with jitter, so no wedge of the field is empty.
-    const angle = ((s + rand() * 0.6) / stems) * Math.PI * 2;
-    const length = 0.55 + rand() * 0.45;
-    const curl = (rand() - 0.5) * 0.9;
-    const stem = lay(0, 0, angle, length, curl, 0);
-    for (let b = 0; b < BRANCHES_PER_STEM; b++) {
-      const at = 2 + Math.floor(rand() * (POINTS_PER_FILAMENT - 4));
-      const ox = xs[stem * POINTS_PER_FILAMENT + at] ?? 0;
-      const oy = ys[stem * POINTS_PER_FILAMENT + at] ?? 0;
+    const angle = ((s + rand() * 0.6) / stemCount) * Math.PI * 2;
+    const length = 0.75 + rand() * 0.4;
+    const curl = (rand() - 0.5) * 1.3;
+    const stem = lay(0, 0, angle, length, curl, 0.2 + rand() * 0.25, 0);
+    stems[s] = stem;
+    const branches = base + (s < extra ? 1 : 0);
+    for (let b = 0; b < branches; b++) {
+      const at = 3 + Math.floor(rand() * (FIELD_POINTS - 6));
+      const ox = xs[stem * FIELD_POINTS + at] ?? 0;
+      const oy = ys[stem * FIELD_POINTS + at] ?? 0;
       const side = rand() < 0.5 ? -1 : 1;
       lay(
         ox,
         oy,
         angle + side * (0.25 + rand() * 0.6),
-        length * (0.25 + rand() * 0.35),
+        length * (0.22 + rand() * 0.3),
         side * (0.2 + rand() * 0.5),
+        0.1,
         1,
       );
     }
   }
-  start[total] = total * POINTS_PER_FILAMENT;
-  return { count: total, start, xs, ys, depth, perpX, perpY, phase };
+  start[filaments] = filaments * FIELD_POINTS;
+  return { count: filaments, start, xs, ys, depth, stems, perpX, perpY, phase };
 }
 
-export const FIELD_POINTS = POINTS_PER_FILAMENT;
+/**
+ * The linked cluster at the heart of the field: nodes packed densest at the centre, each linked
+ * to its nearest neighbours by a fine line. Positions are in cluster units (1 is the cluster's
+ * radius) so the renderer can size it to the stage or shrink it to a small knot.
+ */
+export interface Network {
+  readonly count: number;
+  readonly xs: Float32Array;
+  readonly ys: Float32Array;
+  readonly phase: Float32Array;
+  readonly edgeFrom: Uint16Array;
+  readonly edgeTo: Uint16Array;
+  readonly edges: number;
+}
+
+export function buildNetwork(nodes: number, seed = FIELD_SEED + 31): Network {
+  const rand = seeded(seed);
+  const xs = new Float32Array(nodes);
+  const ys = new Float32Array(nodes);
+  const phase = new Float32Array(nodes);
+  for (let i = 0; i < nodes; i++) {
+    const a = rand() * Math.PI * 2;
+    // Squared radius makes the centre dense; the cluster is slightly taller than wide.
+    const r = Math.pow(rand(), 0.8);
+    xs[i] = Math.cos(a) * r * 0.9;
+    ys[i] = Math.sin(a) * r * 1.05;
+    phase[i] = rand() * Math.PI * 2;
+  }
+  const from: number[] = [];
+  const to: number[] = [];
+  const seen = new Set<number>();
+  const maxLink = 0.42;
+  for (let i = 0; i < nodes; i++) {
+    const near: { j: number; d: number }[] = [];
+    for (let j = 0; j < nodes; j++) {
+      if (j === i) continue;
+      const d = Math.hypot((xs[i] ?? 0) - (xs[j] ?? 0), (ys[i] ?? 0) - (ys[j] ?? 0));
+      if (d <= maxLink) near.push({ j, d });
+    }
+    near.sort((p, q) => p.d - q.d);
+    for (const { j } of near.slice(0, 3)) {
+      const key = Math.min(i, j) * 65536 + Math.max(i, j);
+      if (seen.has(key)) continue;
+      seen.add(key);
+      from.push(i);
+      to.push(j);
+    }
+  }
+  return {
+    count: nodes,
+    xs,
+    ys,
+    phase,
+    edgeFrom: Uint16Array.from(from),
+    edgeTo: Uint16Array.from(to),
+    edges: from.length,
+  };
+}
+
+/** Moves a value toward a target with an exponential time constant; it never overshoots. */
+export function easeToward(
+  current: number,
+  target: number,
+  dtSeconds: number,
+  tauSeconds: number,
+): number {
+  if (!(dtSeconds > 0)) return current;
+  const k = 1 - Math.exp(-dtSeconds / tauSeconds);
+  const next = current + (target - current) * k;
+  return Math.abs(target - next) < 0.002 ? target : next;
+}
+
+/** The part of a polyline of `points` points that is drawn for a visible fraction 0..1 of its length. */
+export function visiblePoints(points: number, fraction: number): { whole: number; rest: number } {
+  const span = (points - 1) * Math.min(1, Math.max(0, fraction));
+  const whole = Math.min(points - 1, Math.floor(span));
+  return { whole, rest: span - whole };
+}
 
 /** Reach of the field: the distance from the origin to the farthest corner. */
 export function fieldReach(origin: Point, width: number, height: number): number {

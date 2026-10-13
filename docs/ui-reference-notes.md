@@ -10,3 +10,10 @@ Source: three phone screenshots of a wall-mounted monitor playing a neural-netwo
 - **Typography:** tiny monospace, uppercase, widely spaced HUD labels, illegible at distance. One large bold sans callout appears in the last frame. Ours uses readable 13px+ text and no callouts over the canvas.
 
 Video: not viewed (this session cannot play mp4), so motion and timing come from the blueprint only.
+
+## Orb reference (`orb-reference.jpg`, four frames)
+
+- **Idle:** a dim but full network: a dense, wide cluster of linked nodes joined by fine lines, with 20+ long thin tendrils curving outward across the stage, beads along them, and a soft glow at the nucleus. Never a lone dot.
+- **Thinking, rising:** tendrils lengthen and brighten; the core turns white-cyan and grows; small glowing particles travel along the tendrils.
+- **Peak:** tendrils reach the stage edges. The reference's white-out core is deliberately not copied: ours is a small bounded disc.
+- **Ours:** cobalt, cyan and violet only (the reference's green and yellow clusters are dropped); amber stays for real findings. Intensity eases over about a second and is an activity cue, never progress. The core breathes over 6 s. No flicker.
