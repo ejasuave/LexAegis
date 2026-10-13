@@ -31,6 +31,8 @@ export interface Tier {
   readonly budgetMs: number;
   /** Linked nodes in the central cluster. */
   readonly nodes: number;
+  /** Long smooth tendrils (stems). */
+  readonly tendrils: number;
 }
 
 export const TIERS: Readonly<Record<TierName, Tier>> = {
@@ -41,7 +43,8 @@ export const TIERS: Readonly<Record<TierName, Tier>> = {
     idleFps: 20,
     activeFps: 60,
     budgetMs: 4,
-    nodes: 150,
+    nodes: 400,
+    tendrils: 36,
   },
   balanced: {
     name: 'balanced',
@@ -50,7 +53,8 @@ export const TIERS: Readonly<Record<TierName, Tier>> = {
     idleFps: 15,
     activeFps: 30,
     budgetMs: 4,
-    nodes: 90,
+    nodes: 240,
+    tendrils: 30,
   },
   compact: {
     name: 'compact',
@@ -59,7 +63,8 @@ export const TIERS: Readonly<Record<TierName, Tier>> = {
     idleFps: 0,
     activeFps: 24,
     budgetMs: 2,
-    nodes: 48,
+    nodes: 120,
+    tendrils: 24,
   },
 };
 
@@ -169,9 +174,12 @@ export const MIN_STEMS = 24;
  * Stems curve outward with an S-shaped sway, so they cross the stage rather than fan out
  * straight; each carries branches that leave it part-way along. The total is exactly `filaments`.
  */
-export function buildField(filaments: number, seed = FIELD_SEED): Field {
+export function buildField(filaments: number, seed = FIELD_SEED, stemTarget?: number): Field {
   const rand = seeded(seed);
-  const stemCount = Math.min(filaments, Math.max(MIN_STEMS, Math.round(filaments / 8)));
+  const stemCount = Math.min(
+    filaments,
+    stemTarget ?? Math.max(MIN_STEMS, Math.round(filaments / 8)),
+  );
   const spare = filaments - stemCount;
   const base = Math.floor(spare / stemCount);
   const extra = spare - base * stemCount;
@@ -215,8 +223,8 @@ export function buildField(filaments: number, seed = FIELD_SEED): Field {
     // Even spread with jitter, so no wedge of the field is empty.
     const angle = ((s + rand() * 0.6) / stemCount) * Math.PI * 2;
     const length = 0.75 + rand() * 0.4;
-    const curl = (rand() - 0.5) * 1.3;
-    const stem = lay(0, 0, angle, length, curl, 0.2 + rand() * 0.25, 0);
+    const curl = (rand() - 0.5) * 0.55;
+    const stem = lay(0, 0, angle, length, curl, 0.08 + rand() * 0.1, 0);
     stems[s] = stem;
     const branches = base + (s < extra ? 1 : 0);
     for (let b = 0; b < branches; b++) {
@@ -229,8 +237,8 @@ export function buildField(filaments: number, seed = FIELD_SEED): Field {
         oy,
         angle + side * (0.25 + rand() * 0.6),
         length * (0.22 + rand() * 0.3),
-        side * (0.2 + rand() * 0.5),
-        0.1,
+        side * (0.1 + rand() * 0.25),
+        0.06,
         1,
       );
     }
@@ -249,28 +257,45 @@ export interface Network {
   readonly xs: Float32Array;
   readonly ys: Float32Array;
   readonly phase: Float32Array;
+  /** Colour lobe of each node: 0 violet-blue core, 1 yellow left, 2 red-orange upper right, 3 green bottom. */
+  readonly lobe: Uint8Array;
   readonly edgeFrom: Uint16Array;
   readonly edgeTo: Uint16Array;
   readonly edges: number;
 }
+
+/** Where each lobe sits in cluster units, how wide it is, and its share of the nodes. */
+export const LOBES: readonly { cx: number; cy: number; rx: number; ry: number; share: number }[] = [
+  { cx: 0, cy: 0, rx: 0.7, ry: 0.7, share: 0.4 },
+  { cx: -0.8, cy: -0.05, rx: 0.5, ry: 0.55, share: 0.2 },
+  { cx: 0.62, cy: -0.6, rx: 0.5, ry: 0.42, share: 0.18 },
+  { cx: 0.05, cy: 0.8, rx: 0.52, ry: 0.4, share: 0.22 },
+];
 
 export function buildNetwork(nodes: number, seed = FIELD_SEED + 31): Network {
   const rand = seeded(seed);
   const xs = new Float32Array(nodes);
   const ys = new Float32Array(nodes);
   const phase = new Float32Array(nodes);
-  for (let i = 0; i < nodes; i++) {
-    const a = rand() * Math.PI * 2;
-    // Squared radius makes the centre dense; the cluster is slightly taller than wide.
-    const r = Math.pow(rand(), 0.8);
-    xs[i] = Math.cos(a) * r * 0.9;
-    ys[i] = Math.sin(a) * r * 1.05;
-    phase[i] = rand() * Math.PI * 2;
-  }
+  const lobe = new Uint8Array(nodes);
+  let assigned = 0;
+  LOBES.forEach((l, index) => {
+    const last = index === LOBES.length - 1;
+    const take = last ? nodes - assigned : Math.round(nodes * l.share);
+    for (let n = 0; n < take && assigned < nodes; n++, assigned++) {
+      const a = rand() * Math.PI * 2;
+      // Packed densest at each lobe's centre.
+      const r = Math.pow(rand(), 0.75);
+      xs[assigned] = l.cx + Math.cos(a) * r * l.rx;
+      ys[assigned] = l.cy + Math.sin(a) * r * l.ry;
+      phase[assigned] = rand() * Math.PI * 2;
+      lobe[assigned] = index;
+    }
+  });
   const from: number[] = [];
   const to: number[] = [];
   const seen = new Set<number>();
-  const maxLink = 0.42;
+  const maxLink = 0.34;
   for (let i = 0; i < nodes; i++) {
     const near: { j: number; d: number }[] = [];
     for (let j = 0; j < nodes; j++) {
@@ -292,6 +317,7 @@ export function buildNetwork(nodes: number, seed = FIELD_SEED + 31): Network {
     xs,
     ys,
     phase,
+    lobe,
     edgeFrom: Uint16Array.from(from),
     edgeTo: Uint16Array.from(to),
     edges: from.length,

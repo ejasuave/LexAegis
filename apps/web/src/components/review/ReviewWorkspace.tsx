@@ -50,24 +50,20 @@ function VaultStatusLine() {
 function CommandHero() {
   const { view } = useHud();
   const vault = useVault();
+  const empty = vault.snapshot.selectedMatterId === null;
+  // Empty: the orb holds the exact centre of the stage and the words sit along the bottom, so
+  // nothing covers the canvas. With a matter open the orb is ambient and the words stay beneath it.
   return (
-    <div className="lj-hero">
-      <div className="flex flex-col items-center">
+    <div className={`lj-hero ${empty ? 'lj-hero-empty' : ''}`}>
+      <div className="lj-hero-orb">
         <AssistantOrb state={orbForActivity(view.activity)} size="expanded" />
-        <div data-hud-quiet="" className="flex flex-col items-center">
-          <p
-            role="status"
-            aria-live="polite"
-            className="m-0 mt-4 text-lg"
-            data-testid="orb-caption"
-          >
-            {vault.snapshot.selectedMatterId === null
-              ? 'Open a matter to begin.'
-              : view.activity.statusText}
-          </p>
-          <CommandActions />
-          <VaultStatusLine />
-        </div>
+      </div>
+      <div data-hud-quiet="" className="lj-hero-text flex flex-col items-center">
+        <p role="status" aria-live="polite" className="m-0 text-lg" data-testid="orb-caption">
+          {empty ? 'Open a matter to begin.' : view.activity.statusText}
+        </p>
+        <CommandActions />
+        <VaultStatusLine />
       </div>
     </div>
   );
@@ -277,7 +273,11 @@ export function ReviewWorkspace() {
             scrolled.current[shown.current] = event.currentTarget.scrollTop;
           }}
         >
-          <div id={`${ids}-document`} className="lj-surface" data-active={active('document')}>
+          <div
+            id={`${ids}-document`}
+            className={`lj-surface ${mode === 'command' ? 'h-full' : ''}`}
+            data-active={active('document')}
+          >
             {mode === 'command' ? <CommandHero /> : <ReviewSurface />}
           </div>
           <div id={`${ids}-activity`} className="lj-surface" data-active={active('activity')}>

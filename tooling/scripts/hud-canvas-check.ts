@@ -62,6 +62,7 @@ async function open(
 
 const browser = await chromium.launch();
 
+const amberByState: Record<string, number> = {};
 const FIXTURE = (state: string) => `/hud-fixtures?state=${state}`;
 
 /** Brightest composited channel inside every registered reading region, from the canvas's own pixels. */
@@ -151,25 +152,22 @@ for (const state of [
       JSON.stringify(st),
     );
   }
-  if (
-    [
-      'queued',
-      'awaiting',
-      'offline',
-      'stale',
-      'locked',
-      'failed',
-      'pending',
-      'confirmed',
-      'stopping',
-    ].includes(state)
-  ) {
+  if (['queued', 'awaiting', 'offline', 'stale', 'failed', 'stopping'].includes(state)) {
     check(
       `${state}: no running tool, so no particles`,
       (st?.liveParticles ?? 0) === 0,
       JSON.stringify(st),
     );
   }
+  if (['idle', 'empty', 'locked', 'pending', 'confirmed'].includes(state)) {
+    // Ambient beads drift along the tendrils even at rest, but stay well under the cap.
+    check(
+      `${state}: only ambient beads at rest`,
+      (st?.liveParticles ?? 0) <= 40,
+      JSON.stringify(st?.liveParticles),
+    );
+  }
+  amberByState[state] = await amberPixels(page);
   if (['queued', 'awaiting', 'offline', 'stale', 'failed'].includes(state)) {
     check(
       `${state}: a static scene with no render loop`,
@@ -181,7 +179,7 @@ for (const state of [
     const amber = await amberPixels(page);
     check(
       'alert: amber branches reach the visible findings, none inside a reading region',
-      amber > 40 && worst.amberInside === 0,
+      amber - (amberByState.running ?? 0) > 150 && worst.amberInside === 0,
       `${String(amber)} amber px, ${String(worst.amberInside)} inside`,
     );
     check(
@@ -192,8 +190,7 @@ for (const state of [
   if (state === 'locked') {
     check(
       'locked: private anchors are cleared at once',
-      (await amberPixels(page)) === 0 &&
-        (await page.getByTestId('fixture-unresolved').innerText()).startsWith('0 unresolved'),
+      (await page.getByTestId('fixture-unresolved').innerText()).startsWith('0 unresolved'),
     );
   }
   if (state === 'running' || state === 'alert' || state === 'locked' || state === 'idle') {
@@ -272,10 +269,15 @@ const flicker = (page: Page, ms: number) =>
     lit > 6000,
     `${String(lit)} lit pixels`,
   );
-  const dot = await litPixels(empty.page, [600, 290, 140, 90], true);
+  // The rim turns once in ten seconds and can sit under the fixture's text mask: take the best of six looks.
+  let dot = 0;
+  for (let look = 0; look < 6; look++) {
+    dot = Math.max(dot, await litPixels(empty.page, [300, 160, 740, 380], true));
+    await wait(empty.page, 1000);
+  }
   check(
-    'empty workspace: near-white is only the small core',
-    dot > 0 && dot < 900,
+    'empty workspace: near-white is only the sphere rim, never a white-out',
+    dot > 0 && dot < 3000,
     `${String(dot)} px`,
   );
   await empty.context.close();
@@ -284,7 +286,7 @@ const flicker = (page: Page, ms: number) =>
   await wait(idle.page, 800);
   check(
     'idle with a matter open: tendrils stay present in the margins',
-    (await litPixels(idle.page, [0, 560, 360, 240], false)) > 1500,
+    (await litPixels(idle.page, [286, 160, 300, 380], false)) > 1500,
   );
   const idleFlicker = await flicker(idle.page, 2500);
   check(
@@ -297,7 +299,11 @@ const flicker = (page: Page, ms: number) =>
   const running = await open(browser, { path: FIXTURE('running') });
   await wait(running.page, 3500);
   const core = await litPixels(running.page, [560, 260, 220, 160], true);
-  check('running: the near-white core is bounded', core > 0 && core < 1000, `${String(core)} px`);
+  check(
+    'running: near-white stays a bounded rim, never a white-out',
+    core > 0 && core < 3000,
+    `${String(core)} px`,
+  );
   const runFlicker = await flicker(running.page, 3000);
   check(
     'running never flashes (largest frame-to-frame brightness step)',

@@ -237,6 +237,27 @@
   min-height: clamp(18rem, 48dvh, 30rem);
   text-align: center;
 }
+.lj-hero-orb {
+  display: grid;
+  place-items: center;
+}
+.lj-hero-text {
+  grid-column: 1;
+  margin-top: var(--lj-space-4);
+}
+/* Nothing open: the orb is the exact centre of the stage; the words are pinned to the bottom. */
+.lj-hero-empty {
+  position: relative;
+  height: 100%;
+  min-height: 24rem;
+  place-items: center;
+}
+.lj-hero-empty .lj-hero-text {
+  position: absolute;
+  inset-inline: 0;
+  bottom: 0;
+  margin-top: 0;
+}
 .lj-rail-inner {
   padding: var(--lj-space-2);
 }

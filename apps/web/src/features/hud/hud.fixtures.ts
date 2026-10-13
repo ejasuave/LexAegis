@@ -9,6 +9,7 @@ import type { HudInput, ActiveRunInput, FindingInput } from './hud.types';
 
 export const HUD_FIXTURE_NAMES = [
   'empty',
+  'thinking',
   'idle',
   'queued',
   'awaiting',
@@ -112,6 +113,20 @@ export function buildHudFixture(name: HudFixtureName, nowMs: number): HudInput {
           selectedVersionIds: [],
           matterTitle: null,
         },
+        matterSelected: false,
+        vaultUnlocked: false,
+      };
+    case 'thinking':
+      // The empty stage while a tool really executes: the reference's peak panel.
+      return {
+        ...base,
+        ceiling: {
+          ...base.ceiling,
+          vaultLabel: 'Locked',
+          selectedVersionIds: [],
+          matterTitle: null,
+        },
+        assistant: running,
         matterSelected: false,
         vaultUnlocked: false,
       };

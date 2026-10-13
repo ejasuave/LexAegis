@@ -70,22 +70,48 @@ describe('tendrils and cluster', () => {
     expect(farthest).toBeGreaterThan(0.95);
   });
 
-  it('builds a deterministic linked cluster, densest at the centre, with real links', () => {
-    const a = buildNetwork(150);
-    const b = buildNetwork(150);
+  it('builds a deterministic linked mesh in four colour lobes with real links', () => {
+    const a = buildNetwork(400);
+    const b = buildNetwork(400);
     expect(Array.from(a.xs)).toEqual(Array.from(b.xs));
-    expect(a.edges).toBeGreaterThan(150);
+    expect(a.edges).toBeGreaterThan(400);
     for (let e = 0; e < a.edges; e++) {
       expect(a.edgeFrom[e]).not.toBe(a.edgeTo[e]);
-      expect(a.edgeFrom[e]).toBeLessThan(150);
-      expect(a.edgeTo[e]).toBeLessThan(150);
+      expect(a.edgeTo[e]).toBeLessThan(400);
     }
-    const inner = Array.from(a.xs).filter((x, i) => Math.hypot(x, a.ys[i] ?? 0) < 0.5).length;
-    expect(inner).toBeGreaterThan(150 * 0.3);
-    for (let i = 0; i < 150; i++)
-      expect(Math.hypot(a.xs[i] ?? 0, a.ys[i] ?? 0)).toBeLessThanOrEqual(1.1);
+    const counts = [0, 1, 2, 3].map((l) => Array.from(a.lobe).filter((x) => x === l).length);
+    expect(counts.reduce((x, y) => x + y, 0)).toBe(400);
+    for (const c of counts) expect(c).toBeGreaterThan(40);
+    expect(counts[0]).toBeGreaterThan(counts[1] ?? 0);
+    // Lobes sit where the reference has them: yellow left, red-orange upper right, green below.
+    const mean = (l: number, v: Float32Array) => {
+      let sum = 0;
+      let n = 0;
+      a.lobe.forEach((x, i) => {
+        if (x === l) {
+          sum += v[i] ?? 0;
+          n++;
+        }
+      });
+      return sum / n;
+    };
+    expect(mean(1, a.xs)).toBeLessThan(-0.35);
+    expect(mean(2, a.xs)).toBeGreaterThan(0.2);
+    expect(mean(2, a.ys)).toBeLessThan(-0.25);
+    expect(mean(3, a.ys)).toBeGreaterThan(0.4);
+    expect(TIERS.standard.nodes).toBe(400);
     expect(TIERS.standard.nodes).toBeGreaterThan(TIERS.balanced.nodes);
     expect(TIERS.balanced.nodes).toBeGreaterThan(TIERS.compact.nodes);
+  });
+
+  it('gives each tier 24 to 40 tendrils', () => {
+    for (const tier of Object.values(TIERS)) {
+      expect(tier.tendrils).toBeGreaterThanOrEqual(24);
+      expect(tier.tendrils).toBeLessThanOrEqual(40);
+      expect(buildField(tier.filaments, undefined, tier.tendrils).stems).toHaveLength(
+        tier.tendrils,
+      );
+    }
   });
 
   it('eases an activity cue without overshoot or jumps', () => {

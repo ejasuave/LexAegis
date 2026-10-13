@@ -164,9 +164,21 @@ function paletteFor(activity: ActivityState): Palette {
         animated: false,
         energy: 0,
       };
+    case 'unavailable':
+      // No assistant to run (signed out or not configured) is not a fault: the field idles, a little dimmer.
+      return {
+        lines: [line(COBALT, 0.65), line(CYAN, 0.5)],
+        net: line(COBALT, 0.42),
+        node: line(CYAN, 0.75),
+        halo: CYAN,
+        particle: CYAN,
+        alpha: 0.85,
+        bloom: 0.5,
+        animated: true,
+        energy: 0,
+      };
     case 'stale':
     case 'offline':
-    case 'unavailable':
       return {
         lines: [line(NEUTRAL, 0.6), line(NEUTRAL, 0.44)],
         net: line(NEUTRAL, 0.4),
@@ -201,12 +213,28 @@ const CORE_COMPACT = 2.5;
 /** The core never grows past these, so near-white stays a small bounded disc. */
 const CORE_HERO_MAX = 11;
 const CORE_COMPACT_MAX = 4;
-/** One slow breath, in seconds: no flicker, no pulse faster than this. */
-const BREATH_SECONDS = 6;
-const ENERGY_TAU_SECONDS = 1.4;
+const ENERGY_RISE_TAU = 0.2;
+const ENERGY_FALL_TAU = 0.4;
+/** Thinking pulses once every 1.75 s: well under three a second. */
+const PULSE_SECONDS = 1.75;
+const RIM_SECONDS = 10;
+const LOBE_RGB = ['129 140 248', '250 204 21', '251 113 60', '74 222 128'] as const;
+const TENDRIL_RGB = '190 215 255';
 const MASK_MARGIN = 24;
 const MASK_FEATHER = 14;
 const FRAME_CLAMP_MS = 100;
+
+interface Geometry {
+  readonly origin: Point;
+  readonly mode: NucleusMode;
+  readonly empty: boolean;
+  /** One unit of tendril length, in CSS pixels. */
+  readonly unit: number;
+  /** Nucleus sphere radius. */
+  readonly sphere: number;
+  /** Half-extent of the mesh. */
+  readonly mesh: number;
+}
 
 export class NeuralRenderer {
   readonly #canvas: HTMLCanvasElement;
@@ -216,8 +244,8 @@ export class NeuralRenderer {
   #field: Field;
   #network: Network;
   #energy = 0;
-  readonly #scratchX = new Float32Array(160);
-  readonly #scratchY = new Float32Array(160);
+  readonly #scratchX = new Float32Array(512);
+  readonly #scratchY = new Float32Array(512);
   #tier: TierName;
   #mode: EffectsMode;
   #scene: SceneState = EMPTY_SCENE;
@@ -266,8 +294,12 @@ export class NeuralRenderer {
             : ((navigator as Navigator & { deviceMemory?: number }).deviceMemory ?? null),
       });
     this.#governor = new QualityGovernor(this.#tier);
-    this.#field = buildField(this.#filamentCount());
+    this.#field = buildField(this.#filamentCount(), undefined, this.#tendrilCount());
     this.#network = buildNetwork(this.#nodeCount());
+  }
+
+  #tendrilCount(): number {
+    return this.#mode === 'reduced' ? TIERS.compact.tendrils : TIERS[this.#tier].tendrils;
   }
 
   #nodeCount(): number {
@@ -296,7 +328,7 @@ export class NeuralRenderer {
   setMode(mode: EffectsMode): void {
     if (mode === this.#mode) return;
     this.#mode = mode;
-    this.#field = buildField(this.#filamentCount());
+    this.#field = buildField(this.#filamentCount(), undefined, this.#tendrilCount());
     this.#network = buildNetwork(this.#nodeCount());
     this.#pn = 0;
     this.#dirty = true;
@@ -387,7 +419,8 @@ export class NeuralRenderer {
 
   #fps(): number {
     const tier = TIERS[this.#tier];
-    return this.#scene.toolsRunning || this.#pn > 0 || this.#washLive() || this.#energySettling()
+    // Ambient beads run at the idle rate; only real activity, a confirmation or an easing cue ask for more.
+    return this.#scene.toolsRunning || this.#washLive() || this.#energySettling()
       ? tier.activeFps
       : tier.idleFps;
   }
@@ -457,7 +490,7 @@ export class NeuralRenderer {
     const stepped = this.#governor.record(work);
     if (stepped !== null) {
       this.#tier = stepped;
-      this.#field = buildField(this.#filamentCount());
+      this.#field = buildField(this.#filamentCount(), undefined, this.#tendrilCount());
       this.#network = buildNetwork(this.#nodeCount());
       this.#pn = Math.min(this.#pn, TIERS[stepped].maxParticles);
       this.#dirty = true;
@@ -474,35 +507,68 @@ export class NeuralRenderer {
     ctx.setTransform(scale, 0, 0, scale, 0, 0);
     ctx.clearRect(0, 0, this.#cssW, this.#cssH);
 
-    const origin: Point = s.nucleus ?? { x: this.#cssW * 0.5, y: this.#cssH * 0.44 };
-    const mode: NucleusMode = s.nucleus?.mode ?? 'none';
-    const reach = fieldReach(origin, this.#cssW, this.#cssH);
-    const full = this.#mode === 'full' && !s.ceremony;
-    const motion = animating && full;
-    const target = this.#energyTarget();
-    // Eased while animating; a still scene (reduced) shows the settled look straight away.
-    this.#energy = motion ? easeToward(this.#energy, target, dt, ENERGY_TAU_SECONDS) : target;
-    const energy = this.#energy;
     const empty = s.workspace === 'empty';
-    // The canvas fills the stage only with no matter open. With a matter open the tendrils stay in
-    // the margins and the cluster shrinks; in Review the nucleus is a small status knot.
+    const stage = s.stage;
+    const stageW = stage?.w ?? this.#cssW * 0.6;
+    const stageH = stage?.h ?? this.#cssH * 0.7;
+    const mode: NucleusMode = s.nucleus?.mode ?? 'none';
+    // With nothing open the nucleus sits at the exact centre of the stage.
+    const origin: Point =
+      empty && mode === 'hero' && stage !== null
+        ? { x: stage.x + stage.w / 2, y: stage.y + stage.h / 2 }
+        : (s.nucleus ?? { x: this.#cssW * 0.5, y: this.#cssH * 0.44 });
+    const full = this.#mode === 'full' && !s.ceremony;
+    const motion = animating && full && palette.animated;
+    const target = this.#energyTarget();
+    this.#energy = motion
+      ? easeToward(
+          this.#energy,
+          target,
+          dt,
+          target > this.#energy ? ENERGY_RISE_TAU : ENERGY_FALL_TAU,
+        )
+      : target;
+    const energy = this.#energy;
+    // The canvas owns the stage only with no matter open. With one open the orb shrinks to an
+    // ambient presence and the reading-zone masks keep every word on a dark floor.
     const emphasis = s.ceremony
       ? 0.18
       : mode === 'hero'
         ? empty
           ? 1
-          : 0.65
+          : 0.6
         : mode === 'compact'
           ? 0.5
           : 0.4;
-    const breath = motion ? 1 + 0.06 * Math.sin((t * Math.PI * 2) / BREATH_SECONDS) : 1;
+    const geometry: Geometry = {
+      origin,
+      mode,
+      empty,
+      // Tendrils reach about half the stage width; thinking lengthens them by 1.6x.
+      unit: 0.5 * stageW * (1 + 0.6 * energy),
+      sphere:
+        mode === 'hero'
+          ? stageH * (empty ? 0.19 + 0.05 * energy : 0.07 + 0.02 * energy)
+          : mode === 'compact'
+            ? 13 + 2 * energy
+            : 0,
+      mesh:
+        mode === 'hero'
+          ? empty
+            ? Math.min(stageW * 0.33, stageH * 0.5)
+            : Math.min(stageW * 0.13, 100)
+          : mode === 'compact'
+            ? 26
+            : 0,
+    };
 
-    this.#drawField(ctx, origin, reach, t, palette, emphasis * palette.alpha, motion, mode, energy);
-    this.#drawCluster(ctx, origin, mode, palette, emphasis * palette.alpha, t, motion, empty);
-    if (mode !== 'none') this.#drawNucleus(ctx, origin, mode, palette, s, energy, breath);
+    const alpha = emphasis * palette.alpha;
+    this.#drawMesh(ctx, geometry, palette, alpha, t, motion);
+    this.#drawTendrils(ctx, geometry, t, palette, alpha, motion, energy);
+    if (mode !== 'none') this.#drawNucleus(ctx, geometry, palette, s, energy, t, motion);
     if (full) {
-      this.#stepParticles(dt, s.toolsRunning && s.activity === 'running');
-      this.#drawParticles(ctx, origin, reach, palette, energy);
+      this.#stepParticles(dt, palette.animated || s.toolsRunning, energy);
+      this.#drawParticles(ctx, geometry, palette, energy);
     } else {
       this.#pn = 0;
     }
@@ -511,168 +577,126 @@ export class NeuralRenderer {
     this.#drawAlerts(ctx, origin, s, t, motion);
   }
 
-  /** Tendrils: long thin curves smoothed through their midpoints. Energy lengthens and brightens them. */
-  #drawField(
+  /**
+   * Tendrils: 24 to 40 smooth curves with a white-blue glow, swaying continuously. Finer branch
+   * filaments add texture. Thinking makes the tendrils longer (through `unit`) and brighter.
+   */
+  #drawTendrils(
     ctx: CanvasRenderingContext2D,
-    origin: Point,
-    reach: number,
+    g: Geometry,
     t: number,
     palette: Palette,
     alpha: number,
     motion: boolean,
-    mode: NucleusMode,
     energy: number,
   ): void {
     const f = this.#field;
-    const innerGap = (mode === 'hero' ? HALO_HERO : mode === 'compact' ? HALO_COMPACT : 24) / reach;
+    const muted = palette.halo === NEUTRAL;
+    const rgb = muted ? NEUTRAL : palette.halo === VIOLET_TEXT ? VIOLET_TEXT : TENDRIL_RGB;
+    const innerGap =
+      (g.mode === 'hero' ? g.sphere * 1.05 : g.mode === 'compact' ? g.sphere * 1.3 : 24) / g.unit;
     ctx.lineCap = 'round';
     ctx.lineJoin = 'round';
-    const trace = (i: number, fraction: number): void => {
+    const trace = (i: number): void => {
       const begin = f.start[i] ?? 0;
-      const sway = motion ? Math.sin(t * 0.12 + (f.phase[i] ?? 0)) * 0.006 : 0;
       const px = f.perpX[i] ?? 0;
       const py = f.perpY[i] ?? 0;
-      const { whole, rest } = visiblePoints(FIELD_POINTS, fraction);
+      const ph = f.phase[i] ?? 0;
       const xs: number[] = [];
       const ys: number[] = [];
-      for (let k = 0; k <= whole + 1 && k < FIELD_POINTS; k++) {
-        let ux = f.xs[begin + k] ?? 0;
-        let uy = f.ys[begin + k] ?? 0;
-        if (k === whole + 1) {
-          // The partial last segment, so a tendril can lengthen smoothly.
-          ux = (f.xs[begin + whole] ?? 0) + (ux - (f.xs[begin + whole] ?? 0)) * rest;
-          uy = (f.ys[begin + whole] ?? 0) + (uy - (f.ys[begin + whole] ?? 0)) * rest;
-        }
-        // Points inside the halo are skipped, so the core keeps a dark ring around it.
+      for (let k = 0; k < FIELD_POINTS; k++) {
+        const ux = f.xs[begin + k] ?? 0;
+        const uy = f.ys[begin + k] ?? 0;
         if (Math.hypot(ux, uy) < innerGap) continue;
-        const d = sway * (k / (FIELD_POINTS - 1));
-        xs.push(origin.x + (ux + px * d) * reach);
-        ys.push(origin.y + (uy + py * d) * reach);
+        // Two slow waves that never repeat in step: continuous sway, strongest at the tip.
+        const along = k / (FIELD_POINTS - 1);
+        const d = motion
+          ? (Math.sin(t * 0.55 + ph + along * 2.1) * 0.03 +
+              Math.sin(t * 0.23 + ph * 1.7 - along) * 0.025) *
+            along
+          : 0;
+        xs.push(g.origin.x + (ux + px * d) * g.unit);
+        ys.push(g.origin.y + (uy + py * d) * g.unit);
       }
       const n = xs.length;
       if (n < 2) return;
       ctx.moveTo(xs[0] ?? 0, ys[0] ?? 0);
       for (let k = 1; k < n - 1; k++) {
-        const mx = ((xs[k] ?? 0) + (xs[k + 1] ?? 0)) / 2;
-        const my = ((ys[k] ?? 0) + (ys[k + 1] ?? 0)) / 2;
-        ctx.quadraticCurveTo(xs[k] ?? 0, ys[k] ?? 0, mx, my);
+        ctx.quadraticCurveTo(
+          xs[k] ?? 0,
+          ys[k] ?? 0,
+          ((xs[k] ?? 0) + (xs[k + 1] ?? 0)) / 2,
+          ((ys[k] ?? 0) + (ys[k + 1] ?? 0)) / 2,
+        );
       }
       ctx.lineTo(xs[n - 1] ?? 0, ys[n - 1] ?? 0);
     };
-    const stemFraction = 0.72 + 0.28 * energy;
-    const branchFraction = 0.55 + 0.45 * energy;
+    // Fine branch filaments first, faint.
     ctx.globalAlpha = alpha;
-    for (let batch = 0; batch < 4; batch++) {
-      ctx.beginPath();
-      ctx.strokeStyle = palette.lines[batch & 1] ?? palette.lines[0];
-      ctx.lineWidth = batch < 2 ? 0.9 : 0.6;
-      for (let i = 0; i < f.count; i++) {
-        const kind = f.depth[i] ?? 0;
-        if ((kind << 1) + (i & 1) !== batch) continue;
-        trace(i, kind === 0 ? stemFraction : branchFraction);
-      }
-      ctx.stroke();
-    }
-    if (energy > 0.02) {
-      // The brighter pass: stems only, white-cyan, fading in with the activity cue.
-      ctx.beginPath();
-      ctx.strokeStyle = line('214 244 255', 0.8 * energy);
-      ctx.lineWidth = 1.3;
-      ctx.globalAlpha = alpha;
-      for (const stem of f.stems) trace(stem, stemFraction);
-      ctx.stroke();
-    }
-    // Beads along the stems: small static nodes that make the tendrils read as a network.
-    this.#drawBeads(ctx, origin, reach, t, palette, alpha, motion, stemFraction, innerGap);
+    ctx.beginPath();
+    ctx.strokeStyle = line(rgb, 0.2 + 0.5 * energy);
+    ctx.lineWidth = 0.8 + 0.5 * energy;
+    for (let i = 0; i < f.count; i++) if ((f.depth[i] ?? 0) === 1) trace(i);
+    ctx.stroke();
+    // The tendrils: a soft wide glow under a 2 to 3 px core line.
+    ctx.beginPath();
+    ctx.strokeStyle = line(rgb, 0.07 + 0.13 * energy);
+    ctx.lineWidth = 4 + 2.5 * energy;
+    for (const stem of f.stems) trace(stem);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.strokeStyle = line(rgb, 0.55 + 0.45 * energy);
+    ctx.lineWidth = 1.5 + 1 * energy;
+    for (const stem of f.stems) trace(stem);
+    ctx.stroke();
     ctx.globalAlpha = 1;
   }
 
-  #drawBeads(
+  /** The mesh: linked nodes in four colour lobes, jittering constantly. */
+  #drawMesh(
     ctx: CanvasRenderingContext2D,
-    origin: Point,
-    reach: number,
-    t: number,
-    palette: Palette,
-    alpha: number,
-    motion: boolean,
-    fraction: number,
-    innerGap: number,
-  ): void {
-    const f = this.#field;
-    ctx.globalAlpha = alpha * 0.9;
-    ctx.fillStyle = palette.node;
-    ctx.beginPath();
-    for (const stem of f.stems) {
-      const begin = f.start[stem] ?? 0;
-      const sway = motion ? Math.sin(t * 0.12 + (f.phase[stem] ?? 0)) * 0.006 : 0;
-      for (const at of [0.34, 0.58, 0.82]) {
-        if (at > fraction) continue;
-        const u = at * (FIELD_POINTS - 1);
-        const k = Math.min(FIELD_POINTS - 2, Math.floor(u));
-        const frac = u - k;
-        const ux = (f.xs[begin + k] ?? 0) * (1 - frac) + (f.xs[begin + k + 1] ?? 0) * frac;
-        const uy = (f.ys[begin + k] ?? 0) * (1 - frac) + (f.ys[begin + k + 1] ?? 0) * frac;
-        if (Math.hypot(ux, uy) < innerGap) continue;
-        const d = sway * at;
-        const x = origin.x + (ux + (f.perpX[stem] ?? 0) * d) * reach;
-        const y = origin.y + (uy + (f.perpY[stem] ?? 0) * d) * reach;
-        ctx.moveTo(x + 1.4, y);
-        ctx.arc(x, y, 1.4, 0, Math.PI * 2);
-      }
-    }
-    ctx.fill();
-  }
-
-  /**
-   * The linked cluster around the nucleus. Sized to the stage when no matter is open, a small
-   * knot beside the document otherwise, absent when there is no nucleus on the page.
-   */
-  #drawCluster(
-    ctx: CanvasRenderingContext2D,
-    origin: Point,
-    mode: NucleusMode,
+    g: Geometry,
     palette: Palette,
     alpha: number,
     t: number,
     motion: boolean,
-    empty: boolean,
   ): void {
-    if (mode === 'none') return;
-    const stage = this.#scene.stage;
-    const stageW = stage?.w ?? this.#cssW * 0.6;
-    const stageH = stage?.h ?? this.#cssH * 0.7;
-    const radius =
-      mode === 'hero'
-        ? empty
-          ? Math.min(stageW * 0.3, stageH * 0.36)
-          : Math.min(stageW * 0.14, 110)
-        : 26;
+    if (g.mesh === 0) return;
     const n = this.#network;
     const xs = this.#scratchX;
     const ys = this.#scratchY;
+    const muted = palette.halo === NEUTRAL;
+    // Wider than tall, as in the reference; jitter is positional only, never a brightness change.
     for (let i = 0; i < n.count; i++) {
-      const drift = motion ? Math.sin(t * 0.2 + (n.phase[i] ?? 0)) * 0.012 : 0;
-      xs[i] = origin.x + ((n.xs[i] ?? 0) + drift) * radius;
-      ys[i] = origin.y + ((n.ys[i] ?? 0) - drift) * radius;
+      const p = n.phase[i] ?? 0;
+      const jx = motion ? (Math.sin(t * 2.3 + p * 3) + Math.sin(t * 3.7 + p * 5)) * 1.1 : 0;
+      const jy = motion ? (Math.sin(t * 2.9 + p * 4) + Math.sin(t * 3.1 + p * 2)) * 1.1 : 0;
+      xs[i] = g.origin.x + (n.xs[i] ?? 0) * g.mesh * 1.2 + jx;
+      ys[i] = g.origin.y + (n.ys[i] ?? 0) * g.mesh + jy;
     }
     ctx.globalAlpha = alpha;
     ctx.lineWidth = 0.6;
-    ctx.strokeStyle = palette.net;
-    ctx.beginPath();
-    for (let e = 0; e < n.edges; e++) {
-      const a = n.edgeFrom[e] ?? 0;
-      const b = n.edgeTo[e] ?? 0;
-      ctx.moveTo(xs[a] ?? 0, ys[a] ?? 0);
-      ctx.lineTo(xs[b] ?? 0, ys[b] ?? 0);
+    for (let lobe = 0; lobe < 4; lobe++) {
+      const rgb = muted ? NEUTRAL : (LOBE_RGB[lobe] ?? LOBE_RGB[0]);
+      ctx.strokeStyle = line(rgb, muted ? 0.4 : 0.42);
+      ctx.beginPath();
+      for (let e = 0; e < n.edges; e++) {
+        const a = n.edgeFrom[e] ?? 0;
+        if ((n.lobe[a] ?? 0) !== lobe) continue;
+        const b = n.edgeTo[e] ?? 0;
+        ctx.moveTo(xs[a] ?? 0, ys[a] ?? 0);
+        ctx.lineTo(xs[b] ?? 0, ys[b] ?? 0);
+      }
+      ctx.stroke();
+      ctx.fillStyle = line(rgb, muted ? 0.75 : 0.9);
+      ctx.beginPath();
+      for (let i = 0; i < n.count; i++) {
+        if ((n.lobe[i] ?? 0) !== lobe) continue;
+        const size = i % 6 === 0 ? 3 : 2;
+        ctx.rect((xs[i] ?? 0) - size / 2, (ys[i] ?? 0) - size / 2, size, size);
+      }
+      ctx.fill();
     }
-    ctx.stroke();
-    ctx.fillStyle = palette.node;
-    ctx.beginPath();
-    for (let i = 0; i < n.count; i++) {
-      const size = i % 5 === 0 ? 3 : 2;
-      ctx.rect((xs[i] ?? 0) - size / 2, (ys[i] ?? 0) - size / 2, size, size);
-    }
-    ctx.fill();
     ctx.globalAlpha = 1;
   }
 
@@ -693,74 +717,137 @@ export class NeuralRenderer {
     return c;
   }
 
+  /**
+   * The nucleus: a translucent blue-violet sphere with a fine scanline texture and a bright rim
+   * arc that turns once every ten seconds. Thinking whitens the rim and adds an additive bloom
+   * of about 1.5 times the radius, pulsing once every 1.75 s.
+   */
   #drawNucleus(
     ctx: CanvasRenderingContext2D,
-    origin: Point,
-    mode: NucleusMode,
+    g: Geometry,
     palette: Palette,
     scene: SceneState,
     energy: number,
-    breath: number,
+    t: number,
+    motion: boolean,
   ): void {
-    const hero = mode === 'hero';
-    const halo = (hero ? HALO_HERO : HALO_COMPACT) * (1 + 0.45 * energy) * breath;
-    const core = Math.min(
-      hero ? CORE_HERO_MAX : CORE_COMPACT_MAX,
-      (hero ? CORE_HERO + 6 * energy : CORE_COMPACT + 1.5 * energy) * breath,
+    const { x, y } = g.origin;
+    const muted = palette.halo === NEUTRAL;
+    const pulse = motion ? 1 + 0.08 * energy * Math.sin((t * Math.PI * 2) / PULSE_SECONDS) : 1;
+    const r = g.sphere * pulse;
+    const dim = scene.ceremony ? 0.25 : 1;
+    // Body: blue-violet, clearer toward the edge.
+    const body = ctx.createRadialGradient(x, y, r * 0.1, x, y, r);
+    // Faint at rest, clearer as it thinks.
+    const veil = 0.3 + 0.7 * energy;
+    body.addColorStop(
+      0,
+      muted ? 'rgb(100 116 139 / 0.12)' : `rgb(76 70 190 / ${String(0.16 * veil)})`,
     );
-    const rgb = palette.halo === CYAN ? CYAN : palette.halo === NEUTRAL ? NEUTRAL : VIOLET_TEXT;
-    const glow = this.#sprite(
-      `halo:${rgb}:${String(hero)}`,
-      hero ? HALO_HERO * 1.5 : HALO_COMPACT * 1.5,
-      (g, r) => {
-        const gradient = g.createRadialGradient(r, r, 0, r, r, r);
-        gradient.addColorStop(0, `rgb(${rgb} / 0.6)`);
-        gradient.addColorStop(0.25, `rgb(${rgb} / 0.22)`);
-        gradient.addColorStop(1, `rgb(${rgb} / 0)`);
-        g.fillStyle = gradient;
-        g.fillRect(0, 0, r * 2, r * 2);
-      },
+    body.addColorStop(
+      0.7,
+      muted ? 'rgb(100 116 139 / 0.18)' : `rgb(70 90 220 / ${String(0.24 * veil)})`,
     );
-    ctx.globalAlpha = scene.ceremony ? 0.1 : Math.min(1, palette.bloom + 0.25 * energy);
-    ctx.drawImage(glow, origin.x - halo, origin.y - halo, halo * 2, halo * 2);
-    ctx.globalAlpha = scene.ceremony ? 0.3 : 1;
+    body.addColorStop(
+      1,
+      muted ? 'rgb(148 163 184 / 0.26)' : `rgb(110 150 255 / ${String(0.36 * veil)})`,
+    );
+    ctx.globalAlpha = dim;
+    ctx.fillStyle = body;
     ctx.beginPath();
-    ctx.arc(origin.x, origin.y, core, 0, Math.PI * 2);
-    ctx.fillStyle = palette.halo === NEUTRAL ? 'rgb(170 182 196)' : CORE_WHITE;
+    ctx.arc(x, y, r, 0, Math.PI * 2);
     ctx.fill();
+    if (r > 20) {
+      // Fine scanlines, clipped to the sphere.
+      ctx.save();
+      ctx.beginPath();
+      ctx.arc(x, y, r, 0, Math.PI * 2);
+      ctx.clip();
+      ctx.beginPath();
+      for (let ly = y - r; ly < y + r; ly += 3) {
+        ctx.moveTo(x - r, ly);
+        ctx.lineTo(x + r, ly);
+      }
+      ctx.strokeStyle = 'rgb(160 200 255 / 0.09)';
+      ctx.lineWidth = 1;
+      ctx.stroke();
+      ctx.restore();
+    }
+    // The rim arc: bright white-cyan, rotating.
+    const angle =
+      motion || this.#mode !== 'full' ? ((t % RIM_SECONDS) / RIM_SECONDS) * Math.PI * 2 : 0;
+    const span = 1.1 + 1.5 * energy;
+    ctx.lineCap = 'round';
+    ctx.strokeStyle = muted
+      ? 'rgb(170 182 196 / 0.55)'
+      : `rgb(${CYAN} / ${String(0.14 + 0.3 * energy)})`;
+    ctx.lineWidth = 1.2;
+    ctx.beginPath();
+    ctx.arc(x, y, r, 0, Math.PI * 2);
+    ctx.stroke();
+    ctx.strokeStyle = muted ? 'rgb(190 200 212)' : energy > 0.5 ? 'rgb(255 255 255)' : CORE_WHITE;
+    ctx.lineWidth = Math.max(2, r * (0.035 + 0.03 * energy));
+    ctx.beginPath();
+    ctx.arc(x, y, r, angle, angle + span);
+    ctx.stroke();
+    if (!muted && energy > 0.05) {
+      // The white-hot rim: a wide additive glow along the arc.
+      ctx.globalCompositeOperation = 'lighter';
+      ctx.globalAlpha = dim * 0.5 * energy;
+      ctx.strokeStyle = 'rgb(210 240 255)';
+      ctx.lineWidth = r * 0.16;
+      ctx.beginPath();
+      ctx.arc(x, y, r, angle, angle + span);
+      ctx.stroke();
+      ctx.globalCompositeOperation = 'source-over';
+    }
+    if (!muted) {
+      // Bloom: additive, about 1.5 radii, brightest while thinking.
+      const bloomR = r * 1.5;
+      const bloom = ctx.createRadialGradient(x, y, r * 0.3, x, y, bloomR);
+      bloom.addColorStop(0, `rgb(235 250 255 / 0.85)`);
+      bloom.addColorStop(0.45, `rgb(${CYAN} / 0.4)`);
+      bloom.addColorStop(1, `rgb(${CYAN} / 0)`);
+      ctx.globalCompositeOperation = 'lighter';
+      ctx.globalAlpha = dim * (0.12 + 0.8 * energy);
+      ctx.fillStyle = bloom;
+      ctx.beginPath();
+      ctx.arc(x, y, bloomR, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.globalCompositeOperation = 'source-over';
+    }
     ctx.globalAlpha = 1;
     if (scene.activity === 'failed') {
-      // A failed run is a static field with a marker; the words say what failed.
       ctx.strokeStyle = 'rgb(251 113 133)';
       ctx.lineWidth = 1.5;
       ctx.beginPath();
-      ctx.arc(origin.x, origin.y, core + (hero ? 9 : 5), 0, Math.PI * 2);
+      ctx.arc(x, y, r + 8, 0, Math.PI * 2);
       ctx.stroke();
     }
   }
 
-  /** Particles run along the stems, half inward and half outward, only while a tool executes. */
-  #stepParticles(dt: number, spawn: boolean): void {
+  /** Beads on the tendrils, travelling both ways; faster, brighter and denser while thinking. */
+  #stepParticles(dt: number, spawn: boolean, energy: number): void {
     const cap = TIERS[this.#tier].maxParticles;
-    const reachFraction = 0.72 + 0.28 * this.#energy;
+    const speed = 0.22 + 0.4 * energy;
     for (let i = this.#pn - 1; i >= 0; i--) {
-      this.#pt[i] = (this.#pt[i] ?? 0) + (this.#pd[i] ?? 1) * dt * 0.5;
-      // Particles stop and fade when emission stops; they never imply completion.
+      this.#pt[i] = (this.#pt[i] ?? 0) + (this.#pd[i] ?? 1) * dt * speed;
       this.#pa[i] = Math.min((this.#pa[i] ?? 0) + dt * 3, spawn ? 1 : (this.#pa[i] ?? 0));
       if (!spawn) this.#pa[i] = Math.max(0, (this.#pa[i] ?? 0) - dt * 2.4);
       const p = this.#pt[i] ?? 0;
-      if (p <= 0 || p >= reachFraction || (this.#pa[i] ?? 0) <= 0) this.#remove(i);
+      if (p <= 0 || p >= 1 || (this.#pa[i] ?? 0) <= 0) this.#remove(i);
     }
     if (!spawn) return;
-    this.#spawnDebt += dt * (cap / 1.8);
+    this.#spawnDebt += dt * (cap / 2.4) * (0.4 + 0.9 * energy);
     const stems = this.#field.stems;
-    while (this.#spawnDebt >= 1 && this.#pn < cap) {
+    const live = Math.round(cap * (0.4 + 0.6 * energy));
+    while (this.#spawnDebt >= 1 && this.#pn < Math.min(cap, live)) {
       this.#spawnDebt -= 1;
       const stem = stems[Math.floor(this.#rand() * stems.length)] ?? 0;
       const outward = this.#pn % 2 === 0;
       this.#pf[this.#pn] = stem;
       this.#pd[this.#pn] = outward ? 1 : -1;
-      this.#pt[this.#pn] = outward ? 0.02 : reachFraction - 0.02;
+      this.#pt[this.#pn] = outward ? 0.02 : 0.98;
       this.#pa[this.#pn] = 0;
       this.#pn++;
     }
@@ -778,23 +865,22 @@ export class NeuralRenderer {
 
   #drawParticles(
     ctx: CanvasRenderingContext2D,
-    origin: Point,
-    reach: number,
+    g: Geometry,
     palette: Palette,
     energy: number,
   ): void {
     if (this.#pn === 0) return;
     const f = this.#field;
-    const rgb =
-      palette.particle === NEUTRAL ? NEUTRAL : palette.particle === CYAN ? CYAN : VIOLET_TEXT;
-    const dot = this.#sprite(`dot:${rgb}`, 6, (g, r) => {
-      const gradient = g.createRadialGradient(r, r, 0, r, r, r);
-      gradient.addColorStop(0, `rgb(${rgb} / 0.95)`);
-      gradient.addColorStop(0.35, `rgb(${rgb} / 0.4)`);
+    const rgb = palette.halo === NEUTRAL ? NEUTRAL : '214 244 255';
+    const dot = this.#sprite(`dot:${rgb}`, 7, (c, r) => {
+      const gradient = c.createRadialGradient(r, r, 0, r, r, r);
+      gradient.addColorStop(0, `rgb(${rgb} / 1)`);
+      gradient.addColorStop(0.3, `rgb(${rgb} / 0.5)`);
       gradient.addColorStop(1, `rgb(${rgb} / 0)`);
-      g.fillStyle = gradient;
-      g.fillRect(0, 0, r * 2, r * 2);
+      c.fillStyle = gradient;
+      c.fillRect(0, 0, r * 2, r * 2);
     });
+    const size = 12 + 6 * energy;
     for (let i = 0; i < this.#pn; i++) {
       const stem = this.#pf[i] ?? 0;
       const u = Math.max(0, Math.min(1, this.#pt[i] ?? 0)) * (FIELD_POINTS - 1);
@@ -803,8 +889,14 @@ export class NeuralRenderer {
       const begin = f.start[stem] ?? 0;
       const ux = (f.xs[begin + k] ?? 0) * (1 - frac) + (f.xs[begin + k + 1] ?? 0) * frac;
       const uy = (f.ys[begin + k] ?? 0) * (1 - frac) + (f.ys[begin + k + 1] ?? 0) * frac;
-      ctx.globalAlpha = (this.#pa[i] ?? 0) * (0.7 + 0.25 * energy);
-      ctx.drawImage(dot, origin.x + ux * reach - 6, origin.y + uy * reach - 6, 12, 12);
+      ctx.globalAlpha = (this.#pa[i] ?? 0) * (0.65 + 0.3 * energy);
+      ctx.drawImage(
+        dot,
+        g.origin.x + ux * g.unit - size / 2,
+        g.origin.y + uy * g.unit - size / 2,
+        size,
+        size,
+      );
     }
     ctx.globalAlpha = 1;
   }
