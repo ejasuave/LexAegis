@@ -782,10 +782,13 @@ export class ReviewController {
         let start = Math.max(0, hit - 80);
         let end = Math.min(page.text.length, start + 450);
         // Never split a UTF-16 surrogate pair when building an exact source citation.
-        if (start > 0 && /[\\uD800-\\uDBFF]/.test(page.text[start - 1] ?? '') &&
-            /[\\uDC00-\\uDFFF]/.test(page.text[start] ?? '')) start += 1;
-        if (end < page.text.length && /[\\uD800-\\uDBFF]/.test(page.text[end - 1] ?? '') &&
-            /[\\uDC00-\\uDFFF]/.test(page.text[end] ?? '')) end -= 1;
+        const pairBoundary = (index: number) => {
+          const left = page.text.charCodeAt(index - 1);
+          const right = page.text.charCodeAt(index);
+          return left >= 0xd800 && left <= 0xdbff && right >= 0xdc00 && right <= 0xdfff;
+        };
+        if (pairBoundary(start)) start += 1;
+        if (pairBoundary(end)) end -= 1;
         const made = createSourceReference(contextSet, {
           documentVersionId: page.id, page: page.page, start, end,
         });
