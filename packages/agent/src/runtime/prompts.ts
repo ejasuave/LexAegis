@@ -37,6 +37,7 @@ const DEFAULT_REQUEST: Readonly<Record<AssistantIntent, string>> = {
   check_payments: 'Check whether the payment schedule adds up to the stated total.',
   missing_evidence: 'What evidence is missing within the selected scope?',
   brief_matter: 'Brief me on this matter from the selected material.',
+  ask_matter: 'Analyse the current matter using the retrieved evidence.',
   prepare_review: 'What is still required before a review draft can be assembled?',
   status: 'What is the current status?',
 };
@@ -84,6 +85,9 @@ export function modelContextView(context: SelectedContextV1) {
       selectedDocuments: documents.length,
       aboutOneDocument: context.documentVersionId !== null,
       excerptsOnly: true,
+      ...(context.searchedScope.automatic !== undefined && {
+        automaticRetrieval: context.searchedScope.automatic,
+      }),
     },
   };
 }
