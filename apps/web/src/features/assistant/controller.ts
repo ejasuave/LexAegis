@@ -489,11 +489,11 @@ export class AssistantController {
     }
     // Slash commands keep their existing narrow behaviour; ordinary prose, including
     // follow-up questions, goes to matter Q&A without requiring a highlighted passage.
+    if (routed.kind === 'intent' && LOCAL_INTENTS.includes(routed.intent)) {
+      this.#add({ role: 'user', text, run: null });
+      return this.#runLocal(routed.intent);
+    }
     if (routed.kind === 'intent' && routed.via === 'command') {
-      if (LOCAL_INTENTS.includes(routed.intent)) {
-        this.#add({ role: 'user', text, run: null });
-        return this.#runLocal(routed.intent);
-      }
       return this.#prepare({ intent: routed.intent, trigger: 'command', utterance: text });
     }
     return this.#prepare({ intent: 'ask_matter', trigger: 'free_text', utterance: text });
