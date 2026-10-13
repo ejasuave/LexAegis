@@ -160,3 +160,27 @@ jobs:
       - run: pnpm install --frozen-lockfile
       - run: pnpm contracts:toolchain
       - run: pnpm verify:deployment --public-rpc
+
+
+  # Temporary targeted diagnostics for four existing system test failures.
+  # Uses synthetic data, loopback providers, local Anvil, and an isolated test database.
+  diagnose-lifecycle-a11y:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm indexer:codegen
+      - run: pnpm contracts:toolchain
+      - run: pnpm tools:s3
+      - run: pnpm exec playwright install --with-deps chromium
+      - name: Capture exact existing system assertion failures
+        run: |
+          pnpm --filter @lexaegis/system-tests exec vitest run --config vitest.system.config.ts system/aegis-lifecycle.spec.ts system/accessibility-and-reflow.spec.ts --reporter=verbose
