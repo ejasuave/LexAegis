@@ -12983,6 +12983,31 @@
         ],
         "checks": "observed 2026-10-13: web vitest 586/586 (29 new selector, freshness and event-gate tests covering unknown, stale, concurrent, cancelled, stopping, offline, locked and lag-unknown states), web typecheck clean, eslint clean on apps/web/src and the visual-check script, hud-visual-check passes at 6 viewports on the connected ceiling.",
         "limitations": "A run's last-event time is the arrival of its latest snapshot change in the browser; SSE heartbeats are deliberately not progress, so a long silent model call can read as stale after 60 s. Visible finding anchors are registered empty until stage 5. Selected-finding wiring is stage 7."
+      },
+      "4": {
+        "state": "complete",
+        "files": [
+          "apps/web/src/features/hud/hud.commands.ts",
+          "apps/web/src/features/hud/hud.commands.test.ts",
+          "apps/web/src/features/hud/public.ts",
+          "apps/web/src/components/hud/CommandPalette.tsx",
+          "apps/web/src/components/hud/use-command-dispatch.ts",
+          "apps/web/src/components/hud/HudShell.tsx",
+          "apps/web/src/components/hud/hud.tokens.css",
+          "apps/web/src/components/shell/CommandDock.tsx",
+          "apps/web/src/components/shell/command-input.ts",
+          "apps/web/src/components/shell/command-input.test.ts",
+          "apps/web/src/components/shell/workspace-context.tsx",
+          "tooling/scripts/hud-command-check.ts"
+        ],
+        "interfaces": [
+          "availableCommands/filterCommands/resolveInput/suggestCommand (features/hud)",
+          "useCommandDispatch(): {entries, resolve, stop, run, focusDock}",
+          "CommandPalette (Ctrl/Cmd+K, dialog + combobox + listbox)",
+          "WorkspaceState.paletteOpen/dockInput/commandNote"
+        ],
+        "checks": "observed 2026-10-13: web vitest 597/597 (registry: allowlist, filter, typo suggestion, approve/sign refusal, /stop routing; Enter handling lets /stop through while busy), typecheck and eslint clean; tooling/scripts/hud-command-check.ts against next dev: 14/14 (Ctrl+K to focused input p95 26.8 ms over 20 opens on this dev machine, modal combobox/listbox, inert background, ArrowDown moves announced option without submitting, Tab contained, Escape restores focus, unsent draft survives, free text goes to dock, unknown command suggests, no approve/sign command, /stop in dock, Stop 44px). Not run: palette during a live run or over a real approval (needs the full journey, stage 7/8), screen reader, IME composition.",
+        "limitations": "The palette is not opened while the approval controller is past idle; the exact-action approval is still the inline preview until stage 7. Explicit commands go to the assistant controller, which shows its own disclosure preview before anything is sent."
       }
     }
   }

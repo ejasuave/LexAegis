@@ -20,6 +20,10 @@ export function decideEnter(context: EnterContext): EnterDecision {
   if (context.isComposing || context.key === 'Process') return 'newline';
   if (context.key !== 'Enter') return 'newline';
   if (context.shiftKey) return 'newline';
-  if (context.draft.trim() === '' || context.busy || !context.available) return 'ignore';
+  const draft = context.draft.trim();
+  if (draft === '') return 'ignore';
+  // /stop needs no assistant and works while a run is active; anything else waits for it.
+  if (draft.toLowerCase() === '/stop') return 'send';
+  if (context.busy || !context.available) return 'ignore';
   return 'send';
 }

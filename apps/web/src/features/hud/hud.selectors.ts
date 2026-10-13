@@ -244,7 +244,10 @@ export function selectActivity(assistant: AssistantInput, nowMs: number): Activi
     return view('offline', 'The assistant service could not be reached. Local checks still work.');
   }
   if (assistant.phase === 'stopping')
-    return view('stopping', 'Stopping. The request was sent; the service has not yet acknowledged it.');
+    return view(
+      'stopping',
+      'Stopping. The request was sent; the service has not yet acknowledged it.',
+    );
   if (assistant.phase === 'running' && run !== null) {
     if (connection === 'stale' || connection === 'unknown') {
       return view(

@@ -24,5 +24,10 @@ describe('composer Enter handling', () => {
     expect(decideEnter(ctx({ busy: true }))).toBe('ignore');
     expect(decideEnter(ctx({ available: false }))).toBe('ignore');
   });
+  it('always lets /stop through, even while busy or with no assistant', () => {
+    expect(decideEnter(ctx({ draft: '/stop', busy: true }))).toBe('send');
+    expect(decideEnter(ctx({ draft: ' /STOP ', available: false }))).toBe('send');
+    expect(decideEnter(ctx({ draft: '/stop now', busy: true }))).toBe('ignore');
+  });
   it('leaves other keys alone', () => expect(decideEnter(ctx({ key: 'a' }))).toBe('newline'));
 });

@@ -1,5 +1,7 @@
 /** The pure HUD view-model surface UI code may import. No controller or secret is reachable from it. */
 export { INDEXER_STALE_MS, RUN_EVENT_STALE_MS, ageText, freshnessOf } from './hud.freshness';
+export { availableCommands, filterCommands, resolveInput, suggestCommand } from './hud.commands';
+export type { CommandEntry, CommandId, Resolution } from './hud.commands';
 export { BoundedIdentitySet, RunEventGate } from './hud.events';
 export type { EventVerdict, RunContext, RunEventIdentity } from './hud.events';
 export {

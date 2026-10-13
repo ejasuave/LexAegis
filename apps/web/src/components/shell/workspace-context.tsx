@@ -2,10 +2,12 @@
 
 import {
   createContext,
+  useRef,
   useContext,
   useMemo,
   useState,
   type Dispatch,
+  type RefObject,
   type ReactNode,
   type SetStateAction,
 } from 'react';
@@ -32,6 +34,14 @@ interface WorkspaceState {
   setActivityOpen: (open: boolean) => void;
   contextOpen: boolean;
   setContextOpen: (open: boolean) => void;
+  /** The command palette. It shares the draft and the registry with the dock. */
+  paletteOpen: boolean;
+  setPaletteOpen: (open: boolean) => void;
+  /** The dock's editable input, so the palette can hand free text to it. */
+  dockInput: RefObject<HTMLTextAreaElement | null>;
+  /** Short factual result of the last command (for example what Stop did). Volatile. */
+  commandNote: string;
+  setCommandNote: (note: string) => void;
   selection: Selection;
 }
 
@@ -49,6 +59,9 @@ export function WorkspaceProvider({ children }: { children: ReactNode }) {
   const [draft, setDraft] = useState('');
   const [activityOpen, setActivityOpen] = useState(false);
   const [contextOpen, setContextOpen] = useState(false);
+  const [paletteOpen, setPaletteOpen] = useState(false);
+  const [commandNote, setCommandNote] = useState('');
+  const dockInput = useRef<HTMLTextAreaElement | null>(null);
 
   const value = useMemo<WorkspaceState>(
     () => ({
@@ -62,9 +75,14 @@ export function WorkspaceProvider({ children }: { children: ReactNode }) {
       setActivityOpen,
       contextOpen,
       setContextOpen,
+      paletteOpen,
+      setPaletteOpen,
+      dockInput,
+      commandNote,
+      setCommandNote,
       selection: EMPTY_SELECTION,
     }),
-    [mode, mobileTab, draft, activityOpen, contextOpen],
+    [mode, mobileTab, draft, activityOpen, contextOpen, paletteOpen, commandNote],
   );
   return <WorkspaceContext.Provider value={value}>{children}</WorkspaceContext.Provider>;
 }
