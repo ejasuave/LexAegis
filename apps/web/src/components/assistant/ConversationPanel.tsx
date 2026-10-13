@@ -51,8 +51,8 @@ export function ConversationPanel({ compact = false }: { compact?: boolean }) {
       <AgentIdentityLine />
       {snapshot.conversation.length === 0 && pending === null ? (
         <p className="m-0 mt-2 text-[0.875rem] text-lj-secondary">
-          No conversation. Select text and choose Explain selection, or use the command dock.
-          Messages are kept in memory only and are not saved unless you save an outcome.
+          Ask Aegis about the open matter, or choose Analyse matter. No highlighting is required.
+          Messages are held in memory only until you explicitly save an outcome.
         </p>
       ) : null}
       <ol className="m-0 grid list-none gap-3 p-0" aria-label="Conversation">
