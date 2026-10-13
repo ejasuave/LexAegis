@@ -62,6 +62,16 @@ export function DisclosurePreview({
         <dt className="text-lj-secondary">Earlier messages</dt>
         <dd className="m-0">{summary.conversationMessages}</dd>
       </dl>
+      {pending.body.context.searchedScope.automatic !== undefined ? (
+        <p className="m-0 mt-3 text-lj-secondary" role="status">
+          Automatic matter search: {pending.body.context.searchedScope.automatic.includedDocuments}
+          {' of '}{pending.body.context.searchedScope.automatic.availableDocuments}
+          {' documents included; '}
+          {pending.body.context.searchedScope.automatic.excerptedPages}
+          {' of '}{pending.body.context.searchedScope.automatic.availablePages}
+          {' readable pages sampled. This is a partial evidence review, not a complete case analysis.'}
+        </p>
+      ) : null}
       <ul className="m-0 mt-2 list-disc pl-5 text-lj-secondary">
         {DISCLOSURE_FACTS.map((fact) => (
           <li key={fact}>{fact}</li>
