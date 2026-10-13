@@ -145,20 +145,17 @@ describe('disclosure before anything is sent', () => {
     dispose(none);
   });
 
-  it('asks which passage an unclear follow-up means instead of assuming an earlier one', async () => {
+  it('previews a matter question without guessing which earlier passage was meant', async () => {
     const a = await assistantRig([done(), answer()]);
     await a.assistant.submit('And what about the other one?');
-    expect(a.assistant.getSnapshot()).toMatchObject({ phase: 'idle', pending: null });
-    expect(a.assistant.getSnapshot().notice).toContain('Which passage is this about?');
-    expect(a.transportCalls.start).toBe(0);
-    // With a current selection the same text becomes a disclosed request about that selection.
-    a.assistant.setSelection(a.documentVersionId, [a.clause]);
-    await a.assistant.submit('And what about the other one?');
-    expect(a.assistant.getSnapshot().pending?.summary.excerpts).toHaveLength(1);
+    expect(a.assistant.getSnapshot().phase).toBe('preview');
     expect(a.assistant.getSnapshot().pending?.body).toMatchObject({
-      intent: null,
+      intent: 'ask_matter',
+      documentVersionId: null,
       trigger: 'free_text',
     });
+    expect(a.transportCalls.start).toBe(0);
+    a.assistant.cancelPreview();
     dispose(a);
   });
 
