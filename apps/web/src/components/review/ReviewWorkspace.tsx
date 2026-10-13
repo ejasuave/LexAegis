@@ -59,11 +59,16 @@ function CommandHero() {
         <AssistantOrb state={orbForActivity(view.activity)} size="expanded" />
       </div>
       <div data-hud-quiet="" className="lj-hero-text flex flex-col items-center">
-        <p role="status" aria-live="polite" className="m-0 text-lg" data-testid="orb-caption">
+        <p
+          role="status"
+          aria-live="polite"
+          className={`m-0 ${empty ? 'text-base' : 'text-lg'}`}
+          data-testid="orb-caption"
+        >
           {empty ? 'Open a matter to begin.' : view.activity.statusText}
         </p>
         <CommandActions />
-        <VaultStatusLine />
+        {empty ? null : <VaultStatusLine />}
       </div>
     </div>
   );

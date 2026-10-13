@@ -256,6 +256,8 @@ export class NeuralRenderer {
   #dirty = true;
   #maskDirty = true;
   #mask: HTMLCanvasElement | null = null;
+  #fade: HTMLCanvasElement | null = null;
+  #fadeKey = '';
   #sprites = new Map<string, HTMLCanvasElement>();
   #raf = 0;
   #loop = false;
@@ -572,14 +574,16 @@ export class NeuralRenderer {
     } else {
       this.#pn = 0;
     }
+    // With nothing open the art owns the stage, but fades out toward its edges instead of ending on a hard rectangle.
+    if (empty && stage !== null && mode === 'hero') this.#fadeToStage(ctx, stage);
     this.#drawWash(ctx, origin, mode, t * 1000);
     this.#applyMask(ctx);
     this.#drawAlerts(ctx, origin, s, t, motion);
   }
 
   /**
-   * Tendrils: 24 to 40 smooth curves with a white-blue glow, swaying continuously. Finer branch
-   * filaments add texture. Thinking makes the tendrils longer (through `unit`) and brighter.
+   * Tendrils: 24 to 40 smooth cubic curves in near-white blue with a soft glow, swaying
+   * continuously. Fine branch filaments add texture. Thinking lengthens and brightens them.
    */
   #drawTendrils(
     ctx: CanvasRenderingContext2D,
@@ -597,13 +601,16 @@ export class NeuralRenderer {
       (g.mode === 'hero' ? g.sphere * 1.05 : g.mode === 'compact' ? g.sphere * 1.3 : 24) / g.unit;
     ctx.lineCap = 'round';
     ctx.lineJoin = 'round';
+    ctx.globalCompositeOperation = 'lighter';
+    const xs: number[] = [];
+    const ys: number[] = [];
     const trace = (i: number): void => {
       const begin = f.start[i] ?? 0;
       const px = f.perpX[i] ?? 0;
       const py = f.perpY[i] ?? 0;
       const ph = f.phase[i] ?? 0;
-      const xs: number[] = [];
-      const ys: number[] = [];
+      xs.length = 0;
+      ys.length = 0;
       for (let k = 0; k < FIELD_POINTS; k++) {
         const ux = f.xs[begin + k] ?? 0;
         const uy = f.ys[begin + k] ?? 0;
@@ -611,8 +618,8 @@ export class NeuralRenderer {
         // Two slow waves that never repeat in step: continuous sway, strongest at the tip.
         const along = k / (FIELD_POINTS - 1);
         const d = motion
-          ? (Math.sin(t * 0.55 + ph + along * 2.1) * 0.03 +
-              Math.sin(t * 0.23 + ph * 1.7 - along) * 0.025) *
+          ? (Math.sin(t * 0.55 + ph + along * 2.1) * 0.035 +
+              Math.sin(t * 0.23 + ph * 1.7 - along) * 0.03) *
             along
           : 0;
         xs.push(g.origin.x + (ux + px * d) * g.unit);
@@ -621,38 +628,48 @@ export class NeuralRenderer {
       const n = xs.length;
       if (n < 2) return;
       ctx.moveTo(xs[0] ?? 0, ys[0] ?? 0);
-      for (let k = 1; k < n - 1; k++) {
-        ctx.quadraticCurveTo(
-          xs[k] ?? 0,
-          ys[k] ?? 0,
-          ((xs[k] ?? 0) + (xs[k + 1] ?? 0)) / 2,
-          ((ys[k] ?? 0) + (ys[k + 1] ?? 0)) / 2,
+      // Catmull-Rom through the points, written as cubic Beziers: smooth, never a spike.
+      for (let k = 0; k < n - 1; k++) {
+        const p0x = xs[Math.max(0, k - 1)] ?? 0;
+        const p0y = ys[Math.max(0, k - 1)] ?? 0;
+        const p1x = xs[k] ?? 0;
+        const p1y = ys[k] ?? 0;
+        const p2x = xs[k + 1] ?? 0;
+        const p2y = ys[k + 1] ?? 0;
+        const p3x = xs[Math.min(n - 1, k + 2)] ?? 0;
+        const p3y = ys[Math.min(n - 1, k + 2)] ?? 0;
+        ctx.bezierCurveTo(
+          p1x + (p2x - p0x) / 6,
+          p1y + (p2y - p0y) / 6,
+          p2x - (p3x - p1x) / 6,
+          p2y - (p3y - p1y) / 6,
+          p2x,
+          p2y,
         );
       }
-      ctx.lineTo(xs[n - 1] ?? 0, ys[n - 1] ?? 0);
     };
     // Fine branch filaments first, faint.
     ctx.globalAlpha = alpha;
     ctx.beginPath();
-    ctx.strokeStyle = line(rgb, 0.2 + 0.5 * energy);
-    ctx.lineWidth = 0.8 + 0.5 * energy;
+    ctx.strokeStyle = line(rgb, 0.25 + 0.45 * energy);
+    ctx.lineWidth = 0.9 + 0.5 * energy;
     for (let i = 0; i < f.count; i++) if ((f.depth[i] ?? 0) === 1) trace(i);
     ctx.stroke();
-    // The tendrils: a soft wide glow under a 2 to 3 px core line.
+    // The tendrils: 2 to 3 px, #cfe6ff, softly glowing.
     ctx.beginPath();
-    ctx.strokeStyle = line(rgb, 0.07 + 0.13 * energy);
-    ctx.lineWidth = 4 + 2.5 * energy;
+    ctx.strokeStyle = line(rgb, 0.6 + 0.4 * energy);
+    ctx.lineWidth = 2 + 1 * energy;
+    ctx.shadowColor = muted ? `rgb(${NEUTRAL} / 0.6)` : 'rgb(150 190 255 / 0.9)';
+    ctx.shadowBlur = 8 * this.#scale;
     for (const stem of f.stems) trace(stem);
     ctx.stroke();
-    ctx.beginPath();
-    ctx.strokeStyle = line(rgb, 0.55 + 0.45 * energy);
-    ctx.lineWidth = 1.5 + 1 * energy;
-    for (const stem of f.stems) trace(stem);
-    ctx.stroke();
+    ctx.shadowBlur = 0;
+    ctx.shadowColor = 'transparent';
+    ctx.globalCompositeOperation = 'source-over';
     ctx.globalAlpha = 1;
   }
 
-  /** The mesh: linked nodes in four colour lobes, jittering constantly. */
+  /** The mesh: dense linked nodes in four colour lobes with a violet mass at the core, jittering constantly. */
   #drawMesh(
     ctx: CanvasRenderingContext2D,
     g: Geometry,
@@ -666,19 +683,39 @@ export class NeuralRenderer {
     const xs = this.#scratchX;
     const ys = this.#scratchY;
     const muted = palette.halo === NEUTRAL;
+    ctx.globalCompositeOperation = 'lighter';
+    if (!muted && g.mode === 'hero') {
+      // A strong violet mass around the core, behind the nodes.
+      const mass = ctx.createRadialGradient(
+        g.origin.x,
+        g.origin.y,
+        0,
+        g.origin.x,
+        g.origin.y,
+        g.mesh * 0.8,
+      );
+      mass.addColorStop(0, 'rgb(124 80 235 / 0.4)');
+      mass.addColorStop(0.55, 'rgb(90 70 220 / 0.18)');
+      mass.addColorStop(1, 'rgb(90 70 220 / 0)');
+      ctx.globalAlpha = alpha;
+      ctx.fillStyle = mass;
+      ctx.beginPath();
+      ctx.arc(g.origin.x, g.origin.y, g.mesh * 0.8, 0, Math.PI * 2);
+      ctx.fill();
+    }
     // Wider than tall, as in the reference; jitter is positional only, never a brightness change.
     for (let i = 0; i < n.count; i++) {
       const p = n.phase[i] ?? 0;
       const jx = motion ? (Math.sin(t * 2.3 + p * 3) + Math.sin(t * 3.7 + p * 5)) * 1.1 : 0;
       const jy = motion ? (Math.sin(t * 2.9 + p * 4) + Math.sin(t * 3.1 + p * 2)) * 1.1 : 0;
       xs[i] = g.origin.x + (n.xs[i] ?? 0) * g.mesh * 1.2 + jx;
-      ys[i] = g.origin.y + (n.ys[i] ?? 0) * g.mesh + jy;
+      ys[i] = g.origin.y + (n.ys[i] ?? 0) * g.mesh * 0.85 + jy;
     }
     ctx.globalAlpha = alpha;
     ctx.lineWidth = 0.6;
     for (let lobe = 0; lobe < 4; lobe++) {
       const rgb = muted ? NEUTRAL : (LOBE_RGB[lobe] ?? LOBE_RGB[0]);
-      ctx.strokeStyle = line(rgb, muted ? 0.4 : 0.42);
+      ctx.strokeStyle = line(rgb, 0.34);
       ctx.beginPath();
       for (let e = 0; e < n.edges; e++) {
         const a = n.edgeFrom[e] ?? 0;
@@ -688,15 +725,16 @@ export class NeuralRenderer {
         ctx.lineTo(xs[b] ?? 0, ys[b] ?? 0);
       }
       ctx.stroke();
-      ctx.fillStyle = line(rgb, muted ? 0.75 : 0.9);
+      ctx.fillStyle = line(rgb, 0.9);
       ctx.beginPath();
       for (let i = 0; i < n.count; i++) {
         if ((n.lobe[i] ?? 0) !== lobe) continue;
-        const size = i % 6 === 0 ? 3 : 2;
+        const size = i % 4 === 0 ? 3 : 2;
         ctx.rect((xs[i] ?? 0) - size / 2, (ys[i] ?? 0) - size / 2, size, size);
       }
       ctx.fill();
     }
+    ctx.globalCompositeOperation = 'source-over';
     ctx.globalAlpha = 1;
   }
 
@@ -718,9 +756,9 @@ export class NeuralRenderer {
   }
 
   /**
-   * The nucleus: a translucent blue-violet sphere with a fine scanline texture and a bright rim
-   * arc that turns once every ten seconds. Thinking whitens the rim and adds an additive bloom
-   * of about 1.5 times the radius, pulsing once every 1.75 s.
+   * The nucleus: a large soft glow, a translucent blue-violet sphere (brighter in the middle)
+   * with fine scanlines, a thick white-cyan rim arc that turns once every ten seconds and a faint
+   * full ring. Thinking whitens the rim and adds a wider additive bloom, pulsing every 1.75 s.
    */
   #drawNucleus(
     ctx: CanvasRenderingContext2D,
@@ -736,27 +774,40 @@ export class NeuralRenderer {
     const pulse = motion ? 1 + 0.08 * energy * Math.sin((t * Math.PI * 2) / PULSE_SECONDS) : 1;
     const r = g.sphere * pulse;
     const dim = scene.ceremony ? 0.25 : 1;
-    // Body: blue-violet, clearer toward the edge.
-    const body = ctx.createRadialGradient(x, y, r * 0.1, x, y, r);
-    // Faint at rest, clearer as it thinks.
-    const veil = 0.3 + 0.7 * energy;
+    ctx.globalAlpha = dim;
+    // One large soft glow behind everything else.
+    ctx.globalCompositeOperation = 'lighter';
+    const halo = ctx.createRadialGradient(x, y, r * 0.4, x, y, r * 2.6);
+    halo.addColorStop(
+      0,
+      muted ? 'rgb(100 116 139 / 0.2)' : `rgb(90 90 240 / ${String(0.3 + 0.2 * energy)})`,
+    );
+    halo.addColorStop(0.5, muted ? 'rgb(100 116 139 / 0.08)' : 'rgb(70 90 230 / 0.12)');
+    halo.addColorStop(1, 'rgb(70 90 230 / 0)');
+    ctx.fillStyle = halo;
+    ctx.beginPath();
+    ctx.arc(x, y, r * 2.6, 0, Math.PI * 2);
+    ctx.fill();
+    // Body: brighter blue-violet in the middle (about 0.5 alpha), clearer toward the rim.
+    const body = ctx.createRadialGradient(x, y, 0, x, y, r);
+    const lift = 0.5 + 0.5 * energy;
     body.addColorStop(
       0,
-      muted ? 'rgb(100 116 139 / 0.12)' : `rgb(76 70 190 / ${String(0.16 * veil)})`,
+      muted ? 'rgb(120 136 160 / 0.3)' : `rgb(140 120 255 / ${String(0.5 * lift + 0.15)})`,
     );
     body.addColorStop(
-      0.7,
-      muted ? 'rgb(100 116 139 / 0.18)' : `rgb(70 90 220 / ${String(0.24 * veil)})`,
+      0.6,
+      muted ? 'rgb(100 116 139 / 0.2)' : `rgb(80 100 235 / ${String(0.28 * lift + 0.08)})`,
     );
     body.addColorStop(
       1,
-      muted ? 'rgb(148 163 184 / 0.26)' : `rgb(110 150 255 / ${String(0.36 * veil)})`,
+      muted ? 'rgb(148 163 184 / 0.28)' : `rgb(110 160 255 / ${String(0.3 * lift + 0.08)})`,
     );
-    ctx.globalAlpha = dim;
     ctx.fillStyle = body;
     ctx.beginPath();
     ctx.arc(x, y, r, 0, Math.PI * 2);
     ctx.fill();
+    ctx.globalCompositeOperation = 'source-over';
     if (r > 20) {
       // Fine scanlines, clipped to the sphere.
       ctx.save();
@@ -768,54 +819,46 @@ export class NeuralRenderer {
         ctx.moveTo(x - r, ly);
         ctx.lineTo(x + r, ly);
       }
-      ctx.strokeStyle = 'rgb(160 200 255 / 0.09)';
+      ctx.strokeStyle = 'rgb(160 200 255 / 0.1)';
       ctx.lineWidth = 1;
       ctx.stroke();
       ctx.restore();
     }
-    // The rim arc: bright white-cyan, rotating.
+    // The faint full ring, then the thick glowing rim arc.
     const angle =
       motion || this.#mode !== 'full' ? ((t % RIM_SECONDS) / RIM_SECONDS) * Math.PI * 2 : 0;
-    const span = 1.1 + 1.5 * energy;
+    const span = 1.4 + 1.3 * energy;
     ctx.lineCap = 'round';
     ctx.strokeStyle = muted
-      ? 'rgb(170 182 196 / 0.55)'
-      : `rgb(${CYAN} / ${String(0.14 + 0.3 * energy)})`;
+      ? 'rgb(170 182 196 / 0.4)'
+      : `rgb(${CYAN} / ${String(0.22 + 0.2 * energy)})`;
     ctx.lineWidth = 1.2;
     ctx.beginPath();
     ctx.arc(x, y, r, 0, Math.PI * 2);
     ctx.stroke();
+    ctx.globalCompositeOperation = 'lighter';
     ctx.strokeStyle = muted ? 'rgb(190 200 212)' : energy > 0.5 ? 'rgb(255 255 255)' : CORE_WHITE;
-    ctx.lineWidth = Math.max(2, r * (0.035 + 0.03 * energy));
+    ctx.lineWidth = 4 + 2 * energy;
+    ctx.shadowColor = muted ? 'rgb(190 200 212 / 0.6)' : `rgb(${CYAN} / 0.95)`;
+    ctx.shadowBlur = (12 + 8 * energy) * this.#scale;
     ctx.beginPath();
     ctx.arc(x, y, r, angle, angle + span);
     ctx.stroke();
-    if (!muted && energy > 0.05) {
-      // The white-hot rim: a wide additive glow along the arc.
-      ctx.globalCompositeOperation = 'lighter';
-      ctx.globalAlpha = dim * 0.5 * energy;
-      ctx.strokeStyle = 'rgb(210 240 255)';
-      ctx.lineWidth = r * 0.16;
-      ctx.beginPath();
-      ctx.arc(x, y, r, angle, angle + span);
-      ctx.stroke();
-      ctx.globalCompositeOperation = 'source-over';
-    }
+    ctx.shadowBlur = 0;
+    ctx.shadowColor = 'transparent';
     if (!muted) {
-      // Bloom: additive, about 1.5 radii, brightest while thinking.
+      // Bloom, additive, about 1.5 radii; wider and brighter while thinking.
       const bloomR = r * 1.5;
       const bloom = ctx.createRadialGradient(x, y, r * 0.3, x, y, bloomR);
-      bloom.addColorStop(0, `rgb(235 250 255 / 0.85)`);
-      bloom.addColorStop(0.45, `rgb(${CYAN} / 0.4)`);
+      bloom.addColorStop(0, `rgb(235 250 255 / ${String(0.3 + 0.55 * energy)})`);
+      bloom.addColorStop(0.45, `rgb(${CYAN} / ${String(0.15 + 0.25 * energy)})`);
       bloom.addColorStop(1, `rgb(${CYAN} / 0)`);
-      ctx.globalCompositeOperation = 'lighter';
-      ctx.globalAlpha = dim * (0.12 + 0.8 * energy);
       ctx.fillStyle = bloom;
       ctx.beginPath();
       ctx.arc(x, y, bloomR, 0, Math.PI * 2);
       ctx.fill();
-      ctx.globalCompositeOperation = 'source-over';
     }
+    ctx.globalCompositeOperation = 'source-over';
     ctx.globalAlpha = 1;
     if (scene.activity === 'failed') {
       ctx.strokeStyle = 'rgb(251 113 133)';
@@ -871,16 +914,19 @@ export class NeuralRenderer {
   ): void {
     if (this.#pn === 0) return;
     const f = this.#field;
-    const rgb = palette.halo === NEUTRAL ? NEUTRAL : '214 244 255';
-    const dot = this.#sprite(`dot:${rgb}`, 7, (c, r) => {
+    const muted = palette.halo === NEUTRAL;
+    const dot = this.#sprite(`bead:${String(muted)}`, 6, (c, r) => {
+      // A bright white core of about 3.5 px with a small blue halo.
       const gradient = c.createRadialGradient(r, r, 0, r, r, r);
-      gradient.addColorStop(0, `rgb(${rgb} / 1)`);
-      gradient.addColorStop(0.3, `rgb(${rgb} / 0.5)`);
-      gradient.addColorStop(1, `rgb(${rgb} / 0)`);
+      gradient.addColorStop(0, muted ? 'rgb(210 220 232 / 1)' : 'rgb(255 255 255 / 1)');
+      gradient.addColorStop(0.28, muted ? 'rgb(190 200 212 / 0.9)' : 'rgb(235 245 255 / 0.9)');
+      gradient.addColorStop(0.4, muted ? 'rgb(150 165 185 / 0.3)' : 'rgb(150 200 255 / 0.35)');
+      gradient.addColorStop(1, 'rgb(150 200 255 / 0)');
       c.fillStyle = gradient;
       c.fillRect(0, 0, r * 2, r * 2);
     });
-    const size = 12 + 6 * energy;
+    const size = 11 + 3 * energy;
+    ctx.globalCompositeOperation = 'lighter';
     for (let i = 0; i < this.#pn; i++) {
       const stem = this.#pf[i] ?? 0;
       const u = Math.max(0, Math.min(1, this.#pt[i] ?? 0)) * (FIELD_POINTS - 1);
@@ -898,6 +944,7 @@ export class NeuralRenderer {
         size,
       );
     }
+    ctx.globalCompositeOperation = 'source-over';
     ctx.globalAlpha = 1;
   }
 
@@ -931,6 +978,35 @@ export class NeuralRenderer {
       ctx.stroke();
     }
     ctx.globalAlpha = 1;
+  }
+
+  /** Multiplies the art by a soft-edged copy of the stage rectangle (cached until the stage moves). */
+  #fadeToStage(ctx: CanvasRenderingContext2D, stage: Rect): void {
+    const key = `${String(stage.x)},${String(stage.y)},${String(stage.w)},${String(stage.h)},${String(this.#scale)}`;
+    if (this.#fade === null || this.#fadeKey !== key) {
+      const fade = this.#fade ?? document.createElement('canvas');
+      fade.width = this.#canvas.width;
+      fade.height = this.#canvas.height;
+      const g = fade.getContext('2d');
+      this.#fade = fade;
+      this.#fadeKey = key;
+      if (g === null) return;
+      const feather = Math.min(70, stage.w * 0.1, stage.h * 0.15);
+      g.setTransform(this.#scale, 0, 0, this.#scale, 0, 0);
+      g.clearRect(0, 0, this.#cssW, this.#cssH);
+      g.fillStyle = '#fff';
+      g.shadowColor = '#fff';
+      g.shadowBlur = feather * this.#scale;
+      g.fillRect(
+        stage.x + feather,
+        stage.y + feather,
+        stage.w - 2 * feather,
+        stage.h - 2 * feather,
+      );
+    }
+    ctx.globalCompositeOperation = 'destination-in';
+    ctx.drawImage(this.#fade, 0, 0, this.#cssW, this.#cssH);
+    ctx.globalCompositeOperation = 'source-over';
   }
 
   // ---- Quiet zones ---------------------------------------------------------------------------

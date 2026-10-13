@@ -223,7 +223,8 @@ export function buildField(filaments: number, seed = FIELD_SEED, stemTarget?: nu
     // Even spread with jitter, so no wedge of the field is empty.
     const angle = ((s + rand() * 0.6) / stemCount) * Math.PI * 2;
     const length = 0.75 + rand() * 0.4;
-    const curl = (rand() - 0.5) * 0.55;
+    // Always visibly curved, never a straight spike.
+    const curl = (rand() < 0.5 ? -1 : 1) * (0.4 + rand() * 0.6);
     const stem = lay(0, 0, angle, length, curl, 0.08 + rand() * 0.1, 0);
     stems[s] = stem;
     const branches = base + (s < extra ? 1 : 0);
@@ -264,12 +265,24 @@ export interface Network {
   readonly edges: number;
 }
 
-/** Where each lobe sits in cluster units, how wide it is, and its share of the nodes. */
-export const LOBES: readonly { cx: number; cy: number; rx: number; ry: number; share: number }[] = [
-  { cx: 0, cy: 0, rx: 0.7, ry: 0.7, share: 0.4 },
-  { cx: -0.8, cy: -0.05, rx: 0.5, ry: 0.55, share: 0.2 },
-  { cx: 0.62, cy: -0.6, rx: 0.5, ry: 0.42, share: 0.18 },
-  { cx: 0.05, cy: 0.8, rx: 0.52, ry: 0.4, share: 0.22 },
+/**
+ * Where each lobe sits in cluster units, how wide it is, its share of the nodes and its colour
+ * (0 violet-blue, 1 yellow, 2 red-orange, 3 green). The inner lobe packs extra nodes inside the
+ * nucleus sphere, and the green lobe is wide and flat so it shows either side of the text below.
+ */
+export const LOBES: readonly {
+  cx: number;
+  cy: number;
+  rx: number;
+  ry: number;
+  share: number;
+  colour: number;
+}[] = [
+  { cx: 0, cy: 0, rx: 0.7, ry: 0.62, share: 0.28, colour: 0 },
+  { cx: 0, cy: 0, rx: 0.3, ry: 0.4, share: 0.2, colour: 0 },
+  { cx: -0.82, cy: -0.05, rx: 0.5, ry: 0.5, share: 0.16, colour: 1 },
+  { cx: 0.62, cy: -0.58, rx: 0.48, ry: 0.4, share: 0.14, colour: 2 },
+  { cx: 0, cy: 0.52, rx: 1.05, ry: 0.24, share: 0.22, colour: 3 },
 ];
 
 export function buildNetwork(nodes: number, seed = FIELD_SEED + 31): Network {
@@ -289,13 +302,13 @@ export function buildNetwork(nodes: number, seed = FIELD_SEED + 31): Network {
       xs[assigned] = l.cx + Math.cos(a) * r * l.rx;
       ys[assigned] = l.cy + Math.sin(a) * r * l.ry;
       phase[assigned] = rand() * Math.PI * 2;
-      lobe[assigned] = index;
+      lobe[assigned] = l.colour;
     }
   });
   const from: number[] = [];
   const to: number[] = [];
   const seen = new Set<number>();
-  const maxLink = 0.34;
+  const maxLink = 0.4;
   for (let i = 0; i < nodes; i++) {
     const near: { j: number; d: number }[] = [];
     for (let j = 0; j < nodes; j++) {
@@ -304,7 +317,7 @@ export function buildNetwork(nodes: number, seed = FIELD_SEED + 31): Network {
       if (d <= maxLink) near.push({ j, d });
     }
     near.sort((p, q) => p.d - q.d);
-    for (const { j } of near.slice(0, 3)) {
+    for (const { j } of near.slice(0, 7)) {
       const key = Math.min(i, j) * 65536 + Math.max(i, j);
       if (seen.has(key)) continue;
       seen.add(key);

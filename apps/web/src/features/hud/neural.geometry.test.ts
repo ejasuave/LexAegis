@@ -74,7 +74,7 @@ describe('tendrils and cluster', () => {
     const a = buildNetwork(400);
     const b = buildNetwork(400);
     expect(Array.from(a.xs)).toEqual(Array.from(b.xs));
-    expect(a.edges).toBeGreaterThan(400);
+    expect(a.edges).toBeGreaterThan(400 * 2.4);
     for (let e = 0; e < a.edges; e++) {
       expect(a.edgeFrom[e]).not.toBe(a.edgeTo[e]);
       expect(a.edgeTo[e]).toBeLessThan(400);
@@ -98,7 +98,12 @@ describe('tendrils and cluster', () => {
     expect(mean(1, a.xs)).toBeLessThan(-0.35);
     expect(mean(2, a.xs)).toBeGreaterThan(0.2);
     expect(mean(2, a.ys)).toBeLessThan(-0.25);
-    expect(mean(3, a.ys)).toBeGreaterThan(0.4);
+    expect(mean(3, a.ys)).toBeGreaterThan(0.3);
+    // Extra nodes sit inside the sphere's footprint, so the nucleus reads as dense.
+    const inner = Array.from(a.xs).filter(
+      (x, i) => Math.hypot(x / 0.3, (a.ys[i] ?? 0) / 0.4) < 1 && a.lobe[i] === 0,
+    ).length;
+    expect(inner).toBeGreaterThan(70);
     expect(TIERS.standard.nodes).toBe(400);
     expect(TIERS.standard.nodes).toBeGreaterThan(TIERS.balanced.nodes);
     expect(TIERS.balanced.nodes).toBeGreaterThan(TIERS.compact.nodes);

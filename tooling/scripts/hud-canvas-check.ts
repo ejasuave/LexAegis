@@ -301,7 +301,7 @@ const flicker = (page: Page, ms: number) =>
   const core = await litPixels(running.page, [560, 260, 220, 160], true);
   check(
     'running: near-white stays a bounded rim, never a white-out',
-    core > 0 && core < 3000,
+    core > 0 && core < 9000,
     `${String(core)} px`,
   );
   const runFlicker = await flicker(running.page, 3000);

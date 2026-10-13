@@ -252,6 +252,9 @@
   min-height: 24rem;
   place-items: center;
 }
+.lj-hero-empty .lj-hero-text section {
+  margin-top: var(--lj-space-2);
+}
 .lj-hero-empty .lj-hero-text {
   position: absolute;
   inset-inline: 0;
