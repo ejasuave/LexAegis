@@ -1,4 +1,5 @@
 import type { AssistantSnapshot, RunView } from '@/features/assistant/public';
+import type { ActivityView } from '@/features/hud/public';
 import type { OrbState } from './AssistantOrb';
 
 /*
@@ -63,4 +64,26 @@ export function deriveOrb(
     };
   }
   return { state: snapshot.orb };
+}
+
+/**
+ * The orb graphic for a HUD activity reading. It is the same accepted view the labels come from,
+ * so the picture cannot contradict the words: a stale, offline or unavailable run is the muted
+ * neutral state, never "working".
+ */
+export function orbForActivity(activity: ActivityView): OrbState {
+  switch (activity.state) {
+    case 'idle':
+      return 'ready';
+    case 'awaiting_user':
+      return 'awaiting_input';
+    case 'running':
+      return activity.toolsRunning ? 'tool_running' : 'running';
+    case 'stale':
+    case 'offline':
+    case 'unavailable':
+      return 'unavailable';
+    default:
+      return activity.state;
+  }
 }

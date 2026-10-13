@@ -4,6 +4,7 @@ import type { ReactNode } from 'react';
 import { ActivityDrawer } from '@/components/shell/ActivityDrawer';
 import { CommandDock } from '@/components/shell/CommandDock';
 import { ContextDrawerHost } from '@/components/shell/ContextDrawerHost';
+import { HudProvider } from './hud-context';
 import { SystemCeiling } from './SystemCeiling';
 
 /**
@@ -13,21 +14,25 @@ import { SystemCeiling } from './SystemCeiling';
  */
 export function HudShell({
   networkLabel,
+  chainId,
   children,
 }: {
   networkLabel: string;
+  chainId: string | null;
   children: ReactNode;
 }) {
   return (
-    <div className="lj-app" data-effects="system">
-      <div className="lj-art" aria-hidden="true" data-testid="art-layer" />
-      <SystemCeiling networkLabel={networkLabel} />
-      <main id="main" className="lj-main lj-gutter">
-        {children}
-      </main>
-      <CommandDock />
-      <ActivityDrawer />
-      <ContextDrawerHost />
-    </div>
+    <HudProvider networkLabel={networkLabel} chainId={chainId}>
+      <div className="lj-app" data-effects="system">
+        <div className="lj-art" aria-hidden="true" data-testid="art-layer" />
+        <SystemCeiling />
+        <main id="main" className="lj-main lj-gutter">
+          {children}
+        </main>
+        <CommandDock />
+        <ActivityDrawer />
+        <ContextDrawerHost />
+      </div>
+    </HudProvider>
   );
 }

@@ -51,11 +51,14 @@ export function AssistantOrb({
   state,
   size = 'expanded',
   completedLabel,
+  label,
 }: {
   state: OrbState;
   size?: 'expanded' | 'compact';
   /** Names exactly which operation finished, when the state is completed. */
   completedLabel?: string;
+  /** The HUD's own sentence for this state; it replaces the generic label so the words and the picture share one source. */
+  label?: string;
 }) {
   const px = size === 'expanded' ? 160 : 32;
   const color = COLORS[state];
@@ -94,7 +97,9 @@ export function AssistantOrb({
         />
       </svg>
       {size === 'compact' ? (
-        <span className="text-sm text-lj-secondary">{orbLabel(state, completedLabel)}</span>
+        <span className="text-sm text-lj-secondary">
+          {label ?? orbLabel(state, completedLabel)}
+        </span>
       ) : null}
     </div>
   );

@@ -1,12 +1,13 @@
 'use client';
 
 import { useId, type KeyboardEvent } from 'react';
-import { AssistantOrb, orbLabel } from '@/components/assistant/AssistantOrb';
+import { AssistantOrb } from '@/components/assistant/AssistantOrb';
 import { CommandActions } from '@/components/assistant/CommandActions';
-import { deriveOrb } from '@/components/assistant/orb-state';
+import { orbForActivity } from '@/components/assistant/orb-state';
 import { useAssistant } from '@/components/assistant/assistant-context';
 import { ConversationPanel } from '@/components/assistant/ConversationPanel';
 import { AttentionRail } from '@/components/hud/AttentionRail';
+import { useHud } from '@/components/hud/hud-context';
 import { useLayoutTier } from '@/components/hud/layout-tier';
 import { MatterRail } from '@/components/hud/MatterRail';
 import { useVault } from '@/components/vault/vault-context';
@@ -43,35 +44,18 @@ function VaultStatusLine() {
   );
 }
 
-/** What the orb means, in words. The graphic never carries meaning by itself. */
-function orbCaption(
-  orb: ReturnType<typeof useAssistant>['snapshot']['orb'],
-  availability: ReturnType<typeof useAssistant>['snapshot']['availability'],
-): string {
-  if (orb !== 'unavailable') return orbLabel(orb);
-  if (availability === null) return `${orbLabel('unavailable')}: local checks still work.`;
-  return availability.state === 'not_configured'
-    ? 'Analysis is not configured. Local checks still work.'
-    : availability.state === 'configured_unverified'
-      ? 'The assistant configuration has not been verified.'
-      : orbLabel('unavailable');
-}
-
 /** Command mode: the nucleus with one plain-language status sentence beneath it. */
 function CommandHero() {
-  const { snapshot } = useAssistant();
-  const orb = deriveOrb(snapshot);
+  const { view } = useHud();
   const vault = useVault();
   return (
     <div className="lj-hero">
       <div className="flex flex-col items-center">
-        <AssistantOrb state={orb.state} size="expanded" completedLabel={orb.completedLabel} />
+        <AssistantOrb state={orbForActivity(view.activity)} size="expanded" />
         <p role="status" aria-live="polite" className="m-0 mt-4 text-lg" data-testid="orb-caption">
           {vault.snapshot.selectedMatterId === null
             ? 'Open a matter to begin.'
-            : orb.state === 'completed' || orb.state === 'tool_running' || orb.state === 'listening'
-              ? orbLabel(orb.state, orb.completedLabel)
-              : orbCaption(snapshot.orb, snapshot.availability)}
+            : view.activity.statusText}
         </p>
         <CommandActions />
         <VaultStatusLine />
@@ -113,13 +97,16 @@ function ActivitySurface() {
 
 /** Review mode: the document is dominant and the nucleus shrinks to a status marker. */
 function ReviewSurface() {
-  const { snapshot } = useAssistant();
-  const orb = deriveOrb(snapshot);
+  const { view } = useHud();
   return (
     <section aria-label="Document" className="min-w-0">
       <div className="flex items-center justify-between border-b border-lj-divider pb-2">
         <h2 className={sectionTitle}>Document</h2>
-        <AssistantOrb state={orb.state} size="compact" completedLabel={orb.completedLabel} />
+        <AssistantOrb
+          state={orbForActivity(view.activity)}
+          size="compact"
+          label={view.activity.statusText}
+        />
       </div>
       <VaultStatusLine />
       <ReviewDocuments />

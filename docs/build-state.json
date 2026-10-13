@@ -12954,6 +12954,35 @@
         ],
         "checks": "observed 2026-10-13: web vitest 557/557, web and workspace typecheck clean, eslint clean on touched files, exclusion:check clean; tooling/scripts/hud-visual-check.ts on next dev: 6 viewports (1440x900, 1280x800, 1024x768, 768x1024, 390x844, 320x640) no page-wide horizontal scroll, ceiling flush and full width, dock >= 64px, 1440 rails 240/776/336, 1280 rails 208/304, keyboard tab walk of 41-43 stops never behind ceiling or dock. Screenshots docs/evidence/ui-blueprint/stage2-*.png. Not run: pnpm test:hud:browser (needs embedded Postgres, S3), 200% text and 400% zoom manual checks, screen reader.",
         "limitations": "Matter rail is a labelled disclosure (not a modal drawer) between 800 and 1199 px. Nucleus is still the CSS/SVG orb until stage 5."
+      },
+      "3": {
+        "state": "complete",
+        "files": [
+          "apps/web/src/features/hud/hud.types.ts",
+          "apps/web/src/features/hud/hud.selectors.ts",
+          "apps/web/src/features/hud/hud.freshness.ts",
+          "apps/web/src/features/hud/hud.events.ts",
+          "apps/web/src/features/hud/public.ts",
+          "apps/web/src/features/hud/hud.selectors.test.ts",
+          "apps/web/src/components/hud/hud-context.tsx",
+          "apps/web/src/components/hud/SystemCeiling.tsx",
+          "apps/web/src/components/hud/HudShell.tsx",
+          "apps/web/src/components/assistant/orb-state.ts",
+          "apps/web/src/components/assistant/AssistantOrb.tsx",
+          "apps/web/src/components/review/ReviewWorkspace.tsx",
+          "apps/web/src/app/layout.tsx"
+        ],
+        "interfaces": [
+          "selectHud(HudInput): HudView",
+          "selectCeiling / selectActivity / selectAttention",
+          "freshnessOf(observedAtMs, nowMs, staleAfterMs): live|stale|unknown",
+          "RunEventGate.setContext/accept: accepted|duplicate|out_of_order|gap|obsolete",
+          "BoundedIdentitySet",
+          "HudProvider/useHud(): {view, nowMs, setVisibleFindingIds}",
+          "orbForActivity(ActivityView): OrbState"
+        ],
+        "checks": "observed 2026-10-13: web vitest 586/586 (29 new selector, freshness and event-gate tests covering unknown, stale, concurrent, cancelled, stopping, offline, locked and lag-unknown states), web typecheck clean, eslint clean on apps/web/src and the visual-check script, hud-visual-check passes at 6 viewports on the connected ceiling.",
+        "limitations": "A run's last-event time is the arrival of its latest snapshot change in the browser; SSE heartbeats are deliberately not progress, so a long silent model call can read as stale after 60 s. Visible finding anchors are registered empty until stage 5. Selected-finding wiring is stage 7."
       }
     }
   }

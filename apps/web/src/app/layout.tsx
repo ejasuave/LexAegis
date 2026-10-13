@@ -61,7 +61,12 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
                     <ApprovalProvider>
                       <TransactionProvider>
                         <AssistantProvider>
-                          <AppShell networkLabel={networkLabel(publicConfig)}>{children}</AppShell>
+                          <AppShell
+                            networkLabel={networkLabel(publicConfig)}
+                            chainId={publicConfig.ok ? (publicConfig.config.chainId ?? null) : null}
+                          >
+                            {children}
+                          </AppShell>
                         </AssistantProvider>
                       </TransactionProvider>
                     </ApprovalProvider>

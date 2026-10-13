@@ -7,16 +7,20 @@ import { WorkspaceProvider } from './workspace-context';
 /** Providers for view state, Stop and voice around the HUD regions. */
 export function AppShell({
   networkLabel,
+  chainId,
   children,
 }: {
   networkLabel: string;
+  chainId: string | null;
   children: ReactNode;
 }) {
   return (
     <WorkspaceProvider>
       <StopProvider>
         <VoiceProvider>
-          <HudShell networkLabel={networkLabel}>{children}</HudShell>
+          <HudShell networkLabel={networkLabel} chainId={chainId}>
+            {children}
+          </HudShell>
         </VoiceProvider>
       </StopProvider>
     </WorkspaceProvider>
