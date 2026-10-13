@@ -1,9 +1,14 @@
 # Judge guide
 
-**Status 2026-10-12: the hosted application and verifier do not exist yet.** There is no production
-origin, so this guide contains no live URL and none has been invented. Everything marked _NOT YET_
-needs a deployment (see `docs/release/` and `deploy/target.json`). Until then the only things a
-judge can run are the repository's own commands.
+**Status 2026-10-13: the application and the independent verifier are hosted on Railway (Monad
+Testnet, chain 10143).**
+
+- Application: https://terrific-joy-production-54e8.up.railway.app
+- Independent verifier (no login): https://lexaegis-verifier-production.up.railway.app
+
+Unauthenticated smoke checks pass (`docs/evidence/chapter13-hosted-smoke-2026-10-13.json`). Not yet
+verified on the hosted origin: hosted Envio history (unconfigured), real-device Mera ceremonies, and a
+registry transaction signed through a real Mera account. The repository is still private (**NOT YET**).
 
 ## What you can do today (no account, no hosting)
 
@@ -11,14 +16,14 @@ judge can run are the repository's own commands.
    `docs/release/publication.json`).
 2. `pnpm install --frozen-lockfile`, then `pnpm quickstart:check` runs the README's verification
    example against the packed packages.
-3. `pnpm hosted:smoke` reports `blocked` with no origins, which is the honest hosted status.
+3. `pnpm hosted:smoke --app https://terrific-joy-production-54e8.up.railway.app --verifier https://lexaegis-verifier-production.up.railway.app` runs the unauthenticated hosted checks (outcome `partial`: person-dependent journeys are `not_run`).
 4. The registry itself is real and readable: Monad Testnet, chain 10143,
    `0x453bfd1602d8a8666f55bf9a8d87b127cb94048f` (unaudited). `pnpm verify:deployment -- --public-rpc`
    rebuilds the contract from source and compares it with the deployed code (read-only, no key).
 
-## Hosted path (NOT YET)
+## Hosted path
 
-When the application is deployed, a judge uses **their own** passkey; no key, shared passkey or
+A judge uses **their own** passkey; no key, shared passkey or
 authenticated browser state is ever distributed. Supported browsers and passkey behaviour will be listed
 here only after they are observed on the deployed origin. Testnet MON is requested explicitly, is
 rate-limited and has a visible global budget; do not assume an unsupported device can finish onboarding.

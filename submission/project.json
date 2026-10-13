@@ -37,24 +37,48 @@
   },
   "limitations": [
     "Testnet only; registry unaudited",
-    "Hosted application and verifier not deployed yet",
     "No real-device Mera ceremony evidence yet",
     "Qwen article is an unpublished draft",
     "Videos not recorded",
-    "Repository is private and has no licence"
+    "Repository is private and has no licence",
+    "Hosted Envio indexing not verified (history.envio unconfigured on the hosted app)",
+    "Hosted app readiness reports unavailable overall; only assistant.qwen is verified"
   ],
   "nextSteps": [
-    "Deploy the application and verifier to one stable HTTPS origin",
     "Run real-device passkey and recovery ceremonies and record them",
     "Put one adviser's workflow through the product and log the result"
   ],
   "links": {
-    "repository": { "url": null, "state": "blocked", "reason": "repository is private" },
-    "application": { "url": null, "state": "blocked", "reason": "not deployed" },
-    "verifier": { "url": null, "state": "blocked", "reason": "not deployed" },
-    "technicalDemo": { "url": null, "state": "missing", "reason": "not recorded" },
-    "pitch": { "url": null, "state": "missing", "reason": "not recorded" },
-    "qwenArticle": { "url": null, "state": "unpublished", "reason": "draft only" }
+    "repository": {
+      "url": null,
+      "state": "blocked",
+      "reason": "repository is private"
+    },
+    "application": {
+      "url": "https://terrific-joy-production-54e8.up.railway.app/review",
+      "state": "ready",
+      "reason": "Railway; unauthenticated smoke 2026-10-13 (docs/evidence/chapter13-hosted-smoke-2026-10-13.json); product journeys not run"
+    },
+    "verifier": {
+      "url": "https://lexaegis-verifier-production.up.railway.app",
+      "state": "ready",
+      "reason": "Railway standalone; page, no-session and health checks pass 2026-10-13"
+    },
+    "technicalDemo": {
+      "url": null,
+      "state": "missing",
+      "reason": "not recorded"
+    },
+    "pitch": {
+      "url": null,
+      "state": "missing",
+      "reason": "not recorded"
+    },
+    "qwenArticle": {
+      "url": null,
+      "state": "unpublished",
+      "reason": "draft only"
+    }
   },
   "contract": {
     "network": "Monad Testnet",

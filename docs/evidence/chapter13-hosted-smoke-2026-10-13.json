@@ -1,0 +1,96 @@
+{
+  "schema": "lexaegis.hosted-smoke.v1",
+  "checkedAt": "2026-10-13T21:30:05.555Z",
+  "origins": {
+    "app": "https://terrific-joy-production-54e8.up.railway.app",
+    "verifier": "https://lexaegis-verifier-production.up.railway.app"
+  },
+  "outcome": "partial",
+  "checks": [
+    {
+      "id": "app.liveness",
+      "state": "pass",
+      "detail": "status 200"
+    },
+    {
+      "id": "app.readiness",
+      "state": "pass",
+      "detail": "HTTP 503, reported status unavailable; a 503 is an honest not-ready report, not a pass of the product"
+    },
+    {
+      "id": "app.headers",
+      "state": "pass",
+      "detail": "status 200"
+    },
+    {
+      "id": "app.cache",
+      "state": "pass",
+      "detail": "no-store"
+    },
+    {
+      "id": "app.static-asset",
+      "state": "pass",
+      "detail": "status 200"
+    },
+    {
+      "id": "app.oversize-control",
+      "state": "pass",
+      "detail": "status 400 for a 17 KiB control body"
+    },
+    {
+      "id": "verifier.page",
+      "state": "pass",
+      "detail": "status 200, CSP meta true"
+    },
+    {
+      "id": "verifier.no-session",
+      "state": "pass",
+      "detail": "no cookie set"
+    },
+    {
+      "id": "verifier.health",
+      "state": "pass",
+      "detail": "status 200"
+    },
+    {
+      "id": "journey.passkey-onboarding",
+      "state": "not_run",
+      "detail": "needs a person and a real passkey ceremony"
+    },
+    {
+      "id": "journey.sse-progressive",
+      "state": "not_run",
+      "detail": "needs an authenticated session and a protected release probe or scripted provider; no paid inference"
+    },
+    {
+      "id": "journey.16mib-upload",
+      "state": "not_run",
+      "detail": "needs an authenticated session on the deployed vault path"
+    },
+    {
+      "id": "journey.registry-execution",
+      "state": "not_run",
+      "detail": "needs an approved, fee-paying testnet transaction with separate confirmations"
+    },
+    {
+      "id": "journey.envio-history",
+      "state": "not_run",
+      "detail": "needs a deployed, synced indexer"
+    },
+    {
+      "id": "journey.storage-cleared-recovery",
+      "state": "not_run",
+      "detail": "needs the final rpId and a person to clear storage"
+    },
+    {
+      "id": "journey.second-device",
+      "state": "not_run",
+      "detail": "needs a second supported device"
+    },
+    {
+      "id": "journey.reference-only-verify-offline",
+      "state": "not_run",
+      "detail": "needs a browser session with the web backend blocked"
+    }
+  ]
+}

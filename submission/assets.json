@@ -14,14 +14,14 @@
       "id": "judge-guide",
       "path": "submission/judge-guide.md",
       "kind": "text",
-      "sha256": "f817b0bc467b95e25918d908ca73626a057387c6740125de260a168aa400fd5a",
+      "sha256": "c89c0f1c02c56f9fdbe57a756a24cc1f4a55d56f90908bc0f6f88bf5b6075ee7",
       "publicUrl": null
     },
     {
       "id": "sponsor-evidence",
       "path": "submission/sponsor-evidence.json",
       "kind": "text",
-      "sha256": "8552d968b63c242ca005f0097b97ddfb550d6fe5a76abca96968d09d4612ea04",
+      "sha256": "92d23c76d461a707d276d1f98060b372b684ae6de7210b97ef9688f005e91b49",
       "publicUrl": null
     },
     {

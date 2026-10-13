@@ -42,7 +42,8 @@
   "published": {
     "repository": false,
     "article": false,
-    "videos": false
+    "videos": false,
+    "application": true
   },
   "submitted": false,
   "submission": {
@@ -91,5 +92,21 @@
       "document review",
       "verifier"
     ]
+  },
+  "live_observation_2026_10_13_evening": {
+    "app": "https://terrific-joy-production-54e8.up.railway.app",
+    "verifier": "https://lexaegis-verifier-production.up.railway.app",
+    "evidence": "docs/evidence/chapter13-hosted-smoke-2026-10-13.json",
+    "works": [
+      "app liveness, headers, no-store, oversize rejection",
+      "verifier page, no session cookie, health",
+      "assistant.qwen verified via /api/readiness",
+      "chain status live checkpoint read"
+    ],
+    "not_working": [
+      "history.envio unconfigured (no hosted indexer)",
+      "overall readiness unavailable (other capabilities configured, unverified)"
+    ],
+    "not_run": "all person-dependent journeys (passkey, registry execution, recovery, second device)"
   }
 }

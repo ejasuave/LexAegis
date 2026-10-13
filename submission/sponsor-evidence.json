@@ -1,9 +1,9 @@
 {
   "schema": "lexaegis.sponsor-evidence.v1",
   "version": 1,
-  "recordedAt": "2026-10-12",
+  "recordedAt": "2026-10-13",
   "sourceCommit": "9565a67",
-  "note": "Claims are limited to what the linked evidence shows. Links are repository paths because the repository is private and nothing is hosted; none is a public URL. No eligibility, award or external user is implied. Qwen and Alchemy awards, if mentioned elsewhere, are credits, not prize money.",
+  "note": "Claims are limited to what the linked evidence shows. Links are repository paths because the repository is private and hosting links are listed in submission/project.json; none is a public URL. No eligibility, award or external user is implied. Qwen and Alchemy awards, if mentioned elsewhere, are credits, not prize money.",
   "bounties": [
     {
       "name": "Best Mera-Powered UX on Monad",
@@ -16,7 +16,7 @@
         "apps/web/src/features/account",
         "tooling/scripts/account-browser-check.ts"
       ],
-      "release": "not deployed",
+      "release": "deployed unverified for product journeys: https://terrific-joy-production-54e8.up.railway.app",
       "evidenceClass": "virtual_authenticator",
       "links": ["docs/evidence/chapter12", "docs/evidence/chapter10"],
       "observed": "Account, session and recovery flows pass in a Chromium virtual-authenticator journey and scripted local runs. The Chapter 6 testnet transactions were signed by a scripted account, not a real Mera device.",
@@ -44,7 +44,7 @@
         "apps/web/src/server/vault",
         "tooling/scripts/vault-browser-check.ts"
       ],
-      "release": "not deployed",
+      "release": "deployed unverified for product journeys: https://terrific-joy-production-54e8.up.railway.app",
       "evidenceClass": "virtual_authenticator",
       "links": ["docs/evidence/chapter12"],
       "observed": "Separate account and vault PRF namespaces with browser-side encryption; recovery and decryption pass in the virtual-authenticator and scripted-storage journeys. A fresh key or cached plaintext is not counted as recovery.",
@@ -71,7 +71,7 @@
         "indexer/src/handlers",
         "apps/web/src/server/history"
       ],
-      "release": "not deployed (local envio dev)",
+      "release": "not deployed (local envio dev); hosted app reports history.envio unconfigured 2026-10-13",
       "evidenceClass": "live_testnet",
       "links": [
         "docs/evidence/chapter07-live-hypersync-2026-10-11.json",
@@ -100,10 +100,10 @@
         "apps/web/src/server/assistant",
         "apps/web/scripts/qwen-smoke.ts"
       ],
-      "release": "not deployed",
+      "release": "deployed unverified for product journeys: https://terrific-joy-production-54e8.up.railway.app",
       "evidenceClass": "live_provider",
       "links": ["docs/evidence/chapter09-qwen-smoke-2026-10-12.json", "submission/qwen-article.md"],
-      "observed": "A genuine qwen3.8-max run (provider region ap-southeast-1, JSON-schema output, native tool calls) completed on the synthetic fixture with the four read-only tools read_sources, check_payments, check_evidence and get_status; the returned model equals the requested model and six provider request IDs are recorded. Capability checks for tool calls, structured output, usage reporting and cancellation passed.",
+      "observed": "A genuine qwen3.8-max run (provider region ap-southeast-1, JSON-schema output, native tool calls) completed on the synthetic fixture with the four read-only tools read_sources, check_payments, check_evidence and get_status; the returned model equals the requested model and six provider request IDs are recorded. Capability checks for tool calls, structured output, usage reporting and cancellation passed. On 2026-10-13 the hosted app's /api/readiness reported assistant.qwen verified (OK). The operator reports a source-linked analysis was run in the hosted web UI; no recording or evidence file of that run is in the repository yet.",
       "limitations": [
         "output is not reproducible",
         "validation shows references resolve, not that a statement is legally correct",
@@ -112,7 +112,7 @@
       ],
       "missing": [
         "published article (draft only, not published)",
-        "a run observed through the deployed application"
+        "recorded evidence of the hosted-UI run"
       ],
       "claimStatus": "partial_provider_run_article_unpublished"
     },
@@ -127,13 +127,13 @@
         "packages/sdk",
         "tooling/scripts/verify-deployment.ts"
       ],
-      "release": "not deployed",
+      "release": "deployed unverified for product journeys: https://terrific-joy-production-54e8.up.railway.app",
       "evidenceClass": "live_testnet",
       "links": [
         "docs/evidence/chapter17-deployment-verify-alchemy-2026-10-12.json",
         "docs/evidence/chapter06-live-2026-10-09.json"
       ],
-      "observed": "Through the configured Alchemy Monad endpoint (credential kept server-side, not recorded): chain and genesis reads, canonical-checkpoint code read matching the pinned source, transaction and receipt reads, fee estimation and transaction-count capabilities; on 2026-10-09 an ISSUE, SUPERSEDE and REVOKE were transmitted and monitored to confirmation with measured stage latencies.",
+      "observed": "Through the configured Alchemy Monad endpoint (credential kept server-side, not recorded): chain and genesis reads, canonical-checkpoint code read matching the pinned source, transaction and receipt reads, fee estimation and transaction-count capabilities; on 2026-10-09 an ISSUE, SUPERSEDE and REVOKE were transmitted and monitored to confirmation with measured stage latencies. The hosted app's /api/chain/status returned a live checkpoint (block 70788314, 2026-10-13).",
       "limitations": [
         "transactions were signed by a scripted account, not a real Mera device",
         "Alchemy is an RPC provider here, and an RPC read is an observation, not a consensus proof"

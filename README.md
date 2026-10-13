@@ -80,9 +80,12 @@ is not a failure, and it is not traction.
 
 - **Registry:** Monad Testnet (chain `10143`), `0x453bfd1602d8a8666f55bf9a8d87b127cb94048f`, unaudited,
   non-upgradeable. Deployment record and read-back evidence: [`docs/DEPLOYMENTS.md`](docs/DEPLOYMENTS.md).
-- **Hosted application and verifier:** **NOT YET.** No production origin exists, so there are no
-  hosted links on this page. Container files and the release procedure are in [`deploy/`](deploy/README.md);
-  release status is recorded in [`docs/release/status.json`](docs/release/status.json); `pnpm submission:validate` reports what still blocks submission.
+- **Hosted application:** https://terrific-joy-production-54e8.up.railway.app (Railway; unauthenticated
+  smoke checks pass, 2026-10-13: [`evidence`](docs/evidence/chapter13-hosted-smoke-2026-10-13.json)).
+- **Independent verifier:** https://lexaegis-verifier-production.up.railway.app (standalone, no login).
+- **Not verified on the hosted origin:** Envio history (unconfigured), real-device Mera ceremonies.
+  Container files and the release procedure are in [`deploy/`](deploy/README.md); status in
+  [`docs/release/status.json`](docs/release/status.json); `pnpm submission:validate` reports what still blocks submission.
 - **Known limits:** testnet only; supported text documents; rules are draft until reviewed; the
   assistant sends selected plaintext to a model provider; a receipt proves package and account
   binding, not legal validity or practitioner qualification. No licence has been chosen yet.
