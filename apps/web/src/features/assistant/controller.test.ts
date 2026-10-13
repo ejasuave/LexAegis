@@ -145,6 +145,19 @@ describe('disclosure before anything is sent', () => {
     dispose(none);
   });
 
+  it('keeps prefixed explain-this-clause requests confined to the highlighted passage', async () => {
+    const a = await assistantRig([done(), answer()]);
+    a.assistant.setSelection(a.documentVersionId, [a.clause]);
+    await a.assistant.submit('SLOW-TEST explain this clause');
+    const pending = a.assistant.getSnapshot().pending;
+    expect(pending?.body.documentVersionId).toBe(a.documentVersionId);
+    expect(pending?.body.context.searchedScope.automatic).toBeUndefined();
+    expect(pending?.summary.excerpts).toHaveLength(1);
+    expect(pending?.body.context.sources[0]?.reference.quote).toBe(a.clause.quote);
+    expect(a.transportCalls.start).toBe(0);
+    dispose(a);
+  });
+
   it('previews a matter question without guessing which earlier passage was meant', async () => {
     const a = await assistantRig([done(), answer()]);
     await a.assistant.submit('And what about the other one?');
