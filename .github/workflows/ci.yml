@@ -161,7 +161,6 @@ jobs:
       - run: pnpm contracts:toolchain
       - run: pnpm verify:deployment --public-rpc
 
-
   # Temporary targeted diagnostics for four existing system test failures.
   # Uses synthetic data, loopback providers, local Anvil, and an isolated test database.
   diagnose-lifecycle-a11y:
@@ -179,6 +178,7 @@ jobs:
       - run: pnpm install --frozen-lockfile
       - run: pnpm indexer:codegen
       - run: pnpm contracts:toolchain
+      - run: pnpm contracts:build
       - run: pnpm tools:s3
       - run: pnpm exec playwright install --with-deps chromium
       - name: Capture exact existing system assertion failures
