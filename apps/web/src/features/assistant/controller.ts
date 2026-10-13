@@ -496,15 +496,21 @@ export class AssistantController {
     if (routed.kind === 'intent' && routed.via === 'command') {
       return this.#prepare({ intent: routed.intent, trigger: 'command', utterance: text });
     }
-    // An explicit explanation/summary of a CURRENT selection stays scoped to exactly
-    // those excerpts. A general question without a selection searches the open matter.
+    // An explicit reference to "this clause" or "this passage" stays confined
+    // to the current selection, even when a testing or user prefix precedes
+    // "explain". Such prefixed requests were previously routed as ambiguous.
+    // General matter questions still use automatic retrieval.
+    const asksAboutSelectedText =
+      this.#selection.references.length > 0 &&
+      /\b(?:explain|summari[sz]e)\b[^\n]{0,120}\b(?:this|the selected)\s+(?:clause|passage|paragraph|text)\b/i.test(text);
     if (
-      routed.kind === 'intent' &&
-      (routed.intent === 'explain' || routed.intent === 'summarise') &&
-      this.#selection.references.length > 0
+      asksAboutSelectedText ||
+      (routed.kind === 'intent' &&
+        (routed.intent === 'explain' || routed.intent === 'summarise') &&
+        this.#selection.references.length > 0)
     ) {
       return this.#prepare({
-        intent: routed.intent,
+        intent: routed.kind === 'intent' ? routed.intent : null,
         trigger: 'free_text',
         utterance: text,
       });
