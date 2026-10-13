@@ -208,6 +208,10 @@ const HALO_HERO = 72;
 const HALO_COMPACT = 17;
 const ENERGY_RISE_TAU = 0.2;
 const ENERGY_FALL_TAU = 0.4;
+/** Centre of the hero nucleus as a fraction of the visible stage, in every workspace state. */
+const HERO_CENTRE_X = 0.5;
+const HERO_CENTRE_Y = 0.42;
+const OPEN_TAU = 0.35;
 /** Thinking pulses once every 1.75 s: well under three a second. */
 const PULSE_SECONDS = 1.75;
 const RIM_SECONDS = 10;
@@ -237,6 +241,8 @@ export class NeuralRenderer {
   #field: Field;
   #network: Network;
   #energy = 0;
+  /** 1 with no matter open, 0 with one open: radius, reach and mesh ease on it, the centre never moves. */
+  #open = 1;
   readonly #scratchX = new Float32Array(512);
   readonly #scratchY = new Float32Array(512);
   #tier: TierName;
@@ -405,7 +411,10 @@ export class NeuralRenderer {
   }
 
   #energySettling(): boolean {
-    return Math.abs(this.#energy - this.#energyTarget()) > 0.002;
+    return (
+      Math.abs(this.#energy - this.#energyTarget()) > 0.002 ||
+      Math.abs(this.#open - (this.#scene.workspace === 'empty' ? 1 : 0)) > 0.002
+    );
   }
 
   #washLive(): boolean {
@@ -507,10 +516,11 @@ export class NeuralRenderer {
     const stageW = stage?.w ?? this.#cssW * 0.6;
     const stageH = stage?.h ?? this.#cssH * 0.7;
     const mode: NucleusMode = s.nucleus?.mode ?? 'none';
-    // With nothing open the nucleus sits at the exact centre of the stage.
+    // The centre is a fixed fraction of the visible stage box in both workspace states, never of
+    // the orb's DOM position, so scrolling, notices above and an open matter cannot move it.
     const origin: Point =
-      empty && mode === 'hero' && stage !== null
-        ? { x: stage.x + stage.w / 2, y: stage.y + stage.h / 2 }
+      mode === 'hero' && stage !== null
+        ? { x: stage.x + stage.w * HERO_CENTRE_X, y: stage.y + stage.h * HERO_CENTRE_Y }
         : (s.nucleus ?? { x: this.#cssW * 0.5, y: this.#cssH * 0.44 });
     const full = this.#mode === 'full' && !s.ceremony;
     const motion = animating && full && palette.animated;
@@ -524,6 +534,10 @@ export class NeuralRenderer {
         )
       : target;
     const energy = this.#energy;
+    const openTarget = empty ? 1 : 0;
+    this.#open = motion ? easeToward(this.#open, openTarget, dt, OPEN_TAU) : openTarget;
+    const open = this.#open;
+    const lerp = (shut: number, wide: number) => shut + (wide - shut) * open;
     // The canvas owns the stage only with no matter open. With one open the orb shrinks to an
     // ambient presence and the reading-zone masks keep every word on a dark floor.
     const emphasis = s.ceremony
@@ -539,19 +553,18 @@ export class NeuralRenderer {
       origin,
       mode,
       empty,
-      // Tendrils reach about half the stage width; thinking lengthens them by 1.6x.
-      unit: 0.5 * stageW * (1 + 0.6 * energy),
+      // Tendrils reach about half the stage width (a third with a matter open); thinking
+      // lengthens them by 1.6x.
+      unit: lerp(0.34, 0.5) * stageW * (1 + 0.6 * energy),
       sphere:
         mode === 'hero'
-          ? stageH * (empty ? 0.19 + 0.05 * energy : 0.07 + 0.02 * energy)
+          ? stageH * (lerp(0.095, 0.19) + lerp(0.01, 0.05) * energy)
           : mode === 'compact'
             ? 13 + 2 * energy
             : 0,
       mesh:
         mode === 'hero'
-          ? empty
-            ? Math.min(stageW * 0.33, stageH * 0.5)
-            : Math.min(stageW * 0.13, 100)
+          ? lerp(Math.min(stageW * 0.13, 100), Math.min(stageW * 0.33, stageH * 0.5))
           : mode === 'compact'
             ? 26
             : 0,
@@ -567,8 +580,9 @@ export class NeuralRenderer {
     } else {
       this.#pn = 0;
     }
-    // With nothing open the art owns the stage, but fades out toward its edges instead of ending on a hard rectangle.
-    if (empty && stage !== null && mode === 'hero') this.#fadeToStage(ctx, stage);
+    // The hero art never leaves the visible stage: it fades toward the stage edges instead of
+    // ending on a hard rectangle or reaching the heading above it.
+    if (stage !== null && mode === 'hero') this.#fadeToStage(ctx, stage);
     this.#drawWash(ctx, origin, mode, t * 1000);
     this.#applyMask(ctx);
     this.#drawAlerts(ctx, origin, s, t, motion);
@@ -984,17 +998,22 @@ export class NeuralRenderer {
       this.#fade = fade;
       this.#fadeKey = key;
       if (g === null) return;
-      const feather = Math.min(70, stage.w * 0.1, stage.h * 0.15);
+      const feather = Math.min(110, stage.w * 0.12, stage.h * 0.18);
+      const inset = feather * 1.2;
+      // Only the rectangle's shadow is kept (the fill is drawn far off canvas), so the mask rises
+      // smoothly from the stage edge with no hard line where the fill would have ended.
+      const away = this.#cssW + this.#cssH + 4 * feather;
       g.setTransform(this.#scale, 0, 0, this.#scale, 0, 0);
       g.clearRect(0, 0, this.#cssW, this.#cssH);
       g.fillStyle = '#fff';
       g.shadowColor = '#fff';
-      g.shadowBlur = feather * this.#scale;
+      g.shadowBlur = feather * 1.5 * this.#scale;
+      g.shadowOffsetX = away * this.#scale;
       g.fillRect(
-        stage.x + feather,
-        stage.y + feather,
-        stage.w - 2 * feather,
-        stage.h - 2 * feather,
+        stage.x + inset - away,
+        stage.y + inset,
+        stage.w - 2 * inset,
+        stage.h - 2 * inset,
       );
     }
     ctx.globalCompositeOperation = 'destination-in';

@@ -170,6 +170,9 @@ export function useHudAnchors(
     watchRegions();
     const main = document.querySelector('.lj-main');
     if (main !== null) resize.observe(main);
+    // The visible stage box anchors the nucleus: any change to its size re-measures it.
+    const workStage = document.querySelector('section[aria-label="Work"]');
+    if (workStage !== null) resize.observe(workStage);
     const mutation = new MutationObserver(request);
     if (main !== null) {
       mutation.observe(main, {

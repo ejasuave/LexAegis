@@ -260,6 +260,17 @@
   inset-inline: 0;
   bottom: 0;
   margin-top: 0;
+  padding-top: var(--lj-space-6);
+  isolation: isolate;
+}
+/* A soft scrim, not a rectangle: clear at the top and sides, the reading floor behind the words. */
+.lj-hero-empty .lj-hero-text::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: linear-gradient(to bottom, transparent 0%, var(--lj-bg-soft) 55%);
+  mask-image: linear-gradient(to right, transparent, #000 12%, #000 88%, transparent);
 }
 .lj-rail-inner {
   padding: var(--lj-space-2);

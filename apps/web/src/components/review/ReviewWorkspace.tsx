@@ -51,14 +51,14 @@ function CommandHero() {
   const { view } = useHud();
   const vault = useVault();
   const empty = vault.snapshot.selectedMatterId === null;
-  // Empty: the orb holds the exact centre of the stage and the words sit along the bottom, so
-  // nothing covers the canvas. With a matter open the orb is ambient and the words stay beneath it.
+  // In both states the canvas holds the nucleus at a fixed spot of the visible stage and the
+  // words sit along the bottom, below it, so nothing covers the art.
   return (
-    <div className={`lj-hero ${empty ? 'lj-hero-empty' : ''}`}>
+    <div className="lj-hero lj-hero-empty">
       <div className="lj-hero-orb">
         <AssistantOrb state={orbForActivity(view.activity)} size="expanded" />
       </div>
-      <div data-hud-quiet="" className="lj-hero-text flex flex-col items-center">
+      <div className="lj-hero-text flex flex-col items-center">
         <p
           role="status"
           aria-live="polite"
