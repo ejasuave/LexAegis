@@ -34,12 +34,16 @@
     "state": "not_run",
     "reason": "Docker daemon was not running; standalone web output and the static verifier server were exercised directly instead"
   },
-  "deployed": false,
+  "deployed": true,
   "live_verified": {
-    "state": "blocked",
-    "reason": "no deployment, no origins; registry identity itself was rechecked read-only through Alchemy (match)"
+    "state": "partial",
+    "reason": "only unauthenticated checks done; product journeys not run"
   },
-  "published": { "repository": false, "article": false, "videos": false },
+  "published": {
+    "repository": false,
+    "article": false,
+    "videos": false
+  },
   "submitted": false,
   "submission": {
     "state": "blocked",
@@ -58,5 +62,34 @@
     "hardDeadline": "2026-10-14T04:59:00+01:00",
     "recheckedFromOrganiser": false,
     "note": "Carried from the supplied brief; not rechecked against an organiser source, and no portal was inspected."
+  },
+  "live_observation_2026_10_13": {
+    "origin": "https://terrific-joy-production-54e8.up.railway.app",
+    "method": "unauthenticated read-only requests; hosted:smoke without verifier origin",
+    "works": [
+      "liveness 200",
+      "pages render",
+      "security headers and no-store",
+      "static asset",
+      "oversized 17 KiB control body rejected (400)",
+      "auth challenge issued (Postgres reachable, migrations applied)",
+      "chain status reports Monad Testnet 10143 and the registry address from config (not a live read)"
+    ],
+    "not_working": {
+      "assistant.qwen": "unconfigured (no Qwen variables)",
+      "chain.rpc": "unconfigured (no ALCHEMY_MONAD_RPC_URL): chain status not_configured",
+      "history.envio": "unavailable (no ENVIO_GRAPHQL_URL; no hosted indexer)",
+      "verifier": "no service/origin",
+      "/build/qwen": "was 404 because the route was gitignored; fixed in 8687617, awaiting redeploy"
+    },
+    "not_verified": [
+      "passkey ceremony",
+      "vault upload/download",
+      "registry read",
+      "Envio history",
+      "Qwen run",
+      "document review",
+      "verifier"
+    ]
   }
 }

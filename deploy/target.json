@@ -2,8 +2,8 @@
   "schema": "lexaegis.deploy-target.v1",
   "version": 1,
   "provider": "railway",
-  "status": "unprovisioned",
-  "note": "No hosting target was configured in this repository and no provider CLI or token is available in this environment. Nothing below is an observed identifier. Provider project, environment and service IDs belong in private operator configuration, not here.",
+  "status": "partially_provisioned",
+  "note": "Web service, PostgreSQL and a bucket exist on Railway (observed via /api/readiness 2026-10-13: database, S3 and account configured). Provider identifiers stay in private operator configuration. Origin is user-supplied and is a *.up.railway.app host: passkeys die if it changes.",
   "services": {
     "web": {
       "dockerfile": "deploy/docker/web.Dockerfile",
@@ -18,11 +18,25 @@
       "health": "/healthz",
       "replicas": 1
     },
-    "database": { "kind": "postgresql", "publicAccess": false },
-    "objectStore": { "kind": "s3-compatible", "publicAccess": false },
-    "indexer": { "kind": "envio-hosted", "root": "indexer", "config": "indexer/config.yaml" }
+    "database": {
+      "kind": "postgresql",
+      "publicAccess": false
+    },
+    "objectStore": {
+      "kind": "s3-compatible",
+      "publicAccess": false
+    },
+    "indexer": {
+      "kind": "envio-hosted",
+      "root": "indexer",
+      "config": "indexer/config.yaml"
+    }
   },
-  "origins": { "app": null, "verifier": null, "webauthnRpId": null },
+  "origins": {
+    "app": "https://terrific-joy-production-54e8.up.railway.app",
+    "verifier": null,
+    "webauthnRpId": "terrific-joy-production-54e8.up.railway.app"
+  },
   "origin_policy": "One durable HTTPS app origin is chosen before production-demo passkeys are created. rpId, auth domain and allowed origins are pinned from configuration, never derived from forwarding headers. Development credentials bound to localhost cannot become production credentials. A preview origin is not an interchangeable recovery origin.",
   "limits": {
     "controlBodyBytes": 16384,
@@ -35,7 +49,10 @@
     "autoscaling": "disabled",
     "paidUpgrades": "not enabled without explicit approval"
   },
-  "chain": { "chainId": 10143, "registry": "0x453bfd1602d8a8666f55bf9a8d87b127cb94048f" },
+  "chain": {
+    "chainId": 10143,
+    "registry": "0x453bfd1602d8a8666f55bf9a8d87b127cb94048f"
+  },
   "docs": [
     "https://nextjs.org/docs/app/guides/self-hosting",
     "https://docs.railway.com/networking/public-networking/specs-and-limits",
