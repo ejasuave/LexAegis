@@ -777,8 +777,17 @@ export class ReviewController {
       }
       const references = [];
       for (const page of chosen) {
+        const lower = page.text.toLowerCase();
+        const hit = terms.map((term) => lower.indexOf(term)).find((pos) => pos >= 0) ?? 0;
+        let start = Math.max(0, hit - 80);
+        let end = Math.min(page.text.length, start + 450);
+        // Never split a UTF-16 surrogate pair when building an exact source citation.
+        if (start > 0 && /[\\uD800-\\uDBFF]/.test(page.text[start - 1] ?? '') &&
+            /[\\uDC00-\\uDFFF]/.test(page.text[start] ?? '')) start += 1;
+        if (end < page.text.length && /[\\uD800-\\uDBFF]/.test(page.text[end - 1] ?? '') &&
+            /[\\uDC00-\\uDFFF]/.test(page.text[end] ?? '')) end -= 1;
         const made = createSourceReference(contextSet, {
-          documentVersionId: page.id, page: page.page, start: 0, end: Math.min(page.text.length, 450),
+          documentVersionId: page.id, page: page.page, start, end,
         });
         if (!made.ok) return { ok: false, code: made.code };
         references.push(made.data);
