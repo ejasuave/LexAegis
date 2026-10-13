@@ -784,6 +784,8 @@ export class ReviewController {
         references.push(made.data);
       }
       refs = references;
+      // The request catalog may describe at most eight documents.
+      contextSet = { ...contextSet, selected: new Set(seen) };
       automatic = {
         availableDocuments: this.#state.documents.length,
         readableDocuments: contextSet.sources.size,
